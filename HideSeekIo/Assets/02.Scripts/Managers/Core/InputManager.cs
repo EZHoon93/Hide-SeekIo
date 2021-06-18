@@ -1,0 +1,157 @@
+﻿using System;
+using System.Collections;
+
+using UnityEngine;
+
+public class InputManager : MonoBehaviour
+{
+
+
+    public static InputManager Instacne
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // 씬에서 GameManager 오브젝트를 찾아 할당
+                _instance = FindObjectOfType<InputManager>();
+            }
+
+            // 싱글톤 오브젝트를 반환
+            return _instance;
+        }
+    }
+    private static InputManager _instance; // 싱글톤이 할당될 static 변수
+
+    [SerializeField] UI_Input_Run _runButton;
+    [SerializeField] UltimateJoystick _moveJoystick;
+    [SerializeField] UltimateJoystick _attackJoystick;
+    [SerializeField] UltimateJoystick _skillJoystick;
+
+
+
+    public Vector2 MoveVector { get; private set; }
+    public Vector2 AttackVector { get; private set; }
+    public Vector2 SkillVector { get; set; }
+    public bool AttackTouch { get; private set; }
+    public bool SkillTouch { get; private set; }
+    public bool IsRun => _runButton.IsRun;
+
+    //public UI_Slider_CoolTime UI_SkillCoolTime;
+
+    public event Action skillSucessCallBack; //스킬 사용 성공시 발생 이벤트
+
+
+    private void Awake()
+    {
+        // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
+        if (Instacne != this)
+        {
+            // 자신을 파괴
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(this.gameObject);
+
+        _moveJoystick.gameObject.SetActive(false);
+        _attackJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
+        _runButton.gameObject.SetActive(false);
+
+    }
+    private void Start()
+    {
+        InitSetup();
+
+        _moveJoystick.OnDragCallback += UpdateMoveJoystick;
+        _attackJoystick.OnDragCallback += UpdateAttackoystick;
+        _skillJoystick.OnDragCallback += UpdateSkillJoystick;
+
+        _moveJoystick.OnPointerUpCallback += () =>
+        {
+            MoveVector = Vector2.zero;
+        };
+        _attackJoystick.OnPointerUpCallback += () => {
+            AttackVector = Vector2.zero;
+            AttackTouch = false;
+        };
+
+        _skillJoystick.OnPointerUpCallback += () =>
+        {
+            SkillVector = Vector2.zero;
+            SkillTouch = false;
+        };
+
+
+        _attackJoystick.OnPointerDownCallback += () => AttackTouch = true;
+        _skillJoystick.OnPointerDownCallback += () => SkillTouch = true;
+    }
+    public void InitSetup()
+    {
+        _moveJoystick.gameObject.SetActive(false);
+        _attackJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
+        //uI_Button_Run.gameObject.SetActive(false);
+    }
+
+    void UpdateMoveJoystick()
+    {
+#if UNITY_ANDROID
+        MoveVector = new Vector2(UltimateJoystick.GetHorizontalAxis("Move"), UltimateJoystick.GetVerticalAxis("Move"));
+#endif
+#if UNITY_EDITOR
+
+#endif
+
+    }
+
+    void UpdateAttackoystick()
+    {
+#if UNITY_ANDROID
+        AttackVector = new Vector2(UltimateJoystick.GetHorizontalAxis("Attack"), UltimateJoystick.GetVerticalAxis("Attack"));
+        AttackTouch = UltimateJoystick.GetJoystickState("Attack");
+
+#endif
+    }
+
+    void UpdateSkillJoystick()
+    {
+        SkillVector = new Vector2(UltimateJoystick.GetHorizontalAxis("Skill"), UltimateJoystick.GetVerticalAxis("Skill"));
+    }
+    private void Update()
+    {
+#if UNITY_EDITOR
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        MoveVector = new Vector2(h, v);
+
+#endif
+
+        //UpdateAttackoystick();
+    }
+
+    public void SetActiveSeekerController(bool isAcitve)
+    {
+        _moveJoystick.gameObject.SetActive(isAcitve);
+        _attackJoystick.gameObject.SetActive(isAcitve);
+        _skillJoystick.gameObject.SetActive(isAcitve);
+        _runButton.gameObject.SetActive(false);
+    }
+    public void SetActiveHiderController(bool isAcitve)
+    {
+        _moveJoystick.gameObject.SetActive(isAcitve);
+        _attackJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
+        _runButton.gameObject.SetActive(isAcitve);
+    }
+    //public vo
+
+    public void SkillSucess()
+    {
+        skillSucessCallBack?.Invoke();
+    }
+
+    public void Clear()
+    {
+
+    }
+}
