@@ -103,11 +103,6 @@ public class Util
 
         foreach (Transform child in obj.transform)
         {
-            //var uI = child.GetComponent<Canvas>();
-            //if (uI)
-            //{
-            //    continue;
-            //}
             SetLayerRecursively(child.gameObject, newLayer);
         }
     }

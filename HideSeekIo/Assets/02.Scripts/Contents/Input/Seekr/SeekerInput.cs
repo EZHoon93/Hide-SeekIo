@@ -20,11 +20,6 @@ public class SeekerInput : InputBase
     {
         isAI = this.gameObject.IsValidAI();
     }
-    protected void OnEnable()
-    {
-      
-    }
-
     public override void OnPhotonInstantiate()
     {
         isAttack = false;

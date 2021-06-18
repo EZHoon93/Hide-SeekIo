@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 
-using BehaviorDesigner.Runtime.Tasks;
 
 using UnityEngine;
+using System;
 
 public static class PlayerInfo 
 {

@@ -18,7 +18,9 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback
         var avater = Managers.Resource.Instantiate($"Avater/{avaterId}",this.transform);
         avater.transform.localPosition = Vector3.zero;
         avater.transform.localRotation = Quaternion.Euler(Vector3.zero);
-        avater.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.GetTeam());
+        avater.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
+
+        
 
         //유저자신의 캐릭이라면.
         if (this.IsMyCharacter())
@@ -27,8 +29,15 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback
         }
 
 
+        LayerChange(avater);
         playerController.OnPhotonInstantiate();
     }
+
+    protected virtual void LayerChange(GameObject gameObject )
+    {
+
+    }
+
 
     
 }

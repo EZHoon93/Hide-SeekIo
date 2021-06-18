@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Weapon_Hammer : Weapon
 {
-    [SerializeField] Transform _transform;
+    [SerializeField] Transform _attackRangeUI;
     [SerializeField] float _distance;
     [SerializeField] float _angle = 120;
 
@@ -15,6 +15,7 @@ public class Weapon_Hammer : Weapon
         _attackDelayTime = 0.7f;
         _afterAttackDelayTime = 0.5f;
         _distance = 1.5f;
+        _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
     }
     public override void Attack(Vector2 inputVector)
     {
@@ -42,7 +43,7 @@ public class Weapon_Hammer : Weapon
                 var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
-                    damageable.OnDamage(5, 1, colliders[i].transform.position );
+                    damageable.OnDamage(5, 5, colliders[i].transform.position );
                 }
             }
 
@@ -56,12 +57,12 @@ public class Weapon_Hammer : Weapon
     {
         if (inputVector.sqrMagnitude == 0)
         {
-            _transform.gameObject.SetActive(false);
+            _attackRangeUI.gameObject.SetActive(false);
             return;
         }
-        _transform.position = _seekerAttack.CenterPivot.position;
-        _transform.rotation = UtillGame.WorldRotationByInput(inputVector);
-        _transform.gameObject.SetActive(true);
+        _attackRangeUI.position = _seekerAttack.CenterPivot.position;
+        _attackRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
+        _attackRangeUI.gameObject.SetActive(true);
 
     }
 

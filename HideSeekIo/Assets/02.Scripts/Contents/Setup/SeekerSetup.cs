@@ -16,4 +16,9 @@ public class SeekerSetup : PlayerSetup
     {
         base.OnPhotonInstantiate(info);
     }
+
+    protected override void LayerChange(GameObject gameObject)
+    {
+        Util.SetLayerRecursively(gameObject, (int)Define.Layer.Seeker);
+    }
 }

@@ -112,7 +112,7 @@ public class Define
 
     public enum SeekrStoreList
     {
-        ChangeWeapon    ,   //무기 바꾸기
+        ChangeWeapon    ,   //무기 바꾸기    권총,라이플,저격총,바주카포,미사일탄
         SightCurse, //시야 감소
         DirectionCurse,  // 방향 전환
         SpeedUp,
@@ -133,7 +133,8 @@ public class Define
         Curse,
         BodySlam,
         Hit,
-        Dust
+        Dust,
+        Death
     }
 
     public enum BuffType

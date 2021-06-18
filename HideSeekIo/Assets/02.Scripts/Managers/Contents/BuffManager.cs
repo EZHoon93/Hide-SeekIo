@@ -28,6 +28,7 @@ public class BuffManager : MonoBehaviourPun
     public BuffController MakeBuffController(Transform target)
     {
         var go = Managers.Resource.Instantiate($"Buff/BuffController", target).GetComponent<BuffController>();
+        go.gameObject.SetLayerRecursively(target.gameObject.layer);
         return go;
     }
     //버프 이펙트 생성
@@ -35,6 +36,7 @@ public class BuffManager : MonoBehaviourPun
     {
         if (buffType == Define.BuffType.Null) return null;
         var go = Managers.Resource.Instantiate($"Buff/{buffType.ToString()}",target).GetComponent<BuffBase>();
+        go.gameObject.SetLayerRecursively(target.gameObject.layer);
         return go;
     }
 
@@ -45,15 +47,14 @@ public class BuffManager : MonoBehaviourPun
     /// </summary>
     /// <param name="buffController"></param>
     /// <param name="playerController"></param>
-    public void BuffControllerCheckOnLocal(Define.BuffType buffType, PlayerController playerController)
+    public void BuffControllerCheckOnLocal(Define.BuffType buffType, LivingEntity livingEntity)
     {
-        var buffControllerList = playerController.GetLivingEntity().BuffControllerList;
+        var buffControllerList = livingEntity.BuffControllerList;
         BuffController buffController = buffControllerList.Find(s => s.BuffType == buffType);
         float createServerTime = (float)PhotonNetwork.Time;
         float durationTime = 10;
         if (buffController == null)
         {
-            var livingEntity = playerController.GetLivingEntity();
             buffController = MakeBuffController(livingEntity.transform);
             RegisterBuffControllerOnLivingEntity(buffController,livingEntity);
         }
@@ -66,5 +67,43 @@ public class BuffManager : MonoBehaviourPun
         livingEntity.photonView.ObservedComponents.Add(buffController);
     }
 
-    
+    //Hider 팀 전체에게 버프 적용
+    public void HiderTeamBuffControllerToServer(Define.BuffType buffType, int useSeekrViewID)
+    {
+        photonView.RPC("HiderTeamBuffControllerOnLocal", RpcTarget.All, buffType, useSeekrViewID);
+    }
+
+    [PunRPC]
+    public void HiderTeamBuffControllerOnLocal(Define.BuffType buffType, int useSeekrViewID)
+    {
+        //아이템 사용한술래에게 사용 이펙트
+        var useSeekrPlayer = GameManager.Instance.GetLivingEntity(useSeekrViewID);  //아이템을 사용한 술래
+        if (useSeekrPlayer)
+        {
+            EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, useSeekrPlayer.transform.position);
+        }
+     
+        //방장은 AI에게도 버퍼
+        if (PhotonNetwork.IsMasterClient)
+        {
+            var allLivingEntity = GameManager.Instance.GetAllLivingEntity();
+            print(allLivingEntity.Length+ " + 수");
+            foreach(var livingEntity in allLivingEntity)
+            {
+                if(livingEntity.CompareTag("AI")  && livingEntity.gameObject.layer == (int)Define.Layer.Hider)
+                {
+                    BuffControllerCheckOnLocal(buffType, livingEntity);
+                }
+            }
+        }
+        //로컬조종중인 캐릭에게 버퍼
+        var myPlayer = GameManager.Instance.myPlayer;
+        if (myPlayer)
+        {
+            if (myPlayer.Team == Define.Team.Seek) return;   //술래팀은 적용X
+            BuffControllerCheckOnLocal(buffType, myPlayer.livingEntity);
+        }
+    }
+
+
 }

@@ -17,10 +17,14 @@ public class UI_InGame_Item : MonoBehaviour
 
     void Awake()
     {
-        _button = GetComponent<Button>();
+        _button = GetComponentInChildren<Button>();
         _button.onClick.AddListener(() => Click());
     }
-    
+    private void OnEnable()
+    {
+        _coolTimeImage.enabled = false;
+    }
+
     public void Setup(Sprite sprite, int price, Define.GameItemStateCallBack itemStateCallBack = null)
     {
         _priceText.text = price.ToString();

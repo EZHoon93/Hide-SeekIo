@@ -1,9 +1,9 @@
 ﻿
 using Photon.Pun;
+
 using UnityEngine;
 
 
-[RequireComponent(typeof(HiderInput))]
 [RequireComponent(typeof(HiderController))]
 [RequireComponent(typeof(HiderMove))]
 [RequireComponent(typeof(HiderHealth))]
@@ -18,5 +18,10 @@ public class HiderSetup : PlayerSetup
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
+    }
+
+    protected override void LayerChange(GameObject gameObject)
+    {
+        Util.SetLayerRecursively(gameObject,  (int)Define.Layer.Hider);
     }
 }

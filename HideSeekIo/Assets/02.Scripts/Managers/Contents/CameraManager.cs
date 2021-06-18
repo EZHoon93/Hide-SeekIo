@@ -76,14 +76,38 @@ public class CameraManager : MonoBehaviour
         TargetCamera.Follow = target.transform;
         cameraOffset.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
 
-        if(target.GetTeam() == Define.Team.Hide)
+        if(target.Team == Define.Team.Hide)
         {
-            Camera.main.cullingMask  += (1 << (int)Define.Layer.Hider);
+            Camera.main.cullingMask = -1;
         }
         else
         {
-            Camera.main.cullingMask -= (1 << (int)Define.Layer.Hider);
+            Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider);
         }
+
+
+        if (target.IsMyCharacter() && target.Team == Define.Team.Seek)
+        {
+            StartCoroutine(CameraOffset());
+        }
+
+    }
+
+    IEnumerator CameraOffset()
+    {
+        cameraOffset.m_Offset = new Vector3(0, 0, 6);
+        yield return new WaitForSeconds(3.0f);
+
+        while(cameraOffset.m_Offset.z  >= 0)
+        {
+            Vector3 offset = cameraOffset.m_Offset;
+            offset.z -= Time.deltaTime * 3;
+            cameraOffset.m_Offset = offset;
+            yield return null;
+
+        }
+
+        cameraOffset.m_Offset = Vector3.zero;
 
     }
 

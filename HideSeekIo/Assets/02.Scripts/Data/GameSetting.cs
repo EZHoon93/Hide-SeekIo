@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using BehaviorDesigner.Runtime;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -57,8 +58,10 @@ public class GameSetting : ScriptableObject
 
 
 
-    public RuntimeAnimatorController _hiderAnimatiorController;
-    public RuntimeAnimatorController _seekrAnimatorController;
+    [SerializeField] RuntimeAnimatorController _hiderAnimatiorController;
+    [SerializeField] RuntimeAnimatorController _seekrAnimatorController;
+
+    public ExternalBehaviorTree externalBehavior;
 
     public RuntimeAnimatorController GetRuntimeAnimatorController(Define.Team team)
     {

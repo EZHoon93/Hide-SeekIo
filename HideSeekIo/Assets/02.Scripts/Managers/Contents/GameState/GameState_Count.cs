@@ -132,8 +132,9 @@ public class GameState_Count : GameState_Base
     {
        
         Local_MyPlayerCharacter(0);
+        Master_Creat_AIPlayer(0);
 
-       
+
         Master_ChangeState(Define.GameState.GameReady);
     }
 
@@ -178,7 +179,11 @@ public class GameState_Count : GameState_Base
         //{
         //    _characterManager.CreatePlayer(Define.Team.Human, true, _playerSpawnPoints.spawnPointList[index].position);
         //}
-
+        for(int i = 1; i < 5; i++)
+        {
+            var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(i);
+            GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.AIHider, pos);
+        }
 
     }
 

@@ -120,8 +120,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704dbd758dec2c34daa3401f689224f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transform: {fileID: 6420034648825689662}
+  _attackRangeUI: {fileID: 6420034648825689662}
   _distance: 0
+  _angle: 120
 --- !u!1 &4420109046408193849
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,7 +352,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6420034648825689662}
   m_Layer: 6
-  m_Name: CeneterPivot
+  m_Name: AttackRangeUI Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -20,7 +20,8 @@ public class HiderMove : MoveBase , IMakeRunEffect
     protected CharacterController _characterController;
     //============================= 변수 =============================/
 
-  
+    [SerializeField] float _testSpeed;
+
 
 
     public MoveState State { get => n_moveState; set { n_moveState = value; } }
@@ -49,6 +50,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     protected void FixedUpdate()
     {
+        MoveSpeed = _testSpeed;
         if (photonView.IsMine == false) return;
         if (_humanInput.IsStop)
         {

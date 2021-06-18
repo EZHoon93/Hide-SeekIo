@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 // 생명체로서 동작할 게임 오브젝트들을 위한 뼈대를 제공
 // 체력, 데미지 받아들이기, 사망 기능, 사망 이벤트를 제공
-public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable, IPunInstantiateMagicCallback
-    , IOnPhotonViewPreNetDestroy
+public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
+    
 {
     public int initHealth = 2; // 시작 체력
 
@@ -61,6 +61,12 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable, IPunI
         Health = initHealth;
     }
 
+    public virtual void OnPhotonInstantiate()
+    {
+        if (!GameManager.Instance) return;
+        GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
+    }
+
     // 데미지 처리
     // 호스트에서 먼저 단독 실행되고, 호스트를 통해 다른 클라이언트들에서 일괄 실행됨
     [PunRPC]
@@ -68,8 +74,9 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable, IPunI
     {
         if (photonView.IsMine)
         {
-            print("대미지!!!!!!!!!!!!!!!!!");
             Health -= damage;
+            print("대미지!!!!!!!!!!!!!!!!!" + damage + "/" + Health);
+
             // 다른 클라이언트들도 OnDamage를 실행하도록 함
             //photonView.RPC("OnDamage", RpcTarget.Others, damagerViewId, damage);
 
@@ -107,12 +114,12 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable, IPunI
 
 
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
-    {
-        if (info.photonView.InstantiationData == null) return;
-        if (!GameManager.Instance) return;
-        GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
-    }
+    //public void OnPhotonInstantiate(PhotonMessageInfo info)
+    //{
+    //    if (info.photonView.InstantiationData == null) return;
+    //    if (!GameManager.Instance) return;
+    //    GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
+    //}
 
     public virtual void OnPreNetDestroy(PhotonView rootView)
     {

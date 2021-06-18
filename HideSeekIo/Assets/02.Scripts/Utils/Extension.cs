@@ -32,6 +32,11 @@ public static class Extension
 		}
 	}
 
+	public static int ViewID(this MonoBehaviourPun go)
+	{
+		return go.photonView.ViewID;
+	}
+
 	public static bool IsValidAI(this GameObject go)
 	{
 		return go.CompareTag("AI");

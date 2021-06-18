@@ -21,6 +21,7 @@ public class SeekerAttack : MonoBehaviourPun
     Transform upperSpine;
     Animator _animator;
     [SerializeField] Weapon _weapon;
+    [SerializeField] SeekrRader _seekrRader;
 
     int attackTargetLayer = (1 << (int)Define.Layer.Wall) | (1 << (int)Define.Layer.Item);
     private readonly float initSkillCoolTime = 10;
@@ -41,7 +42,6 @@ public class SeekerAttack : MonoBehaviourPun
     {
         _seekerInput = GetComponent<SeekerInput>();
     }
-
     public void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();

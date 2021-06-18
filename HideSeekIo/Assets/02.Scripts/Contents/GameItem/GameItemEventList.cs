@@ -48,7 +48,8 @@ public static class GameItemEventList
         switch (seekrItemEnum)
         {
             case Define.SeekrStoreList.DirectionCurse:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Direction, seekerController);
+                BuffManager.Instance.HiderTeamBuffControllerToServer(Define.BuffType.Direction, seekerController.ViewID());
+
                 break;
             case Define.SeekrStoreList.SightCurse:
                 break;
