@@ -19,7 +19,7 @@ public class PunPoolManagerBridge : MonoBehaviour, IPunPrefabPool
 
     public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
     {
-        //var go = ObjectPoolManager.instance.Pop_Server(prefabId);
+        print(prefabId + "포톤생성");
         var go = Managers.Resource.Instantiate($"Photon/{prefabId}");
         go.transform.position = position;
         go.transform.rotation = rotation;
@@ -29,11 +29,12 @@ public class PunPoolManagerBridge : MonoBehaviour, IPunPrefabPool
 
     public void Destroy(GameObject gameObject)
     {
-        //var poolable = gameObject.GetComponent<PoolableObject>();
-        //if (poolable)
-        //{
-        //    poolable.Push();
-        //}
+        var onPhotonViewPreNetDestroy = gameObject.GetComponent<IOnPhotonViewPreNetDestroy>();
+        if(onPhotonViewPreNetDestroy != null)
+        {
+            onPhotonViewPreNetDestroy.OnPreNetDestroy(gameObject.GetPhotonView());
+        }
+        Managers.Resource.Destroy(gameObject);
 
         //var photonDestroyList = gameObject.GetComponentsInChildren<IOnPhotonViewPreNetDestroy>();
         //if (photonDestroyList.Length > 0)

@@ -36,7 +36,25 @@ public static class GameItemEventList
     public static Define.InGameItemUIState UseHiderItem(Enum @enum, HiderController hiderController)
     {
 
-        //EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, hiderController.transform.position);
+        var seekrItemEnum = (Define.HiderStoreList)@enum;
+
+        switch (seekrItemEnum)
+        {
+            case Define.HiderStoreList.Trap:
+                GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.Trap, hiderController.transform.position );
+                break;
+            case Define.HiderStoreList.Box:
+                GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.Box, hiderController.transform.position);
+                break;
+            case Define.HiderStoreList.Shoes:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, hiderController.livingEntity);
+
+                break;
+            case Define.HiderStoreList.Speed:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, hiderController.livingEntity);
+
+                break;
+        }
 
         return Define.InGameItemUIState.SucessRecycle;
     }

@@ -5,7 +5,7 @@ using Photon.Pun;
 
 public class SpawnManager 
 {
-    public void PhotonSpawn(Define.PhotonObject photonObject,Vector3 pos )
+    public void PhotonSpawn(Define.PhotonObject photonObject ,Vector3 pos , int itemUseViewID =0  )
     {
 
         switch (photonObject)
@@ -25,6 +25,13 @@ public class SpawnManager
                 }
                 object[] aiData = { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
                 var ai = PhotonNetwork.InstantiateRoomObject(photonObject.ToString(), pos, Quaternion.identity,0,aiData);
+
+                break;
+            case Define.PhotonObject.Box:
+            case Define.PhotonObject.Trap:
+                Debug.Log("생성..."+photonObject.ToString());
+                PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity , 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
+                Debug.Log("생성..2." + photonObject.ToString());
 
                 break;
 

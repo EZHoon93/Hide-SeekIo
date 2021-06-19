@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4447497900404937841}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 7021357773415982314}
   - component: {fileID: 2051923037010665340}
   - component: {fileID: -8597859235497092146}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: UserHider
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 2234931968896036668}
   - component: {fileID: 9084152172438101735}
   - component: {fileID: 4846987685621090090}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fog Of War
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,9 +266,9 @@ MonoBehaviour:
   updateUnits: 1
   updateAutomatically: 1
   outputToTexture: 1
-  partialFogAmount: 0.5
+  partialFogAmount: 0
   fadeInDuration: 0.1
-  fadeOutDuration: 0.1
+  fadeOutDuration: 2
   renderType: 0
   multithreaded: 0
   threads: 2
@@ -299,8 +299,8 @@ MonoBehaviour:
   mesh: {fileID: 0}
   lineOfSightMask:
     serializedVersion: 2
-    m_Bits: 0
-  lineOfSightRaycastCount: 100
+    m_Bits: 1
+  lineOfSightRaycastCount: 36
   lineOfSightPenetration: 0
   lineOfSightRaycastAngle: 360
   lineOfSightRaycastOffset: 0
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 2179629266086338770}
   - component: {fileID: 5868868472932710351}
   - component: {fileID: 5114656290126996045}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CageMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -363,7 +363,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -388,7 +387,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7310981673648580484
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4866826057434215248}
   - component: {fileID: 3686288755755589518}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: MakeRunEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

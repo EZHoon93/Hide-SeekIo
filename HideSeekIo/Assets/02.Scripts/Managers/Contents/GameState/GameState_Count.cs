@@ -144,7 +144,7 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
-            GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserHider, pos);
+            GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserSeeker, pos);
         }
         else
         {

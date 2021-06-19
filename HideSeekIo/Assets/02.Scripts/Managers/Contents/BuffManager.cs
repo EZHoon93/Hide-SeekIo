@@ -28,6 +28,7 @@ public class BuffManager : MonoBehaviourPun
     public BuffController MakeBuffController(Transform target)
     {
         var go = Managers.Resource.Instantiate($"Buff/BuffController", target).GetComponent<BuffController>();
+        go.transform.localPosition = Vector3.zero;
         go.gameObject.SetLayerRecursively(target.gameObject.layer);
         return go;
     }
@@ -36,6 +37,7 @@ public class BuffManager : MonoBehaviourPun
     {
         if (buffType == Define.BuffType.Null) return null;
         var go = Managers.Resource.Instantiate($"Buff/{buffType.ToString()}",target).GetComponent<BuffBase>();
+        go.transform.localPosition = Vector3.zero;
         go.gameObject.SetLayerRecursively(target.gameObject.layer);
         return go;
     }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3213098410887404411}
   - component: {fileID: 6252734812975790574}
   - component: {fileID: 1089376048945214501}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -87,7 +86,7 @@ GameObject:
   - component: {fileID: 4576088469040504177}
   - component: {fileID: 4224753591393540284}
   - component: {fileID: 4999759099237743521}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +156,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
 --- !u!114 &4999759099237743521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +182,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 991523987053287494}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: CeneterPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +224,7 @@ GameObject:
   - component: {fileID: 1999317484807970439}
   - component: {fileID: 2803996618418529021}
   - component: {fileID: 1414930179296680867}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: UserSeeker
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -449,6 +447,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 2777602255200105270}
+  isDectedColor: 0
+  count: 0
 --- !u!135 &1540143626497135518
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -472,7 +472,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2522830787148304924}
   - component: {fileID: 2777602255200105270}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -508,7 +508,6 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -554,7 +553,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7525186177661032026}
   - component: {fileID: 6042519586123245653}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -590,7 +589,6 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -688,10 +686,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1060522894528113130, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1951267332459730509, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
         type: 3}
       propertyPath: m_Name
       value: Hammer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1951267332459730509, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1951267332459730509, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
         type: 3}
@@ -729,6 +737,21 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4420109046408193849, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420892045973079179, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6225116101178768823, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6225958321114001108, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -738,6 +761,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8626148109464717463, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8626148109464717463, guid: e403fad9a8e2d8f4685f1c93dbb473e2,
         type: 3}

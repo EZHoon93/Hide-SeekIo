@@ -40,7 +40,10 @@ public class Define
         UserSeeker,
         UserHider,
         AISeekr,
-        AIHider
+        AIHider,
+        ItemCoin = 20,       //아이템
+        Trap,
+        Box
     }
 
 	
@@ -142,14 +145,18 @@ public class Define
         Hit,
         Dust,
         Death,
-        Coin
+        Coin,
+        CloudBurst,
+        TrapEffect,
     }
 
     public enum BuffType
     {
         Null,
         Direction,
-        Stun
+        Stun,
+        Shoes,
+        Speed
     }
 
     public enum PhotonOnEvent
