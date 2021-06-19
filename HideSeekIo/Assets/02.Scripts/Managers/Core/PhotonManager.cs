@@ -1,10 +1,8 @@
 ﻿
-using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime; // 포톤 서비스 관련 라이브러리
-//using Hashtable = ExitGames.Client.Photon.Hashtable;
-//using System.Collections;
-
+using System;
+using Random = UnityEngine.Random;
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
 
@@ -31,6 +29,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     readonly string _gameVersion = "1.0.0";
     public Define.ServerState State { get; private set; }
+    public event Action<Player> enterUserList;
+    public event Action<Player> leftUserList;
+
 
     bool _isScret;
     string _roomName;
@@ -45,8 +46,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
         }
         DontDestroyOnLoad(this.gameObject);
-        
-
     }
 
     //최초 로그인 후 포톤에 접속시 
@@ -68,6 +67,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
+        print("JoinRoom");
         if (PhotonNetwork.IsConnected)
         {
             if (string.IsNullOrEmpty(_roomName))
@@ -77,7 +77,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             else
             {
                 // 최대 4명을 수용 가능한 빈방을 생성
-                int ran = Random.Range(0, 999);
+                int ran =  Random.Range(0, 999);
                 PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions()
                 {
                     IsVisible = _isScret,
@@ -121,9 +121,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // 룸에 참가 완료된 경우 자동 실행
     public override void OnJoinedRoom()
     {
+        print("OnJoinedRoom");
         //PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
         // 모든 룸 참가자들이 Main 씬을 로드하게 함
-        PhotonNetwork.LoadLevel("Main");
+        Managers.Scene.LoadScene(Define.Scene.Main);
 
     }
 
@@ -147,20 +148,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Managers.UI.SceneUI.GetComponent<UI_Main>().uI_UserList.EnterPlayer(newPlayer);
-        //var chattingUI =  UIManager.instance.GetSingleUI(UI_Single_Base.EzType.Chatting) as UI_Chatting;
-        //chattingUI.UpdateChatting($"{newPlayer.NickName}님이 참가하였습니다.", Color.white); ;
-        //var uiUserList = UIManager.instance.GetSingleUI(UI_Single_Base.EzType.UserList) as UI_UserList;
-        //uiUserList.EnterPlayer(newPlayer);
-
+        enterUserList?.Invoke(newPlayer);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        //var chattingUI = UIManager.instance.GetSingleUI(UI_Single_Base.EzType.Chatting) as UI_Chatting;
-        //chattingUI.UpdateChatting($"{otherPlayer.NickName}님이 나가셨습니다.", Color.white);
-        //var uiUserList = UIManager.instance.GetSingleUI(UI_Single_Base.EzType.UserList) as UI_UserList;
-        //uiUserList.LeftrPlayer(otherPlayer);
+        enterUserList?.Invoke(otherPlayer);
     }
 
     //UI에서 다른채널 찾기 클릭시
@@ -174,8 +167,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     //룸나갈떄 호출
     public override void OnLeftRoom()
     {
-        PhotonNetwork.LoadLevel("Loading");
-        //로딩화면으로 
+        print("OnLeftRoo");
+        Managers.Scene.LoadScene(Define.Scene.Lobby);
+        
     }
 
 

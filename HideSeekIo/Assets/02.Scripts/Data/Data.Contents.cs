@@ -15,12 +15,12 @@ namespace Data
     [Serializable]
     public class InGameStatData : ILoader<string, InGameStat>
     {
-		public List<InGameStat> inGameStats = new List<InGameStat>();
+		public List<InGameStat> inGameitems = new List<InGameStat>();
         public Dictionary<string, InGameStat> MakeDict()
         {
 			Dictionary<string, InGameStat> dict = new Dictionary<string, InGameStat>();
 
-			foreach (InGameStat inGameStat in inGameStats)
+			foreach (InGameStat inGameStat in inGameitems)
 				dict.Add(inGameStat.key, inGameStat);
 
 			return dict;

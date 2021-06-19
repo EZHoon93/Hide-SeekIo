@@ -6,34 +6,50 @@ using UnityEngine;
 public class SeekrRader : MonoBehaviour
 {
     [SerializeField] SpriteRenderer _spriteRenderer;
-    HashSet<GameObject> _detectedHash = new HashSet<GameObject>();  //탐지된 객체
+    HashSet<LivingEntity> _detectedHash = new HashSet<LivingEntity>();  //탐지된 객체
 
-    bool isDectedColor;
+    [SerializeField] bool isDectedColor;
     IEnumerator _enumerator;
+    [SerializeField] int count;
     private void OnEnable()
     {
-        _spriteRenderer.enabled = false;
+        Clear();
         Util.StartCoroutine(this, ref  _enumerator, RaderUpdate());
+    }
+    void Clear()
+    {
+        _spriteRenderer.enabled = false;
+        foreach (var d in _detectedHash)
+        {
+            d.onDeath -= () => enemyDie(d);
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (_detectedHash.Contains(other.gameObject) == false)
-        {
-            _detectedHash.Add(other.gameObject);
-            UpdateSprte();
-        }
+        var livingEntity =  other.GetComponent<LivingEntity>();
+        _detectedHash.Add(livingEntity);
+        livingEntity.onDeath += () => enemyDie(livingEntity) ;
+        UpdateSprte();
     }
     private void OnTriggerExit(Collider other)
     {
-        if (_detectedHash.Contains(other.gameObject))
-        {
-            _detectedHash.Remove(other.gameObject);
-            UpdateSprte();
-        }
+        var livingEntity = other.GetComponent<LivingEntity>();
+        livingEntity.onDeath -= () => enemyDie(livingEntity);
+        _detectedHash.Remove(livingEntity);
+        UpdateSprte();
+        
+    }
+
+    void enemyDie(LivingEntity livingEntity)
+    {
+        livingEntity.onDeath -= UpdateSprte;
+        _detectedHash.Remove(livingEntity);
+        UpdateSprte();
     }
 
     void UpdateSprte()
     {
+        count = _detectedHash.Count;
         if (_detectedHash.Count > 0)
         {
             if (isDectedColor) return;

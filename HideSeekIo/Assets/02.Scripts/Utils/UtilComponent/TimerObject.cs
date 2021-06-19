@@ -10,7 +10,6 @@ public class TimerObject : MonoBehaviour
     private void Awake()
     {
         _poolable =  GetComponent<Poolable>();
-
     }
 
     private void OnEnable()

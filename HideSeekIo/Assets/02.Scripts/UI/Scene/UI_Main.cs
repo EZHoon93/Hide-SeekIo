@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
-
+using Photon.Realtime;
 
 public class UI_Main : UI_Scene
 {
@@ -12,7 +12,8 @@ public class UI_Main : UI_Scene
     {
         Chatting,
         InGameStore,
-        UserList
+        UserList_Lobby,
+        UserList_Game
     }
 
     enum Panels
@@ -29,7 +30,13 @@ public class UI_Main : UI_Scene
         Setting,
         ChangeChannel,
         QuickChannel,
-        Server
+        ChangeServer,
+        Avater,
+        Weapon,
+        Etc,
+        UserListButton,
+        AppExit
+            
     }
 
     public enum TextMeshProUGUIs
@@ -44,7 +51,6 @@ public class UI_Main : UI_Scene
     }
 
 
-    public UI_UserList uI_UserList => Get<GameObject>((int)GameObjects.UserList).GetComponent<UI_UserList>();
     public UI_InGameStore InGameStore => Get<GameObject>((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
 
     public TextMeshProUGUI CountDown => Get<TextMeshProUGUI>((int)TextMeshProUGUIs.CountDown).GetComponent<TextMeshProUGUI>();
@@ -60,14 +66,23 @@ public class UI_Main : UI_Scene
         Bind<Transform>(typeof(Panels));
 
 
-        
-        Get<Button>((int)Buttons.GameJoin).gameObject.BindEvent((PointerEventData) => { ChangePanel(Define.GameScene.Game); });
-        Get<Button>((int)Buttons.GameExit).gameObject.BindEvent((PointerEventData) => { Managers.UI.ShowPopupUI<UI_GameExit>(); });
+        GetButton((int)Buttons.GameExit).gameObject.BindEvent(OnGameExit_ButtonClicked);
+        GetButton((int)Buttons.GameJoin).gameObject.BindEvent(OnGameJoin_ButtonClicked);
+        GetButton((int)Buttons.Setting).gameObject.BindEvent(OnSetting_ButtonClicked);
+        GetButton((int)Buttons.ChangeChannel).gameObject.BindEvent(OnChangeChannel_ButtonClicked);
+        GetButton((int)Buttons.QuickChannel).gameObject.BindEvent(OnQuickChangeChannel_ButtonClicked);
+        GetButton((int)Buttons.ChangeServer).gameObject.BindEvent(OnChangeServer_ButtonClicked);
+        GetButton((int)Buttons.Avater).gameObject.BindEvent(OnAvaterStore_ButtonClicked);
+        GetButton((int)Buttons.Weapon).gameObject.BindEvent(OnWeaponStore_ButtonClicked);
+        GetButton((int)Buttons.Etc).gameObject.BindEvent(OnEtcStore_ButtonClicked);
+        GetButton((int)Buttons.UserListButton).gameObject.BindEvent(OnUserListGame_ButtonClicked);
+        GetButton((int)Buttons.AppExit).gameObject.BindEvent(OnAppExit_ButtonClicked);
+
 
         GetObject((int)GameObjects.InGameStore).SetActive(false);
+        GetObject((int)GameObjects.UserList_Game).SetActive(false);
 
         ChangePanel(Define.GameScene.Lobby);
-
     }
 
     public void ChangePanel(Define.GameScene selectGameType)
@@ -87,5 +102,71 @@ public class UI_Main : UI_Scene
         return GetText((int)textType);
     }
 
+    #region OnButtonCliied  PopUp Event
+
+    void OnGameExit_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_GameExit>();
+    }
+
+    void OnGameJoin_ButtonClicked(PointerEventData data)
+    {
+        GameManager.Instance.GameJoin();
+        ChangePanel(Define.GameScene.Game);
+    }
+
+    void OnChangeChannel_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_ChangeChannel>();
+
+
+    }
+
+    void OnQuickChangeChannel_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_QuickChangeChannel>();
+
+
+    }
+
+    void OnChangeServer_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_ChangeServer>();
+
+
+    }
+
+    public void OnSetting_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_Setting>();
+
+    }
+
+    public void OnAvaterStore_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_AvaterStore>();
+
+    }
+
+    public void OnEtcStore_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_EtcStore>();
+
+    }
+
+    public void OnWeaponStore_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_WeaponStore>();
+    }
+
+    public void OnUserListGame_ButtonClicked(PointerEventData data)
+    {
+        //GetObject((int)GameObjects.UserList_Game).SetActive(true);
+    }
+    public void OnAppExit_ButtonClicked(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_AppExit>();
+    }
+    #endregion
 
 }

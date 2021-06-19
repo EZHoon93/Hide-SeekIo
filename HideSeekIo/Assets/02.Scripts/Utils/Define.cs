@@ -57,7 +57,7 @@ public class Define
         Unknown,
         Login,
         Lobby = 10,
-        Game,
+        Main,
     }
     public enum GameScene
     {
@@ -107,7 +107,15 @@ public class Define
 
     public enum HiderStoreList
     {
+        Trap,
+        Heal,
+        Shoes,
+        Box,
+        MaxHp,
+        Grenade,
+        Stone,
         Speed
+
     }
 
     public enum SeekrStoreList
@@ -115,10 +123,9 @@ public class Define
         ChangeWeapon    ,   //무기 바꾸기    권총,라이플,저격총,바주카포,미사일탄
         SightCurse, //시야 감소
         DirectionCurse,  // 방향 전환
-        SpeedUp,
-        DamageUp,
+        Speed,
+        Damage,
         Immune, // 방해효과 면역
-        WeaponUpgrade,
     }
 
     public enum InGameItemUIState
@@ -134,7 +141,8 @@ public class Define
         BodySlam,
         Hit,
         Dust,
-        Death
+        Death,
+        Coin
     }
 
     public enum BuffType

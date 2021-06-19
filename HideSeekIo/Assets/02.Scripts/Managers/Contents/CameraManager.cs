@@ -3,6 +3,7 @@ using System.Collections;
 
 using Cinemachine;
 
+using FoW;
 
 using UnityEngine;
 
@@ -44,7 +45,7 @@ public class CameraManager : MonoBehaviour
 
     public Transform mapCenter;
 
-
+    FogOfWarLegacy _fogOfWarLegacy;
 
 
     private void Awake()
@@ -64,7 +65,9 @@ public class CameraManager : MonoBehaviour
         virtualCameraNoise = TargetCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         ShakeCameraOff();
 
-
+        _fogOfWarLegacy = Camera.main.GetComponent<FogOfWarLegacy>();
+        _fogOfWarLegacy.team = 0;
+        _fogOfWarLegacy.enabled = true;
     }
 
 
@@ -79,10 +82,12 @@ public class CameraManager : MonoBehaviour
         if(target.Team == Define.Team.Hide)
         {
             Camera.main.cullingMask = -1;
+            _fogOfWarLegacy.team = target.ViewID();
         }
         else
         {
             Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider);
+
         }
 
 

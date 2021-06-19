@@ -25,7 +25,6 @@ public class HiderInput_AI : HiderInput
     }
     void SetActiveComponent(bool active)
     {
-        print(active + "??");
         _agent.enabled = active;
         _behaviorTree.enabled = active;
     }
@@ -41,7 +40,7 @@ public class HiderInput_AI : HiderInput
         //    UpdateStopState();
         //    return;
         //}
-        if(_agent.remainingDistance < 0.2f)
+        if(_agent.remainingDistance <= 0.2f)
         {
             MoveVector = Vector2.zero;
         }

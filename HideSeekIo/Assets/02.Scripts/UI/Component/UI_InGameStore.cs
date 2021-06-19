@@ -30,31 +30,30 @@ public class UI_InGameStore : MonoBehaviour
             case Define.Team.Seek:
                 print("Seeker Setup InGameStore");
                 type = typeof(Define.SeekrStoreList);
+
                 break;
         }
 
-        MakeItemList(itemPrefab, type);
+        MakeSeekrItemList(itemPrefab, type);
 
         this.gameObject.SetActive(true);
     }
 
-    void MakeItemList(UI_InGame_Item prefab, Type type)
+    void MakeSeekrItemList(UI_InGame_Item prefab, Type type)
     {
         foreach (var e in Enum.GetValues(type))
         {
-            Enum newType = (Enum)e;
-            if (Managers.Data.InGameItemDict.ContainsKey(newType.ToString()) == false)   //데이터 없다면..생성x
-                continue;
-
-            print(prefab.gameObject.name);
-
+            Enum itemEnum = (Enum)e;
+            string itemName = Enum.GetName(type, itemEnum);
+            if (Managers.Data.InGameItemDic[type].ContainsKey(itemName) ==false) continue;
             var go = Instantiate(prefab, _content);
-            var price = Managers.Data.InGameItemDict[newType.ToString()].price;
-            var sprite = Managers.Resource.Load<Sprite>($"Sprites/InGameItem/{newType.ToString()}");
-            Define.GameItemStateCallBack itemEvent = () => GameItemEventList.BuyItem(newType, GameManager.Instance.myPlayer);   //버튼클릭시 성공여부
+            var price = Managers.Data.InGameItemDic[type][itemName].price;
+            var sprite = Managers.Resource.Load<Sprite>($"Sprites/InGameItem/{type.Name}/{itemName}");
+            Define.GameItemStateCallBack itemEvent = () => GameItemEventList.BuyItem(itemEnum, GameManager.Instance.myPlayer);   //버튼클릭시 성공여부
             go.transform.localPosition = Vector3.zero;
             go.Setup(sprite, price, itemEvent); //셋업,이미지,가격,콜백함수
         }
     }
+
     
 }

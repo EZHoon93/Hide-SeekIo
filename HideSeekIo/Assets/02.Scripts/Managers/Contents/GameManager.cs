@@ -141,6 +141,14 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     {
         //UIM
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "Join", true } });
+    }
+    public void GameExit()
+    {
+        if(myPlayer)
+        {
+            PhotonNetwork.Destroy(myPlayer.gameObject);
+        }
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "Join", false } });
 
     }
 

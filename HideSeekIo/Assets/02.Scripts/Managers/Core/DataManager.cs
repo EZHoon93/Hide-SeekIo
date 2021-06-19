@@ -2,27 +2,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Data;
 public interface ILoader<Key, Value>
 {
     Dictionary<Key, Value> MakeDict();
 }
 
+public class InGameStore
+{
+
+}
+
 public class DataManager
 {
     public Define.GameDataState State { get; private set; }
-    public Dictionary<int, Data.Stat> StatDict { get; private set; } = new Dictionary<int, Data.Stat>();
+    public Dictionary<int, Stat> StatDict { get; private set; } = new Dictionary<int, Data.Stat>();
 
-    public Dictionary<string, Data.InGameStat> InGameItemDict { get; private set; } = new Dictionary<string, Data.InGameStat>();
+    Dictionary<string, InGameStat> InGameHiderItems = new Dictionary<string, InGameStat>();
+    Dictionary<string, InGameStat> inGameSeekrItems = new Dictionary<string, InGameStat>();
+
+    public Dictionary<Type, Dictionary<string, InGameStat>> InGameItemDic = new Dictionary<Type, Dictionary<string, InGameStat>>();
+
 
     public void Init()
     {
-        StatDict = LoadJson<Data.StatData, int, Data.Stat>("StatData").MakeDict();
+        StatDict = LoadJson<StatData, int, Stat>("StatData").MakeDict();
 
-        InGameItemDict = LoadJson<Data.InGameStatData, string, Data.InGameStat>("InGameStatData").MakeDict();
+        InGameHiderItems = LoadJson<InGameStatData, string, InGameStat>("InGameHider").MakeDict();
 
-        Debug.Log(InGameItemDict.Count);
-        Debug.Log(StatDict.Count);
+        inGameSeekrItems = LoadJson<InGameStatData, string, InGameStat>("InGameSeeker").MakeDict();
+   
+    
+        InGameItemDic.Add( typeof(Define.HiderStoreList), InGameHiderItems);
+        InGameItemDic.Add(typeof(Define.SeekrStoreList) , inGameSeekrItems);
+
+    
+        foreach(var s in InGameItemDic[typeof(Define.SeekrStoreList) ] )
+        {
+            Debug.Log(s.Key.ToString());
+        }
+
+        Debug.Log(InGameItemDic[typeof(Define.SeekrStoreList)]["Speed"] + "whasssssss");
+
+
 
         State = Define.GameDataState.Load;
 

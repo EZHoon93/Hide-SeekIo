@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
+using Photon.Pun;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,13 +13,13 @@ public class SceneManagerEx
 	public void LoadScene(Define.Scene type)
     {
         Managers.Clear();
-        if((int)type <= 10)
+        if ((int)type <= 10)
         {
             SceneManager.LoadScene(GetSceneName(type));
         }
         else
         {
-            //
+            PhotonNetwork.LoadLevel(GetSceneName(type));
         }
     }
 

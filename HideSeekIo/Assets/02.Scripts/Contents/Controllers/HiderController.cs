@@ -46,8 +46,16 @@ public class HiderController : PlayerController
         {
             
         }
-
     }
 
-   
+    private void OnTriggerEnter(Collider other)
+    {
+        var enterTrigger = other.gameObject.GetComponent<IEnterTrigger>();
+        if(enterTrigger != null)
+        {
+            enterTrigger.Enter(this.gameObject);
+        }
+    }
+
+
 }

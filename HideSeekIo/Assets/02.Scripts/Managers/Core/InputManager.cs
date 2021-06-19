@@ -139,7 +139,7 @@ public class InputManager : MonoBehaviour
     public void SetActiveHiderController(bool isAcitve)
     {
         _moveJoystick.gameObject.SetActive(isAcitve);
-        _attackJoystick.gameObject.SetActive(false);
+        _attackJoystick.gameObject.SetActive(isAcitve);
         _skillJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(isAcitve);
     }

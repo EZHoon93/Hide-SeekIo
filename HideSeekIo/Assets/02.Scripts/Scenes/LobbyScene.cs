@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class LobbyScene : MonoBehaviour
+public class LobbyScene : BaseScene
 {
+    public override void Clear()
+    {
 
+    }
 
     private IEnumerator Start()
     {

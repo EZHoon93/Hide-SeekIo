@@ -16,7 +16,7 @@ public class GameScene : BaseScene
     protected override void Init()
     {
         base.Init();
-        SceneType = Define.Scene.Game;
+        SceneType = Define.Scene.Main;
         Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
         GameManager.Instance.CurrentGameScene = this;
 
