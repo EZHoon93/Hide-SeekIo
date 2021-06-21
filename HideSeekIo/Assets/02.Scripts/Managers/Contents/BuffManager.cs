@@ -60,13 +60,19 @@ public class BuffManager : MonoBehaviourPun
             buffController = MakeBuffController(livingEntity.transform);
             RegisterBuffControllerOnLivingEntity(buffController,livingEntity);
         }
-        buffController.Setup(buffType, createServerTime, durationTime);
+        buffController.Setup(buffType, livingEntity, createServerTime, durationTime);
     }
     //최초 버프 생성시 로컬 및 서버에 사용
     public void RegisterBuffControllerOnLivingEntity(BuffController buffController , LivingEntity livingEntity)
     {
         livingEntity.BuffControllerList.Add(buffController);
         livingEntity.photonView.ObservedComponents.Add(buffController);
+    }
+
+    public void UnRegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)
+    {
+        livingEntity.BuffControllerList.Remove(buffController);
+        livingEntity.photonView.ObservedComponents.Remove(buffController);
     }
 
     //Hider 팀 전체에게 버프 적용
@@ -82,14 +88,13 @@ public class BuffManager : MonoBehaviourPun
         var useSeekrPlayer = GameManager.Instance.GetLivingEntity(useSeekrViewID);  //아이템을 사용한 술래
         if (useSeekrPlayer)
         {
-            EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, useSeekrPlayer.transform.position);
+            EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, useSeekrPlayer.transform.position,0);
         }
      
         //방장은 AI에게도 버퍼
         if (PhotonNetwork.IsMasterClient)
         {
             var allLivingEntity = GameManager.Instance.GetAllLivingEntity();
-            print(allLivingEntity.Length+ " + 수");
             foreach(var livingEntity in allLivingEntity)
             {
                 if(livingEntity.CompareTag("AI")  && livingEntity.gameObject.layer == (int)Define.Layer.Hider)
@@ -104,6 +109,8 @@ public class BuffManager : MonoBehaviourPun
         {
             if (myPlayer.Team == Define.Team.Seek) return;   //술래팀은 적용X
             BuffControllerCheckOnLocal(buffType, myPlayer.livingEntity);
+            EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, myPlayer.transform.position, 1);
+
         }
     }
 

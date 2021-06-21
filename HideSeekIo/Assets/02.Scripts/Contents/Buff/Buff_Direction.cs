@@ -1,29 +1,26 @@
 ﻿using System.Collections;
 
+using FoW;
+
 using UnityEngine;
 
 
 public class Buff_Direction : BuffBase
 {
-    protected override void ProcessEnd()
+    InputBase _InputBase;
+
+    public override void ProcessStart()
     {
-        throw new System.NotImplementedException();
-    }
+        _InputBase = _buffController.livingEntity.GetComponent<InputBase>();
+        if (_InputBase == null) return;
 
-    protected override void ProcessStart()
+        float x = Random.Range(-1.0f, 1.0f);
+        float y = Random.Range(-1.0f, 1.0f);
+        _InputBase.RandomVector2 = new Vector2(x, y);
+    }
+    public override void ProcessEnd()
     {
-        throw new System.NotImplementedException();
+        _InputBase.RandomVector2 = Vector2.one;
     }
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+  
 }

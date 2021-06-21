@@ -26,6 +26,121 @@ public static class UtillGame
         var origanlAngle = GetAngleY(vector2);
         var camerAngle = Camera.main.transform.eulerAngles.y;
 
-        return Quaternion.Euler(0, 90 - origanlAngle + camerAngle, 0);
+        return Quaternion.Euler(0, -( 90  + origanlAngle) , 0);
+        //return Quaternion.Euler(0, 90 - origanlAngle + camerAngle, 0);
+    }
+
+    public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform)
+    {
+      
+        //_attackRangeUI.position = _newAttacker.CenterPivot.position;
+        Vector3 pos = pivotTransform.transform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance;
+        pos.y = 0;
+
+        return pos;
+        
+    }
+
+    public static void ThrowZoom(Vector2 inputVector2, float distance , Transform pivorTransform, Transform zoomObject)
+    {
+        if (inputVector2.sqrMagnitude == 0)
+        {
+            zoomObject.gameObject.SetActive(false);
+            return;
+        }
+        var pos = GetThrowPosion(inputVector2, distance, pivorTransform);
+        zoomObject.position = pos;
+        zoomObject.gameObject.SetActive(true);
+    }
+
+    public static void ZoomByLinerender()
+    {
+        //if (inputVector.sqrMagnitude == 0)
+        //{
+        //    zoomLineRenderer.enabled = false;
+        //    //playerUI.GetDamageUI().gameObject.SetActive(false);
+        //    return;
+        //}
+        //var ve = this.transform.position;
+        //ve.y = 4;
+        //Plane playerPlane = new Plane(Vector3.up*3, ve);
+        //Vector3 theArc;
+        //Vector3 center;
+        //Vector3 targetPoint;
+        //var temp = new Vector3(inputVector.x, 0, inputVector.y);  //direct 변환을 위해 사용
+        ////_newAttacker.CenterPivot.localPosition = inputVector.normalized * 0.4f;
+        //var target = this.transform.position + (temp * 5); //타겟범위
+        //float hitdist; // out 값.
+
+        ////레이캐스트
+        //Ray ray = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(target));
+        //targetPoint = Vector3.zero;
+        //if (playerPlane.Raycast(ray, out hitdist))
+        //{
+        //    targetPoint = ray.GetPoint(hitdist);
+        //    center = (_newAttacker.CenterPivot.position + targetPoint) * 0.5f;
+        //    center.y -= 0.5f + y;
+        //    RaycastHit hitInfo;
+        //    if (Physics.Linecast(_newAttacker.CenterPivot.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Wall))
+        //    {
+        //        targetPoint = hitInfo.point;
+        //    }
+        //}
+        //else
+        //{
+        //    targetPoint = this.transform.position;
+        //    center = Vector3.zero;
+        //}
+        ////targetPoint.y = 0;
+        ////playerUI.UpdateDamageUI(targetPoint, 5);   //타겟 위치 UI 표시
+        //print(targetPoint);
+        //Vector3 RelCenter = _newAttacker.CenterPivot.position - center;
+        //Vector3 aimRelCenter = targetPoint - center;
+        //for (float index = 0.0f, interval = -0.0417f; interval < 1.0f;)
+        //{
+        //    theArc = Vector3.Slerp(RelCenter, aimRelCenter, interval += 0.0417f);
+        //    zoomLineRenderer.SetPosition((int)index++, theArc + center);
+        //}
+        //var s = targetPoint;
+        //s.y = 0;
+        //zoomLineRenderer.SetPosition(24, s);
+
+
+        //zoomLineRenderer.enabled = true;
+    }
+
+    //public static void ThrowObject(Vector3 startPoint, Vector3 endPoint, float arriveMinTime, float addTimeByDistance, float arriveMaxTime)
+    //{
+
+    //}
+
+    //public static void UpdateUserMoveInput(ref Vector2 moveVector)
+    //{
+    //    moveVector = InputManager.Instacne.MoveVector;
+    //}
+    public static void UpdateUserAttackInput(ref Vector2 attackVector,ref Vector2 lastattackVector , ref bool isAttack)
+    {
+        if (InputManager.Instacne.AttackTouch)
+        {
+            attackVector = InputManager.Instacne.AttackVector;
+            isAttack = true;
+            if (attackVector.sqrMagnitude == 0)
+            {
+                isAttack = false;
+            }
+        }
+        else
+        {
+            if (isAttack)
+            {
+                lastattackVector = attackVector;
+                isAttack = false;
+            }
+            else
+            {
+                attackVector = Vector2.zero;
+                lastattackVector = Vector2.zero;
+            }
+        }
     }
 }

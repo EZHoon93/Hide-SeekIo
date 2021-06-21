@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 846982008174908179}
   - component: {fileID: -6303212204331044433}
+  - component: {fileID: -7766887316501936390}
   m_Layer: 0
   m_Name: BuffController
   m_TagString: Untagged
@@ -43,8 +44,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4655876056394d24ca658d3dec197ed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  n_buffType: 0
   _durationTime: 0
   _createServerTime: 0
-  isUsing: 0
-  _BuffBase: {fileID: 0}
+  _buffBase: {fileID: 0}
+--- !u!114 &-7766887316501936390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2212322799334236837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2e5580886343041a5e74b1712b0682, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsUsing: 0

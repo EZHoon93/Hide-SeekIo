@@ -81,12 +81,12 @@ public class CameraManager : MonoBehaviour
 
         if(target.Team == Define.Team.Hide)
         {
-            Camera.main.cullingMask = -1;
+            Camera.main.cullingMask = ~( 1 << (int)Define.Layer.UI); 
             _fogOfWarLegacy.team = target.ViewID();
         }
         else
         {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider);
+            Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider | 1 <<(int)Define.Layer.UI);
 
         }
 

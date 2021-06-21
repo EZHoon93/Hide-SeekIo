@@ -35,6 +35,15 @@ public class Define
     {
        
     }
+    public enum Weapon
+    {
+        Hammer = 1,
+
+        Stone = 50,
+        Grenade,
+
+        Sniper = 100
+    }
     public enum PhotonObject
     {
         UserSeeker,
@@ -49,7 +58,8 @@ public class Define
 	
     public enum Layer
     {
-        Seeker = 6,
+        UI = 5,
+        Seeker = 8,
         Hider,
         Wall,
         Item
@@ -111,14 +121,11 @@ public class Define
     public enum HiderStoreList
     {
         Trap,
-        Heal,
+        Shield,
         Shoes,
         Box,
-        MaxHp,
         Grenade,
-        Stone,
         Speed
-
     }
 
     public enum SeekrStoreList
@@ -148,6 +155,8 @@ public class Define
         Coin,
         CloudBurst,
         TrapEffect,
+        BuffEffect,
+        GrenadeEffect
     }
 
     public enum BuffType
@@ -156,10 +165,11 @@ public class Define
         Direction,
         Stun,
         Shoes,
-        Speed
+        Speed,
+        Shield
     }
 
-    public enum PhotonOnEvent
+    public enum PhotonOnEventCode
     {
          AbilityCode = 111
     }

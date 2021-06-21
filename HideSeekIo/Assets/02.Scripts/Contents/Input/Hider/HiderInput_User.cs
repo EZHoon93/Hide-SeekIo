@@ -13,7 +13,6 @@ public class HiderInput_User : HiderInput
             InputManager.Instacne.SetActiveHiderController(true);
         }
     }
-
     protected override void HandleDeath()
     {
         if (photonView.IsMine)
@@ -25,9 +24,6 @@ public class HiderInput_User : HiderInput
     {
         OnUpdate();
     }
-
-    
-
     public void OnUpdate()
     {
         if (IsStop)
@@ -37,5 +33,21 @@ public class HiderInput_User : HiderInput
         }
         MoveVector = InputManager.Instacne.MoveVector;
         IsRun = InputManager.Instacne.IsRun;
+        UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
+    }
+
+
+    //스탑 상태에서 발생
+    protected void UpdateStopState()
+    {
+        if (_stopTime > 0)
+        {
+            _stopTime -= Time.deltaTime;
+            MoveVector = Vector2.zero;
+        }
+        else
+        {
+            IsStop = false;
+        }
     }
 }

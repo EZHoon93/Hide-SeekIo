@@ -18,6 +18,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     protected HiderInput _humanInput;
     protected CharacterController _characterController;
+    protected HiderAttack _hiderAttack;
     //============================= 변수 =============================/
 
     [SerializeField] float _testSpeed;
@@ -34,6 +35,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
     {
         _humanInput = GetComponent<HiderInput>();
         _characterController = GetComponent<CharacterController>();
+        _hiderAttack = GetComponent<HiderAttack>();
     }
 
     public override void OnPhotonInstantiate()
@@ -57,10 +59,29 @@ public class HiderMove : MoveBase , IMakeRunEffect
             _animator.SetFloat("Speed", -0.1f);
             return;
         }
-        // Stop 상태가 아니라면 진행
-        UpdateRotate(_humanInput.MoveVector);
-        UpdateMove(_humanInput.MoveVector, _humanInput.IsRun);
-        UpdateAnimation();
+
+        switch (_hiderAttack.State)
+        {
+            case HiderAttack.state.Idle:
+                // Stop 상태가 아니라면 진행
+                UpdateRotate(_humanInput.MoveVector);
+                UpdateMove(_humanInput.MoveVector, _humanInput.IsRun);
+                UpdateAnimation();
+                break;
+            case HiderAttack.state.Attack:
+                var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+                var temp = new Vector3(_hiderAttack.AttackTargetDirection.x, 0, _hiderAttack.AttackTargetDirection.z).normalized;
+                var newDirection = quaternion * temp;
+                Quaternion newRotation = Quaternion.LookRotation(newDirection);
+                this.transform.rotation = newRotation;
+                print(_hiderAttack.AttackTargetDirection + "/" + newDirection);
+                UpdateAnimation();
+                break;
+
+        }
+
+     
+  
     }
 
     protected virtual void UpdateMove(Vector2 inputMoveVector2, bool isRun)

@@ -41,7 +41,6 @@ public abstract class PlayerController : MonoBehaviourPun
             mainSceneUI.InGameStore.Setup(Team);
             CoinChangeEvent = mainSceneUI.InGameStore.UpdateCoinText; ; //코인 변경 이벤트
         }
-
         Coin = 300;   //모든 플레이어 캐릭들은 코인 0으로시작
 
         StartCoroutine(AddCoinByTime());

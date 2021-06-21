@@ -42,6 +42,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
             {
                 var buffController = BuffManager.Instance.MakeBuffController(this.transform);
                 //BuffControllerList.Add(ref buffController);
+                print(buffCount + "버프카운트수 ");
                 //this.photonView.ObservedComponents.Add(buffController.photonView);
                 BuffManager.Instance.RegisterBuffControllerOnLivingEntity(buffController, this);
             }

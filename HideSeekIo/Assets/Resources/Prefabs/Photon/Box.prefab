@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3258904767462849219}
   - component: {fileID: 4741452659893154870}
   - component: {fileID: 6072221586794612936}
-  m_Layer: 0
+  - component: {fileID: 3191662937947749475}
+  m_Layer: 9
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2742513717773684176}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.587007, y: -0.52097225, z: -0.056505203}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7478601381727317534}
@@ -67,6 +68,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0e253b909ea64c4eb1716d785de3639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &3191662937947749475
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2742513717773684176}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.35, z: 0}
 --- !u!1 &3576713445037069175
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +92,7 @@ GameObject:
   - component: {fileID: 3582145813096489479}
   - component: {fileID: 3590001062690121859}
   - component: {fileID: 3599714688556403641}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SM_Primitive_Cube_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +169,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7478601381727317534}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,7 +184,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5349353473242379778}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3582145813096489479}

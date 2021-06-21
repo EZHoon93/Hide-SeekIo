@@ -20,7 +20,7 @@ public class WorildItem_Coin : MonoBehaviour , IEnterTrigger
         enabled = false;
         transform.DOShakeScale(_shakeScaleDuration);
         transform.DOScale(Vector3.zero, _hideScaleDuration).SetDelay(_shakeScaleDuration);
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Coin, this.transform.position);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.Coin, this.transform.position, 0 );
 
 
     }

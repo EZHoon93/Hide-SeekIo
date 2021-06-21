@@ -5,16 +5,27 @@ using UnityEngine;
 
 public class SeekrRader : MonoBehaviour
 {
+    LivingEntity _myLivingEntity;
     [SerializeField] SpriteRenderer _spriteRenderer;
     HashSet<LivingEntity> _detectedHash = new HashSet<LivingEntity>();  //탐지된 객체
-
     [SerializeField] bool isDectedColor;
     IEnumerator _enumerator;
     [SerializeField] int count;
+
+    private void Awake()
+    {
+        _myLivingEntity = GetComponentInParent<LivingEntity>();
+    }
     private void OnEnable()
     {
         Clear();
         Util.StartCoroutine(this, ref  _enumerator, RaderUpdate());
+
+        Color color2 = Color.white;
+        color2.a = 0.2f;
+        _spriteRenderer.color = color2;
+        isDectedColor = false;
+
     }
     void Clear()
     {
@@ -27,6 +38,7 @@ public class SeekrRader : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var livingEntity =  other.GetComponent<LivingEntity>();
+        if (_myLivingEntity == livingEntity) return;
         _detectedHash.Add(livingEntity);
         livingEntity.onDeath += () => enemyDie(livingEntity) ;
         UpdateSprte();
@@ -34,6 +46,7 @@ public class SeekrRader : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         var livingEntity = other.GetComponent<LivingEntity>();
+        if (_myLivingEntity == livingEntity) return;
         livingEntity.onDeath -= () => enemyDie(livingEntity);
         _detectedHash.Remove(livingEntity);
         UpdateSprte();
@@ -63,7 +76,7 @@ public class SeekrRader : MonoBehaviour
         {
             if (!isDectedColor) return;
             Color color2 = Color.white;
-            color2.a = 0.5f;
+            color2.a = 0.2f;
             _spriteRenderer.color = color2;
             isDectedColor = false;
         }

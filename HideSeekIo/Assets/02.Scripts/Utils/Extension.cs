@@ -46,4 +46,9 @@ public static class Extension
 	{
 		Util.SetLayerRecursively(go, newLayer);
 	}
+
+	public static bool CheckCreateTime(this MonoBehaviourPun go, float createTime)
+    {
+		return PhotonNetwork.Time <= createTime + 1 ? true : false;
+	}
 }

@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class MakeRunEffect : MonoBehaviour
 {
-    IMakeRunEffect makeHearEffect;
+    IMakeRunEffect _makeRunEffect;
     float lastTime;
     [SerializeField] float timeBiet;
 
-
     private void Awake()
     {
-        makeHearEffect = GetComponentInParent<IMakeRunEffect>();
+        _makeRunEffect =  this.GetComponentInParent<IMakeRunEffect>();
+        GetComponentInParent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
     }
 
-    private void OnEnable()
+    void OnPhotonInstantiate()
     {
+        this.gameObject.SetActive(true);
         lastTime = 0;
     }
     private void Update()
     {
-        if (makeHearEffect.IsLocal() == false) return;
-        if (makeHearEffect.HearState == Define.MoveHearState.Effect)
+        if (_makeRunEffect.IsLocal() == false) return;
+        if (_makeRunEffect.HearState == Define.MoveHearState.Effect)
         {
             if (Time.time >= lastTime + timeBiet)
             {
@@ -34,7 +35,7 @@ public class MakeRunEffect : MonoBehaviour
 
     void CreateEffect()
     {
-        EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position);
+        EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0 );
     }
 
 

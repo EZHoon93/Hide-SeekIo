@@ -25,14 +25,23 @@ public class EffectManager : MonoBehaviourPun
     #endregion
 
     [PunRPC]
-    public void EffectOnLocal(Define.EffectType effectType, Vector3 position)
+    public void EffectOnLocal(Define.EffectType effectType, Vector3 position,int isSee)
     {
         var go = Managers.Resource.Instantiate($"Effect/{effectType.ToString()}");
         go.transform.position = position;
+        if(isSee == 0)
+        {
+            go.SetLayerRecursively((int)Define.Layer.Seeker);
+        }
+        else
+        {
+            go.SetLayerRecursively((int)Define.Layer.Hider);
+        }
         //레이어 각팀에따라 보임안보임여부
     }
 
-    public void EffectToServer(Define.EffectType effectType , Vector3 position ) =>photonView.RPC("EffectOnLocal", RpcTarget.All, effectType, position);
+    public void EffectToServer(Define.EffectType effectType , Vector3 position,int isSee ) 
+        =>photonView.RPC("EffectOnLocal", RpcTarget.All, effectType, position, isSee);
 
 
     public void BuffToServer(Define.BuffType buffType , int livingViewID)

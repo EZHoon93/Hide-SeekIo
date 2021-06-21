@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class Buff_Shoes : BuffBase
 {
-    protected override void ProcessEnd()
+    MakeRunEffect _makeRunEffect;
+
+    public override void ProcessStart()
     {
-        throw new System.NotImplementedException();
+        _makeRunEffect = _buffController.livingEntity.GetComponentInChildren<MakeRunEffect>();
+
+        if (_makeRunEffect)
+        {
+            _makeRunEffect.gameObject.SetActive(false);
+
+        }
+
+    }
+    public override void ProcessEnd()
+    {
+        base.ProcessEnd();
     }
 
-    protected override void ProcessStart()
-    {
-        throw new System.NotImplementedException();
-    }
+
 }

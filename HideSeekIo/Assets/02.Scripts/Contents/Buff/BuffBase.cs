@@ -2,20 +2,16 @@
 
 using UnityEngine;
 
-public abstract class BuffBase : MonoBehaviour
+public abstract class BuffBase : Poolable
 {
     //protected LivingEntity _livingEntity;
     //protected Transform _targetTransform;
     [SerializeField] protected ParticleSystem _particle;
     [SerializeField] protected BuffController _buffController;
 
-    private void Reset()
+    public void Setup(BuffController buffController)
     {
-        //init();
-    }
-    private void Awake()
-    {
-        //init();
+        _buffController = buffController;
     }
 
     //void init()
@@ -38,8 +34,11 @@ public abstract class BuffBase : MonoBehaviour
     //    base.Push();
     //}
 
-    protected abstract void ProcessStart();
+    public abstract void ProcessStart();
 
-    protected abstract void ProcessEnd();
+    public virtual void ProcessEnd()
+    {
+        Managers.Pool.Push(this);
+    }
 
 }

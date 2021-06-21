@@ -23,7 +23,7 @@ public class HiderHealth : LivingEntity
         base.Die();
         _cageObject.SetActive(true);
         _animator.SetTrigger("Die");
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position, 0 );
         
         this.gameObject.SetLayerRecursively((int)Define.Layer.Seeker);
 

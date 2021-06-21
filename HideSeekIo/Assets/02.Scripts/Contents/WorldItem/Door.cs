@@ -35,7 +35,6 @@ public class Door : MonoBehaviour
 
         float angle;
         RaycastHit hit;
-        print("1");
 
         if (Physics.Linecast(start, end, out hit, _layerMask, QueryTriggerInteraction.Ignore) ||
             Physics.Linecast(end, start, out hit, _layerMask, QueryTriggerInteraction.Ignore))

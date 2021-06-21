@@ -17,13 +17,13 @@ public class GameState_Gameing : GameState_Base, IPunObservable
         var mainSceneUI = Managers.UI.SceneUI as UI_Main;
         _inGametimeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.InGameTime);
         _noticeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
-        _countDownText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
+        _countDownText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.CountDown);
 
         _countDownText.text = null;
         _noticeText.text = null;
 
         _initRemainTime = _initGameTime;
-        
+        print("셋업 노티스,카운트");
 
     }
 

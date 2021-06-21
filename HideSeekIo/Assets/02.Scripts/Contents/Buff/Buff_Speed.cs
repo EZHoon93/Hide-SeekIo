@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Buff_Speed : BuffBase
 {
-    protected override void ProcessEnd()
-    {
-        throw new System.NotImplementedException();
-    }
+    
 
-    protected override void ProcessStart()
+    public override void ProcessStart()
     {
-        throw new System.NotImplementedException();
     }
-
+    public override void ProcessEnd()
+    {
+        base.ProcessEnd();
+    }
 
 }

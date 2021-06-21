@@ -48,11 +48,15 @@ public static class GameItemEventList
                 break;
             case Define.HiderStoreList.Shoes:
                 BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, hiderController.livingEntity);
-
                 break;
             case Define.HiderStoreList.Speed:
                 BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, hiderController.livingEntity);
-
+                break;
+            case Define.HiderStoreList.Shield:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.livingEntity);
+                break;
+            case Define.HiderStoreList.Grenade:
+                GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Grenade, hiderController.hiderAttack);
                 break;
         }
 
@@ -65,6 +69,9 @@ public static class GameItemEventList
 
         switch (seekrItemEnum)
         {
+            case Define.SeekrStoreList.ChangeWeapon:
+                GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Sniper, seekerController.seekerAttack);
+                break;
             case Define.SeekrStoreList.DirectionCurse:
                 BuffManager.Instance.HiderTeamBuffControllerToServer(Define.BuffType.Direction, seekerController.ViewID());
 

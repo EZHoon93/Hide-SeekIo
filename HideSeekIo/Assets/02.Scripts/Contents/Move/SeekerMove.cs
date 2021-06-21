@@ -28,6 +28,7 @@ public class SeekerMove : MoveBase
 
     protected void FixedUpdate()
     {
+        print("이동"+_seekerAttack.State);
         MoveSpeed = _testSpeed;
         if (!photonView.IsMine) return;
         switch (_seekerAttack.State)
@@ -39,17 +40,11 @@ public class SeekerMove : MoveBase
                 break;
             case SeekerAttack.state.Attack:
                 var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-                var temp = new Vector3(_seekerAttack.lastAttack.x, 0, _seekerAttack.lastAttack.y).normalized;
+                var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
                 var newDirection = quaternion * temp;
                 Quaternion newRotation = Quaternion.LookRotation(newDirection);
                 this.transform.rotation = newRotation;
                 UpdateAnimation(0);
-
-                break;
-            case SeekerAttack.state.Skill:
-                //var inputSkillVector2 = UtillGame.ConventToVector2(_seekerInput.upperBodyDir);
-                //UpdateMove(inputSkillVector2, MoveSpeed * 2);
-                //UpdateRotate(inputSkillVector2);
 
                 break;
 
@@ -72,6 +67,8 @@ public class SeekerMove : MoveBase
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         var temp = new Vector3(inputMoveVector2.x, 0, inputMoveVector2.y).normalized;
         var newDirection = quaternion * temp;
+
+        
 
         Vector3 moveDistance = newDirection * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)

@@ -8,11 +8,14 @@ public class HiderController : PlayerController
     public HiderMove hiderMove { get; private set; }
     public HiderInput hiderInput{ get; private set; }
 
+    public HiderAttack hiderAttack { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
         hiderMove = GetComponent<HiderMove>();
         hiderInput = GetComponent<HiderInput>();
+        hiderAttack = GetComponent<HiderAttack>();
         Team = Define.Team.Hide;
         TimeCoinAmount = 1;
     }
@@ -24,15 +27,17 @@ public class HiderController : PlayerController
         livingEntity.OnPhotonInstantiate();
         hiderMove.OnPhotonInstantiate();
         hiderInput.OnPhotonInstantiate();
+        hiderAttack.OnPhotonInstantiate();
         SetActiveComponent(true);
     }
 
-    void SetActiveComponent(bool acitve)
+    void SetActiveComponent(bool active)
     {
-        livingEntity.enabled = acitve;
-        hiderMove.enabled = acitve;
-        hiderInput.enabled = acitve;
-        GetComponent<CharacterController>().enabled = acitve;
+        livingEntity.enabled = active;
+        hiderMove.enabled = active;
+        hiderInput.enabled = active;
+        hiderAttack.enabled = active;
+        GetComponent<CharacterController>().enabled = active;
 
     }
 
@@ -56,6 +61,5 @@ public class HiderController : PlayerController
             enterTrigger.Enter(this.gameObject);
         }
     }
-
 
 }

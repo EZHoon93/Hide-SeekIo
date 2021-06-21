@@ -4,9 +4,22 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 
-public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback
+public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate
 {
+    public event Action OnPhotonInstantiateEvent;
+    event Action _onPhotonInstantiate;
+    //public event Action OnPhotonInstantiateEvent
+    //{
+    //    add
+    //    {
+    //        _onPhotonInstantiate += value;
+    //    }
+    //    remove
+    //    {
+    //        _onPhotonInstantiate -= value;
+    //    }
 
+    //}
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (photonView.InstantiationData == null) return;   //데이터가없으면 null
@@ -31,6 +44,8 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback
 
         LayerChange(avater);
         playerController.OnPhotonInstantiate();
+        OnPhotonInstantiateEvent?.Invoke();
+        //ch?.Invoke()
     }
 
     protected virtual void LayerChange(GameObject gameObject )
