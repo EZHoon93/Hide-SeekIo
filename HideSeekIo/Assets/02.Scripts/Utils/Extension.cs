@@ -51,4 +51,13 @@ public static class Extension
     {
 		return PhotonNetwork.Time <= createTime + 1 ? true : false;
 	}
+
+	public static void ResetTransform(this Transform go , Transform parent)
+    {
+        if (parent)
+        {
+			go.transform.SetParent(parent);
+        }
+		Util.UtillResetTransform(go);
+    }
 }

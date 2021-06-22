@@ -11,7 +11,7 @@ public class SeekerAttack : AttackBase
     }
 
     SeekerInput _seekerInput;
-    public state State { get; set; }
+    public state State { get ; private set; }
     public Vector3 AttackTargetDirection { get; set; }
 
     private void Awake()
@@ -22,9 +22,10 @@ public class SeekerAttack : AttackBase
     {
         base.OnPhotonInstantiate();
         State = state.Idle;
-        GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Hammer, this);
+        
         if (this.IsMyCharacter())
         {
+            GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Melee2, this);
 
         }
     }
@@ -46,26 +47,49 @@ public class SeekerAttack : AttackBase
         if (_seekerInput.LastAttackVector != Vector2.zero)
         {
             if (State != state.Idle) return;
-            State = state.Attack;
-            AttackTargetDirection = _seekerInput.LastAttackVector;
-            photonView.RPC("AttackToServer", RpcTarget.All, _seekerInput.LastAttackVector);
+            //AttackTargetDirection = _seekerInput.LastAttackVector;
+            //photonView.RPC("AttackToServer", RpcTarget.All, _seekerInput.LastAttackVector);
+            Util.StartCoroutine(this, ref _attackEnumerator, Attack(_seekerInput.LastAttackVector ));
+
         }
     }
-    
+
     #region Attack
-    [PunRPC]
-    public void AttackToServer(Vector2 targetPoint)
+    //[PunRPC]
+    //public void AttackToServer(Vector2 targetPoint)
+    //{
+    //    StartCoroutine(ProcessAttackOnClients(targetPoint));
+
+    //}
+
+    //IEnumerator ProcessAttackOnClients(Vector3 targetPoint)
+    //{
+    //    State = state.Attack;
+    //    AttackTargetDirection = UtillGame.ConventToVector3(targetPoint);
+    //    _animator.SetTrigger(weapon.AttackAnim);
+    //    yield return new WaitForSeconds(weapon.AttackDelay);   //대미지 주기전까지 시간
+    //    if (this.IsMyCharacter())
+    //    {
+    //        CameraManager.Instance.ShakeCameraByPosition(this.transform.position, 0.3f, 1.0f, 1.0f);
+    //    }
+    //    weapon.Attack(targetPoint);    //대미지 줌
+
+    //    yield return new WaitForSeconds(weapon.AfaterAttackDelay); //끝날때까지 못움직임
+    //    State = state.Idle;
+    //}
+
+    IEnumerator Attack(Vector2 inputVector2)
     {
-        StartCoroutine(ProcessAttackOnClients(targetPoint));
-    }
-    IEnumerator ProcessAttackOnClients(Vector3 targetPoint)
-    {
+        if (weapon.Attack(inputVector2) == false)
+        {
+            StopCoroutine(_attackEnumerator);
+        }
         State = state.Attack;
-        AttackTargetDirection = UtillGame.ConventToVector3(targetPoint);
         _animator.SetTrigger(weapon.AttackAnim);
-        yield return new WaitForSeconds(weapon.AttackDelay);   //대미지 주기전까지 시간
-        weapon.Attack(targetPoint);    //대미지 줌
-        yield return new WaitForSeconds(weapon.AfaterAttackDelay); //끝날때까지 못움직임
+        while ( weapon.state == Weapon.State.Delay)
+        {
+            yield return null;
+        }
         State = state.Idle;
     }
 

@@ -7,12 +7,21 @@ using UnityEngine;
 public class Bullet : Poolable , IEnterTrigger
 {
     [SerializeField] ParticleSystem _explosionEffect;
+    [SerializeField] GameObject _bulletObject;
+    Collider _collider;
+
+    Vector3 _endPoint;
+    private void Awake()
+    {
+        _collider = GetComponent<Collider>();
+    }
     public void Enter(GameObject Gettingobject)
     {
         var damageable = Gettingobject.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            damageable.OnDamage(2, 1, Gettingobject.transform.position);
+            print("Enter" + Gettingobject.name);
+            damageable.OnDamage(2, 2, Gettingobject.transform.position);
             Expolosion();
         }
 
@@ -20,29 +29,40 @@ public class Bullet : Poolable , IEnterTrigger
 
     public void Setup(Vector3 endPoint)
     {
-        this.transform.DOLookAt(endPoint, 0.1f);
+        CancelInvoke("AfrerDestory");
+        _endPoint = endPoint;
+        _collider.enabled = true;
+        _bulletObject.SetActive(true);
+        this.transform.DOLookAt(endPoint, 0.01f);
         var distance = Vector3.Distance(endPoint, this.transform.position);
-        this.transform.DOMove(endPoint, distance * 0.1f).SetEase(Ease.Linear).OnComplete( () =>
-        {
 
-            Expolosion();
-        });
+        this.transform.DOMove(endPoint, distance * 0.1f).SetEase(Ease.Linear).OnComplete(() =>
+       {
+
+           Expolosion();
+       });
     }
+    //private void Update()
+    //{
+    //    var distance = Vector3.Distance(_endPoint, this.transform.position);
+    //    if(distance > 0.3f)
+    //    {
+    //        this.transform.position += this.transform.forward*Time.deltaTime*10;
+    //    }
+    //}
 
     void Expolosion()
     {
-        Managers.Pool.Push(this);
+        print("Expolosion" + _endPoint);
+        _collider.enabled = false;
+        _bulletObject.SetActive(false);
         _explosionEffect.Play();
+        Invoke("AfrerDestory", 3.0f);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void AfrerDestory()
     {
-         var damageable = collision.collider.GetComponent<IDamageable>();
-        print(collision.gameObject.name + "맞음");
-        if (damageable != null)
-        {
-            print(collision.gameObject.name + "대미지");
-            damageable.OnDamage(1, 1, collision.gameObject.transform.position);
-        }
+        print("AfrerDestory");
+        Managers.Pool.Push(this);
     }
 }

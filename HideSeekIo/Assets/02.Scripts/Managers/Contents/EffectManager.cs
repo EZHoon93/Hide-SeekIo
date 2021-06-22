@@ -27,6 +27,7 @@ public class EffectManager : MonoBehaviourPun
     [PunRPC]
     public void EffectOnLocal(Define.EffectType effectType, Vector3 position,int isSee)
     {
+        print("¿Ã∆Â∆Æ " + effectType);
         var go = Managers.Resource.Instantiate($"Effect/{effectType.ToString()}");
         go.transform.position = position;
         if(isSee == 0)
@@ -44,10 +45,39 @@ public class EffectManager : MonoBehaviourPun
         =>photonView.RPC("EffectOnLocal", RpcTarget.All, effectType, position, isSee);
 
 
-    public void BuffToServer(Define.BuffType buffType , int livingViewID)
+    
+    /// <summary>
+    /// ¿¸√º ¿Ã∆Â∆Æ, 
+    /// </summary>
+    /// <param name="effectEventType"></param>
+    /// <param name="effectType"></param>
+    public void EffectAllLivingEntity(Define.EffectEventType effectEventType, Define.EffectType effectType)
     {
-        var livingEntity = GameManager.Instance.GetLivingEntity(livingViewID);
+        //List<LivingEntity> livingEntitieList = null;
+       
+        LivingEntity[] livingEntitieList = null;
+        int isSee = 0;
+        switch (effectEventType)
+        {
+            case Define.EffectEventType.All:
+                livingEntitieList = GameManager.Instance.GetAllLivingEntity();
+                break;
+            case Define.EffectEventType.Hider:
+                livingEntitieList = GameManager.Instance.GetAllHiderList();
+                isSee = 1;
+                break;
+            case Define.EffectEventType.Seeker:
+                livingEntitieList = GameManager.Instance.GetAllSeekerList();
+                isSee = 0;
+                break;
+        }
 
+        print(livingEntitieList.Length + " ø√¿Ÿ§°§º     ");
+
+        foreach(var living in livingEntitieList)
+        {
+            EffectOnLocal(effectType, living.transform.position, isSee);
+        }
     }
     
 }

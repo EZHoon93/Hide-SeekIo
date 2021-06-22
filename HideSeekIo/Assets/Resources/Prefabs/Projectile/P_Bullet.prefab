@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsUsing: 0
   _explosionEffect: {fileID: 4645666221215744341}
+  _bulletObject: {fileID: 3598709529360907777}
 --- !u!135 &8547662979172162350
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -150,6 +151,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f93e5f52da06ed64e9eb491824fb624b, type: 3}
+--- !u!1 &3598709529360907777 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 185492, guid: f93e5f52da06ed64e9eb491824fb624b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3598709529360755349}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3598709529360621453 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 406808, guid: f93e5f52da06ed64e9eb491824fb624b,
@@ -173,7 +180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 427612, guid: 745e938bef39c7144a1832047eff5b0c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 427612, guid: 745e938bef39c7144a1832047eff5b0c, type: 3}
       propertyPath: m_LocalPosition.y

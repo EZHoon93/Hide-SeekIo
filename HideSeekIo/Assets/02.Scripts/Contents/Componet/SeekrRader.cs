@@ -15,17 +15,17 @@ public class SeekrRader : MonoBehaviour
     private void Awake()
     {
         _myLivingEntity = GetComponentInParent<LivingEntity>();
+
+        this.transform.parent.GetComponent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
     }
-    private void OnEnable()
+    private void OnPhotonInstantiate()
     {
         Clear();
         Util.StartCoroutine(this, ref  _enumerator, RaderUpdate());
-
-        Color color2 = Color.white;
-        color2.a = 0.2f;
+        Color color2 = Color.gray;
+        color2.a = 0.5f;
         _spriteRenderer.color = color2;
         isDectedColor = false;
-
     }
     void Clear()
     {
@@ -75,8 +75,8 @@ public class SeekrRader : MonoBehaviour
         else
         {
             if (!isDectedColor) return;
-            Color color2 = Color.white;
-            color2.a = 0.2f;
+            Color color2 = Color.gray;
+            color2.a = 0.5f;
             _spriteRenderer.color = color2;
             isDectedColor = false;
         }

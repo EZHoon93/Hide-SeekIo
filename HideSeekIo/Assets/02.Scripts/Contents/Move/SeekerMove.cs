@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO.Pipes;
 
 using UnityEngine;
 
@@ -23,7 +24,23 @@ public class SeekerMove : MoveBase
         base.OnPhotonInstantiate();
     }
 
-
+    private void Update()
+    {
+        if (photonView.IsMine) return;
+        switch (_seekerAttack.State)
+        {
+            case SeekerAttack.state.Attack:
+                var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+                var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
+                var newDirection = quaternion * temp;
+                Quaternion newRotation = Quaternion.LookRotation(newDirection);
+                this.transform.rotation = newRotation;
+                UpdateAnimation(0);
+                break;
+        }
+        
+        
+    }
 
 
     protected void FixedUpdate()
@@ -40,7 +57,8 @@ public class SeekerMove : MoveBase
                 break;
             case SeekerAttack.state.Attack:
                 var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-                var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
+                //var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
+                var temp = new Vector3(_seekerAttack.weapon.AttackDirecition.x, 0, _seekerAttack.weapon.AttackDirecition.z).normalized;
                 var newDirection = quaternion * temp;
                 Quaternion newRotation = Quaternion.LookRotation(newDirection);
                 this.transform.rotation = newRotation;

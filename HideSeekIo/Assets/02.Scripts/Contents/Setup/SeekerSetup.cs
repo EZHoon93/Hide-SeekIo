@@ -15,6 +15,10 @@ public class SeekerSetup : PlayerSetup
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
+        //var seekerController =  GetComponent<SeekerController>();
+        //var weaponId = (string)info.photonView.InstantiationData[2]; //무기 스킨
+
+
     }
 
     protected override void LayerChange(GameObject gameObject)

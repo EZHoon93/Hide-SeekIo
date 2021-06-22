@@ -30,6 +30,21 @@ public static class UtillGame
         //return Quaternion.Euler(0, 90 - origanlAngle + camerAngle, 0);
     }
 
+    /// <summary>
+    /// 카메라 각도에 따른 3d ,월드 오브젝트 방향얻기
+    /// </summary>
+    /// <param name="inputVector2"></param>
+    /// <returns></returns>
+    public static Quaternion GetWorldRotation_ByInputVector(Vector2 inputVector2)
+    {
+        var pos = ConventToVector3(inputVector2);
+        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+        var newDirection = quaternion * pos;
+        Quaternion newRotation = Quaternion.LookRotation(pos);
+
+        return newRotation;
+    }
+
     public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform)
     {
       

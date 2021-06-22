@@ -26,6 +26,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         
         var nickName = (string)info.photonView.InstantiationData[0]; //닉네임
         var avaterId = (string)info.photonView.InstantiationData[1]; //캐릭터
+
         var playerController = this.GetComponent<PlayerController>();
         //-데이터받아옴//
         var avater = Managers.Resource.Instantiate($"Avater/{avaterId}",this.transform);
@@ -38,7 +39,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         //유저자신의 캐릭이라면.
         if (this.IsMyCharacter())
         {
-            CameraManager.instance.SetupTarget(playerController);
+            CameraManager.Instance.SetupTarget(playerController);
         }
 
 

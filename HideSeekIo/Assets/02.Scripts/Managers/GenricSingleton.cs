@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 
 using UnityEngine;
-
-public class GenricSingleton<T> : MonoBehaviour where T : MonoBehaviour
+using Photon.Pun;
+public class GenricSingleton<T> : MonoBehaviourPun where T : MonoBehaviour
 {
 
     public static T Instance  

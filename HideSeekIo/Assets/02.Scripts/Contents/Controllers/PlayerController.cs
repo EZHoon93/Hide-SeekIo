@@ -15,7 +15,7 @@ public abstract class PlayerController : MonoBehaviourPun
     public string NickName { get; protected set; }
 
     public LivingEntity livingEntity  { get; private set; }
-    public Define.Team Team{ get; protected set; }
+    public Define.Team Team => livingEntity.Team;
 
     public event Action<int> CoinChangeEvent;   //코인변경 이벤트
 

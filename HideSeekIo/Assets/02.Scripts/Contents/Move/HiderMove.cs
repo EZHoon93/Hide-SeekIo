@@ -49,7 +49,6 @@ public class HiderMove : MoveBase , IMakeRunEffect
     {
         return photonView.IsMine;
     }
-
     protected void FixedUpdate()
     {
         MoveSpeed = _testSpeed;
@@ -74,7 +73,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
                 var newDirection = quaternion * temp;
                 Quaternion newRotation = Quaternion.LookRotation(newDirection);
                 this.transform.rotation = newRotation;
-                print(_hiderAttack.AttackTargetDirection + "/" + newDirection);
+                print(_hiderAttack.weapon.AttackDirecition + "/" + newDirection);
                 UpdateAnimation();
                 break;
 
@@ -100,14 +99,14 @@ public class HiderMove : MoveBase , IMakeRunEffect
         {
             HearState = Define.MoveHearState.Effect;
             State = MoveState.Run;
-            resultSpeed = MoveSpeed * 1.8f;
+            resultSpeed = MoveSpeed * 1f;
         }
         //뛰기버튼X 걷기 
         else
         {
             HearState = Define.MoveHearState.NoEffect;
             State = MoveState.Walk;
-            resultSpeed = MoveSpeed * 1;
+            resultSpeed = MoveSpeed * 0.5f;
         }
 
         resultSpeed = resultSpeed + (_totRatio * resultSpeed);

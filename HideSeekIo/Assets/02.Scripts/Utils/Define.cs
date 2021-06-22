@@ -33,26 +33,27 @@ public class Define
     }
     public enum LocalWorldObject
     {
-       
     }
     public enum Weapon
     {
-        Hammer = 1,
+        Melee2 = 1,
 
-        Stone = 50,
+        Stone = 101,
         Grenade,
 
-        Sniper = 100
+        Sniper = 201
     }
-    public enum PhotonObject
+
+    public enum AIType
     {
-        UserSeeker,
-        UserHider,
-        AISeekr,
-        AIHider,
-        ItemCoin = 20,       //아이템
-        Trap,
-        Box
+        AISeeker ,
+        AIHider
+    }
+    public enum WorldItem
+    {
+        ItemCoin ,       //중립 아이템
+        Trap = 101,
+        Box,
     }
 
 	
@@ -130,12 +131,16 @@ public class Define
 
     public enum SeekrStoreList
     {
-        ChangeWeapon    ,   //무기 바꾸기    권총,라이플,저격총,바주카포,미사일탄
+        ChangeWeapon    ,   // 수류탄 추가 
         SightCurse, //시야 감소
         DirectionCurse,  // 방향 전환
-        Speed,
-        Damage,
-        Immune, // 방해효과 면역
+        Speed,  //이속증가
+        AllumanClap,    //스턴 면역
+        BodyUp, // 방해효과 면역 && 몸통박치기시 박스 파괴,
+        RangeUp ,//무기 범위증가
+        RaderUp ,//레이더 범위증가
+
+        
     }
 
     public enum InGameItemUIState
@@ -166,11 +171,21 @@ public class Define
         Stun,
         Shoes,
         Speed,
-        Shield
+        Shield,
+        Sight
+            
     }
 
+    public enum EffectEventType
+    {
+        All,
+        Seeker,
+        Hider
+    }
     public enum PhotonOnEventCode
     {
          AbilityCode = 111
     }
+
+    //public enum AttackSta
 }

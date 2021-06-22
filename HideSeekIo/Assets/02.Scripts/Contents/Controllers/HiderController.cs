@@ -16,7 +16,6 @@ public class HiderController : PlayerController
         hiderMove = GetComponent<HiderMove>();
         hiderInput = GetComponent<HiderInput>();
         hiderAttack = GetComponent<HiderAttack>();
-        Team = Define.Team.Hide;
         TimeCoinAmount = 1;
     }
 
@@ -56,6 +55,7 @@ public class HiderController : PlayerController
     private void OnTriggerEnter(Collider other)
     {
         var enterTrigger = other.gameObject.GetComponent<IEnterTrigger>();
+        print(other.gameObject.name + "부디침");
         if(enterTrigger != null)
         {
             enterTrigger.Enter(this.gameObject);

@@ -18,7 +18,6 @@ public class SeekerController : PlayerController
         seekerMove = GetComponent<SeekerMove>();
         seekerAttack = GetComponent<SeekerAttack>();
 
-        Team = Define.Team.Seek;
 
         TimeCoinAmount = 2;
     }
@@ -49,6 +48,17 @@ public class SeekerController : PlayerController
     {
         base.HandleDeath();
         SetActiveComponent(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var enterTrigger = other.gameObject.GetComponent<IEnterTrigger>();
+        print(other.gameObject.name + "부디침");
+
+        if (enterTrigger != null)
+        {
+            enterTrigger.Enter(this.gameObject);
+        }
     }
 
 }

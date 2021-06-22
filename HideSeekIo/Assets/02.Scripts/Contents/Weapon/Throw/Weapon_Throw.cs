@@ -20,9 +20,11 @@ public abstract class Weapon_Throw : Weapon
         _distance = distance;
         attackRange = newAttackRange;
     }
-    public override void Attack(Vector2 inputVector)
+    public override bool Attack(Vector2 inputVector)
     {
         AttackToServer(inputVector);
+        return true;
+
     }
     void AttackToServer(Vector2 inputVector)
     {

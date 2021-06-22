@@ -10,11 +10,13 @@ public class Weapon_Gun : Weapon
     [SerializeField] int _currentAmmo;
     [SerializeField] float _maxDistance;
     [SerializeField] float _attackTimeBet;
-    [SerializeField] protected Transform _fireTransform;
+    [SerializeField] protected Transform _fireTransform1;
+    [SerializeField] protected Transform _fireTransform2;
+
     [SerializeField] protected Transform _lineTransform;
     float _lastFireTime;
     LineRenderer _lineRenderer;
-    int _zoomLayer = (int)Define.Layer.Wall;
+    int _zoomLayer = 1 << (int)Define.Layer.Wall;
 
 
 
@@ -37,25 +39,18 @@ public class Weapon_Gun : Weapon
         _currentAmmo = _maxAmmo;
     }
 
-    public override void Attack(Vector2 inputVector)
+    public override bool Attack(Vector2 inputVector)
     {
-        var pos = UtillGame.ConventToVector3(inputVector);
-        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-        var newDirection = quaternion * pos;
-        Quaternion newRotation = Quaternion.LookRotation(pos);
-        UICanvas.transform.rotation = newRotation;
-
-        RaycastHit hit;
-        Vector3 hitPosition;
-        _lineRenderer.SetPosition(0, _fireTransform.position);
-        hitPosition = _fireTransform.transform.position + _fireTransform.transform.forward * _maxDistance;
-
         _muzzleFalsh.Play();
-        var go = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
-        go.transform.position = _fireTransform.transform.position;
-        go.Setup(hitPosition);
-        
+        var go1 = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
+        var go2 = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
 
+        go1.transform.position = _fireTransform1.transform.position;
+        go1.Setup(GetHitPoint(_fireTransform1, inputVector));
+        go2.transform.position = _fireTransform2.transform.position;
+        go2.Setup(GetHitPoint(_fireTransform2, inputVector));
+
+        return true;
     }
 
     public override void Zoom(Vector2 inputVector)
@@ -66,33 +61,28 @@ public class Weapon_Gun : Weapon
             _lineRenderer.enabled = false;
             return;
         }
-        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-        var newDirection = quaternion * pos;
-        Quaternion newRotation = Quaternion.LookRotation(pos);
-        //_fireTransform.transform.rotation = Quaternion.Slerp(this.transform.localRotation, newRotation, 33 * Time.deltaTime);    //즉시변환
-        UICanvas.transform.rotation = newRotation;
-
-
         _lineRenderer.SetPosition(0, _lineTransform.position);
-        RaycastHit hit;
-        Vector3 hitPosition;
-        _lineRenderer.SetPosition(0, _lineTransform.position);
-
-        if (Physics.Raycast(_lineTransform.transform.position, _lineTransform.transform.forward, out hit, _maxDistance, _zoomLayer))
-        {
-            hitPosition = hit.point;
-            hitPosition.y = _lineTransform.transform.position.y;
-        }
-        else
-        {
-            hitPosition = _lineTransform.transform.position + _lineTransform.transform.forward * _maxDistance;
-        }
-        hitPosition = _lineTransform.transform.position + _lineTransform.transform.forward * _maxDistance;
-
-        _lineRenderer.SetPosition(1, hitPosition);
+        _lineRenderer.SetPosition(1, GetHitPoint(_lineTransform, inputVector));
         _lineRenderer.enabled = true;
 
 
+    }
+
+    Vector3 GetHitPoint(Transform rayTransform, Vector2 inputVector)
+    {
+        UICanvas.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(inputVector);
+        RaycastHit hit;
+        Vector3 hitPosition;
+        if (Physics.Raycast(rayTransform.transform.position, rayTransform.transform.forward, out hit, _maxDistance, _zoomLayer))
+        {
+            hitPosition = hit.point;
+            hitPosition.y = rayTransform.transform.position.y;
+        }
+        else
+        {
+            hitPosition = rayTransform.transform.position + rayTransform.transform.forward * _maxDistance;
+        }
+        return hitPosition;
     }
 
 

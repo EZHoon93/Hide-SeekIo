@@ -3,7 +3,7 @@
 using UnityEngine;
 using Photon.Pun;
 using System;
-public class AttackBase : MonoBehaviourPun , IPunObservable
+public class AttackBase : MonoBehaviourPun 
 {
     [SerializeField] Transform _centerPivot;
     protected Animator _animator;
@@ -11,22 +11,9 @@ public class AttackBase : MonoBehaviourPun , IPunObservable
     public Weapon weapon { get; protected set; }
     Define.Weapon n_currentWeapon;
 
+    protected IEnumerator _attackEnumerator;
 
 
-    public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(n_currentWeapon);
-        }
-        else
-        {
-            var reciveWeaponType = (Define.Weapon)stream.ReceiveNext();
-            print(reciveWeaponType + "받아옴" + n_currentWeapon + "현재");
-            if (reciveWeaponType == n_currentWeapon) return;
-            GameManager.Instance.SpawnManager.WeaponSpawn(reciveWeaponType, this);
-        }
-    }
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
@@ -37,7 +24,6 @@ public class AttackBase : MonoBehaviourPun , IPunObservable
         {
             Managers.Resource.Destroy(weapon.gameObject);
         }
-
         weapon = newWeapon;
         n_currentWeapon = weapon.weaponServerKey;
         weapon.newAttacker = this;
@@ -45,12 +31,12 @@ public class AttackBase : MonoBehaviourPun , IPunObservable
         weapon.transform.localPosition = Vector3.zero;
         weapon.transform.localRotation = Quaternion.Euler(Vector3.zero);
         weapon.transform.localScale = Vector3.one;
+
         weapon.UICanvas.transform.SetParent(this.transform);
         weapon.UICanvas.transform.localPosition = Vector3.zero;
         weapon.UICanvas.transform.localRotation = Quaternion.Euler(Vector3.zero);
         weapon.UICanvas.transform.localScale = Vector3.one;
 
-        print(weapon.weaponType + "무기베이스"+weapon.gameObject.name);
         switch (weapon.weaponType)
         {
             case Weapon.WeaponType.Gun:

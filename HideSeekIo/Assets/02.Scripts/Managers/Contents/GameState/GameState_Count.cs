@@ -144,12 +144,12 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
-            GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserHider, pos);
+            GameManager.Instance.SpawnManager.PlayerSpawn(Define.Team.Seek, pos);
         }
         else
         {
             var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
-            GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserHider, pos);
+            GameManager.Instance.SpawnManager.PlayerSpawn(Define.Team.Hide, pos);
         }
         //index = 0,1은 좀비 
         //if (index <= 1)
@@ -179,11 +179,11 @@ public class GameState_Count : GameState_Base
         //{
         //    _characterManager.CreatePlayer(Define.Team.Human, true, _playerSpawnPoints.spawnPointList[index].position);
         //}
-        for(int i = 1; i < 5; i++)
-        {
-            var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(i);
-            GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.AIHider, pos);
-        }
+        //for(int i = 1; i < 5; i++)
+        //{
+        //    var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(i);
+        //    GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.AIHider, pos);
+        //}
 
     }
 

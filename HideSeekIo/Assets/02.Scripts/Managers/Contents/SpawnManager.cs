@@ -2,51 +2,65 @@
 
 using UnityEngine;
 using Photon.Pun;
+using System.Linq.Expressions;
+using System.Collections.Generic;
 
 public class SpawnManager 
 {
-    public void PhotonSpawn(Define.PhotonObject photonObject ,Vector3 pos , int itemUseViewID =0  )
+    public void WorldItemSpawn(Define.WorldItem photonObject ,Vector3 pos , int itemUseViewID =0  )
     {
 
         switch (photonObject)
         {
-            case Define.PhotonObject.UserHider:
-            case Define.PhotonObject.UserSeeker:
-                object[] datas = { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater};
-                GameManager.Instance.myPlayer = PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity,0,datas).GetComponent<PlayerController>();
-                break;
-            case Define.PhotonObject.AIHider:
-            case Define.PhotonObject.AISeekr:
-                object[] aiData = { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
-                var ai = PhotonNetwork.InstantiateRoomObject(photonObject.ToString(), pos, Quaternion.identity,0,aiData);
-                break;
-            case Define.PhotonObject.Box:
-            case Define.PhotonObject.Trap:
-                PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity , 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
+            case Define.WorldItem.Box:
+            case Define.WorldItem.Trap:
                 break;
 
         }
 
-
+        PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
 
-    public void LocalSpawn(Define.LocalWorldObject localWorldObject)
+    public void PlayerSpawn(Define.Team team, Vector3 pos)
     {
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
+
+        switch (team)
+        {
+            case Define.Team.Hide:
+                GameManager.Instance.myPlayer = PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                break;
+            case Define.Team.Seek:
+                datas.Add(PlayerInfo.CurrentWeapon);
+                GameManager.Instance.myPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                break;
+        }
+    }
+    public void AISpawn(Define.Team team, Vector3 pos)
+    {
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
+
+        switch (team)
+        {
+            case Define.Team.Seek:
+                PhotonNetwork.InstantiateRoomObject("AISeeker", pos, Quaternion.identity, 0, datas.ToArray());
+                break;
+            case Define.Team.Hide:
+                datas.Add(PlayerInfo.CurrentWeapon);
+                PhotonNetwork.InstantiateRoomObject("AIHider", pos, Quaternion.identity, 0, datas.ToArray());
+                break;
+        }
 
     }
-
     public void WeaponSpawn(Define.Weapon weapon , AttackBase newAttacker)
     {
-        Debug.Log(weapon.ToString() + "생성");
-        string path = $"Weapon/{weapon.ToString()}";
-        GameObject weaponObject = null;
-        weaponObject = Managers.Resource.Instantiate(path);
-        newAttacker.SetupWeapon(weaponObject.GetComponent<Weapon>());
+        List<object> datas = new List<object>() { newAttacker.photonView.ViewID };
         switch (weapon)
         {
-            case Define.Weapon.Grenade:
-                
+            case Define.Weapon.Melee2:
+                datas.Add(PlayerInfo.CurrentWeapon);
                 break;
         }
+        PhotonNetwork.Instantiate(weapon.ToString(), new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
     }
 }

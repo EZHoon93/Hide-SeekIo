@@ -9,6 +9,7 @@ public class HiderHealth : LivingEntity
 
     private void Awake()
     {
+        Team = Define.Team.Hide;
     }
     public override void OnPhotonInstantiate()
     {

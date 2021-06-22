@@ -2,28 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-public class BuffManager : MonoBehaviourPun
+public class BuffManager : GenricSingleton<BuffManager>
 {
-    #region 싱글톤
-    // 외부에서 싱글톤 오브젝트를 가져올때 사용할 프로퍼티
-    public static BuffManager Instance
-    {
-        get
-        {
-            // 만약 싱글톤 변수에 아직 오브젝트가 할당되지 않았다면
-            if (_instance == null)
-            {
-                // 씬에서 GameManager 오브젝트를 찾아 할당
-                _instance = FindObjectOfType<BuffManager>();
-            }
-
-            // 싱글톤 오브젝트를 반환
-            return _instance;
-        }
-    }
-    private static BuffManager _instance; // 싱글톤이 할당될 static 변수
-    #endregion
-
 
     public BuffController MakeBuffController(Transform target)
     {
@@ -33,10 +13,10 @@ public class BuffManager : MonoBehaviourPun
         return go;
     }
     //버프 이펙트 생성
-    public BuffBase MakeBuffObject(Define.BuffType buffType,Transform target)
+    public BuffBase MakeBuffObject(Define.BuffType buffType, Transform target)
     {
         if (buffType == Define.BuffType.Null) return null;
-        var go = Managers.Resource.Instantiate($"Buff/{buffType.ToString()}",target).GetComponent<BuffBase>();
+        var go = Managers.Resource.Instantiate($"Buff/{buffType.ToString()}", target).GetComponent<BuffBase>();
         go.transform.localPosition = Vector3.zero;
         go.gameObject.SetLayerRecursively(target.gameObject.layer);
         return go;
@@ -58,12 +38,12 @@ public class BuffManager : MonoBehaviourPun
         if (buffController == null)
         {
             buffController = MakeBuffController(livingEntity.transform);
-            RegisterBuffControllerOnLivingEntity(buffController,livingEntity);
+            RegisterBuffControllerOnLivingEntity(buffController, livingEntity);
         }
         buffController.Setup(buffType, livingEntity, createServerTime, durationTime);
     }
     //최초 버프 생성시 로컬 및 서버에 사용
-    public void RegisterBuffControllerOnLivingEntity(BuffController buffController , LivingEntity livingEntity)
+    public void RegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)
     {
         livingEntity.BuffControllerList.Add(buffController);
         livingEntity.photonView.ObservedComponents.Add(buffController);
@@ -76,28 +56,28 @@ public class BuffManager : MonoBehaviourPun
     }
 
     //Hider 팀 전체에게 버프 적용
-    public void HiderTeamBuffControllerToServer(Define.BuffType buffType, int useSeekrViewID)
+    public void HiderTeamBuffControllerToServer(Define.BuffType buffType, int useSeekerViewID)
     {
-        photonView.RPC("HiderTeamBuffControllerOnLocal", RpcTarget.All, buffType, useSeekrViewID);
+        photonView.RPC("HiderTeamBuffControllerOnLocal", RpcTarget.All, buffType, useSeekerViewID);
     }
 
     [PunRPC]
     public void HiderTeamBuffControllerOnLocal(Define.BuffType buffType, int useSeekrViewID)
     {
-        //아이템 사용한술래에게 사용 이펙트
-        var useSeekrPlayer = GameManager.Instance.GetLivingEntity(useSeekrViewID);  //아이템을 사용한 술래
-        if (useSeekrPlayer)
-        {
-            EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, useSeekrPlayer.transform.position,0);
-        }
-     
+        ////아이템 사용한술래에게 사용 이펙트
+        //var useSeekrPlayer = GameManager.Instance.GetLivingEntity(useSeekrViewID);  //아이템을 사용한 술래
+        //if (useSeekrPlayer)
+        //{
+        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, useSeekrPlayer.transform.position, 0);
+        //}
+
         //방장은 AI에게도 버퍼
         if (PhotonNetwork.IsMasterClient)
         {
             var allLivingEntity = GameManager.Instance.GetAllLivingEntity();
-            foreach(var livingEntity in allLivingEntity)
+            foreach (var livingEntity in allLivingEntity)
             {
-                if(livingEntity.CompareTag("AI")  && livingEntity.gameObject.layer == (int)Define.Layer.Hider)
+                if (livingEntity.CompareTag("AI") && livingEntity.gameObject.layer == (int)Define.Layer.Hider)
                 {
                     BuffControllerCheckOnLocal(buffType, livingEntity);
                 }

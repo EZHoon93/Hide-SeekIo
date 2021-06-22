@@ -12,7 +12,7 @@ public class Weapon_Hammer : Weapon
     protected void Awake()
     {
         weaponType = WeaponType.Melee;
-        weaponServerKey = Define.Weapon.Hammer;
+        weaponServerKey = Define.Weapon.Melee2;
     }
     private void Start()
     {
@@ -26,7 +26,7 @@ public class Weapon_Hammer : Weapon
     {
         _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
     }
-    public override void Attack(Vector2 inputVector)
+    public override bool Attack(Vector2 inputVector)
     {
         var attackPos = newAttacker.transform.position + newAttacker.transform.forward * _distance;
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
@@ -58,6 +58,7 @@ public class Weapon_Hammer : Weapon
 
         }
 
+        return true;
 
 
     }

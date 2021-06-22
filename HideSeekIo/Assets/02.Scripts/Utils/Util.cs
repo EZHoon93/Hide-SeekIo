@@ -107,6 +107,13 @@ public class Util
         }
     }
 
+    public static void UtillResetTransform(Transform target)
+    {
+        target.localPosition = Vector3.zero;
+        target.localRotation = Quaternion.Euler(Vector3.zero);
+        target.localScale = Vector3.one;
+    }
+
     #region Color Text
     static string GetColorToCode(Color color)
     {

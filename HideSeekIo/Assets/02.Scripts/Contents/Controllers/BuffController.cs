@@ -31,10 +31,10 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             var n_BuffType = (Define.BuffType)stream.ReceiveNext();
             var n_createServerTime = (float)stream.ReceiveNext();
             var n_durationTime = (float)stream.ReceiveNext();
-            if (n_BuffType == Define.BuffType.Null)
-                return;
-            print("OnPssssssssss@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            var newLivingEntity=  this.transform.parent.GetComponent<LivingEntity>();
+
+            if (n_createServerTime == _createServerTime) return;
+
+            var newLivingEntity = this.transform.parent.GetComponent<LivingEntity>();
             Setup(n_BuffType, newLivingEntity, n_createServerTime, n_durationTime);
         }
 
@@ -44,38 +44,37 @@ public class BuffController : MonoBehaviourPun, IPunObservable
         _poolable = GetComponent<Poolable>();
     }
     //재갱신 및 최초
-    public void Setup(Define.BuffType buffType ,LivingEntity newLivingEntity , float createServerTime, float durationTime)
+    public void Setup(Define.BuffType buffType, LivingEntity newLivingEntity, float createServerTime, float durationTime)
     {
-        //if (_createServerTime == createServerTime) return;
-      
-        if (_buffBase == null )
+
+        if (_buffBase == null)
         {
+            BuffType = buffType;
             _buffBase = BuffManager.Instance.MakeBuffObject(buffType, this.transform);
             _buffBase.Setup(this);
         }
-        BuffType = buffType;
         livingEntity = newLivingEntity;
         _createServerTime = createServerTime;
         _durationTime = durationTime;
         _buffBase.ProcessStart();
-        LocalEffect();
+        //LocalEffect();
     }
 
     //버퍼시 이펙트 로컬에서 발생 => 메시지수아끼기위해
-    void LocalEffect()
-    {
-        if (this.CheckCreateTime(_createServerTime) == false) return;
-        switch (BuffType)
-        {
-            case Define.BuffType.Shoes:
-            case Define.BuffType.Shield:
-            case Define.BuffType.Speed:
-                EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, this.transform.position , 1);
-                break;
+    //void LocalEffect()
+    //{
+    //    if (this.CheckCreateTime(_createServerTime) == false) return;
+    //    switch (BuffType)
+    //    {
+    //        case Define.BuffType.Shoes:
+    //        case Define.BuffType.Shield:
+    //        case Define.BuffType.Speed:
+    //            EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, this.transform.position, 1);
+    //            break;
 
-        }
-        
-    }
+    //    }
+
+    //}
 
 
     private void Update()
@@ -84,15 +83,21 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             return;
 
         var remainTime = (float)PhotonNetwork.Time - (_createServerTime + _durationTime);
+
         if ((float)PhotonNetwork.Time > _createServerTime + _durationTime)
         {
-            _buffBase.ProcessEnd();
-            BuffManager.Instance.UnRegisterBuffControllerOnLivingEntity(this, livingEntity);
-            Managers.Pool.Push(_poolable);
-            _buffBase = null;
-        } 
+            End();
+        }
+    }
 
-
+    void End()
+    {
+        _buffBase.ProcessEnd();
+        _createServerTime = 0;
+        BuffType = Define.BuffType.Null;
+        BuffManager.Instance.UnRegisterBuffControllerOnLivingEntity(this, livingEntity);
+        Managers.Pool.Push(_poolable);
+        _buffBase = null;
     }
 
 

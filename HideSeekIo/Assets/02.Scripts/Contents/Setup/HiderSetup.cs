@@ -20,6 +20,7 @@ public class HiderSetup : PlayerSetup
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
+   
         GetComponentInChildren<FogOfWarTeam>().team = this.ViewID();
         GetComponentInChildren<FogOfWarUnit>().team = this.ViewID();
 

@@ -11,6 +11,7 @@ public static class PlayerInfo
     public static Define.UserDataState State { get; private set; }  //로그인 여부 
 
     public static string CurrentAvater { get; private set; }
+    public static string CurrentWeapon { get; private set; }
     public static string nickName;
     public static int coin;
 
@@ -20,6 +21,7 @@ public static class PlayerInfo
         nickName = "EZs";
         coin = 999;
         CurrentAvater = "Ch01";
+        CurrentWeapon = "Wm01";
     }
 
     public static void ChangeUserData()

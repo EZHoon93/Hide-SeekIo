@@ -191,9 +191,17 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     {
         return _livingEntityDic.Values.ToArray();
     }
-    public List<LivingEntity> GetAllHumanList()
+    public LivingEntity[] GetAllSeekerList()
     {
-        return _livingEntityDic.Where(s => s.Value.Team == Define.Team.Hide).Select(s => s.Value).ToList();
+        return _livingEntityDic.Where(s => s.Value.Team == Define.Team.Hide).Select(s => s.Value).ToArray();
+    }
+    public LivingEntity[] GetAllHiderList()
+    {
+        print(_livingEntityDic.Count + "리빙리스트");
+        print("올하이더 리스트" + _livingEntityDic.Where(s => s.Value.Team == Define.Team.Hide).Select(s => s.Value).ToArray().Length);
+        print("올하이더 리스트" + _livingEntityDic.Where(s => s.Value.Team == Define.Team.Seek).Select(s => s.Value).ToArray().Length);
+
+        return _livingEntityDic.Where(s => s.Value.Team == Define.Team.Hide).Select(s => s.Value).ToArray();
     }
 
     public PlayerController[] GetPlayerArray()

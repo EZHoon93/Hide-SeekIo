@@ -33,7 +33,7 @@ public class WorildItem_Coin : MonoBehaviour , IEnterTrigger
     public void Enter(GameObject Gettingobject)
     {
         if (_isCollect) return;
-        var hiderPlayer = Gettingobject.GetComponent<HiderController>();
+        var hiderPlayer = Gettingobject.GetComponent<PlayerController>();
         if (hiderPlayer == null) return;
         hiderPlayer.Coin += 20;
         CollectEffect();

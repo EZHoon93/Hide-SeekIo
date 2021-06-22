@@ -7,65 +7,34 @@ using FoW;
 
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : GenricSingleton<CameraManager>
 {
-
-    #region 싱글톤
-    // 외부에서 싱글톤 오브젝트를 가져올때 사용할 프로퍼티
-    public static CameraManager instance
-    {
-        get
-        {
-            // 만약 싱글톤 변수에 아직 오브젝트가 할당되지 않았다면
-            if (m_instance == null)
-            {
-                // 씬에서 GameManager 오브젝트를 찾아 할당
-                m_instance = FindObjectOfType<CameraManager>();
-            }
-
-            // 싱글톤 오브젝트를 반환
-            return m_instance;
-        }
-    }
-    private static CameraManager m_instance; // 싱글톤이 할당될 static 변수
-    #endregion
-
-
-    public CinemachineVirtualCamera TargetCamera { get; private set; }
-
-    public PlayerController Target { get; private set; }
-
+    
     public event Action<int, Define.Team> _cameraViewChange;
 
-    public CinemachineCameraOffset cameraOffset { get; set; }
-    public CinemachineBasicMultiChannelPerlin virtualCameraNoise { get; set; }
+    public CinemachineVirtualCamera VirtualCamera { get; private set; }
+
+    public CinemachineCameraOffset offsetCamera { get; private set; }
+    public CinemachineBasicMultiChannelPerlin virtualCameraNoise { get; private set; }
 
 
-    int _observerNumber = -1;  //현재 관찰하고있는 유저의 actNumber;
 
-    public Transform mapCenter;
+    public PlayerController _target;
 
     FogOfWarLegacy _fogOfWarLegacy;
 
 
-    private void Awake()
+    protected override void Awake()
     {
-        // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
-        if (instance != this)
-        {
-            // 자신을 파괴
-            Destroy(gameObject);
-        }
+        if (VirtualCamera == null)
+            VirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        if(offsetCamera == null)
+            offsetCamera = VirtualCamera.GetComponent<CinemachineCameraOffset>();
+        if(virtualCameraNoise == null)
+            virtualCameraNoise = VirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        if(_fogOfWarLegacy == null)
+            _fogOfWarLegacy = Camera.main.GetComponent<FogOfWarLegacy>();
 
-
-        if (TargetCamera == null)
-            TargetCamera = FindObjectOfType<CinemachineVirtualCamera>();
-
-        cameraOffset = TargetCamera.GetComponent<CinemachineCameraOffset>();
-        virtualCameraNoise = TargetCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
-        ShakeCameraOff();
-
-        _fogOfWarLegacy = Camera.main.GetComponent<FogOfWarLegacy>();
         _fogOfWarLegacy.team = 0;
         _fogOfWarLegacy.enabled = true;
     }
@@ -75,9 +44,8 @@ public class CameraManager : MonoBehaviour
 
     public void SetupTarget(PlayerController target)
     {
-        Target = target;    //현재캐릭터로 설정
-        TargetCamera.Follow = target.transform;
-        cameraOffset.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
+        VirtualCamera.Follow = target.transform;
+        offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
 
         if(target.Team == Define.Team.Hide)
         {
@@ -98,21 +66,22 @@ public class CameraManager : MonoBehaviour
 
     }
 
+    //술래팀 카메라
     IEnumerator CameraOffset()
     {
-        cameraOffset.m_Offset = new Vector3(0, 0, 6);
+        offsetCamera.m_Offset = new Vector3(0, 0, 6);
         yield return new WaitForSeconds(3.0f);
 
-        while(cameraOffset.m_Offset.z  >= 0)
+        while(offsetCamera.m_Offset.z  >= 0)
         {
-            Vector3 offset = cameraOffset.m_Offset;
+            Vector3 offset = offsetCamera.m_Offset;
             offset.z -= Time.deltaTime * 3;
-            cameraOffset.m_Offset = offset;
+            offsetCamera.m_Offset = offset;
             yield return null;
 
         }
 
-        cameraOffset.m_Offset = Vector3.zero;
+        offsetCamera.m_Offset = Vector3.zero;
 
     }
 
@@ -136,51 +105,18 @@ public class CameraManager : MonoBehaviour
             return false;
         }
     }
-
-
     void ShakeCamera(float _time, float _ampltiude, float _frequency)
     {
         virtualCameraNoise.m_AmplitudeGain = _ampltiude;
         virtualCameraNoise.m_FrequencyGain = _frequency;
         Invoke("ShakeCameraOff", _time);
     }
-
     void ShakeCameraOff()
     {
-        //virtualCameraNoise.m_AmplitudeGain = 0.0f;
-        //virtualCameraNoise.m_FrequencyGain = 0.0f;
+        virtualCameraNoise.m_AmplitudeGain = 0.0f;
+        virtualCameraNoise.m_FrequencyGain = 0.0f;
     }
 
-    //옵저버 모드 ..
-    public void ChangeNextPlayer()
-    {
-        switch (GameManager.Instance.State)
-        {
-            case Define.GameState.GameReady:
-            case Define.GameState.Gameing:
-                FindNextPlayer();
-                break;
-            default:
-                //ResetToWaitState();
-                break;
-        }
-    }
-
-    void FindNextPlayer()
-    {
-
-        PlayerController findTarget = null;
-        var playerControllerArray = GameManager.Instance.GetPlayerArray();
-        if (playerControllerArray.Length <= 0) return;  //없으면 X
-        int i = 0;
-       
-    }
-
-    //리셋
-    public void ResetToWaitState()
-    {
-        TargetCamera.Follow = mapCenter;
-        cameraOffset.m_Offset = new Vector3(0, 0, -5);
-    }
+  
 
 }
