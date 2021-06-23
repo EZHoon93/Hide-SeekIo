@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class AIDestGizmo : MonoBehaviour
 {
-    [SerializeField] Transform transform;
     [SerializeField] NavMeshAgent _agent;
     private void Awake()
     {
@@ -14,7 +13,7 @@ public class AIDestGizmo : MonoBehaviour
 
     private void Update()
     {
-        transform.position = _agent.destination;
+        this.transform.position = _agent.destination;
     }
 
    

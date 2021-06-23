@@ -7,19 +7,7 @@ using System;
 public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate
 {
     public event Action OnPhotonInstantiateEvent;
-    event Action _onPhotonInstantiate;
-    //public event Action OnPhotonInstantiateEvent
-    //{
-    //    add
-    //    {
-    //        _onPhotonInstantiate += value;
-    //    }
-    //    remove
-    //    {
-    //        _onPhotonInstantiate -= value;
-    //    }
-
-    //}
+    
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (photonView.InstantiationData == null) return;   //데이터가없으면 null
@@ -30,16 +18,13 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         var playerController = this.GetComponent<PlayerController>();
         //-데이터받아옴//
         var avater = Managers.Resource.Instantiate($"Avater/{avaterId}",this.transform);
-        avater.transform.localPosition = Vector3.zero;
-        avater.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        avater.transform.ResetTransform();
         avater.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-
-        
 
         //유저자신의 캐릭이라면.
         if (this.IsMyCharacter())
         {
-            CameraManager.Instance.SetupTarget(playerController);
+            CameraManager.Instance.SetupTarget(playerController.transform);
         }
 
 

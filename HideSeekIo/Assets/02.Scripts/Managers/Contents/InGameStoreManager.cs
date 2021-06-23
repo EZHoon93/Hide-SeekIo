@@ -59,7 +59,9 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 break;
         }
 
-        photonView.RPC("ResultBuyInGameItem_OnAllClients", RpcTarget.All, Define.InGameItemUIState.SucessRecycle, hiderItemEnum, hiderController.ViewID());
+        photonView.RPC("ResultBuyInGameItem_OnAllClients", RpcTarget.All,
+            Define.InGameItemUIState.Sucess, Define.Team.Hide, (int)hiderItemEnum, hiderController.ViewID());
+
 
         return Define.InGameItemUIState.SucessRecycle;
     }
@@ -91,7 +93,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 //BuffManager.Instance.HiderTeamBuffControllerOnLocal
                 break;
         }
-        photonView.RPC("ResultBuyInGameItem_OnAllClients", RpcTarget.All, Define.InGameItemUIState.Sucess, seekerItemEnum, seekerController.ViewID());
+        photonView.RPC("ResultBuyInGameItem_OnAllClients", RpcTarget.All, Define.InGameItemUIState.Sucess,Define.Team.Seek, (int)seekerItemEnum, seekerController.ViewID());
 
         return Define.InGameItemUIState.SucessRecycle;
     }
@@ -100,20 +102,30 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
     //서버쪽
 
     [PunRPC]
-    public void ResultBuyInGameItem_OnAllClients(Define.InGameItemUIState inGameItemUIState, Enum @enum, int viewID)
+    public void ResultBuyInGameItem_OnAllClients(Define.InGameItemUIState inGameItemUIState,Define.Team team,  int @enum, int viewID)
     {
         var usePlayer = GameManager.Instance.GetLivingEntity(viewID);
         if (usePlayer == null) return;
+        switch (team)
+        {
+            case Define.Team.Hide:
+                Result_BuyHiderItemOnAllClients(Util.GetEnumByIndex<Define.HiderStoreList>(@enum), usePlayer);
+                break;
+            case Define.Team.Seek:
+                Result_BuyHiderItemOnAllClients(Util.GetEnumByIndex<Define.SeekrStoreList>(@enum), usePlayer);
+                break;
 
-        if (typeof(Define.HiderStoreList) == @enum.GetType())
-        {
-            Result_BuyHiderItemOnAllClients(@enum, usePlayer);
         }
-        //Seekr
-        else
-        {
-            Result_BuySeekerItemOnAllClients(@enum, usePlayer);
-        }
+        //if (typeof(Define.HiderStoreList) == @enum.GetType())
+        //{
+        //    Result_BuyHiderItemOnAllClients(@enum, usePlayer);
+        //}
+        ////Seekr
+        //else
+        //{
+        //    Result_BuySeekerItemOnAllClients(@enum, usePlayer);
+
+        //}
     }
     public void  Result_BuyHiderItemOnAllClients(Enum @enum, LivingEntity usePlayer)
     {

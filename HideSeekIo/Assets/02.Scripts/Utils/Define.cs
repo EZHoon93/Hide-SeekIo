@@ -37,10 +37,8 @@ public class Define
     public enum Weapon
     {
         Melee2 = 1,
-
         Stone = 101,
         Grenade,
-
         Sniper = 201
     }
 
@@ -71,7 +69,11 @@ public class Define
         Unknown,
         Login,
         Lobby = 10,
-        Main,
+        Main1 = 21,
+        Main2 ,
+        Main3 ,
+
+        Gun1 = 51
     }
     public enum GameScene
     {
@@ -187,5 +189,10 @@ public class Define
          AbilityCode = 111
     }
 
+    public enum ChattingColor
+    {
+        System,
+        Message
+    }
     //public enum AttackSta
 }

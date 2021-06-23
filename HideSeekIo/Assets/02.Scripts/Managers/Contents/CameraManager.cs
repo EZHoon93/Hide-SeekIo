@@ -10,7 +10,7 @@ using UnityEngine;
 public class CameraManager : GenricSingleton<CameraManager>
 {
     
-    public event Action<int, Define.Team> _cameraViewChange;
+    //public event Action<int, Define.Team> _cameraViewChange;
 
     public CinemachineVirtualCamera VirtualCamera { get; private set; }
 
@@ -19,7 +19,7 @@ public class CameraManager : GenricSingleton<CameraManager>
 
 
 
-    public PlayerController _target;
+    PlayerController _target;
 
     FogOfWarLegacy _fogOfWarLegacy;
 
@@ -42,15 +42,19 @@ public class CameraManager : GenricSingleton<CameraManager>
 
 
 
-    public void SetupTarget(PlayerController target)
+    public void SetupTarget(Transform target)
     {
         VirtualCamera.Follow = target.transform;
         offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
 
-        if(target.Team == Define.Team.Hide)
+        var targetPlayer=  target.GetComponent<PlayerController>();
+
+        if (targetPlayer == null) return;
+
+        if(targetPlayer.Team == Define.Team.Hide)
         {
             Camera.main.cullingMask = ~( 1 << (int)Define.Layer.UI); 
-            _fogOfWarLegacy.team = target.ViewID();
+            _fogOfWarLegacy.team = targetPlayer.ViewID();
         }
         else
         {
@@ -58,8 +62,7 @@ public class CameraManager : GenricSingleton<CameraManager>
 
         }
 
-
-        if (target.IsMyCharacter() && target.Team == Define.Team.Seek)
+        if (targetPlayer.IsMyCharacter() && targetPlayer.Team == Define.Team.Seek)
         {
             StartCoroutine(CameraOffset());
         }

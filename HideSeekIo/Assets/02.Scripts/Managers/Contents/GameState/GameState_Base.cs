@@ -63,12 +63,9 @@ public abstract class GameState_Base : MonoBehaviourPun , IPunObservable
 
     protected virtual void Master_ChangeState(Define.GameState gameState)
     {
-        if (!PhotonNetwork.IsMasterClient || _isNext) return;  //방장이아니거나 next가 true라면
+        if (_isNext) return;  //방장이아니거나 next가 true라면
         _isNext = true;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
-        {
-            {"GS" ,gameState }
-        });
+        PhotonGameManager.Instacne.ChangeRoomStateToServer(gameState);
     }
 
     public void ResetGameState()

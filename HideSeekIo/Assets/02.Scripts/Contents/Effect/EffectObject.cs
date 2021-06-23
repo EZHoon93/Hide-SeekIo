@@ -8,6 +8,7 @@ public class EffectObject : Poolable
     [SerializeField] float _time = 2;
     private void OnEnable()
     {
+        CancelInvoke("AfaterDestroy");
         Invoke("AfaterDestroy", _time);
     }
     void AfaterDestroy()

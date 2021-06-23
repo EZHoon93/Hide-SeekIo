@@ -45,7 +45,7 @@ public class HiderController : PlayerController
     {
         base.HandleDeath();
         SetActiveComponent(false);
-        GameManager.Instance.HumanDie(this.photonView.ViewID);
+        //GameManager.Instance.HumanDie(this.photonView.ViewID);
         if (photonView.IsMine)
         {
             

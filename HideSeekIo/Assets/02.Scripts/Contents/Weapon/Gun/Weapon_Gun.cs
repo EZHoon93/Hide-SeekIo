@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 
 using UnityEngine;
-
+using Photon.Pun;
 public class Weapon_Gun : Weapon
 {
     [SerializeField] ParticleSystem _muzzleFalsh;
@@ -10,8 +10,7 @@ public class Weapon_Gun : Weapon
     [SerializeField] int _currentAmmo;
     [SerializeField] float _maxDistance;
     [SerializeField] float _attackTimeBet;
-    [SerializeField] protected Transform _fireTransform1;
-    [SerializeField] protected Transform _fireTransform2;
+    [SerializeField] protected Transform _fireTransform;
 
     [SerializeField] protected Transform _lineTransform;
     float _lastFireTime;
@@ -39,20 +38,35 @@ public class Weapon_Gun : Weapon
         _currentAmmo = _maxAmmo;
     }
 
-    public override bool Attack(Vector2 inputVector)
+    public override void Attack(Vector2 inputVector)
     {
-        _muzzleFalsh.Play();
-        var go1 = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
-        var go2 = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
+        state = State.Delay;
+        LastAttackInput = inputVector;
+        //Vector3 startPoint = _fireTransform.transform.position;
+        Vector3 endPoint = GetHitPoint(_fireTransform, inputVector);
 
-        go1.transform.position = _fireTransform1.transform.position;
-        go1.Setup(GetHitPoint(_fireTransform1, inputVector));
-        go2.transform.position = _fireTransform2.transform.position;
-        go2.Setup(GetHitPoint(_fireTransform2, inputVector));
-
-        return true;
+        photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
-
+    [PunRPC]
+    public void AttackOnServer(Vector2 inputVector , Vector3 endPoint)
+    {
+        state = State.Delay;
+        LastAttackInput = inputVector;
+        _muzzleFalsh.Play();
+        StartCoroutine(AttackProcessOnAllClinets(endPoint));
+    }
+    IEnumerator AttackProcessOnAllClinets(Vector3 endPoint)
+    {
+        state = State.Delay;
+        AttackSucessEvent?.Invoke();
+        yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
+        var go1 = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
+        go1.transform.position = _fireTransform.transform.position;
+        go1.Setup(endPoint);
+        yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
+        AttackEndEvent?.Invoke();
+        state = State.End;
+    }
     public override void Zoom(Vector2 inputVector)
     {
         var pos = UtillGame.ConventToVector3(inputVector);

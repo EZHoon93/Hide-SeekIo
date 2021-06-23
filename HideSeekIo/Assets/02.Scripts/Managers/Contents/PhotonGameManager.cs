@@ -1,10 +1,10 @@
 ﻿
-using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime; // 포톤 서비스 관련 라이브러리
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using ExitGames.Client.Photon;
-
+using System.Linq;
+using System;
 
 public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
@@ -29,7 +29,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #endregion
 
 
-
+    public Action<Define.ChattingColor,string> reciveChattingEvent;
 
 
     private void Awake()
@@ -42,6 +42,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         DontDestroyOnLoad(this.gameObject);
     }
+
+   
     public override void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);
@@ -54,13 +56,53 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
-        if (propertiesThatChanged.ContainsKey("GS"))
+        if (propertiesThatChanged.ContainsKey("gs"))
         {
             var CP = PhotonNetwork.CurrentRoom.CustomProperties;
-            var gameState = (Define.GameState)CP["GS"];
+            var gameState = (Define.GameState)CP["gs"];
             GameManager.Instance.State = gameState;
         }
+        if (propertiesThatChanged.ContainsKey("jn"))
+        {
+            var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
+            if (joinUserCount <= 0)
+            {
+                //게임에 참여중인 유저가 한명도없다면.
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
+                    {
+                        {"gs" ,Define.GameState.Wait }
+                    });
+                }
+            }
+        }
+        //유저 정보변경  level => lv 닉네임변경시도 동일레벨,lv호출
+        if (propertiesThatChanged.ContainsKey("lv"))
+        {
+
+        }
+
     }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey("jn"))
+        {
+            print("Jn변경!!!");
+            if (PhotonNetwork.IsMasterClient == false) return;
+            var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
+            if (joinUserCount <= 0)
+            {
+                //게임에 참여중인 유저가 한명도없다면.
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
+                {
+                    {"gs" ,Define.GameState.Wait }
+                });
+            }
+        }
+    }
+
 
 
     /// <summary>
@@ -81,9 +123,29 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
 
 
+    public void ChangeRoomStateToServer(Define.GameState gameState)
+    {
+        if (PhotonNetwork.IsMasterClient == false) return;
+        print("ChangeRoomStateToServer" + gameState);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
+        {
+            {"gs" , gameState }
+        });
+    }
 
 
+    [PunRPC]
+    public void SendChattingMessageOnServer(Define.ChattingColor chattingColor, string content, PhotonMessageInfo _photonMessageInfo )
+    {
+        var playerMessage= _photonMessageInfo.Sender.NickName + ": " + content;
+        reciveChattingEvent?.Invoke( chattingColor , playerMessage);
+    }
 
+    public void SendChattingMessageOnLocal(Define.ChattingColor chattingColor, string content)
+    {
+        print("인사받음");
+        reciveChattingEvent?.Invoke(chattingColor, content);
+    }
 
 
 

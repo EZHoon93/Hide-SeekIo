@@ -107,11 +107,13 @@ public class Util
         }
     }
 
-    public static void UtillResetTransform(Transform target)
+    public static void UtillResetTransform( Transform target )
     {
         target.localPosition = Vector3.zero;
         target.localRotation = Quaternion.Euler(Vector3.zero);
+        
         target.localScale = Vector3.one;
+        
     }
 
     #region Color Text
@@ -157,5 +159,46 @@ public class Util
     }
     #endregion
 
+
+
+    /// <summary>
+    /// T열거형을 랜덤으로 1개뽑는다. 
+    /// 매개변수가 있을시 해당 매개변수를 제외하고 뽑는다. 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="enum"></param>
+    /// <returns></returns>
+    public static System.Enum RandomEnum<T>(System.Enum @enum = null)
+    {
+        System.Array values = System.Enum.GetValues(typeof(T));
+        System.Enum result = null;
+        do
+        {
+            int ran = Random.Range(0, values.Length);
+            result = (System.Enum)values.GetValue(ran);
+            if(@enum == null)
+            {
+                return result;
+            }
+        } while (string.Compare(result.ToString(), @enum.ToString()) == 0);
+
+        return result;
+
+    }
+
+    public static System.Enum GetEnumByIndex<T>(int index)
+    {
+        System.Array values = System.Enum.GetValues(typeof(T));
+
+        foreach(var @enum  in values)
+        {
+            if(index == (int)@enum)
+            {
+                return (System.Enum)@enum;
+            }
+        }
+
+        return null;
+    }
 
 }

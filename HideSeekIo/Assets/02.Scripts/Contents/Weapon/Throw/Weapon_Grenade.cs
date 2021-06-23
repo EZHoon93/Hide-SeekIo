@@ -12,7 +12,10 @@ public class Weapon_Grenade : Weapon_Throw
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    private void Start()
+    {
         Setup("Throw", .2f, .2f, 5.0f, 1);
-        weaponServerKey = Define.Weapon.Grenade;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using System.Collections;
 
 public abstract class Weapon_Throw : Weapon
 {
@@ -20,28 +21,50 @@ public abstract class Weapon_Throw : Weapon
         _distance = distance;
         attackRange = newAttackRange;
     }
-    public override bool Attack(Vector2 inputVector)
-    {
-        AttackToServer(inputVector);
-        return true;
 
-    }
-    void AttackToServer(Vector2 inputVector)
-    {
-        Vector3 startPoint = newAttacker.CenterPivot.position;
-        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, _distance, newAttacker.transform);
-        AttackProcess(startPoint, endPoint);
-        //photonView.RPC("AttackProcess", RpcTarget.All, startPoint, endPoint);
-    }
-    [PunRPC]
-    public void AttackProcess(Vector3 startPoint, Vector3 endPoint)
-    {
-        var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(startPoint, endPoint);
-    }
     public override void Zoom(Vector2 inputVector)
     {
         UtillGame.ThrowZoom(inputVector, _distance, newAttacker.CenterPivot, _attackRangeUI);
     }
+
+
+    #region Attack
+    public override void Attack(Vector2 inputVector)
+    {
+        state = State.Delay;
+        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, _distance, newAttacker.transform);
+        LastAttackInput = inputVector;
+        photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
+    }
+
+    [PunRPC]
+    public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
+    {
+        LastAttackInput = inputVector;
+        Vector3 startPoint = newAttacker.CenterPivot.position;
+        StartCoroutine(AttackProcessOnAllClinets(startPoint, endPoint));
+    }
+
+    IEnumerator AttackProcessOnAllClinets(Vector3 startPoint, Vector3 endPoint)
+    {
+        state = State.Delay;
+        AttackSucessEvent?.Invoke();
+        yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
+        var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
+        projectile.Play(startPoint, endPoint);
+        yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
+        AttackEndEvent?.Invoke();
+        state = State.End;
+        print("끝");
+    }
+
+
+    public void AttackEffect(Vector3 startPoint, Vector3 endPoint)
+    {
+        var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
+        projectile.Play(startPoint, endPoint);
+    }
+
+    #endregion
 
 }

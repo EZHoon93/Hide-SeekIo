@@ -3,6 +3,8 @@ using Photon.Pun;
 using Photon.Realtime; // 포톤 서비스 관련 라이브러리
 using System;
 using Random = UnityEngine.Random;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
 
@@ -81,7 +83,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
                 PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions()
                 {
                     IsVisible = _isScret,
-                    MaxPlayers = 8
+                    MaxPlayers = 8,
+                    
                 }, TypedLobby.Default) ;
             }
         }
@@ -98,6 +101,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable()
+            {
+                {"lv" , PlayerInfo.level }
+            });
             // 룸 접속 실행
             State = Define.ServerState.Connect;
         }
@@ -122,29 +129,26 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         print("OnJoinedRoom");
-        //PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
-        // 모든 룸 참가자들이 Main 씬을 로드하게 함
-        Managers.Scene.LoadScene(Define.Scene.Main);
-
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Managers.Scene.MasterSelectNextMainScene(Define.Scene.Unknown);
+        }
+        else
+        {
+            var sceneIndex = (int)PhotonNetwork.CurrentRoom.CustomProperties["map"];
+            Managers.Scene.LoadSceneByIndex(sceneIndex);
+        }
     }
 
-    //public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-    //{
-    //    if(propertiesThatChanged.ContainsKey("Speed"))
-    //    {
-    //        var CP = PhotonNetwork.CurrentRoom.CustomProperties;
-    //        print(propertiesThatChanged);
-    //    }
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        if (propertiesThatChanged.ContainsKey("map"))
+        {
+            var sceneIndex = (int)PhotonNetwork.CurrentRoom.CustomProperties["map"];
+            Managers.Scene.LoadSceneByIndex(sceneIndex);
+        }
 
-    //    if (propertiesThatChanged.ContainsKey("GS"))
-    //    {
-
-    //        var CP = PhotonNetwork.CurrentRoom.CustomProperties;
-    //        var gameState = (Define.GameState)CP["GS"];
-    //        //GameManager.instance.State = gameState;
-    //    }
-
-    //}
+    }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
@@ -153,11 +157,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        enterUserList?.Invoke(otherPlayer);
+        leftUserList?.Invoke(otherPlayer);
     }
 
-    //UI에서 다른채널 찾기 클릭시
-    public void ChangeChannel(string newRoomName , bool newIsScret)
+    //UI에서 다른채널 찾기 및 미입력시 빠른채널찾기
+    public void ChangeChannel(string newRoomName= null , bool newIsScret =false)
     {
         _roomName = newRoomName;
         _isScret = newIsScret;

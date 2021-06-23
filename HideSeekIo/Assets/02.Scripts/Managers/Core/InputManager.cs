@@ -30,6 +30,7 @@ public class InputManager : MonoBehaviour
 
 
 
+
     public Vector2 MoveVector { get; private set; }
     public Vector2 AttackVector { get; private set; }
     public Vector2 SkillVector { get; set; }
@@ -37,9 +38,8 @@ public class InputManager : MonoBehaviour
     public bool SkillTouch { get; private set; }
     public bool IsRun => _runButton.IsRun;
 
-    //public UI_Slider_CoolTime UI_SkillCoolTime;
+    [SerializeField] UI_Slider_CoolTime _attackCoolTimeUI;
 
-    public event Action skillSucessCallBack; //스킬 사용 성공시 발생 이벤트
 
 
     private void Awake()
@@ -143,12 +143,20 @@ public class InputManager : MonoBehaviour
         _skillJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(isAcitve);
     }
-    //public vo
-
-    public void SkillSucess()
+    public void OffAllController()
     {
-        skillSucessCallBack?.Invoke();
+        _moveJoystick.gameObject.SetActive(false);
+        _attackJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
+        _runButton.gameObject.SetActive(false);
     }
+
+    public void AttackCoolTime(float maxCoolTime, float currentCoolTime)
+    {
+        _attackCoolTimeUI.UpdateCoolTime(maxCoolTime, currentCoolTime);
+    }
+
+    
 
     public void Clear()
     {

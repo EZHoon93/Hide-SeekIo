@@ -28,7 +28,7 @@ public class UI_QuickChangeChannel : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
-        Managers.UI.SceneUI.GetComponent<UI_Main>().ChangePanel(Define.GameScene.Lobby);
+        PhotonManager.instacne.ChangeChannel();
     }
 
     void Cancel(PointerEventData pointerEventData)

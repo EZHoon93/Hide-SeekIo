@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -6,7 +8,6 @@ public class UI_ChangeServer : UI_Popup
 {
     enum Buttons
     {
-        Confirm,
         Cancel,
     }
 
@@ -16,7 +17,6 @@ public class UI_ChangeServer : UI_Popup
         base.Init();
 
         Bind<Button>(typeof(Buttons));
-        GetButton((int)Buttons.Confirm).gameObject.BindEvent(Confirm);
         GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
 
 
@@ -32,5 +32,7 @@ public class UI_ChangeServer : UI_Popup
     void Cancel(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
+        print("취소");
+        //PhotonNetwork.ConnectToRegion("aisa");
     }
 }

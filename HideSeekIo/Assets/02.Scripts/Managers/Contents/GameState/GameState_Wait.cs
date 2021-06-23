@@ -16,16 +16,11 @@ public class GameState_Wait : GameState_Base
     protected override void Setup()
     {
         var mainSceneUI = Managers.UI.SceneUI as UI_Main;
-        _DeathInfoText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.DeathInfo);
-        _noticeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
-        _countDownText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
-
-
-        _countDownText = null;
-        _noticeText = null;
-        _DeathInfoText = null;
+        mainSceneUI.ResetTexts();
 
         _initRemainTime = 1;
+
+        CameraManager.Instance.SetupTarget(GameManager.Instance.CurrentGameScene.CameraView);
     }
 
 

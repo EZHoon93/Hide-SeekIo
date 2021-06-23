@@ -8,9 +8,10 @@ using TMPro;
 public class GameState_Count : GameState_Base
 {
     readonly int _totZombieCount = 1;   //총 숙주 좀비 수 
-
+    TextMeshProUGUI _countDownText;
     TextMeshProUGUI _timeText;
     TextMeshProUGUI _noticeText;
+
     int _initCountTime = 3;
 
     bool _isCreateCharacter;
@@ -19,11 +20,11 @@ public class GameState_Count : GameState_Base
 
     protected override void Setup()
     {
-        _timeText = Managers.UI.SceneUI.GetComponent<UI_Main>().GetText(UI_Main.TextMeshProUGUIs.CountDown);
-        _noticeText = Managers.UI.SceneUI.GetComponent<UI_Main>().GetText(UI_Main.TextMeshProUGUIs.Notice);
-
-        //_playerSpawnPoints = FindObjectOfType<PlayerSpawnPoints>(); //위치 담긴 목록
-        //_characterManager = FindObjectOfType<CharacterManager>();
+        var mainSceneUI = Managers.UI.SceneUI as UI_Main;
+        mainSceneUI.ResetTexts();
+        _timeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.CountDown);
+        _noticeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
+        
 
         _noticeText.text = "잠시 후 게임이 시작됩니다.";
         _initRemainTime = _initCountTime;
@@ -33,9 +34,14 @@ public class GameState_Count : GameState_Base
     protected override void ChangeRemainTime()
     {
         if (RemainTime > 0)
+        {
             _timeText.text = RemainTime.ToString();
+
+        }
         else
+        {
             _timeText.text = null;
+        }
     }
 
     protected override void EndRemainTime()
@@ -58,7 +64,7 @@ public class GameState_Count : GameState_Base
 
     List<int> GetJoinUserList()
     {
-        var playerList = PhotonNetwork.CurrentRoom.Players.Values.Where(s => (bool)s.CustomProperties["Join"] == true).ToList();
+        var playerList = PhotonNetwork.CurrentRoom.Players.Values.Where(s => (bool)s.CustomProperties["jn"] == true).ToList();
         List<int> result = new List<int>();
         foreach (var p in playerList)
             result.Add(p.ActorNumber);
@@ -143,12 +149,12 @@ public class GameState_Count : GameState_Base
         object[] userData = { "User1", PlayerInfo.CurrentAvater };
         if (PhotonNetwork.IsMasterClient)
         {
-            var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
+            var pos = GameManager.Instance.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
             GameManager.Instance.SpawnManager.PlayerSpawn(Define.Team.Seek, pos);
         }
         else
         {
-            var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
+            var pos = GameManager.Instance.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
             GameManager.Instance.SpawnManager.PlayerSpawn(Define.Team.Hide, pos);
         }
         //index = 0,1은 좀비 

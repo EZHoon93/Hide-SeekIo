@@ -17,7 +17,7 @@ public class UI_UserList : MonoBehaviour
     void Start()
     {
         LoadCurrentPlayer();
-        PhotonManager.instacne.enterUserList += EnterPlayer;
+        PhotonManager.instacne.enterUserList += UpdatePlayer;
         PhotonManager.instacne.leftUserList += LeftrPlayer;
 
     }
@@ -26,23 +26,24 @@ public class UI_UserList : MonoBehaviour
     {
         foreach(var player in PhotonNetwork.CurrentRoom.Players)
         {
-            EnterPlayer(player.Value);
+            UpdatePlayer(player.Value);
         }
     }
 
   
-    public void EnterPlayer(Player newPlayer)
+    public void UpdatePlayer(Player newPlayer)
     {
-        if(_playerDic.ContainsKey(newPlayer.ActorNumber) == false)
+        GameObject go = null;
+        bool isExist = _playerDic.TryGetValue(newPlayer.ActorNumber, out go);
+        if(isExist == false)
         {
-            var go = Instantiate(userInfoPrefab);
-            go.transform.SetParent(this._content);
-            go.transform.position = Vector3.zero;
-            go.gameObject.SetActive(true);
-            var userLevel =  newPlayer.CustomProperties["lv"];
-            go.GetComponent<TMPro.TextMeshProUGUI>().text = $"{newPlayer.NickName} (LV.{userLevel})";
+            go = Instantiate(userInfoPrefab);
+            go.transform.ResetTransform(_content);
             _playerDic.Add(newPlayer.ActorNumber, go.gameObject);
         }
+        print("추가");
+        var userLevel = newPlayer.CustomProperties["lv"];
+        go.GetComponent<TMPro.TextMeshProUGUI>().text = $"{newPlayer.NickName} (LV.{userLevel})";
     }
     public void LeftrPlayer(Player otherPlayer)
     {

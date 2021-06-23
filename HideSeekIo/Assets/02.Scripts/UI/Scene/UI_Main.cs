@@ -60,6 +60,8 @@ public class UI_Main : UI_Scene
     public override void Init()
     {
         base.Init();
+        GameManager.Instance.GameResetEvent += () => InGameStore.gameObject.SetActive(false);
+
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
         Bind<TextMeshProUGUI>(typeof(TextMeshProUGUIs));
@@ -97,6 +99,20 @@ public class UI_Main : UI_Scene
         }
     }
 
+    public void ResetTexts()
+    {
+        var array = Enum.GetValues( typeof(TextMeshProUGUIs)) ;
+        foreach(var e in array)
+        {
+            GetText((int)e).text = null;
+        }
+
+        GetText(TextMeshProUGUIs.InGameTime).text = "00:00";
+        GetText(TextMeshProUGUIs.HumanCount).text = "0";
+        GetText(TextMeshProUGUIs.ZombieCount).text = "0";
+
+
+    }
     public TextMeshProUGUI GetText(TextMeshProUGUIs textType)
     {
         return GetText((int)textType);

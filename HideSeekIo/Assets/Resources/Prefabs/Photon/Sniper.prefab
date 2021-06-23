@@ -128,36 +128,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!1 &4572868728631607536
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3760188794178753008}
-  m_Layer: 0
-  m_Name: Fire2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3760188794178753008
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4572868728631607536}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.2, y: 0.5, z: 0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2715270625480441192}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6151405433896896111
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +157,6 @@ Transform:
   m_Children:
   - {fileID: 5734879042918908019}
   - {fileID: 5887251592904587818}
-  - {fileID: 3760188794178753008}
   - {fileID: 6818733792774284135}
   m_Father: {fileID: 8738660458680235511}
   m_RootOrder: 1
@@ -238,7 +207,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7574a31871af63649bf53a5809f7aa26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   _uICanvas: {fileID: 6151405433896896111}
+  _initCoolTime: 1
   _muzzleFalsh: {fileID: 6818733792793680637}
   _bulletPrefab: {fileID: 939191125779542941, guid: 1a0be88c956f3224e9f6a87b2dc102a4,
     type: 3}
@@ -246,8 +217,7 @@ MonoBehaviour:
   _currentAmmo: 5
   _maxDistance: 5
   _attackTimeBet: 1
-  _fireTransform1: {fileID: 5734879042918908019}
-  _fireTransform2: {fileID: 3760188794178753008}
+  _fireTransform: {fileID: 5734879042918908019}
   _lineTransform: {fileID: 5887251592904587818}
 --- !u!114 &247523159372839
 MonoBehaviour:
@@ -295,7 +265,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8319844860912659597}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2715270625480441192}
@@ -404,7 +374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 433414, guid: 2e7048c434b4bd64a82bb82a54f897e2, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 433414, guid: 2e7048c434b4bd64a82bb82a54f897e2, type: 3}
       propertyPath: m_LocalPosition.x

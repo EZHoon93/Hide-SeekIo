@@ -1,6 +1,7 @@
 ﻿using Photon.Pun;
 using TMPro;
 
+using UnityEngine;
 
 public class GameState_Gameing : GameState_Base, IPunObservable
 {
@@ -46,6 +47,14 @@ public class GameState_Gameing : GameState_Base, IPunObservable
         Master_ChangeState(Define.GameState.End);
     }
 
-    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            print("End변ㄱㅇ");
+            Master_ChangeState(Define.GameState.End);
+        }
+    }
+
 
 }

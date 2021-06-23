@@ -12,11 +12,13 @@ public class LoginScene : BaseScene
     }
 
     State _state = State.UnLoad;
+
     protected override void Init()
     {
         base.Init();
         SceneType = Define.Scene.Login;
 
+        
         StartCoroutine(LoadData());
     }
     public override void Clear()

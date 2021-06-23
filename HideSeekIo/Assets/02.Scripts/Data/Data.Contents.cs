@@ -52,4 +52,6 @@ namespace Data
 		}
 	}
 	#endregion
+	[System.Serializable]
+	public class TypeColor : SerializableDictionary<Define.ChattingColor, Color> { }
 }

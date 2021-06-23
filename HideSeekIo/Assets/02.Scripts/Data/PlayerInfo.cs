@@ -13,13 +13,17 @@ public static class PlayerInfo
     public static string CurrentAvater { get; private set; }
     public static string CurrentWeapon { get; private set; }
     public static string nickName;
-    public static int coin;
+    public static int level { get; private set; }
+    public static int coin { get; private set; }
+    public static int exp;
+    public static int maxExp;
 
     public static void Login()
     {
         State = Define.UserDataState.Load;
-        nickName = "EZs";
+        nickName = "EZsss";
         coin = 999;
+        level = 33;
         CurrentAvater = "Ch01";
         CurrentWeapon = "Wm01";
     }

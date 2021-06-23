@@ -3,13 +3,13 @@
 using UnityEngine;
 using Photon.Pun;
 using System;
-public class AttackBase : MonoBehaviourPun 
+public class AttackBase : MonoBehaviourPun
 {
     [SerializeField] Transform _centerPivot;
     protected Animator _animator;
     public Transform CenterPivot => _centerPivot;
     public Weapon weapon { get; protected set; }
-    Define.Weapon n_currentWeapon;
+    //Define.Weapon n_currentWeapon;
 
     protected IEnumerator _attackEnumerator;
 
@@ -18,25 +18,23 @@ public class AttackBase : MonoBehaviourPun
     {
         _animator = GetComponentInChildren<Animator>();
     }
-    public virtual  void SetupWeapon(Weapon newWeapon)
+    public virtual void SetupWeapon(Weapon newWeapon)
     {
         if (weapon)
         {
             Managers.Resource.Destroy(weapon.gameObject);
         }
         weapon = newWeapon;
-        n_currentWeapon = weapon.weaponServerKey;
         weapon.newAttacker = this;
-        weapon.transform.SetParent(_animator.GetBoneTransform(HumanBodyBones.RightHand));
-        weapon.transform.localPosition = Vector3.zero;
-        weapon.transform.localRotation = Quaternion.Euler(Vector3.zero);
-        weapon.transform.localScale = Vector3.one;
+        weapon.transform.ResetTransform(_animator.GetBoneTransform(HumanBodyBones.RightHand));  //무기오브젝트
+        weapon.UICanvas.transform.ResetTransform(this.transform);       //UI
+        weapon.AttackSucessEvent = AttackSucess;
+        weapon.AttackEndEvent = AttackEnd;
+        SetupAnimation();
+    }
 
-        weapon.UICanvas.transform.SetParent(this.transform);
-        weapon.UICanvas.transform.localPosition = Vector3.zero;
-        weapon.UICanvas.transform.localRotation = Quaternion.Euler(Vector3.zero);
-        weapon.UICanvas.transform.localScale = Vector3.one;
-
+    void SetupAnimation()
+    {
         switch (weapon.weaponType)
         {
             case Weapon.WeaponType.Gun:
@@ -46,14 +44,28 @@ public class AttackBase : MonoBehaviourPun
             case Weapon.WeaponType.Melee:
                 _animator.SetBool("Gun", false);
                 _animator.SetBool("Melee", true);
-                print(weapon.weaponType + "밀리");
-
-
                 break;
             case Weapon.WeaponType.Throw:
 
                 break;
         }
+
     }
 
+    protected virtual void AttackSucess()
+    {
+        _animator.SetTrigger(weapon.AttackAnim);
+
+    }
+
+    protected virtual void AttackEnd()
+    {
+
+    }
+    protected void UpdateAttackCoolTime()
+    {
+        InputManager.Instacne.AttackCoolTime(weapon.InitCoolTime, weapon.ReaminCoolTime);
+    }
+
+    
 }

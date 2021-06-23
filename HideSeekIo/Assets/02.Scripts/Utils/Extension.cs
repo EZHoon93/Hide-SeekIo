@@ -52,12 +52,12 @@ public static class Extension
 		return PhotonNetwork.Time <= createTime + 1 ? true : false;
 	}
 
-	public static void ResetTransform(this Transform go , Transform parent)
+	public static void ResetTransform(this Transform go ,Transform parent = null)
     {
-        if (parent)
+        if (parent != null)
         {
 			go.transform.SetParent(parent);
         }
-		Util.UtillResetTransform(go);
+		Util.UtillResetTransform(go );
     }
 }

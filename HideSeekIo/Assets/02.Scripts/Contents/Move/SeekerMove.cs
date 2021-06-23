@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.IO.Pipes;
 
+using Photon.Pun;
+
 using UnityEngine;
 
 public class SeekerMove : MoveBase
@@ -12,9 +14,39 @@ public class SeekerMove : MoveBase
 
     [SerializeField] float _testSpeed;
 
+
+    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnPhotonSerializeView(stream, info);
+        switch (_seekerAttack.State)
+        {
+            case SeekerAttack.state.Attack:
+                this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+                print("씨꺼");
+                break;
+        }
+
+        //if (stream.IsWriting)
+        //{
+        //    stream.SendNext(_seekerAttack.State);
+        //}
+        //else
+        //{
+        //    var reciveState = (SeekerAttack.state)stream.ReceiveNext();
+        //    if (reciveState == _seekerAttack.State) return;
+        //    switch (reciveState)
+        //    {
+        //        case SeekerAttack.state.Attack:
+        //            _animator.SetTrigger("Attack");
+        //            this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+        //            break;
+        //    }
+
+        //}
+    }
     protected void Awake()
     {
-        _seekerAttack= GetComponent<SeekerAttack>();
+        _seekerAttack = GetComponent<SeekerAttack>();
         _seekerInput = GetComponent<SeekerInput>();
         _characterController = GetComponent<CharacterController>();
     }
@@ -26,26 +58,21 @@ public class SeekerMove : MoveBase
 
     private void Update()
     {
-        if (photonView.IsMine) return;
-        switch (_seekerAttack.State)
+        if (photonView.IsMine == false)
         {
-            case SeekerAttack.state.Attack:
-                var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-                var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
-                var newDirection = quaternion * temp;
-                Quaternion newRotation = Quaternion.LookRotation(newDirection);
-                this.transform.rotation = newRotation;
-                UpdateAnimation(0);
-                break;
+            switch (_seekerAttack.State)
+            {
+                case SeekerAttack.state.Attack:
+                    this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+                    break;
+            }
         }
-        
-        
     }
 
 
     protected void FixedUpdate()
     {
-        print("이동"+_seekerAttack.State);
+        print("이동" + _seekerAttack.State);
         MoveSpeed = _testSpeed;
         if (!photonView.IsMine) return;
         switch (_seekerAttack.State)
@@ -58,10 +85,12 @@ public class SeekerMove : MoveBase
             case SeekerAttack.state.Attack:
                 var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
                 //var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
-                var temp = new Vector3(_seekerAttack.weapon.AttackDirecition.x, 0, _seekerAttack.weapon.AttackDirecition.z).normalized;
-                var newDirection = quaternion * temp;
-                Quaternion newRotation = Quaternion.LookRotation(newDirection);
-                this.transform.rotation = newRotation;
+                //var temp = new Vector3(_seekerAttack.weapon.AttackDirecition.x, 0, _seekerAttack.weapon.AttackDirecition.z).normalized;
+                //var newDirection = quaternion * temp;
+                //Quaternion newRotation = Quaternion.LookRotation(newDirection);
+                //this.transform.rotation = newRotation;
+                //this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+
                 UpdateAnimation(0);
 
                 break;
@@ -86,7 +115,7 @@ public class SeekerMove : MoveBase
         var temp = new Vector3(inputMoveVector2.x, 0, inputMoveVector2.y).normalized;
         var newDirection = quaternion * temp;
 
-        
+
 
         Vector3 moveDistance = newDirection * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)

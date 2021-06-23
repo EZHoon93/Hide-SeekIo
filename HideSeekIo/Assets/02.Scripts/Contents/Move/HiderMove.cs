@@ -49,6 +49,19 @@ public class HiderMove : MoveBase , IMakeRunEffect
     {
         return photonView.IsMine;
     }
+
+    private void Update()
+    {
+        if (photonView.IsMine == false)
+        {
+            switch (_hiderAttack.State)
+            {
+                case HiderAttack.state.Attack:
+                    this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_hiderAttack.weapon.LastAttackInput);
+                    break;
+            }
+        }
+    }
     protected void FixedUpdate()
     {
         MoveSpeed = _testSpeed;
@@ -59,6 +72,8 @@ public class HiderMove : MoveBase , IMakeRunEffect
             return;
         }
 
+        print(_hiderAttack.State);
+
         switch (_hiderAttack.State)
         {
             case HiderAttack.state.Idle:
@@ -66,14 +81,10 @@ public class HiderMove : MoveBase , IMakeRunEffect
                 UpdateRotate(_humanInput.MoveVector);
                 UpdateMove(_humanInput.MoveVector, _humanInput.IsRun);
                 UpdateAnimation();
+
                 break;
             case HiderAttack.state.Attack:
-                var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-                var temp = new Vector3(_hiderAttack.AttackTargetDirection.x, 0, _hiderAttack.AttackTargetDirection.z).normalized;
-                var newDirection = quaternion * temp;
-                Quaternion newRotation = Quaternion.LookRotation(newDirection);
-                this.transform.rotation = newRotation;
-                print(_hiderAttack.weapon.AttackDirecition + "/" + newDirection);
+                this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_hiderAttack.weapon.LastAttackInput);
                 UpdateAnimation();
                 break;
 
