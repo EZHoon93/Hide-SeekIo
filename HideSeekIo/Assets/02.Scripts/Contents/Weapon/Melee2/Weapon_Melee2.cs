@@ -42,16 +42,11 @@ public class Weapon_Melee2 : Weapon
     {
         if (inputVector.sqrMagnitude == 0)
         {
-            //_attackRangeUI.gameObject.SetActive(false);
+            _attackRangeUI.gameObject.SetActive(false);
             return;
         }
         _attackRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
-
-        _attackWarningRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
-
         _attackRangeUI.gameObject.SetActive(true);
-        print(UtillGame.WorldRotationByInput(inputVector) + "22줌인풋");
-
     }
 
 
@@ -61,8 +56,6 @@ public class Weapon_Melee2 : Weapon
     {
         state = State.Delay;
         LastAttackInput = inputVector;
-        print(UtillGame.WorldRotationByInput(inputVector) + "어택인풋");
-
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, LastAttackInput);
     }
 
@@ -76,16 +69,14 @@ public class Weapon_Melee2 : Weapon
         state = State.Delay;
         LastAttackInput = inputVector;
         AttackSucessEvent?.Invoke();
-        _attackRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
-        print(UtillGame.WorldRotationByInput(inputVector) + "어택33인풋");
-
-        _attackRangeUI.gameObject.SetActive(true);
-
-        _attackWarningRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
-        _attackWarningRangeUI.gameObject.SetActive(true);
+        //_attackWarningRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
+        //var angle = _attackRangeUI.rotation.eulerAngles;
+        //angle.y = angle.y - 180;
+        //_attackWarningRangeUI.rotation = Quaternion.Euler( angle);
+        //_attackWarningRangeUI.gameObject.SetActive(true);
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         AttackEffect();
-        _attackWarningRangeUI.gameObject.SetActive(false);
+        //_attackWarningRangeUI.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();

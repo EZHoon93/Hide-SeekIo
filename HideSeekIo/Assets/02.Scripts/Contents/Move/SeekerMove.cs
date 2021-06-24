@@ -10,42 +10,44 @@ public class SeekerMove : MoveBase
     CharacterController _characterController;
     SeekerAttack _seekerAttack;
     SeekerInput _seekerInput;
+    protected Animator _animator;
 
 
     [SerializeField] float _testSpeed;
 
 
-    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        base.OnPhotonSerializeView(stream, info);
-        switch (_seekerAttack.State)
-        {
-            case SeekerAttack.state.Attack:
-                this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
-                print("씨꺼");
-                break;
-        }
+    //public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    base.OnPhotonSerializeView(stream, info);
+    //    switch (_seekerAttack.State)
+    //    {
+    //        case SeekerAttack.state.Attack:
+    //            this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+    //            print("씨꺼");
+    //            break;
+    //    }
 
-        //if (stream.IsWriting)
-        //{
-        //    stream.SendNext(_seekerAttack.State);
-        //}
-        //else
-        //{
-        //    var reciveState = (SeekerAttack.state)stream.ReceiveNext();
-        //    if (reciveState == _seekerAttack.State) return;
-        //    switch (reciveState)
-        //    {
-        //        case SeekerAttack.state.Attack:
-        //            _animator.SetTrigger("Attack");
-        //            this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
-        //            break;
-        //    }
+    //    //if (stream.IsWriting)
+    //    //{
+    //    //    stream.SendNext(_seekerAttack.State);
+    //    //}
+    //    //else
+    //    //{
+    //    //    var reciveState = (SeekerAttack.state)stream.ReceiveNext();
+    //    //    if (reciveState == _seekerAttack.State) return;
+    //    //    switch (reciveState)
+    //    //    {
+    //    //        case SeekerAttack.state.Attack:
+    //    //            _animator.SetTrigger("Attack");
+    //    //            this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+    //    //            break;
+    //    //    }
 
-        //}
-    }
-    protected void Awake()
+    //    //}
+    //}
+    protected override void Awake()
     {
+        base.Awake();
         _seekerAttack = GetComponent<SeekerAttack>();
         _seekerInput = GetComponent<SeekerInput>();
         _characterController = GetComponent<CharacterController>();
@@ -54,19 +56,22 @@ public class SeekerMove : MoveBase
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
+        _animator = GetComponentInChildren<Animator>();
+
     }
 
-    private void Update()
+    protected override void Update()
     {
-        if (photonView.IsMine == false)
-        {
-            switch (_seekerAttack.State)
-            {
-                case SeekerAttack.state.Attack:
-                    this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
-                    break;
-            }
-        }
+        base.Update();
+        //if (photonView.IsMine == false)
+        //{
+        //    switch (_seekerAttack.State)
+        //    {
+        //        case SeekerAttack.state.Attack:
+        //            this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
+        //            break;
+        //    }
+        //}
     }
 
 
@@ -83,14 +88,13 @@ public class SeekerMove : MoveBase
                 UpdateAnimation(ResultSpeed);
                 break;
             case SeekerAttack.state.Attack:
-                var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+                //var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
                 //var temp = new Vector3(_seekerAttack.AttackTargetDirection.x, 0, _seekerAttack.AttackTargetDirection.z).normalized;
                 //var temp = new Vector3(_seekerAttack.weapon.AttackDirecition.x, 0, _seekerAttack.weapon.AttackDirecition.z).normalized;
                 //var newDirection = quaternion * temp;
                 //Quaternion newRotation = Quaternion.LookRotation(newDirection);
                 //this.transform.rotation = newRotation;
-                //this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
-
+                this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_seekerAttack.weapon.LastAttackInput);
                 UpdateAnimation(0);
 
                 break;
@@ -137,8 +141,8 @@ public class SeekerMove : MoveBase
 
     protected virtual void UpdateAnimation(float newAnimationValue)
     {
-        _animationValue = Mathf.Lerp(_animationValue, newAnimationValue, Time.deltaTime * 3);
-        _animator.SetFloat("Speed", _animationValue);
+        //_animationValue = Mathf.Lerp(_animationValue, newAnimationValue, Time.deltaTime * 3);
+        //_animator.SetFloat("Speed", _animationValue);
     }
 
 

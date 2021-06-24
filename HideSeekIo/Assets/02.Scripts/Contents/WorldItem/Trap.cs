@@ -9,8 +9,16 @@ public class Trap : PunTimerObject
     {
         InitRemainTime = 5;
     }
+    private void OnEnable()
+    {
+        print("trap OnEnable");
+        print("trap OnEnabl22222222222222222222222222222222e");
+
+    }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        print("trap OnPhotonInstantiate");
+
         base.OnPhotonInstantiate(info);
         double sendTime = info.SentServerTime;
         print(PhotonNetwork.Time + "/" + sendTime);

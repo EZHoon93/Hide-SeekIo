@@ -19,6 +19,8 @@ public class HiderMove : MoveBase , IMakeRunEffect
     protected HiderInput _humanInput;
     protected CharacterController _characterController;
     protected HiderAttack _hiderAttack;
+    protected Animator _animator;
+
     //============================= 변수 =============================/
 
     [SerializeField] float _testSpeed;
@@ -31,8 +33,9 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     //------------------함수---------------------/
 
-    private void Awake()
+    protected override  void Awake()
     {
+        base.Awake();
         _humanInput = GetComponent<HiderInput>();
         _characterController = GetComponent<CharacterController>();
         _hiderAttack = GetComponent<HiderAttack>();
@@ -44,14 +47,16 @@ public class HiderMove : MoveBase , IMakeRunEffect
         base.OnPhotonInstantiate();
         _animator = GetComponentInChildren<Animator>();
         HearState = Define.MoveHearState.NoEffect;
+
     }
     public bool IsLocal()
     {
         return photonView.IsMine;
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         if (photonView.IsMine == false)
         {
             switch (_hiderAttack.State)
@@ -142,20 +147,20 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     protected virtual void UpdateAnimation()
     {
-        switch (State)
-        {
-            case MoveState.idle:
-                _animationValue = Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3);
-                break;
-            case MoveState.Walk:
-                _animationValue = Mathf.Lerp(_animationValue, 0.3f, Time.deltaTime * 3);
-                break;
-            case MoveState.Run:
-                _animationValue = Mathf.Lerp(_animationValue, 1.0f, Time.deltaTime * 3);
-                break;
-        }
+        //switch (State)
+        //{
+        //    case MoveState.idle:
+        //        _animationValue = Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3);
+        //        break;
+        //    case MoveState.Walk:
+        //        _animationValue = Mathf.Lerp(_animationValue, 0.3f, Time.deltaTime * 3);
+        //        break;
+        //    case MoveState.Run:
+        //        _animationValue = Mathf.Lerp(_animationValue, 1.0f, Time.deltaTime * 3);
+        //        break;
+        //}
 
-        _animator.SetFloat("Speed", _animationValue);
+        //_animator.SetFloat("Speed", _animationValue);
     }
 
 
@@ -181,7 +186,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     public virtual void Stop()
     {
-        _animationValue = 0.0f;
+        //_animationValue = 0.0f;
         _animator.SetFloat("Speed", 0.0f);
     }
 

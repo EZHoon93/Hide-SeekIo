@@ -99,6 +99,7 @@ public class GameManager : GenricSingleton<GameManager>
     /// </summary>
     protected override void Awake()
     {
+        print("GameManager Awake");
         base.Awake();
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
         if (PhotonNetwork.IsMasterClient)
@@ -136,6 +137,7 @@ public class GameManager : GenricSingleton<GameManager>
 
     public void RegisterLivingEntity(int viewID, LivingEntity livingEntity)
     {
+        print("RegisterLivingEntity" + viewID);
         if (_livingEntityDic.ContainsKey(viewID)) return;
         _livingEntityDic.Add(viewID, livingEntity);
         JudgeCount(livingEntity);

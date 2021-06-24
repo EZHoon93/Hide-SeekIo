@@ -37,13 +37,22 @@ public static class UtillGame
     /// <returns></returns>
     public static Quaternion GetWorldRotation_ByInputVector(Vector2 inputVector2)
     {
-        var pos = ConventToVector3(inputVector2);
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-        var newDirection = quaternion * pos;
-        Quaternion newRotation = Quaternion.LookRotation(pos);
+        var converVector3 = ConventToVector3(inputVector2);
+        var newDirection = quaternion * converVector3;
+        Quaternion newRotation = Quaternion.LookRotation(newDirection);
 
         return newRotation;
     }
+
+    //public static Quaternion GetSmoothRotation_ByInputVector(Vector2 inputVector2)
+    //{
+    //    var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+    //    var converVector3 = ConventToVector3(inputVector2);
+    //    var newDirection = quaternion * converVector3;
+    //    Quaternion newRotation = Quaternion.LookRotation(newDirection);
+
+    //}
 
     public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform)
     {

@@ -62,10 +62,16 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         Health = initHealth;
     }
 
+    protected void OnEnable()
+    {
+        print("LivingEnetity OnEnable");
+        GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
+    }
+
     public virtual void OnPhotonInstantiate()
     {
+        print("LivingEnetity OnPhotonInstantiate");
         if (!GameManager.Instance) return;
-        GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
     }
 
     // 데미지 처리

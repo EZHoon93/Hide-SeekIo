@@ -6,30 +6,46 @@ using System.Collections.Generic;
 
 public class MoveBase : MonoBehaviourPun, IPunObservable
 {
+    InputBase _inputBase;
+    AttackBase _attackBase;
+    [SerializeField] Transform _modelTransform;  //회전시킬 객체,
+
+    private Vector2 m_moveInput;
+
+
     List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
     protected float _totRatio;    //버퍼리스트 합계산한 최종 이속 증/감소율
-    protected float _animationValue;
-    protected Animator _animator;
-    //public enum MoveHearState
-    //{
-    //    Effect,
-    //    NoEffect
-    //}
-    //protected MoveHearState n_moveHearState;
-
-    //public MoveHearState HearState { get => n_moveHearState;  set { n_moveHearState = value; } }
-
+    
     public float MoveSpeed { get; protected set; }
-
     public int RotationSpeed { get; protected set; } = 15;
-
     public float ResultSpeed { get; protected set; }
 
+
+    protected virtual void Awake()
+    {
+        _inputBase = GetComponent<InputBase>();
+        _attackBase = GetComponent<AttackBase>();
+    }
     public virtual void OnPhotonInstantiate()
     {
-        _animator = GetComponentInChildren<Animator>();
+
     }
-    public void SetupMoveSpeed(float initMoveSpeed) => MoveSpeed = initMoveSpeed;   //이동속도 세팅
+    protected virtual void Update()
+    {
+        if (!this.photonView.IsMine)
+        {
+            if(m_moveInput.sqrMagnitude == 0)
+            {
+                return;
+            }
+
+            var newRotation = UtillGame.GetWorldRotation_ByInputVector(m_moveInput);
+            this.transform.rotation = Quaternion.Slerp(this.transform.localRotation, newRotation, RotationSpeed * Time.deltaTime);
+            
+        }
+    }
+
+  
 
     public void AddMoveBuffList(float ratio, bool isAdd)
     {
@@ -55,12 +71,14 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(_animationValue);
+            stream.SendNext(_inputBase.MoveVector);
         }
         else
         {
-            _animationValue = (float)stream.ReceiveNext();
-            _animator.SetFloat("Speed", _animationValue);
+            var  n_moveInput = (Vector2)stream.ReceiveNext();
+            //if (n_moveInput.sqrMagnitude == 0) return;
+            m_moveInput = n_moveInput;
+            
         }
     }
 
