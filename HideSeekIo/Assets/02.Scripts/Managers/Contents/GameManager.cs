@@ -142,10 +142,10 @@ public class GameManager
     public void RegisterLivingEntity(int viewID, LivingEntity livingEntity)
     {
         if (_livingEntityDic.ContainsKey(viewID)) return;
+        Debug.Log(_livingEntityDic + "등록");
         _livingEntityDic.Add(viewID, livingEntity);
         //JudgeCount(livingEntity);
 
-        var player = livingEntity.GetComponent<PlayerController>();
     }
 
     public void UnRegisterLivingEntity(int viewID, LivingEntity livingEntity)
@@ -153,11 +153,15 @@ public class GameManager
         if (!_livingEntityDic.ContainsKey(viewID)) return;
         _livingEntityDic.Remove(viewID);
         //JudgeCount(livingEntity);
-        var player = livingEntity.GetComponent<PlayerController>();
     }
 
     public LivingEntity GetLivingEntity(int viewID)
     {
+        foreach(var s in _livingEntityDic)
+        {
+            Debug.Log(s);
+        }
+        Debug.Log(_livingEntityDic.Count + "sssssssssssssssssss");
         if (_livingEntityDic.ContainsKey(viewID))
         {
             return _livingEntityDic[viewID];

@@ -4,14 +4,15 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 
-public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate
+public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate, IOnPhotonViewPreNetDestroy
 {
     public event Action OnPhotonInstantiateEvent;
-    
+    public event Action OnPhotonDestroyEvent;
+
+
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (photonView.InstantiationData == null) return;   //데이터가없으면 null
-        
         var nickName = (string)info.photonView.InstantiationData[0]; //닉네임
         var avaterId = (string)info.photonView.InstantiationData[1]; //캐릭터
 
@@ -34,11 +35,17 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         //ch?.Invoke()
     }
 
+
     protected virtual void LayerChange(GameObject gameObject )
     {
 
     }
 
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        if (Managers.Resource == null) return;
+        Managers.Resource.Destroy(GetComponentInChildren<Animator>().gameObject);
+        OnPhotonDestroyEvent?.Invoke();
 
-    
+    }
 }

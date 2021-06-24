@@ -13,6 +13,7 @@ public class SeekerAttack : AttackBase
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
+        print("#3333333333333333");
         if (this.IsMyCharacter())
         {
             Managers.Spawn.WeaponSpawn(Define.Weapon.Melee2, this);

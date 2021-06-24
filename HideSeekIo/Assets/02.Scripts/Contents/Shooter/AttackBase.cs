@@ -27,6 +27,15 @@ public class AttackBase : MonoBehaviourPun
         _animator = GetComponentInChildren<Animator>();
         State = state.Idle;
     }
+
+    public void OnUpdate(Vector2 inputVector2)
+    {
+        if (this.photonView.IsMine == false || weapon == null) return;
+        UpdateAttackCoolTime();
+        UpdateAttack(inputVector2);
+        weapon.Zoom(inputVector2);
+    }
+
     public virtual void SetupWeapon(Weapon newWeapon)
     {
         if (weapon)

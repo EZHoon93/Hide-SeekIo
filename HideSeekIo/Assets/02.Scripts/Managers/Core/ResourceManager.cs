@@ -48,7 +48,6 @@ public class ResourceManager
         Poolable poolable = go.GetComponent<Poolable>();
         if (poolable != null)
         {
-            Debug.LogError("푸시");
             Managers.Pool.Push(poolable);
             return;
         }

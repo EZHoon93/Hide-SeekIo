@@ -46,13 +46,13 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 Managers.Spawn.WorldItemSpawn(Define.WorldItem.Box, hiderController.transform.position);
                 break;
             case Define.HiderStoreList.Shoes:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, hiderController.livingEntity);
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, hiderController.GetLivingEntity());
                 break;
             case Define.HiderStoreList.Speed:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, hiderController.livingEntity);
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, hiderController.GetLivingEntity());
                 break;
             case Define.HiderStoreList.Shield:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.livingEntity);
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.GetLivingEntity());
                 break;
             case Define.HiderStoreList.Grenade:
                 Managers.Spawn.WeaponSpawn(Define.Weapon.Grenade, hiderController.hiderAttack);
@@ -84,10 +84,10 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
 
                 break;
             case Define.SeekrStoreList.Speed:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, seekerController.livingEntity);
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, seekerController.GetLivingEntity());
                 break;
             case Define.SeekrStoreList.BodyUp:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, seekerController.livingEntity);
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, seekerController.GetLivingEntity());
                 break;
             case Define.SeekrStoreList.AllumanClap:
                 //BuffManager.Instance.HiderTeamBuffControllerOnLocal
@@ -112,7 +112,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 Result_BuyHiderItemOnAllClients(Util.GetEnumByIndex<Define.HiderStoreList>(@enum), usePlayer);
                 break;
             case Define.Team.Seek:
-                Result_BuyHiderItemOnAllClients(Util.GetEnumByIndex<Define.SeekrStoreList>(@enum), usePlayer);
+                Result_BuySeekerItemOnAllClients(Util.GetEnumByIndex<Define.SeekrStoreList>(@enum), usePlayer);
                 break;
 
         }
@@ -165,7 +165,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
     {
 
         var seekerItemEnum = (Define.SeekrStoreList)@enum;
-
+        print("시커 ㅇㅇ" + @enum);
         switch (seekerItemEnum)
         {
             case Define.SeekrStoreList.ChangeWeapon:

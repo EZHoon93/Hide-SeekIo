@@ -62,19 +62,10 @@ public class LivingEntity : MonoBehaviourPun, IDamageable
         Health = initHealth;
     }
 
-    protected void OnEnable()
-    {
-        print("LivingEnetity OnEnable");
-    }
-    private void OnDisable()
-    {
-        //print("LivingEnetity OnDisable" + this.photonView.ViewID +"@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); ;
-
-    }
-
+  
     public virtual void OnPhotonInstantiate()
     {
-        print("LivingEnetity OnPhotonInstantiate"+this.gameObject.name +"/" + this.photonView.ViewID +"@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); ;
+        print("OnPhotonInstantiate Living       ;");
         Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
         //if (Managers.Scene  == null) return;
     }
@@ -87,10 +78,6 @@ public class LivingEntity : MonoBehaviourPun, IDamageable
         if (photonView.IsMine)
         {
             Health -= damage;
-            print("대미지!!!!!!!!!!!!!!!!!" + damage + "/" + Health);
-
-            // 다른 클라이언트들도 OnDamage를 실행하도록 함
-            //photonView.RPC("OnDamage", RpcTarget.Others, damagerViewId, damage);
 
             // 체력이 0 이하 && 아직 죽지 않았다면 사망 처리 실행
             if (Health <= 0 && !Dead)
@@ -98,16 +85,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable
                 photonView.RPC("Die", RpcTarget.All);
             }
         }
-        //else
-        //{
-        //    //대미지 이펙트
-        //}
-
-        //// 체력이 0 이하 && 아직 죽지 않았다면 사망 처리 실행
-        //if (Health <= 0 && !Dead)
-        //{
-        //    Die();
-        //}
+   
 
     }
 
@@ -124,47 +102,6 @@ public class LivingEntity : MonoBehaviourPun, IDamageable
         Dead = true;
     }
 
-
-
-    //public void OnPhotonInstantiate(PhotonMessageInfo info)
-    //{
-    //    if (info.photonView.InstantiationData == null) return;
-    //    if (!GameManager.Instance) return;
-    //    GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
-    //}
-
-    public virtual void OnPreNetDestroy(PhotonView rootView)
-    {
-        print("LivingEnetity OnPreNetDestroy" + this.photonView.ViewID + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); ;
-
-        //if (!GameManager.Instance) return;
-        //var poolableList =  GetComponent<PlayerSetup>()._createObjectList;
-        //if (poolableList != null)
-        //{
-        //    foreach (var p in poolableList)
-        //        p.Push();
-        //}
-        ////중복있으면제거
-        //GameManager.instance.UnRegisterLivingEntity(this.photonView.ViewID, this);
-
-        //if (!CameraManager.instance) return;
-        //if (GameManager.instance.State != Define.GameState.End)
-        //{
-        //    if (CameraManager.instance.Target.GetLivingEntity() == this)    //현재보는캐릭이랑같다면
-        //    {
-        //        CameraManager.instance.ChangeNextPlayer();
-        //    }
-        //}
-
-
-        ////내캐릭이라면 
-        //if (this.IsMyCharacter())
-        //{
-        //    //UIManager.instance.GetButton_Etc(UI_Button_Etc.EzType.Camera).gameObject.SetActive(true);
-        //    var inventory = UIManager.instance.GetSingleUI(UI_Single_Base.EzType.Inventory) as UI_Inventory;
-        //    inventory.SetActive(false, Team);
-        //}
-    }
 
 
 }

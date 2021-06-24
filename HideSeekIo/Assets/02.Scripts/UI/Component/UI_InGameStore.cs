@@ -15,10 +15,18 @@ public class UI_InGameStore : MonoBehaviour
         _coinText.text = newValue.ToString();
     }
 
-
+    void Clear()
+    {
+        var existItems = _content.transform.GetComponentsInChildren<UI_InGame_Item>();
+        foreach (var e in existItems)
+        {
+            Managers.Resource.Destroy(e.gameObject);
+        }
+    }
     public void Setup(Define.Team team)
     {
         UpdateCoinText(0);
+        Clear();
         var itemPrefab = Managers.Resource.Load<UI_InGame_Item>("Prefabs/UI/SubItem/UI_InGame_Item");
         Type type = null;
         switch (team)

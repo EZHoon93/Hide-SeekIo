@@ -1,11 +1,8 @@
-﻿using System.Collections;
-
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 
-public class MoveBase : MonoBehaviourPun
+public class MoveBase : MonoBehaviourPun , IPunObservable
 {
     public enum MoveState
     {
@@ -18,7 +15,6 @@ public class MoveBase : MonoBehaviourPun
     public MoveState State { get; set; }
 
     protected CharacterController _characterController;
-    protected InputBase _inputBase;
     protected Animator _animator;
     protected AttackBase _attackBase;
 
@@ -30,16 +26,50 @@ public class MoveBase : MonoBehaviourPun
     public int RotationSpeed { get; protected set; } = 15;
     public float ResultSpeed { get; protected set; }
 
+    [SerializeField] float _testSpeed;
 
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(State);
+        }
+        else
+        {
+            State = (MoveState)stream.ReceiveNext();
+            print("받음" + State);
+        }
+    }
     protected virtual void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _inputBase = GetComponent<InputBase>();
         _attackBase = GetComponent<AttackBase>();
     }
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
+        State = MoveState.Idle;
+        MoveSpeed = _testSpeed;
+
+    }
+
+    public void OnUpdate(Vector2 inputVector2 , bool isRun)
+    {
+        MoveSpeed = _testSpeed;
+        switch (_attackBase.State)
+        {
+            case AttackBase.state.Idle:
+                UpdateSmoothRotate(inputVector2);
+                UpdateMove(inputVector2, isRun);
+                UpdateMoveAnimation(State);
+                break;
+            case AttackBase.state.Attack:
+                UpdateImmediateRotate(_attackBase.weapon.LastAttackInput);
+                UpdateMoveAnimation(MoveState.Idle);
+                break;
+        }
+
     }
 
 
@@ -70,8 +100,12 @@ public class MoveBase : MonoBehaviourPun
                 _animationValue = Mathf.Lerp(_animationValue, MoveSpeed * 1 , Time.deltaTime * 3);
                 break;
             case MoveState.Stun:
-                _animationValue = 0;
+                _animationValue = -0.1f;
                 break;
+        }
+        if(photonView.IsMine == false)
+        {
+            print(moveState + "/" + _animationValue);
         }
         _animator.SetFloat("Speed", _animationValue);
     }
@@ -129,7 +163,5 @@ public class MoveBase : MonoBehaviourPun
 
     }
 
-  
-
-
+ 
 }

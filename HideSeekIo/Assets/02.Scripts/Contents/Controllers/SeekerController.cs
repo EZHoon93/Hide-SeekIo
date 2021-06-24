@@ -8,24 +8,23 @@ public class SeekerController : PlayerController
     public SeekerMove seekerMove { get; private set; }
     public SeekerAttack seekerAttack { get; private set; }
 
+    public SeekerHealth seekerHealth { get; private set; }
 
-    public HiderHealth hiderHealth;
 
-
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
+        print("Awake seeker        ;" + seekerHealth);
+
         seekerInput = GetComponent<SeekerInput>();
         seekerMove = GetComponent<SeekerMove>();
         seekerAttack = GetComponent<SeekerAttack>();
-        hiderHealth = GetComponent<HiderHealth>();
-        livingEntity = GetComponent<HiderHealth>();
+        seekerHealth = GetComponent<SeekerHealth>();
         TimeCoinAmount = 2;
     }
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
-        livingEntity.OnPhotonInstantiate();
+        seekerHealth.OnPhotonInstantiate();
         seekerInput.OnPhotonInstantiate();
         seekerMove.OnPhotonInstantiate();
         seekerAttack.OnPhotonInstantiate();
@@ -39,7 +38,7 @@ public class SeekerController : PlayerController
 
     void SetActiveComponent(bool acitve)
     {
-        livingEntity.enabled = acitve;
+        seekerHealth.enabled = acitve;
         seekerInput.enabled = acitve;
         seekerMove.enabled = acitve;
         seekerAttack.enabled = acitve;
@@ -62,4 +61,6 @@ public class SeekerController : PlayerController
         }
     }
 
+    public override LivingEntity GetLivingEntity() => seekerHealth;
+    
 }
