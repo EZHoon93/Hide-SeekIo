@@ -3,20 +3,29 @@
 using UnityEngine;
 using Photon.Pun;
 using System;
+
 public class AttackBase : MonoBehaviourPun
 {
+    public enum state
+    {
+        Idle,
+        Attack,
+    }
+    public state State { get; protected set; }
+
     [SerializeField] Transform _centerPivot;
     protected Animator _animator;
+    protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
     public Weapon weapon { get; protected set; }
-    //Define.Weapon n_currentWeapon;
 
-    protected IEnumerator _attackEnumerator;
+
 
 
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
+        State = state.Idle;
     }
     public virtual void SetupWeapon(Weapon newWeapon)
     {
@@ -54,18 +63,22 @@ public class AttackBase : MonoBehaviourPun
 
     protected virtual void AttackSucess()
     {
+        State = state.Attack;
         _animator.SetTrigger(weapon.AttackAnim);
-
     }
-
+    public void UpdateAttack(Vector2 inputVector2)
+    {
+        if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
+        weapon.AttackCheck(inputVector2);
+    }
     protected virtual void AttackEnd()
     {
-
+        State = state.Idle;
     }
     protected void UpdateAttackCoolTime()
     {
         InputManager.Instacne.AttackCoolTime(weapon.InitCoolTime, weapon.ReaminCoolTime);
     }
 
-    
+
 }

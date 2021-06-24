@@ -15,7 +15,14 @@ public class SceneManagerEx
     public void LoadScene(Define.Scene type)
     {
         Managers.Clear();
-        SceneManager.LoadScene(GetSceneName(type));
+        if( (int)type > 20)
+        {
+            PhotonNetwork.LoadLevel(GetSceneName(type));
+        }
+        else
+        {
+            SceneManager.LoadScene(GetSceneName(type));
+        }
     }
 
     public void LoadSceneByIndex(int index)

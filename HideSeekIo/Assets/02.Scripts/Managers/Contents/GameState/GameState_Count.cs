@@ -149,13 +149,13 @@ public class GameState_Count : GameState_Base
         object[] userData = { "User1", PlayerInfo.CurrentAvater };
         if (PhotonNetwork.IsMasterClient)
         {
-            var pos = GameManager.Instance.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-            GameManager.Instance.SpawnManager.PlayerSpawn(Define.Team.Hide, pos);
+            var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
+            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos);
         }
         else
         {
-            var pos = GameManager.Instance.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-            GameManager.Instance.SpawnManager.PlayerSpawn(Define.Team.Hide, pos);
+            var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
         }
         //index = 0,1은 좀비 
         //if (index <= 1)

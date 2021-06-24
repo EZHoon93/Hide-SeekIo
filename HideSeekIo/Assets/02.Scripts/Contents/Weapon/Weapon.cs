@@ -63,7 +63,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         if (info.photonView.InstantiationData == null) return;
         print("Weapon  OnPhotonInstantiate");
         var playerViewID = (int)info.photonView.InstantiationData[0];
-        var attackBase = GameManager.Instance.GetLivingEntity(playerViewID).GetComponent<AttackBase>();
+        var attackBase = Managers.Game.GetLivingEntity(playerViewID).GetComponent<AttackBase>();
         attackBase.SetupWeapon(this);
         _remianCoolTime = 0;
     }

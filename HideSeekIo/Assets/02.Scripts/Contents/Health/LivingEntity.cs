@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 // 생명체로서 동작할 게임 오브젝트들을 위한 뼈대를 제공
 // 체력, 데미지 받아들이기, 사망 기능, 사망 이벤트를 제공
-public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
+public class LivingEntity : MonoBehaviourPun, IDamageable
     
 {
     public int initHealth = 2; // 시작 체력
@@ -65,13 +65,18 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     protected void OnEnable()
     {
         print("LivingEnetity OnEnable");
-        GameManager.Instance.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
+    }
+    private void OnDisable()
+    {
+        //print("LivingEnetity OnDisable" + this.photonView.ViewID +"@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); ;
+
     }
 
     public virtual void OnPhotonInstantiate()
     {
-        print("LivingEnetity OnPhotonInstantiate");
-        if (!GameManager.Instance) return;
+        print("LivingEnetity OnPhotonInstantiate"+this.gameObject.name +"/" + this.photonView.ViewID +"@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); ;
+        Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
+        //if (Managers.Scene  == null) return;
     }
 
     // 데미지 처리
@@ -130,7 +135,9 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
     public virtual void OnPreNetDestroy(PhotonView rootView)
     {
-        if (!GameManager.Instance) return;
+        print("LivingEnetity OnPreNetDestroy" + this.photonView.ViewID + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); ;
+
+        //if (!GameManager.Instance) return;
         //var poolableList =  GetComponent<PlayerSetup>()._createObjectList;
         //if (poolableList != null)
         //{

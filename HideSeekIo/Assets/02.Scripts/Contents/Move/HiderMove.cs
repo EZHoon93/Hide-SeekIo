@@ -4,48 +4,16 @@ using UnityEngine;
 
 public class HiderMove : MoveBase , IMakeRunEffect
 {
-    public enum MoveState
-    {
-        idle,
-        Walk,
-        Run
-    }
-
-    MoveState n_moveState;
-
-
-
-
-    protected HiderInput _humanInput;
-    protected CharacterController _characterController;
-    protected HiderAttack _hiderAttack;
-    protected Animator _animator;
-
-    //============================= 변수 =============================/
-
-    [SerializeField] float _testSpeed;
-
-
-
-    public MoveState State { get => n_moveState; set { n_moveState = value; } }
-
     public Define.MoveHearState HearState { get; set; }
+    HiderInput _hiderInput => _inputBase as HiderInput;
 
     //------------------함수---------------------/
-
-    protected override  void Awake()
-    {
-        base.Awake();
-        _humanInput = GetComponent<HiderInput>();
-        _characterController = GetComponent<CharacterController>();
-        _hiderAttack = GetComponent<HiderAttack>();
-    }
+    [SerializeField] float _testSpeed;
 
     public override void OnPhotonInstantiate()
     {
-        MoveSpeed = 1;
         base.OnPhotonInstantiate();
-        _animator = GetComponentInChildren<Animator>();
+        //MoveSpeed = 1;
         HearState = Define.MoveHearState.NoEffect;
 
     }
@@ -54,95 +22,76 @@ public class HiderMove : MoveBase , IMakeRunEffect
         return photonView.IsMine;
     }
 
-    protected override void Update()
+   
+
+    void OnUpdate()
     {
-        base.Update();
-        if (photonView.IsMine == false)
+        if (photonView.IsMine == false) return;
+        MoveSpeed = _testSpeed;
+        switch (_attackBase.State)
         {
-            switch (_hiderAttack.State)
-            {
-                case HiderAttack.state.Attack:
-                    this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_hiderAttack.weapon.LastAttackInput);
-                    break;
-            }
+            case AttackBase.state.Idle:
+                UpdateSmoothRotate(_hiderInput.MoveVector);
+                UpdateMove(_hiderInput.MoveVector, _hiderInput.IsRun);
+                UpdateMoveAnimation(State);
+                break;
+            case AttackBase.state.Attack:
+                UpdateImmediateRotate(_attackBase.weapon.LastAttackInput);
+                UpdateMoveAnimation(MoveState.Stun);
+                break;
         }
+
     }
     protected void FixedUpdate()
     {
-        MoveSpeed = _testSpeed;
-        if (photonView.IsMine == false) return;
-        if (_humanInput.IsStop)
-        {
-            _animator.SetFloat("Speed", -0.1f);
-            return;
-        }
-
-        print(_hiderAttack.State);
-
-        switch (_hiderAttack.State)
-        {
-            case HiderAttack.state.Idle:
-                // Stop 상태가 아니라면 진행
-                UpdateRotate(_humanInput.MoveVector);
-                UpdateMove(_humanInput.MoveVector, _humanInput.IsRun);
-                UpdateAnimation();
-
-                break;
-            case HiderAttack.state.Attack:
-                this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(_hiderAttack.weapon.LastAttackInput);
-                UpdateAnimation();
-                break;
-
-        }
-
-     
-  
+        OnUpdate();
     }
 
-    protected virtual void UpdateMove(Vector2 inputMoveVector2, bool isRun)
-    {
-        float resultSpeed = 0;
-        //조이스틱 입력안할시
-        if (inputMoveVector2.sqrMagnitude == 0)
-        {
-            HearState = Define.MoveHearState.NoEffect;
-            State = MoveState.idle;
-            resultSpeed = 0;
-            //return;
-        }
-        //뛰기 버튼 시 
-        else if (isRun)
-        {
-            HearState = Define.MoveHearState.Effect;
-            State = MoveState.Run;
-            resultSpeed = MoveSpeed * 1f;
-        }
-        //뛰기버튼X 걷기 
-        else
-        {
-            HearState = Define.MoveHearState.NoEffect;
-            State = MoveState.Walk;
-            resultSpeed = MoveSpeed * 0.5f;
-        }
+    //protected virtual void UpdateMove(Vector2 inputMoveVector2, bool isRun)
+    //{
+    //    float resultSpeed = 0;
+    //    print(inputMoveVector2 + "무브");
+    //    //조이스틱 입력안할시
+    //    if (inputMoveVector2.sqrMagnitude == 0)
+    //    {
+    //        HearState = Define.MoveHearState.NoEffect;
+    //        State = MoveState.idle;
+    //        resultSpeed = 0;
+    //        //return;
+    //    }
+    //    //뛰기 버튼 시 
+    //    else if (isRun)
+    //    {
+    //        HearState = Define.MoveHearState.Effect;
+    //        State = MoveState.Run;
+    //        resultSpeed = MoveSpeed * 1f;
+    //    }
+    //    //뛰기버튼X 걷기 
+    //    else
+    //    {
+    //        HearState = Define.MoveHearState.NoEffect;
+    //        State = MoveState.Walk;
+    //        resultSpeed = MoveSpeed * 0.5f;
+    //    }
 
-        resultSpeed = resultSpeed + (_totRatio * resultSpeed);
-        Vector3 moveDistance = this.transform.forward * resultSpeed * Time.deltaTime;
-        if (!_characterController.isGrounded)
-        {
-            moveDistance.y -= 9.8f * Time.deltaTime;
-        }
-        _characterController.Move(moveDistance);
-    }
+    //    resultSpeed = resultSpeed + (_totRatio * resultSpeed);
+    //    Vector3 moveDistance = this.transform.forward * resultSpeed * Time.deltaTime;
+    //    if (!_characterController.isGrounded)
+    //    {
+    //        moveDistance.y -= 9.8f * Time.deltaTime;
+    //    }
+    //    _characterController.Move(moveDistance);
+    //}
 
-    protected virtual void UpdateRotate(Vector2 inputMoveVector2)
-    {
-        if (inputMoveVector2.normalized.sqrMagnitude == 0) return;
-        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-        var temp = new Vector3(inputMoveVector2.x, 0, inputMoveVector2.y).normalized;
-        var newDirection = quaternion * temp;
-        Quaternion newRotation = Quaternion.LookRotation(newDirection);
-        this.transform.rotation = Quaternion.Slerp(this.transform.localRotation, newRotation, RotationSpeed * Time.deltaTime);    //즉시변환
-    }
+    //protected virtual void UpdateRotate(Vector2 inputMoveVector2)
+    //{
+    //    if (inputMoveVector2.normalized.sqrMagnitude == 0) return;
+    //    var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+    //    var temp = new Vector3(inputMoveVector2.x, 0, inputMoveVector2.y).normalized;
+    //    var newDirection = quaternion * temp;
+    //    Quaternion newRotation = Quaternion.LookRotation(newDirection);
+    //    this.transform.rotation = Quaternion.Slerp(this.transform.localRotation, newRotation, RotationSpeed * Time.deltaTime);    //즉시변환
+    //}
 
 
     protected virtual void UpdateAnimation()

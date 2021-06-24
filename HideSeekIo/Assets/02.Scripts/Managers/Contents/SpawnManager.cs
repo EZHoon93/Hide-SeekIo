@@ -28,11 +28,11 @@ public class SpawnManager
         switch (team)
         {
             case Define.Team.Hide:
-                GameManager.Instance.myPlayer = PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                Managers.Game.myPlayer = PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
             case Define.Team.Seek:
                 datas.Add(PlayerInfo.CurrentWeapon);
-                GameManager.Instance.myPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                Managers.Game.myPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
         }
     }

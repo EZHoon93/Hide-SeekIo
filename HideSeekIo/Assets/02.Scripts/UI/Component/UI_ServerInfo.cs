@@ -16,7 +16,6 @@ public class UI_ServerInfo : MonoBehaviour
     {
         while (true)
         {
-            print("업데이트 인포");
             string content = $"Ping : {PhotonNetwork.GetPing()}ms " +
                 $"{PhotonNetwork.CloudRegion } / " +
                 $"{PhotonNetwork.CurrentRoom.Name} 채널 ";

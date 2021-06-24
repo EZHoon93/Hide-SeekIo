@@ -10,29 +10,28 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
 
     #region SingleTon
-    public static PhotonManager instacne
+    public static PhotonManager Instance
     {
         get
         {
-            if (m_instance == null)
+            if (_instance == null)
             {
                 // 씬에서 GameManager 오브젝트를 찾아 할당
-                m_instance = FindObjectOfType<PhotonManager>();
+                _instance = FindObjectOfType<PhotonManager>();
             }
 
             // 싱글톤 오브젝트를 반환
-            return m_instance;
+            return _instance;
         }
     }
-    private static PhotonManager m_instance; // 싱글톤이 할당될 static 변수
+    private static PhotonManager _instance; // 싱글톤이 할당될 static 변수
     #endregion
 
 
 
     readonly string _gameVersion = "1.0.0";
     public Define.ServerState State { get; private set; }
-    public event Action<Player> enterUserList;
-    public event Action<Player> leftUserList;
+    
 
 
     bool _isScret;
@@ -42,7 +41,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
-        if (instacne != this)
+        if (Instance != this)
         {
             // 자신을 파괴
             Destroy(this.gameObject);
@@ -128,7 +127,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // 룸에 참가 완료된 경우 자동 실행
     public override void OnJoinedRoom()
     {
-        print("OnJoinedRoom");
         if (PhotonNetwork.IsMasterClient)
         {
             Managers.Scene.MasterSelectNextMainScene(Define.Scene.Unknown);
@@ -150,15 +148,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        enterUserList?.Invoke(newPlayer);
-    }
-
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        leftUserList?.Invoke(otherPlayer);
-    }
+  
 
     //UI에서 다른채널 찾기 및 미입력시 빠른채널찾기
     public void ChangeChannel(string newRoomName= null , bool newIsScret =false)

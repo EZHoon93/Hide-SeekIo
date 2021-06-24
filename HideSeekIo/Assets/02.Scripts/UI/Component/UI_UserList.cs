@@ -17,8 +17,8 @@ public class UI_UserList : MonoBehaviour
     void Start()
     {
         LoadCurrentPlayer();
-        PhotonManager.instacne.enterUserList += UpdatePlayer;
-        PhotonManager.instacne.leftUserList += LeftrPlayer;
+        PhotonGameManager.Instacne.enterUserList += UpdatePlayer;
+        PhotonGameManager.Instacne.leftUserList += LeftrPlayer;
 
     }
 

@@ -40,10 +40,10 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
         switch (hiderItemEnum)
         {
             case Define.HiderStoreList.Trap:
-                GameManager.Instance.SpawnManager.WorldItemSpawn(Define.WorldItem.Trap, hiderController.transform.position );
+                Managers.Spawn.WorldItemSpawn(Define.WorldItem.Trap, hiderController.transform.position );
                 break;
             case Define.HiderStoreList.Box:
-                GameManager.Instance.SpawnManager.WorldItemSpawn(Define.WorldItem.Box, hiderController.transform.position);
+                Managers.Spawn.WorldItemSpawn(Define.WorldItem.Box, hiderController.transform.position);
                 break;
             case Define.HiderStoreList.Shoes:
                 BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, hiderController.livingEntity);
@@ -55,7 +55,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.livingEntity);
                 break;
             case Define.HiderStoreList.Grenade:
-                GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Grenade, hiderController.hiderAttack);
+                Managers.Spawn.WeaponSpawn(Define.Weapon.Grenade, hiderController.hiderAttack);
                 break;
         }
 
@@ -73,7 +73,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
         switch (seekerItemEnum)
         {
             case Define.SeekrStoreList.ChangeWeapon:
-                GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Sniper, seekerController.seekerAttack);
+                Managers.Spawn.WeaponSpawn(Define.Weapon.Sniper, seekerController.seekerAttack);
                 break;
             case Define.SeekrStoreList.DirectionCurse:
                 BuffManager.Instance.HiderTeamBuffControllerToServer(Define.BuffType.Direction, seekerController.ViewID());
@@ -104,7 +104,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
     [PunRPC]
     public void ResultBuyInGameItem_OnAllClients(Define.InGameItemUIState inGameItemUIState,Define.Team team,  int @enum, int viewID)
     {
-        var usePlayer = GameManager.Instance.GetLivingEntity(viewID);
+        var usePlayer = Managers.Game.GetLivingEntity(viewID);
         if (usePlayer == null) return;
         switch (team)
         {

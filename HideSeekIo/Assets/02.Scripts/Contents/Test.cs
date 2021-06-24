@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 
+using Photon.Pun;
+
 using UnityEngine;
 
 public class Test : MonoBehaviour
@@ -10,7 +12,7 @@ public class Test : MonoBehaviour
     [SerializeField] Transform end;
     void Start()
     {
-
+        Managers.Spawn.WorldItemSpawn(Define.WorldItem.Box, Vector3.zero);
     }
 
     // Update is called once per frame

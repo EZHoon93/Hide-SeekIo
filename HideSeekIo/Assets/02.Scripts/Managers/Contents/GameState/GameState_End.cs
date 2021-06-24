@@ -33,8 +33,8 @@ public class GameState_End : GameState_Base, IPunObservable
 
     protected override void EndRemainTime()
     {
-        print(GameManager.Instance.CurrentGameScene.SceneType + "현재씬타입");
-        Managers.Scene.MasterSelectNextMainScene(GameManager.Instance.CurrentGameScene.SceneType);
+        
+        Managers.Scene.MasterSelectNextMainScene(Managers.Game.CurrentGameScene.SceneType);
     }
 
 

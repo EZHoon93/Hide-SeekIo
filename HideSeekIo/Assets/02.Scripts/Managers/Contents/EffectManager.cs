@@ -60,14 +60,14 @@ public class EffectManager : MonoBehaviourPun
         switch (effectEventType)
         {
             case Define.EffectEventType.All:
-                livingEntitieList = GameManager.Instance.GetAllLivingEntity();
+                livingEntitieList = Managers.Game.GetAllLivingEntity();
                 break;
             case Define.EffectEventType.Hider:
-                livingEntitieList = GameManager.Instance.GetAllHiderList();
+                livingEntitieList = Managers.Game.GetAllHiderList();
                 isSee = 1;
                 break;
             case Define.EffectEventType.Seeker:
-                livingEntitieList = GameManager.Instance.GetAllSeekerList();
+                livingEntitieList = Managers.Game.GetAllSeekerList();
                 isSee = 0;
                 break;
         }

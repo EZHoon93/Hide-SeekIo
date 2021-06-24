@@ -26,7 +26,7 @@ public static class UtillGame
         var origanlAngle = GetAngleY(vector2);
         var camerAngle = Camera.main.transform.eulerAngles.y;
 
-        return Quaternion.Euler(0, -( 90  + origanlAngle) , 0);
+        return Quaternion.Euler(0, -( 90  + origanlAngle - camerAngle) , 0);
         //return Quaternion.Euler(0, 90 - origanlAngle + camerAngle, 0);
     }
 

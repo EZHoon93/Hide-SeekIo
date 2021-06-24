@@ -33,33 +33,22 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - AttackOnServer
   - ClickRpc
   - CreatePlayer
   - DestroyRpc
   - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - Init
   - Die
-  - HumanDie
-  - OnDamage
-  - CallSync
-  - AttackToServer
-  - SkillToServer
   - EffectOnLocal
-  - BuffOnLocalOnLocal
-  - Test22
+  - Fire
   - HiderTeamBuffControllerOnLocal
-  - AttackProcess
-  - InGameItemOnOtherClinets
+  - OnDamage
+  - RespawnSpaceship
   - ResultBuyInGameItem_OnAllClients
-  - AttackOnServer
-  - AttackEffect
-  - SendChattingMessage
   - SendChattingMessageOnServer
-  - RpcClearBuffer
-  - RpcNonServerOwnedTeleportFromServer
-  - RpcTeleport
+  - Test
+  - SendMyRotation
+  - TempGetPlayerRotation
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

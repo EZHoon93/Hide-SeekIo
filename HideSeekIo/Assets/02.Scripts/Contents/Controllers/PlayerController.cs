@@ -14,7 +14,7 @@ public abstract class PlayerController : MonoBehaviourPun
     public int TimeCoinAmount { get; set; } = 1;
     public string NickName { get; protected set; }
 
-    public LivingEntity livingEntity  { get; private set; }
+    public LivingEntity livingEntity  { get; protected set; }
     public Define.Team Team => livingEntity.Team;
 
     public event Action<int> CoinChangeEvent;   //코인변경 이벤트
@@ -29,6 +29,7 @@ public abstract class PlayerController : MonoBehaviourPun
         livingEntity = GetComponent<LivingEntity>();
         livingEntity.onDeath += HandleDeath;
     }
+  
     protected virtual void HandleDeath()
     {
     }
@@ -70,6 +71,7 @@ public abstract class PlayerController : MonoBehaviourPun
         }
     }
 
+    //public abstract void GetLivingEntity();
 
 }
 

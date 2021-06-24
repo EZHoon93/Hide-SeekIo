@@ -28,7 +28,7 @@ public class LoginScene : BaseScene
     IEnumerator LoadData()
     {
         PlayerInfo.Login();
-        PhotonManager.instacne.Connect();
+        PhotonManager.Instance.Connect();
         //필요 데이터 갖고옴
         while (_state == State.UnLoad)
         {
@@ -47,7 +47,7 @@ public class LoginScene : BaseScene
         bool photonData = false;
         bool userData = false;
         bool gameData = false;
-        if (PhotonManager.instacne.State == Define.ServerState.Connect)
+        if (PhotonManager.Instance.State == Define.ServerState.Connect)
             photonData = true;
         if (PlayerInfo.State == Define.UserDataState.Load)
             userData = true;

@@ -60,7 +60,7 @@ public class UI_Main : UI_Scene
     public override void Init()
     {
         base.Init();
-        GameManager.Instance.GameResetEvent += () => InGameStore.gameObject.SetActive(false);
+        Managers.Game.GameResetEvent += () => InGameStore.gameObject.SetActive(false);
 
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
@@ -127,7 +127,7 @@ public class UI_Main : UI_Scene
 
     void OnGameJoin_ButtonClicked(PointerEventData data)
     {
-        GameManager.Instance.GameJoin();
+        Managers.Game.GameJoin();
         ChangePanel(Define.GameScene.Game);
     }
 

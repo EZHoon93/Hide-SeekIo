@@ -26,7 +26,7 @@ public class UI_GameExit : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
-        GameManager.Instance.GameExit();
+        Managers.Game.GameExit();
         Managers.UI.SceneUI.GetComponent<UI_Main>().ChangePanel(Define.GameScene.Lobby);
     }
 

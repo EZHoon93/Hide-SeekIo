@@ -40,6 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4092103180605186410}
   - component: {fileID: -5769043087833741708}
+  - component: {fileID: -3080654349668622366}
   - component: {fileID: 7682236500054097928}
   - component: {fileID: -5725910052754378878}
   - component: {fileID: -7880050561800945051}
@@ -48,7 +49,6 @@ GameObject:
   - component: {fileID: 1999317484807970439}
   - component: {fileID: 2803996618418529021}
   - component: {fileID: 3763222160251579843}
-  - component: {fileID: 5008971337549953741}
   m_Layer: 8
   m_Name: UserSeeker
   m_TagString: Player
@@ -84,6 +84,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92fa5c39d94cedf4085513b4777a842d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-3080654349668622366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298288023677589299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
+  m_UseLocal: 0
 --- !u!114 &7682236500054097928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,9 +146,8 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: -3080654349668622366}
   - {fileID: 7682236500054097928}
-  - {fileID: 2803996618418529021}
-  - {fileID: 5008971337549953741}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -205,56 +220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cb1aa4d190d5045aeb863ead43c2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5008971337549953741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3298288023677589299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8069ffa6ab7df7340ad5ce0c3da47526, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationBackTime: 0.12
-  extrapolationMode: 1
-  useExtrapolationTimeLimit: 1
-  extrapolationTimeLimit: 5
-  useExtrapolationDistanceLimit: 0
-  extrapolationDistanceLimit: 20
-  sendPositionThreshold: 0
-  sendRotationThreshold: 0
-  sendScaleThreshold: 0
-  sendVelocityThreshold: 0
-  sendAngularVelocityThreshold: 0
-  receivedPositionThreshold: 0
-  receivedRotationThreshold: 0
-  snapPositionThreshold: 0
-  snapRotationThreshold: 0
-  snapScaleThreshold: 0
-  positionLerpSpeed: 0.85
-  rotationLerpSpeed: 0.85
-  scaleLerpSpeed: 0.85
-  timeCorrectionSpeed: 0.1
-  snapTimeThreshold: 3
-  syncPosition: 2
-  syncRotation: 7
-  syncScale: 7
-  syncVelocity: 7
-  syncAngularVelocity: 7
-  isPositionCompressed: 0
-  isRotationCompressed: 0
-  isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
-  automaticallyResetTime: 1
-  whenToUpdateTransform: 0
-  childObjectToSync: {fileID: 0}
-  setVelocityInsteadOfPositionOnNonOwners: 0
-  useLocalTransformOnly: 0
-  maxPositionDifferenceForVelocitySyncing: 10
-  receivedStatesCounter: 0
 --- !u!1 &3744693148672269356
 GameObject:
   m_ObjectHideFlags: 0

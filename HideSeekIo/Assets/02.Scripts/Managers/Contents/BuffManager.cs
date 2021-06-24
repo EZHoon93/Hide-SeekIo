@@ -74,7 +74,7 @@ public class BuffManager : GenricSingleton<BuffManager>
         //방장은 AI에게도 버퍼
         if (PhotonNetwork.IsMasterClient)
         {
-            var allLivingEntity = GameManager.Instance.GetAllLivingEntity();
+            var allLivingEntity = Managers.Game.GetAllLivingEntity();
             foreach (var livingEntity in allLivingEntity)
             {
                 if (livingEntity.CompareTag("AI") && livingEntity.gameObject.layer == (int)Define.Layer.Hider)
@@ -84,7 +84,7 @@ public class BuffManager : GenricSingleton<BuffManager>
             }
         }
         //로컬조종중인 캐릭에게 버퍼
-        var myPlayer = GameManager.Instance.myPlayer;
+        var myPlayer = Managers.Game.myPlayer;
         if (myPlayer)
         {
             if (myPlayer.Team == Define.Team.Seek) return;   //술래팀은 적용X

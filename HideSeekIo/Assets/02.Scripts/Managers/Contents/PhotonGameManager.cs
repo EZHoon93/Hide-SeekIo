@@ -5,6 +5,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using ExitGames.Client.Photon;
 using System.Linq;
 using System;
+using System.Numerics;
 
 public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
@@ -29,6 +30,49 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #endregion
 
 
+    #region GameState
+    GameState_Base _gameState;
+    Define.GameState _state; //게임 상태, 최초상태 wait
+    public Define.GameState State
+    {
+        get => _state;
+        set
+        {
+            _state = value;
+            if (_gameState)
+            {
+                this.photonView.ObservedComponents.Remove(_gameState);
+                Destroy(_gameState);
+            }
+            switch (_state)
+            {
+                case Define.GameState.Wait:
+                    _gameState = this.gameObject.AddComponent<GameState_Wait>();
+                    break;
+                case Define.GameState.CountDown:
+                    _gameState = this.gameObject.AddComponent<GameState_Count>();
+                    break;
+                case Define.GameState.GameReady:
+                    _gameState = this.gameObject.AddComponent<GameState_GameReady>();
+                    break;
+                case Define.GameState.Gameing:
+                    _gameState = this.gameObject.AddComponent<GameState_Gameing>();
+                    break;
+                case Define.GameState.End:
+                    _gameState = this.gameObject.AddComponent<GameState_End>();
+                    break;
+            }
+
+            this.photonView.ObservedComponents.Add(_gameState);
+        }
+    }
+    #endregion
+
+
+    public event Action<Player> enterUserList;
+    public event Action<Player> leftUserList;
+
+    
     public Action<Define.ChattingColor,string> reciveChattingEvent;
 
 
@@ -46,6 +90,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
    
     public override void OnEnable()
     {
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
+
         PhotonNetwork.AddCallbackTarget(this);
     }
 
@@ -60,7 +106,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             var CP = PhotonNetwork.CurrentRoom.CustomProperties;
             var gameState = (Define.GameState)CP["gs"];
-            GameManager.Instance.State = gameState;
+            State = gameState;
         }
         if (propertiesThatChanged.ContainsKey("jn"))
         {
@@ -122,6 +168,35 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
 
+    /// <summary>
+    /// 이벤트 보내기, 인간ㅇ
+    /// </summary>
+    /// <param name="photonViewID"></param>
+    /// <param name="keyCode"></param>
+    /// <param name="isIA"></param>
+    /// <param name="hashtable"></param>
+    public void SendEvent(int photonViewID, byte keyCode, bool isIA, Hashtable hashtable)
+    {
+        byte evCode = keyCode;
+        object content = hashtable;
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            CachingOption = EventCaching.AddToRoomCache,
+            Receivers = ReceiverGroup.All,
+            InterestGroup = 0,
+            //TargetActors = new int[] { 1 }
+        };
+        //AI플레이어가 한것이라면 글로벌룸으로 업데이트.
+        if (isIA)
+            raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+
+
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+
 
     public void ChangeRoomStateToServer(Define.GameState gameState)
     {
@@ -148,7 +223,17 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        enterUserList?.Invoke(newPlayer);
+    }
 
+ 
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        leftUserList?.Invoke(otherPlayer);
+    }
 
 
     #region Ability Caching Event

@@ -20,7 +20,7 @@ public class GameState_Wait : GameState_Base
 
         _initRemainTime = 1;
 
-        CameraManager.Instance.SetupTarget(GameManager.Instance.CurrentGameScene.CameraView);
+        CameraManager.Instance.SetupTarget(Managers.Game.CurrentGameScene.CameraView);
     }
 
 

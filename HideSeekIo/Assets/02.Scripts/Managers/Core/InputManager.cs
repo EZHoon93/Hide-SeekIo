@@ -120,10 +120,10 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
 #if UNITY_EDITOR
-        //float h = Input.GetAxis("Horizontal");
-        //float v = Input.GetAxis("Vertical");
-        //MoveVector = new Vector2(h, v);
-        MoveVector = new Vector2(UltimateJoystick.GetHorizontalAxis("Move"), UltimateJoystick.GetVerticalAxis("Move"));
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        MoveVector = new Vector2(h, v);
+        //MoveVector = new Vector2(UltimateJoystick.GetHorizontalAxis("Move"), UltimateJoystick.GetVerticalAxis("Move"));
 
 #endif
 

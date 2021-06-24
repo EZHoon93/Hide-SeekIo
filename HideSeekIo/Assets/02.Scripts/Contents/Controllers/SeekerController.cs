@@ -9,6 +9,7 @@ public class SeekerController : PlayerController
     public SeekerAttack seekerAttack { get; private set; }
 
 
+    public HiderHealth hiderHealth;
 
 
     protected override void Awake()
@@ -17,8 +18,8 @@ public class SeekerController : PlayerController
         seekerInput = GetComponent<SeekerInput>();
         seekerMove = GetComponent<SeekerMove>();
         seekerAttack = GetComponent<SeekerAttack>();
-
-
+        hiderHealth = GetComponent<HiderHealth>();
+        livingEntity = GetComponent<HiderHealth>();
         TimeCoinAmount = 2;
     }
     public override void OnPhotonInstantiate()

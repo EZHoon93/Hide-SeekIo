@@ -28,7 +28,7 @@ public class UI_QuickChangeChannel : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
-        PhotonManager.instacne.ChangeChannel();
+        PhotonManager.Instance.ChangeChannel();
     }
 
     void Cancel(PointerEventData pointerEventData)

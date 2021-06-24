@@ -11,6 +11,6 @@ public class LobbyScene : BaseScene
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(3.0f);
-        PhotonManager.instacne.JoinRoom();
+        PhotonManager.Instance.JoinRoom();
     }
 }

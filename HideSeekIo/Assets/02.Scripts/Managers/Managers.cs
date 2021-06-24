@@ -8,11 +8,16 @@ public class Managers : MonoBehaviour
     static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
     #region Contents
-  
-	#endregion
+    GameManager _game = new GameManager();
+    SpawnManager _spawnManager = new SpawnManager();
+    public static GameManager Game { get { return Instance._game; } }
+    public static SpawnManager Spawn { get { return Instance._spawnManager; } }
 
-	#region Core
-	DataManager _data = new DataManager();
+
+    #endregion
+
+    #region Core
+    DataManager _data = new DataManager();
     PoolManager _pool = new PoolManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerEx _scene = new SceneManagerEx();
@@ -68,5 +73,6 @@ public class Managers : MonoBehaviour
         Scene.Clear();
         UI.Clear();
         Pool.Clear();
+        Game.Clear();
     }
 }

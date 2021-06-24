@@ -20,6 +20,17 @@ public class GameScene : BaseScene
     protected virtual void Start()
     {
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            print("방장");
+            PhotonGameManager.Instacne.ChangeRoomStateToServer(Define.GameState.Wait);
+        }
+        else
+        {
+            print("방장아님");
+            PhotonGameManager.Instacne.State = (Define.GameState)PhotonNetwork.CurrentRoom.CustomProperties["gs"];
+        }
+
 
         PhotonGameManager.Instacne.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name}{DynamicTextData.gamaSceneNotice}");
     }

@@ -69,14 +69,14 @@ public class Weapon_Melee2 : Weapon
         state = State.Delay;
         LastAttackInput = inputVector;
         AttackSucessEvent?.Invoke();
-        //_attackWarningRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
+        _attackWarningRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
         //var angle = _attackRangeUI.rotation.eulerAngles;
         //angle.y = angle.y - 180;
         //_attackWarningRangeUI.rotation = Quaternion.Euler( angle);
-        //_attackWarningRangeUI.gameObject.SetActive(true);
+        _attackWarningRangeUI.gameObject.SetActive(true);
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         AttackEffect();
-        //_attackWarningRangeUI.gameObject.SetActive(false);
+        _attackWarningRangeUI.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();
