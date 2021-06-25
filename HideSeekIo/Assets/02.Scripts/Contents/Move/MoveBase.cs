@@ -2,7 +2,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 
-public class MoveBase : MonoBehaviourPun , IPunObservable
+public class MoveBase : MonoBehaviourPun, IPunObservable
 {
     public enum MoveState
     {
@@ -46,15 +46,35 @@ public class MoveBase : MonoBehaviourPun , IPunObservable
         _characterController = GetComponent<CharacterController>();
         _attackBase = GetComponent<AttackBase>();
     }
+    private void OnEnable()
+    {
+        State = MoveState.Idle;
+    }
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
-        State = MoveState.Idle;
         MoveSpeed = _testSpeed;
-
+    }
+    private void Update()
+    {
+        OnUpdateOtherClients();
     }
 
-    public void OnUpdate(Vector2 inputVector2 , bool isRun)
+    protected void OnUpdateOtherClients()
+    {
+        if (photonView.IsMine) return;
+        switch (_attackBase.State)
+        {
+            case AttackBase.state.Idle:
+                UpdateMoveAnimation(State);
+                break;
+            case AttackBase.state.Attack:
+                UpdateImmediateRotate(_attackBase.weapon.LastAttackInput);
+                UpdateMoveAnimation(MoveState.Idle);
+                break;
+        }
+    }
+    public void OnUpdate(Vector2 inputVector2, bool isRun)
     {
         MoveSpeed = _testSpeed;
         switch (_attackBase.State)
@@ -91,21 +111,17 @@ public class MoveBase : MonoBehaviourPun , IPunObservable
         switch (moveState)
         {
             case MoveState.Idle:
-                _animationValue = Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3);
+                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3) , 0, 2);
                 break;
             case MoveState.Walk:
-                _animationValue = Mathf.Lerp(_animationValue, MoveSpeed *0.5f, Time.deltaTime * 3);
+                _animationValue =Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 0.5f, Time.deltaTime * 3) , 0 ,2);
                 break;
             case MoveState.Run:
-                _animationValue = Mathf.Lerp(_animationValue, MoveSpeed * 1 , Time.deltaTime * 3);
+                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 1, Time.deltaTime * 3) ,0 , 2);
                 break;
             case MoveState.Stun:
                 _animationValue = -0.1f;
                 break;
-        }
-        if(photonView.IsMine == false)
-        {
-            print(moveState + "/" + _animationValue);
         }
         _animator.SetFloat("Speed", _animationValue);
     }
@@ -163,5 +179,5 @@ public class MoveBase : MonoBehaviourPun , IPunObservable
 
     }
 
- 
+
 }

@@ -5,11 +5,9 @@ using System.Collections.Generic;
 //Enum defining all possible game events
 //More events should be added to the list
 public enum EVENT_TYPE {
-	GAME_INIT, 
-	GAME_END,
-	AMMO_CHANGE,
-	HEALTH_CHANGE,
-	DEAD};
+	
+	GameJoin
+	};
 //-----------------------------------------------------------
 //Singleton EventManagerEx to send events to listeners
 //Works with IListener implementations

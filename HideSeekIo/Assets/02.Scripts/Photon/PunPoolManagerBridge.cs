@@ -19,7 +19,6 @@ public class PunPoolManagerBridge : MonoBehaviour, IPunPrefabPool
 
     public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
     {
-        print(prefabId + "포톤생성");
         var go = Managers.Resource.Instantiate($"Photon/{prefabId}");
         go.transform.position = position;
         go.transform.rotation = rotation;

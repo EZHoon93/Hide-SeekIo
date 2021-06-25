@@ -5,26 +5,15 @@ using TMPro;
 //바로 바뀌는거 방지를 위한
 public class GameState_Wait : GameState_Base
 {
-    TextMeshProUGUI _countDownText;
-    TextMeshProUGUI _noticeText;
-    TextMeshProUGUI _DeathInfoText;
-
-
-    /// <summary>
-    /// 리셋
-    /// </summary>
+    int _initSceneWaitTime = 2;  //다음씬으로 넘어가기위한 대기시간
+    
     protected override void Setup()
     {
-        var mainSceneUI = Managers.UI.SceneUI as UI_Main;
-        mainSceneUI.ResetTexts();
+        _initRemainTime = _initSceneWaitTime;
+        CameraManager.Instance.SetupTarget(Managers.Game.CurrentGameScene.CameraView);  //카메라 초기화
+        InputManager.Instacne.OffAllController();       //조이스틱 오프 
 
-        _initRemainTime = 1;
-
-        CameraManager.Instance.SetupTarget(Managers.Game.CurrentGameScene.CameraView);
     }
-
-
-
     protected override void ChangeRemainTime()
     {
 
@@ -37,6 +26,7 @@ public class GameState_Wait : GameState_Base
     //아무것도안함.
     protected override void EndRemainTime()
     {
+
     }
 
     //테스트

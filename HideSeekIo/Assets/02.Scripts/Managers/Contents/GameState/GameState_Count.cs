@@ -8,9 +8,7 @@ using TMPro;
 public class GameState_Count : GameState_Base
 {
     readonly int _totZombieCount = 1;   //총 숙주 좀비 수 
-    TextMeshProUGUI _countDownText;
-    TextMeshProUGUI _timeText;
-    TextMeshProUGUI _noticeText;
+    
 
     int _initCountTime = 3;
 
@@ -20,28 +18,14 @@ public class GameState_Count : GameState_Base
 
     protected override void Setup()
     {
-        var mainSceneUI = Managers.UI.SceneUI as UI_Main;
-        mainSceneUI.ResetTexts();
-        _timeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.CountDown);
-        _noticeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
-        
-
-        _noticeText.text = "잠시 후 게임이 시작됩니다.";
+         uI_Main.UpdateNoticeText("잠시 후 게임이 시작됩니다.");
         _initRemainTime = _initCountTime;
     }
   
 
     protected override void ChangeRemainTime()
     {
-        if (RemainTime > 0)
-        {
-            _timeText.text = RemainTime.ToString();
-
-        }
-        else
-        {
-            _timeText.text = null;
-        }
+        uI_Main.UpdateCountText(RemainTime);
     }
 
     protected override void EndRemainTime()
@@ -55,10 +39,8 @@ public class GameState_Count : GameState_Base
                 playerList.Add(aiNumber); // -1은 AI수 
                 aiNumber--; 
             }
-            print("생성!!!!!!!!!!!");
             //var playerSelectedDataDic = Select(playerList); //좀비 및 휴먼 선택및 위치 
             photonView.RPC("CreatePlayer", RpcTarget.AllViaServer);
-            
         }
     }
 
@@ -150,7 +132,7 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos);
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
         }
         else
         {

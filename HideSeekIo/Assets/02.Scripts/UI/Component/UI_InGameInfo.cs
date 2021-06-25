@@ -4,17 +4,31 @@ using UnityEngine;
 
 public class UI_InGameInfo : MonoBehaviour
 {
-    [SerializeField]
-    TextMeshPro _zombieCountText;
-    [SerializeField]
-    TextMeshPro _humanCountText;
-    [SerializeField]
-    TextMeshPro _timeText;
-   
+    [SerializeField] TextMeshProUGUI _seekerCountText;
+    [SerializeField] TextMeshProUGUI _hiderCountText;
+    [SerializeField] TextMeshProUGUI _gameTimeText;
 
-    void Start()
+
+    public void ResetTextes()
     {
+        UpdateSeekerText(0);
+        UpdateHiderText(0);
+        UpdateGameTimeText(0);
+    }
 
+    public void UpdateSeekerText(int count)
+    {
+        _seekerCountText.text = count.ToString();
+    }
+
+    public void UpdateHiderText(int count)
+    {
+        _hiderCountText.text = count.ToString();
+    }
+
+    public void UpdateGameTimeText(int newTime)
+    {
+        _gameTimeText.text = Util.GetTimeFormat(newTime);
     }
 
 }

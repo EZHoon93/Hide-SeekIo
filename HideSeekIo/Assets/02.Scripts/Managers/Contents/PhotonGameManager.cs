@@ -5,9 +5,9 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using ExitGames.Client.Photon;
 using System.Linq;
 using System;
-using System.Numerics;
+using UnityEngine;
 
-public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
+public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback 
 {
 
 
@@ -28,6 +28,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
     private static PhotonGameManager _instance; // 싱글톤이 할당될 static 변수
     #endregion
+
+
 
 
     #region GameState
@@ -68,14 +70,16 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
     #endregion
 
-
+    #region 변수
     public event Action<Player> enterUserList;
     public event Action<Player> leftUserList;
+    public event Action<Define.ChattingColor,string> reciveChattingEvent;
+    #endregion
 
-    
-    public Action<Define.ChattingColor,string> reciveChattingEvent;
+ 
 
 
+   
     private void Awake()
     {
         // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
@@ -148,13 +152,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
         }
     }
-
-
-
-    /// <summary>
-    /// 이벤트 받을시 
-    /// </summary>
-    /// <param name="photonEvent"></param>
+   
     public void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
@@ -167,14 +165,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-
-    /// <summary>
-    /// 이벤트 보내기, 인간ㅇ
-    /// </summary>
-    /// <param name="photonViewID"></param>
-    /// <param name="keyCode"></param>
-    /// <param name="isIA"></param>
-    /// <param name="hashtable"></param>
     public void SendEvent(int photonViewID, byte keyCode, bool isIA, Hashtable hashtable)
     {
         byte evCode = keyCode;
@@ -209,6 +199,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
 
+    #region Chatting
     [PunRPC]
     public void SendChattingMessageOnServer(Define.ChattingColor chattingColor, string content, PhotonMessageInfo _photonMessageInfo )
     {
@@ -222,7 +213,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         reciveChattingEvent?.Invoke(chattingColor, content);
     }
 
-
+    #endregion
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         enterUserList?.Invoke(newPlayer);
@@ -233,6 +224,20 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         leftUserList?.Invoke(otherPlayer);
+    }
+
+    public void HiderDieOnLocal(int dieViewID)
+    {
+        photonView.RPC("HiderDieOnServer", RpcTarget.MasterClient);
+    }
+    [PunRPC]
+    public void HiderDieOnServer()
+    {
+        if (State == Define.GameState.Gameing)
+        {
+            var gameingState = _gameState as GameState_Gameing;
+            gameingState.UpdatePlayerCount();
+        }
     }
 
 
@@ -268,5 +273,14 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
     #endregion
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Managers.Game.myPlayer.GetComponent<LivingEntity>().OnDamage(0, 3, UnityEngine.Vector3.zero);
+        }
+        
+    }
 
+  
 }

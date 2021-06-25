@@ -15,6 +15,8 @@ public class SeekerInput_User : SeekerInput
         if (this.IsMyCharacter())
         {
             InputManager.Instacne.SetActiveSeekerController(true);
+            var uiMain = Managers.UI.SceneUI as UI_Main;
+            uiMain.FindButton.gameObject.SetActive(false);
         }
     }
 

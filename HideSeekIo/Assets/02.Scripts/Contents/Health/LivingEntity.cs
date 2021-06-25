@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 // 생명체로서 동작할 게임 오브젝트들을 위한 뼈대를 제공
 // 체력, 데미지 받아들이기, 사망 기능, 사망 이벤트를 제공
-public class LivingEntity : MonoBehaviourPun, IDamageable
+public class LivingEntity : MonoBehaviourPun, IDamageable , IPunObservable
     
 {
     public int initHealth = 2; // 시작 체력
@@ -41,17 +41,14 @@ public class LivingEntity : MonoBehaviourPun, IDamageable
             if (buffCount > BuffControllerList.Count)
             {
                 var buffController = BuffManager.Instance.MakeBuffController(this.transform);
-                //BuffControllerList.Add(ref buffController);
-                print(buffCount + "버프카운트수 ");
-                //this.photonView.ObservedComponents.Add(buffController.photonView);
                 BuffManager.Instance.RegisterBuffControllerOnLivingEntity(buffController, this);
             }
 
         }
     }
-
-    private void Start()
+    private void OnEnable()
     {
+        print("Livngetity OnEnable @@@@@@@@@@@@@@@@@@@@@@@");
         InitSetup();
     }
 
@@ -65,9 +62,8 @@ public class LivingEntity : MonoBehaviourPun, IDamageable
   
     public virtual void OnPhotonInstantiate()
     {
-        print("OnPhotonInstantiate Living       ;");
         Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
-        //if (Managers.Scene  == null) return;
+        print("OnPhotonInstantiate Living       ;");
     }
 
     // 데미지 처리

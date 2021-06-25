@@ -165,6 +165,5 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Managers.Scene.LoadScene(Define.Scene.Lobby);
         
     }
-
-
+ 
 }

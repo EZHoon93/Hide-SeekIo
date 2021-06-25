@@ -1,10 +1,8 @@
 ﻿using TMPro;
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
-using Photon.Realtime;
 
 public class UI_Main : UI_Scene
 {
@@ -13,7 +11,8 @@ public class UI_Main : UI_Scene
         Chatting,
         InGameStore,
         UserList_Lobby,
-        UserList_Game
+        UserList_Game,
+        GameInfo
     }
 
     enum Panels
@@ -35,8 +34,9 @@ public class UI_Main : UI_Scene
         Weapon,
         Etc,
         UserListButton,
-        AppExit
-            
+        AppExit,
+        FindPlayer,
+            Test
     }
 
     public enum TextMeshProUGUIs
@@ -45,16 +45,14 @@ public class UI_Main : UI_Scene
         Notice,
         DeathInfo,
         KillCount,
-        ZombieCount,
-        HumanCount,
-        InGameTime
     }
 
 
-    public UI_InGameStore InGameStore => Get<GameObject>((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
+    public UI_InGameStore InGameStore => GetObject((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
+    public UI_InGameInfo InGameInfo => GetObject((int)GameObjects.GameInfo).GetComponent<UI_InGameInfo>();
 
-    public TextMeshProUGUI CountDown => Get<TextMeshProUGUI>((int)TextMeshProUGUIs.CountDown).GetComponent<TextMeshProUGUI>();
-    public TextMeshProUGUI Notice => Get<TextMeshProUGUI>((int)TextMeshProUGUIs.Notice).GetComponent<TextMeshProUGUI>();
+    public Button FindButton => GetButton((int)Buttons.FindPlayer);
+    
 
 
     public override void Init()
@@ -79,6 +77,9 @@ public class UI_Main : UI_Scene
         GetButton((int)Buttons.Etc).gameObject.BindEvent(OnEtcStore_ButtonClicked);
         GetButton((int)Buttons.UserListButton).gameObject.BindEvent(OnUserListGame_ButtonClicked);
         GetButton((int)Buttons.AppExit).gameObject.BindEvent(OnAppExit_ButtonClicked);
+        GetButton((int)Buttons.FindPlayer).gameObject.BindEvent(OnFindPlayer_ButtonClicked);
+        GetButton((int)Buttons.FindPlayer).gameObject.BindEvent(Test);
+
 
 
         GetObject((int)GameObjects.InGameStore).SetActive(false);
@@ -97,8 +98,14 @@ public class UI_Main : UI_Scene
             go.gameObject.SetActive(active);
             
         }
+        //로비로 돌아갈시 필요버튼 켜줌
+        if(selectGameType == Define.GameScene.Lobby)
+        {
+            FindButton.gameObject.SetActive(true);
+        }
     }
 
+    #region Texts
     public void ResetTexts()
     {
         var array = Enum.GetValues( typeof(TextMeshProUGUIs)) ;
@@ -106,17 +113,47 @@ public class UI_Main : UI_Scene
         {
             GetText((int)e).text = null;
         }
-
-        GetText(TextMeshProUGUIs.InGameTime).text = "00:00";
-        GetText(TextMeshProUGUIs.HumanCount).text = "0";
-        GetText(TextMeshProUGUIs.ZombieCount).text = "0";
-
-
+        InGameInfo.ResetTextes();
     }
     public TextMeshProUGUI GetText(TextMeshProUGUIs textType)
     {
         return GetText((int)textType);
     }
+
+    public void UpdateCountText(int newTime)
+    {
+        if(newTime <= 0 )
+        {
+            GetText(TextMeshProUGUIs.CountDown).text = null;
+        }
+        else
+        {
+            GetText(TextMeshProUGUIs.CountDown).text = newTime.ToString();
+        }
+    }
+
+    public void UpdateNoticeText(string content)
+    {
+        GetText(TextMeshProUGUIs.Notice).text = content;
+    }
+
+    public void UpdateSeekerCount(int count)
+    {
+        InGameInfo.UpdateSeekerText(count);
+    }
+
+    public void UpdateHiderCount(int count)
+    {
+        InGameInfo.UpdateHiderText(count);
+
+    }
+
+    public void UpdateInGameTime(int newtime)
+    {
+        InGameInfo.UpdateGameTimeText(newtime);
+    }
+
+    #endregion
 
     #region OnButtonCliied  PopUp Event
 
@@ -182,6 +219,21 @@ public class UI_Main : UI_Scene
     public void OnAppExit_ButtonClicked(PointerEventData data)
     {
         Managers.UI.ShowPopupUI<UI_AppExit>();
+    }
+
+    public void OnFindPlayer_ButtonClicked(PointerEventData data)
+    {
+        CameraManager.Instance.FindNextPlayer();
+    }
+    public void Test(PointerEventData data)
+    {
+        PhotonGameManager.Instacne.ChangeRoomStateToServer(Define.GameState.CountDown);
+
+    }
+    public void Test1()
+    {
+        PhotonGameManager.Instacne.ChangeRoomStateToServer(Define.GameState.CountDown);
+
     }
     #endregion
 

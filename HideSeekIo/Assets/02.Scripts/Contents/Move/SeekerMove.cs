@@ -25,22 +25,7 @@ public class SeekerMove : MoveBase
     }
 
 
-    private void Update()
-    {
-        if (photonView.IsMine == false)
-        {
-            switch (_attackBase.State)
-            {
-                case AttackBase.state.Idle:
-                    UpdateMoveAnimation(State);
-                    break;
-                case AttackBase.state.Attack:
-                    UpdateImmediateRotate(_attackBase.weapon.LastAttackInput);
-                    UpdateMoveAnimation(MoveState.Idle);
-                    break;
-            }
-        }
-    }
+ 
 
 
 }

@@ -18,6 +18,7 @@ public class HiderController : PlayerController
         hiderAttack = GetComponent<HiderAttack>();
         hiderHealth = GetComponent<HiderHealth>();
         hiderHealth.onDeath += HandleDeath;
+        hiderHealth.onReviveEvent += HandleRevive;
         TimeCoinAmount = 1;
     }
 
@@ -47,11 +48,16 @@ public class HiderController : PlayerController
     {
         base.HandleDeath();
         SetActiveComponent(false);
-        //GameManager.Instance.HumanDie(this.photonView.ViewID);
+
         if (photonView.IsMine)
         {
-            
+            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID());
         }
+    }
+
+    protected void HandleRevive()
+    {
+        SetActiveComponent(true);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -61,6 +67,16 @@ public class HiderController : PlayerController
         if(enterTrigger != null)
         {
             enterTrigger.Enter(this.gameObject);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var exitTrigger = other.gameObject.GetComponent<IExitTrigger>();
+        print(other.gameObject.name + "부디침");
+        if (exitTrigger != null)
+        {
+            exitTrigger.Exit(this.gameObject);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using TMPro;
 
 public abstract class GameState_Base : MonoBehaviourPun , IPunObservable
 {
@@ -8,7 +9,7 @@ public abstract class GameState_Base : MonoBehaviourPun , IPunObservable
     double n_createTime; //생성된 시간
     int _remainTime;
     protected int _initRemainTime;
-
+    protected UI_Main uI_Main;
 
     public int RemainTime
     {
@@ -28,7 +29,7 @@ public abstract class GameState_Base : MonoBehaviourPun , IPunObservable
         }
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
@@ -45,17 +46,20 @@ public abstract class GameState_Base : MonoBehaviourPun , IPunObservable
     {
         n_createTime = PhotonNetwork.Time; 
     }
+    private void Awake()
+    {
+        uI_Main = Managers.UI.SceneUI as UI_Main;
+        uI_Main.ResetTexts();
+    }
     private void Start()
     {
+      
         Setup();
     }
-
     private void Update()
     {
-        RemainTime = (_initRemainTime - (int)(PhotonNetwork.Time - n_createTime)); 
+        RemainTime = (_initRemainTime - (int)(PhotonNetwork.Time - n_createTime));
     }
-
-
     protected abstract void Setup();
     protected abstract void ChangeRemainTime();
     protected abstract void EndRemainTime();

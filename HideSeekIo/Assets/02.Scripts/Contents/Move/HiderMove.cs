@@ -25,18 +25,9 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     protected void FixedUpdate()
     {
+        if (photonView.IsMine == false) return;
         OnUpdate(_hiderInput.MoveVector, _hiderInput.IsRun);
     }
-
-    private void Update()
-    {
-        if(photonView.IsMine == false)
-        {
-            UpdateMoveAnimation(State);
-        }
-    }
-
-
 
     public virtual void Stop()
     {

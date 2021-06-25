@@ -55,15 +55,11 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     }
     private void OnEnable()
     {
-        print("Weapon  OnEnable");
-
     }
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
-        print("Weapon  OnPhotonInstantiate");
         var playerViewID = (int)info.photonView.InstantiationData[0];
-        print(Managers.Game.GetLivingEntity(playerViewID) + "ㄷㄷ");
         var attackBase = Managers.Game.GetLivingEntity(playerViewID).GetComponent<AttackBase>();
         attackBase.SetupWeapon(this);
         _remianCoolTime = 0;

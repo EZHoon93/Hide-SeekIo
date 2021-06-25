@@ -15,11 +15,9 @@ public class GameMainScene : GameScene
         Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
         Managers.Game.CurrentGameScene = this;
 
-        //GameManager.Instance.SpawnManager.WeaponSpawn(Define.Weapon.Grenade, this.transform.position);
-
-
     }
 
+    
     public override void Clear()
     {
         

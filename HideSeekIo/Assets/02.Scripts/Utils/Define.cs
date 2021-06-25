@@ -61,7 +61,8 @@ public class Define
         Seeker = 8,
         Hider,
         Wall,
-        Item
+        Item,
+        Cage = 12
     }
 
     public enum Scene

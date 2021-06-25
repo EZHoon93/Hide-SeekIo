@@ -20,12 +20,14 @@ public class AttackBase : MonoBehaviourPun
     public Weapon weapon { get; protected set; }
 
 
-
+    private void OnEnable()
+    {
+        State = state.Idle;
+    }
 
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
-        State = state.Idle;
     }
 
     public void OnUpdate(Vector2 inputVector2)
@@ -40,7 +42,7 @@ public class AttackBase : MonoBehaviourPun
     {
         if (weapon)
         {
-            Managers.Resource.Destroy(weapon.gameObject);
+            PhotonNetwork.Destroy(weapon.gameObject);
         }
         weapon = newWeapon;
         weapon.newAttacker = this;

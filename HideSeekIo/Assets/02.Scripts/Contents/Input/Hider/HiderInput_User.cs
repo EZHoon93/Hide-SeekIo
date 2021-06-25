@@ -4,20 +4,23 @@ using UnityEngine;
 
 public class HiderInput_User : HiderInput
 {
-
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
         if (this.photonView.IsMine)
         {
             InputManager.Instacne.SetActiveHiderController(true);
+            var uiMain = Managers.UI.SceneUI as UI_Main;
+            uiMain.FindButton.gameObject.SetActive(false);
         }
     }
+
     protected override void HandleDeath()
     {
         if (photonView.IsMine)
         {
             InputManager.Instacne.SetActiveHiderController(false);
+
         }
     }
     private void Update()

@@ -3,49 +3,63 @@ using TMPro;
 
 using UnityEngine;
 
-public class GameState_Gameing : GameState_Base, IPunObservable
+public class GameState_Gameing : GameState_Base 
 {
-    int _initGameTime = 100 ;
+    int n_hiderCount;
+    int n_seekerCount;
+    public int seekerCount
+    {
+        get => n_seekerCount;
+        set
+        {
+            n_seekerCount = value;
+            uI_Main.UpdateSeekerCount(value);
+        }
+    }
+    public int hiderCount
+    {
+        get => n_hiderCount;
+        set
+        {
+            n_hiderCount = value;
+            uI_Main.UpdateHiderCount(value);
+        }
+    }
 
-    TextMeshProUGUI _inGametimeText;
-    TextMeshProUGUI _noticeText;
-    TextMeshProUGUI _countDownText;
-
-
-
+    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(hiderCount);
+            stream.SendNext(seekerCount);
+        }
+        else
+        {
+            hiderCount = (int)stream.ReceiveNext();
+            seekerCount = (int)stream.ReceiveNext();
+        }
+    }
     protected override void Setup()
     {
-        
-        //print("셋업 노티스,카운트");
+        _initRemainTime = Managers.Game.CurrentGameScene.InitGameTime;      //플레이타임 설정 
+        uI_Main.UpdateInGameTime(Managers.Game.CurrentGameScene.InitGameTime);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            UpdatePlayerCount();
+        }
+
     }
-
-    private void Start()
-    {
-        var mainSceneUI = Managers.UI.SceneUI as UI_Main;
-        _inGametimeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.InGameTime);
-        _noticeText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.Notice);
-        _countDownText = mainSceneUI.GetText(UI_Main.TextMeshProUGUIs.CountDown);
-
-
-
-        _initRemainTime = _initGameTime;
-        _countDownText.text = null;
-        _noticeText.text = null;
-        
-    }
-
-
-
     protected override void ChangeRemainTime()
     {
-        string timeStr = Util.GetTimeFormat(RemainTime);
-        _inGametimeText.text = timeStr;
+        uI_Main.UpdateInGameTime(RemainTime);
     }
-
     protected override void EndRemainTime()
     {
         Master_ChangeState(Define.GameState.End);
     }
+
+
 
     //좀비팀승리시. GameManger에서 호출
     public void ZombieTeamWin()
@@ -53,13 +67,11 @@ public class GameState_Gameing : GameState_Base, IPunObservable
         Master_ChangeState(Define.GameState.End);
     }
 
-    private void Update()
+
+    public void UpdatePlayerCount()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            print("End변ㄱㅇ");
-            Master_ChangeState(Define.GameState.End);
-        }
+        hiderCount = Managers.Game.GetHiderCount();
+        seekerCount = Managers.Game.GetSeekerCount();
     }
 
 

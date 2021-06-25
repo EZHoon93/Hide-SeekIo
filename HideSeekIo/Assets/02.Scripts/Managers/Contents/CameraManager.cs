@@ -22,6 +22,7 @@ public class CameraManager : GenricSingleton<CameraManager>
     PlayerController _target;
 
     FogOfWarLegacy _fogOfWarLegacy;
+    int _observerNumber = -1;  //현재 관찰하고있는 유저의 actNumber;
 
 
     protected override void Awake()
@@ -40,6 +41,28 @@ public class CameraManager : GenricSingleton<CameraManager>
     }
 
 
+    private void Start()
+    {
+        StartCoroutine(UpdateCameraIsViewTarget());
+    }
+
+    IEnumerator UpdateCameraIsViewTarget()
+    {
+        yield return new WaitForSeconds(1.0f);  //지속적으로 확인 
+
+        while (true)
+        {
+            if (PhotonGameManager.Instacne.State == Define.GameState.GameReady || PhotonGameManager.Instacne.State == Define.GameState.Gameing)
+            {
+                if(_target == null)
+                {
+                    FindNextPlayer();
+                }
+            }
+            yield return new WaitForSeconds(5.0f);  //지속적으로 확인 
+        }
+    }
+
 
 
     public void SetupTarget(Transform target)
@@ -50,8 +73,8 @@ public class CameraManager : GenricSingleton<CameraManager>
         var targetPlayer=  target.GetComponent<PlayerController>();
 
         if (targetPlayer == null) return;
-
-        if(targetPlayer.Team == Define.Team.Hide)
+        _target = targetPlayer;
+        if (targetPlayer.Team == Define.Team.Hide)
         {
             Camera.main.cullingMask = ~( 1 << (int)Define.Layer.UI); 
             _fogOfWarLegacy.team = targetPlayer.ViewID();
@@ -66,7 +89,40 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             StartCoroutine(CameraOffset());
         }
+    }
 
+    public void FindNextPlayer()
+    {
+        print("FinxNextPlayer@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        PlayerController findTarget = null;
+        var livingEntities = Managers.Game.GetAllLivingEntity();
+        print("FinxNextPlayer@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + livingEntities.Length);
+
+        if (livingEntities.Length <= 0) return;  //없으면 X
+        int i = 0;
+        do
+        {
+            if (_observerNumber < livingEntities[i].photonView.ViewID)
+            {
+                findTarget = livingEntities[i].GetComponent<PlayerController>();
+                if (findTarget == null)
+                {
+                    continue;
+                }
+                _observerNumber = findTarget.photonView.ViewID;
+                SetupTarget(findTarget.transform);
+                return;
+            }
+            i++;
+
+            if (i > livingEntities.Length - 1)
+            {
+                i = 0;
+                _observerNumber = -1;
+            }
+
+
+        } while (findTarget == null);
     }
 
     //술래팀 카메라
