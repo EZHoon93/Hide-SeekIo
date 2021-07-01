@@ -16,7 +16,6 @@ public class Buff_Sight : BuffBase
     }
     public override void ProcessEnd()
     {
-        base.ProcessEnd();
         _fogOfWarUnit = _buffController.livingEntity.GetComponentInChildren<FogOfWarUnit>();
         _fogOfWarUnit.circleRadius = 5;
 

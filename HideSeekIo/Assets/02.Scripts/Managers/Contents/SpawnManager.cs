@@ -21,6 +21,14 @@ public class SpawnManager
         PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
 
+    public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
+    {
+
+        PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() , @enum }); //사용한 플레이어 ViewID
+    }
+
+
+
     public void PlayerSpawn(Define.Team team, Vector3 pos)
     {
         List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
@@ -52,7 +60,7 @@ public class SpawnManager
         }
 
     }
-    public void WeaponSpawn(Define.Weapon weapon , AttackBase newAttacker)
+    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase newAttacker)
     {
         List<object> datas = new List<object>() { newAttacker.photonView.ViewID };
         switch (weapon)
@@ -61,6 +69,6 @@ public class SpawnManager
                 datas.Add(PlayerInfo.CurrentWeapon);
                 break;
         }
-        PhotonNetwork.Instantiate(weapon.ToString(), new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+        return PhotonNetwork.Instantiate(weapon.ToString(), new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
     }
 }

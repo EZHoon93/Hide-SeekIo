@@ -5,26 +5,29 @@ using System.Collections;
 public abstract class Weapon_Throw : Weapon
 {
     [SerializeField] GameObject _projectilePrefab;
-    [SerializeField] Transform _attackRangeUI;
+    
+    Transform _attackRangeUI;
 
     public float attackRange { get; protected set; }
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        _attackRangeUI = GetComponentInChildren<Canvas>().transform;
         weaponType = WeaponType.Throw;
     }
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
     {
-        _attackAnimationName = animName;
-        _attackDelayTime = delayTime;
-        _afterAttackDelayTime = afaterDelayTime;
-        _distance = distance;
+        AttackAnim = animName;
+        AttackDelay = delayTime;
+        AfaterAttackDelay = afaterDelayTime;
+        AttackDistance = distance;
         attackRange = newAttackRange;
     }
 
     public override void Zoom(Vector2 inputVector)
     {
-        UtillGame.ThrowZoom(inputVector, _distance, newAttacker.CenterPivot, _attackRangeUI);
+        UtillGame.ThrowZoom(inputVector, AttackDistance, newAttacker.CenterPivot, _attackRangeUI);
     }
 
 
@@ -32,7 +35,7 @@ public abstract class Weapon_Throw : Weapon
     public override void Attack(Vector2 inputVector)
     {
         state = State.Delay;
-        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, _distance, newAttacker.transform);
+        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, newAttacker.transform);
         LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
@@ -66,5 +69,14 @@ public abstract class Weapon_Throw : Weapon
     }
 
     #endregion
+    public void UseToPlayerToServer()
+    {
+        photonView.RPC("UserToPlayerOnLocal", RpcTarget.All);
+    }
 
+    [PunRPC]
+    public void UserToPlayerOnLocal()
+    {
+        newAttacker.UseWeapon(this);
+    }
 }

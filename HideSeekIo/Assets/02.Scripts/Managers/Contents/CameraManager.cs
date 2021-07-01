@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class CameraManager : GenricSingleton<CameraManager>
 {
-    
+
     //public event Action<int, Define.Team> _cameraViewChange;
 
     public CinemachineVirtualCamera VirtualCamera { get; private set; }
@@ -29,11 +29,11 @@ public class CameraManager : GenricSingleton<CameraManager>
     {
         if (VirtualCamera == null)
             VirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
-        if(offsetCamera == null)
+        if (offsetCamera == null)
             offsetCamera = VirtualCamera.GetComponent<CinemachineCameraOffset>();
-        if(virtualCameraNoise == null)
+        if (virtualCameraNoise == null)
             virtualCameraNoise = VirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        if(_fogOfWarLegacy == null)
+        if (_fogOfWarLegacy == null)
             _fogOfWarLegacy = Camera.main.GetComponent<FogOfWarLegacy>();
 
         _fogOfWarLegacy.team = 0;
@@ -54,7 +54,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             if (PhotonGameManager.Instacne.State == Define.GameState.GameReady || PhotonGameManager.Instacne.State == Define.GameState.Gameing)
             {
-                if(_target == null)
+                if (_target == null)
                 {
                     FindNextPlayer();
                 }
@@ -63,6 +63,12 @@ public class CameraManager : GenricSingleton<CameraManager>
         }
     }
 
+    public void ResetCamera()
+    {
+        VirtualCamera.Follow = Managers.Game.CurrentGameScene.CameraView;  //카메라 초기화
+        offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
+        _fogOfWarLegacy.team = 0;
+    }
 
 
     public void SetupTarget(Transform target)
@@ -70,18 +76,19 @@ public class CameraManager : GenricSingleton<CameraManager>
         VirtualCamera.Follow = target.transform;
         offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
 
-        var targetPlayer=  target.GetComponent<PlayerController>();
+        var targetPlayer = target.GetComponent<PlayerController>();
 
         if (targetPlayer == null) return;
         _target = targetPlayer;
         if (targetPlayer.Team == Define.Team.Hide)
         {
-            Camera.main.cullingMask = ~( 1 << (int)Define.Layer.UI); 
+            Camera.main.cullingMask = ~(1 << (int)Define.Layer.UI);
             _fogOfWarLegacy.team = targetPlayer.ViewID();
         }
         else
         {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider | 1 <<(int)Define.Layer.UI);
+            Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider | 1 << (int)Define.Layer.UI);
+            _fogOfWarLegacy.team = targetPlayer.ViewID();
 
         }
 
@@ -131,7 +138,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         offsetCamera.m_Offset = new Vector3(0, 0, 6);
         yield return new WaitForSeconds(3.0f);
 
-        while(offsetCamera.m_Offset.z  >= 0)
+        while (offsetCamera.m_Offset.z >= 0)
         {
             Vector3 offset = offsetCamera.m_Offset;
             offset.z -= Time.deltaTime * 3;
@@ -176,6 +183,6 @@ public class CameraManager : GenricSingleton<CameraManager>
         virtualCameraNoise.m_FrequencyGain = 0.0f;
     }
 
-  
+
 
 }

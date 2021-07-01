@@ -74,7 +74,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 break;
         }
     }
-    public void OnUpdate(Vector2 inputVector2, bool isRun)
+    public virtual void OnUpdate(Vector2 inputVector2, bool isRun)
     {
         MoveSpeed = _testSpeed;
         switch (_attackBase.State)
@@ -85,7 +85,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.weapon.LastAttackInput);
+                UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
@@ -148,7 +148,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         }
 
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
-
+        print(ResultSpeed + "스피드");
         Vector3 moveDistance = this.transform.forward * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)
         {

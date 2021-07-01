@@ -53,9 +53,12 @@ public class GameState_Gameing : GameState_Base
     protected override void ChangeRemainTime()
     {
         uI_Main.UpdateInGameTime(RemainTime);
+        
     }
     protected override void EndRemainTime()
     {
+        //숨는팀 승리 !!
+
         Master_ChangeState(Define.GameState.End);
     }
 
@@ -72,6 +75,12 @@ public class GameState_Gameing : GameState_Base
     {
         hiderCount = Managers.Game.GetHiderCount();
         seekerCount = Managers.Game.GetSeekerCount();
+        //술래팀 승리.!! 
+        if(hiderCount <= 0)
+        {
+            print("술래팀 승리!!");
+            //Master_ChangeState(Define.GameState.End);
+        }
     }
 
 

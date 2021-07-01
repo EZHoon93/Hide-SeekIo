@@ -99,11 +99,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         //마스터 서버에 접속중이라면
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable()
-            {
-                {"lv" , PlayerInfo.level }
-            });
+            //PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
+            //PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable()
+            //{
+            //    {"lv" , PlayerInfo.level }
+            //});
             // 룸 접속 실행
             State = Define.ServerState.Connect;
         }

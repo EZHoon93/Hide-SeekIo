@@ -28,6 +28,7 @@ public class GameManager
             PhotonNetwork.Destroy(myPlayer.gameObject);
         }
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
+        CameraManager.Instance.ResetCamera();
         InputManager.Instacne.OffAllController();
         GameResetEvent?.Invoke();   
     }

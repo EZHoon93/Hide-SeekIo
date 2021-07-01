@@ -18,31 +18,29 @@ public class DataManager
     public Define.GameDataState State { get; private set; }
     public Dictionary<int, Stat> StatDict { get; private set; } = new Dictionary<int, Data.Stat>();
 
-    Dictionary<string, InGameStat> InGameHiderItems = new Dictionary<string, InGameStat>();
-    Dictionary<string, InGameStat> inGameSeekrItems = new Dictionary<string, InGameStat>();
+    //Dictionary<string, InGameStat> InGameItems = new Dictionary<string, InGameStat>();
+    //Dictionary<string, InGameStat> inGameSeekrItems = new Dictionary<string, InGameStat>();
 
-    public Dictionary<Type, Dictionary<string, InGameStat>> InGameItemDic = new Dictionary<Type, Dictionary<string, InGameStat>>();
+    //public Dictionary<Type, Dictionary<string, InGameStat>> InGameItemDic = new Dictionary<Type, Dictionary<string, InGameStat>>();
 
+    public  Dictionary<string, InGameStat> InGameItemDic = new Dictionary<string, InGameStat>();
 
     public void Init()
     {
         StatDict = LoadJson<StatData, int, Stat>("StatData").MakeDict();
 
-        InGameHiderItems = LoadJson<InGameStatData, string, InGameStat>("InGameHider").MakeDict();
+        InGameItemDic = LoadJson<InGameStatData, string, InGameStat>("InGameItem").MakeDict();
 
-        inGameSeekrItems = LoadJson<InGameStatData, string, InGameStat>("InGameSeeker").MakeDict();
+        //inGameSeekrItems = LoadJson<InGameStatData, string, InGameStat>("InGameSeeker").MakeDict();
    
     
-        InGameItemDic.Add( typeof(Define.HiderStoreList), InGameHiderItems);
-        InGameItemDic.Add(typeof(Define.SeekrStoreList) , inGameSeekrItems);
+        //InGameItemDic.Add( typeof(Define.HiderStoreList), InGameHiderItems);
+        //InGameItemDic.Add(typeof(Define.SeekrStoreList) , inGameSeekrItems);
 
-    
-        foreach(var s in InGameItemDic[typeof(Define.SeekrStoreList) ] )
+        foreach(var s in InGameItemDic)
         {
-            Debug.Log(s.Key.ToString());
+            Debug.Log(s.Key + "ssssssssssssss");
         }
-
-        Debug.Log(InGameItemDic[typeof(Define.SeekrStoreList)]["Speed"] + "whasssssss");
 
 
 

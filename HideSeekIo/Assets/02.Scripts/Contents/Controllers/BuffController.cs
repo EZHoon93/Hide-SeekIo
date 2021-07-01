@@ -18,6 +18,8 @@ public class BuffController : MonoBehaviourPun, IPunObservable
     public LivingEntity livingEntity { get; private set; }
     public float DurationTime => _durationTime;
 
+    public bool IsNuff { get; private set; }    //너프 인지
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -52,6 +54,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             BuffType = buffType;
             _buffBase = BuffManager.Instance.MakeBuffObject(buffType, this.transform);
             _buffBase.Setup(this);
+            SetupIsPostiveBuff(BuffType);
         }
         livingEntity = newLivingEntity;
         _createServerTime = createServerTime;
@@ -90,9 +93,9 @@ public class BuffController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    void End()
+    public void End()
     {
-        _buffBase.ProcessEnd();
+        _buffBase.Push();
         _createServerTime = 0;
         BuffType = Define.BuffType.Null;
         BuffManager.Instance.UnRegisterBuffControllerOnLivingEntity(this, livingEntity);
@@ -101,6 +104,21 @@ public class BuffController : MonoBehaviourPun, IPunObservable
     }
 
 
+    //긍정버프인지, 너프인지,
+    void SetupIsPostiveBuff(Define.BuffType buffType)
+    {
+        switch (buffType)
+        {
+            case Define.BuffType.Direction:
+            case Define.BuffType.Sight:
+            case Define.BuffType.Stun:
+                IsNuff = true;
+                break;
+            default:
+                IsNuff = false;
+                break;
 
+        }
+    }
 
 }

@@ -52,6 +52,28 @@ namespace Data
 		}
 	}
 	#endregion
-	[System.Serializable]
+	[Serializable]
 	public class TypeColor : SerializableDictionary<Define.ChattingColor, Color> { }
+
+
+
+    #region User
+
+    [Serializable]
+	public class UserData
+    {
+		public string key;
+		public string nickName;
+		public int level;
+		public int coin;
+		public int exp;
+		public int maxExp;
+
+		public string[] HasAvaters;
+		public string[] HasWeapons;
+
+	}
+
+	#endregion
+
 }

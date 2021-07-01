@@ -28,10 +28,10 @@ public class Weapon_Gun : Weapon
     }
     protected virtual void Start()
     {
-        _attackAnimationName = "Attack";
-        _attackDelayTime = 0.1f;
-        _afterAttackDelayTime = 0.5f;
-        _distance = 1.5f;
+        //AnimationN = "Attack";
+        //_attackDelayTime = 0.1f;
+        //_afterAttackDelayTime = 0.5f;
+        //_distance = 1.5f;
     }
     protected virtual void OnEnable()
     {

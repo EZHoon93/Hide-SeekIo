@@ -30,7 +30,7 @@ public class HiderHealth : LivingEntity
         _cageObject.gameObject.SetActive(true);
         _animator.transform.localPosition = new Vector3(0, 0.3f, 0);
         _animator.SetFloat("Speed", -0.1f);
-        _animator.gameObject.layer = (int)Define.Layer.Cage;
+        _animator.gameObject.SetLayerRecursively((int)Define.Layer.Cage);
         EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position, 0 );
         
         //this.gameObject.SetLayerRecursively((int)Define.Layer.Seeker);

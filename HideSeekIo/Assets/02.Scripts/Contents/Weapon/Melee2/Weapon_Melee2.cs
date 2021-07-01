@@ -17,25 +17,29 @@ public class Weapon_Melee2 : Weapon
 
     int _attackLayer = (1 << (int)Define.Layer.Hider) | (1 << (int)Define.Layer.Item);
 
-    protected void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         weaponType = WeaponType.Melee;
+        type = Type.Permanent;
+
     }
     private void Start()
     {
-        _attackAnimationName = "Attack";
-        _attackDelayTime = 0.7f;
-        _afterAttackDelayTime = 0.5f;
-        _distance = 1.5f;
+        AttackAnim = "Attack";
+        AttackDelay= 0.4f;
+        AfaterAttackDelay= 0.5f;
+        AttackDistance= 1.5f;
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
         var weaponId = (string)info.photonView.InstantiationData[1];
-        var weaponSkin = Managers.Resource.Instantiate($"Melee2/{weaponId}");
-        weaponSkin.transform.ResetTransform(_modelTransform);
+        var weaponSkin = Managers.Resource.Instantiate($"Melee2/{weaponId}");   //유저 무기 아바타 생성
+        weaponSkin.transform.ResetTransform(_modelTransform);   //아바타 생성된것 자식오브젝트로 이동
         _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
         _attackWarningRangeUI.gameObject.SetActive(false);
+        newAttacker.UseWeapon(this);    //무기 사용상태로 전환
 
     }
     public override void Zoom(Vector2 inputVector)
@@ -85,13 +89,13 @@ public class Weapon_Melee2 : Weapon
 
     void AttackEffect()
     {
-        var attackPos = newAttacker.transform.position + newAttacker.transform.forward * _distance;
+        var attackPos = newAttacker.transform.position + newAttacker.transform.forward * AttackDistance;
         print(attackPos + "어택이펙트");
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
 
         Collider[] colliders = new Collider[10];
 
-        var hitCount = Physics.OverlapSphereNonAlloc(this.transform.position, _distance, colliders, _attackLayer);
+        var hitCount = Physics.OverlapSphereNonAlloc(this.transform.position, AttackDistance, colliders, _attackLayer);
         if (hitCount > 0)
         {
             print(hitCount + "힛카운트");

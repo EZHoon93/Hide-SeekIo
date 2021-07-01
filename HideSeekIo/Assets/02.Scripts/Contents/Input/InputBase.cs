@@ -34,7 +34,14 @@ public abstract class InputBase : MonoBehaviourPun
 
     public virtual void Stop(float newTime)
     {
+        _stopTime = newTime;
+        IsStop = true;
+    }
 
+    public void RemoveStop()
+    {
+        IsStop = false;
+        _stopTime = 0;
     }
 
 }

@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class LoginScene : BaseScene
 {
+    [SerializeField] GameObject _craeteIDPanel;
+
+
     enum State
     {
         UnLoad,
@@ -19,13 +22,14 @@ public class LoginScene : BaseScene
         SceneType = Define.Scene.Login;
 
         
-        StartCoroutine(LoadData());
+        StartCoroutine(LoadAllData());
     }
     public override void Clear()
     {
         Debug.Log("LoginScene Clear!");
     }
-    IEnumerator LoadData()
+    //모든 데이터를 받아올대까지 대기 
+    IEnumerator LoadAllData()
     {
         PlayerInfo.Login();
         PhotonManager.Instance.Connect();
@@ -42,24 +46,52 @@ public class LoginScene : BaseScene
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
 
+
     bool GetIsAllOnLoad()
     {
-        bool photonData = false;
-        bool userData = false;
-        bool gameData = false;
-        if (PhotonManager.Instance.State == Define.ServerState.Connect)
-            photonData = true;
-        if (PlayerInfo.State == Define.UserDataState.Load)
-            userData = true;
-        if(Managers.Data.State == Define.GameDataState.Load)
-            gameData = true;
-
-
+        var photonData = CheckPhoton();
+        var userData = CheckPlayerInfo();
+        bool gameData = CheckData();
         print(photonData + "/" + userData + "/" + gameData);
 
         return photonData && userData && gameData ;
     }
 
 
-   
+
+    bool CheckPlayerInfo()
+    {
+        if(PlayerInfo.State == Define.UserDataState.Load)
+        {
+            return true;
+        }
+
+        if(PlayerInfo.State == Define.UserDataState.Null)
+        {
+            //아이디없음.. 아이디만들기.
+            _craeteIDPanel.SetActive(true);
+            PlayerInfo.State = Define.UserDataState.Wait;
+        }
+
+        return false;
+    }
+
+   bool CheckPhoton()
+    {
+        if (PhotonManager.Instance.State == Define.ServerState.Connect)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool CheckData()
+    {
+        if (Managers.Data.State == Define.GameDataState.Load)
+        {
+            return true;
+        }
+        return false;
+    }
 }

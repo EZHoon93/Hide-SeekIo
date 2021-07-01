@@ -10,6 +10,10 @@ public static class Extension
 		return Util.GetOrAddComponent<T>(go);
 	}
 
+	public static Transform MyFindChild(this Transform go , string name)
+    {
+		return  Util.FindChild(go.gameObject, name, true).transform;
+    }
 	public static void BindEvent(this GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)
 	{
 		UI_Base.BindEvent(go, action, type);

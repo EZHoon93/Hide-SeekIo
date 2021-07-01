@@ -4,7 +4,7 @@ using DG.Tweening;
 
 using UnityEngine;
 
-public class ThrowProjectileObject : MonoBehaviour
+public class ThrowProjectileObject : Poolable
 {
     [SerializeField] protected GameObject _modelObject;
 

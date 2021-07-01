@@ -40,5 +40,5 @@ public class HiderAttack : AttackBase
     //    weapon.Zoom(_hiderInput.AttackVector);
     //}
 
-   
+
 }

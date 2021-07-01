@@ -19,7 +19,7 @@ public class Buff_Shoes : BuffBase
     }
     public override void ProcessEnd()
     {
-        base.ProcessEnd();
+        
     }
 
 

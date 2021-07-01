@@ -1,5 +1,6 @@
 ﻿
 using UnityEngine;
+using FoW;
 using Photon.Pun;
 [RequireComponent(typeof(SeekerInput))]
 [RequireComponent(typeof(SeekerController))]
@@ -17,7 +18,8 @@ public class SeekerSetup : PlayerSetup
         base.OnPhotonInstantiate(info);
         //var seekerController =  GetComponent<SeekerController>();
         //var weaponId = (string)info.photonView.InstantiationData[2]; //무기 스킨
-
+        GetComponentInChildren<FogOfWarTeam>().team = this.ViewID();
+        GetComponentInChildren<FogOfWarUnit>().team = this.ViewID();
 
     }
 

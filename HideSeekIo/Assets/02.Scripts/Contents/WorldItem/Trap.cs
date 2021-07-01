@@ -2,26 +2,16 @@
 
 using UnityEngine;
 using Photon.Pun;
-public class Trap : PunTimerObject
+public class Trap : MonoBehaviourPun , IPunInstantiateMagicCallback
 {
-
-    private void Awake()
+    [SerializeField] GameObject _modelObject;
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        InitRemainTime = 5;
-    }
-    private void OnEnable()
-    {
-        print("trap OnEnable");
-        print("trap OnEnabl22222222222222222222222222222222e");
+        
 
-    }
-    public override void OnPhotonInstantiate(PhotonMessageInfo info)
-    {
-        print("trap OnPhotonInstantiate");
-
-        base.OnPhotonInstantiate(info);
         double sendTime = info.SentServerTime;
         print(PhotonNetwork.Time + "/" + sendTime);
+        _modelObject.SetActive(true);
         //생성된지 1초 이하면, 이펙트발생    => 생성시 서버로 이펙트 함수 호출이아닌, 생성시 전송시간이랑 비교해서 로컬로처리 (메시지 하나라도아끼려고)
         //if(PhotonNetwork.Time <= sendTime + 1.0f)
         //{
@@ -30,13 +20,11 @@ public class Trap : PunTimerObject
     }
 
 
-    public override void OnPreNetDestroy(PhotonView rootView)
+    public void TrapCollider(GameObject trapEnemeyObject)
     {
-        base.OnPreNetDestroy(rootView);
-        //게임 끝난상태가 아니라면 이펙트 => 로컬에서 처리
-        //if (GameManager.Instance.State != Define.GameState.End)
-        //{
-        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.TrapEffect, this.transform.position,0);
-        //}
+        print("Trap Collider !! " + trapEnemeyObject.name);
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Stun, trapEnemeyObject.GetComponent<LivingEntity>());
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 1);
+        PhotonNetwork.Destroy(this.gameObject);
     }
 }

@@ -6,6 +6,13 @@ public class Define
 {
     public delegate InGameItemUIState GameItemStateCallBack();
 
+    public static readonly int MaxItemInventory = 3;
+
+    public enum InGameItemType
+    {
+        use,
+        Weapon
+    }
     public enum ServerState
     {
         DisConnect,
@@ -16,7 +23,8 @@ public class Define
     {
         UnLoad,
         Wait,
-        Load
+        Load,
+        Null
     }
 
     public enum GameDataState
@@ -37,8 +45,14 @@ public class Define
     public enum Weapon
     {
         Melee2 = 1,
-        Stone = 101,
+
+        Stone = 101,    //투척류
         Grenade,
+        Flash,
+        Dynamite,
+        Fire,
+        Soil,
+
         Sniper = 201
     }
 
@@ -125,25 +139,29 @@ public class Define
     public enum HiderStoreList
     {
         Trap,
-        Shield,
-        Shoes,
-        Box,
+        Flash,
         Grenade,
-        Speed
+        Vaccine,
+        Speed,
+        Shoes,
+        Shield
     }
 
     public enum SeekrStoreList
     {
-        ChangeWeapon    ,   // 수류탄 추가 
-        SightCurse, //시야 감소
-        DirectionCurse,  // 방향 전환
-        Speed,  //이속증가
-        AllumanClap,    //스턴 면역
-        BodyUp, // 방해효과 면역 && 몸통박치기시 박스 파괴,
-        RangeUp ,//무기 범위증가
-        RaderUp ,//레이더 범위증가
+        Dynamite,
+        Fire    ,   //시야공유용 파이어 던지기가능.
+        Soil,   //끈끈이
+        Mask,   //마스크, 방해효과 무시
+        Rader,
+        PowerUp,    //대미지증가
+        Curse1,    //저주1    시야감소
+        Curse2,    //저주2    방향전환
+        SightUp ,//시야증가
+        Speed2,
 
-        
+        //AI추가,팀끼리 시야공유 등
+
     }
 
     public enum InGameItemUIState

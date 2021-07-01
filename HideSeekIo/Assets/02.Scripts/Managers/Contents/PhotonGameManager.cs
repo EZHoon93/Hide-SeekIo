@@ -279,7 +279,33 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             Managers.Game.myPlayer.GetComponent<LivingEntity>().OnDamage(0, 3, UnityEngine.Vector3.zero);
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Component c = _gameState;
+            Destroy(c);
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, Vector3.zero);
+
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            Managers.Spawn.PlayerSpawn(Define.Team.Seek, Vector3.zero);
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            Camera.main.orthographic = true;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Camera.main.orthographic = false;
+
+        }
     }
 
   

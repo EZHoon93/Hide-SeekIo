@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 
-public class AttackBase : MonoBehaviourPun
+public class AttackBase : MonoBehaviourPun 
 {
     public enum state
     {
@@ -17,8 +17,11 @@ public class AttackBase : MonoBehaviourPun
     protected Animator _animator;
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
-    public Weapon weapon { get; protected set; }
+    public Weapon weapon { get; protected set; }    //안없어지는무기
+    public Weapon currentWeapon;    //임시무기
 
+
+    
 
     private void OnEnable()
     {
@@ -28,34 +31,48 @@ public class AttackBase : MonoBehaviourPun
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
-    }
-
-    public void OnUpdate(Vector2 inputVector2)
-    {
-        if (this.photonView.IsMine == false || weapon == null) return;
-        UpdateAttackCoolTime();
-        UpdateAttack(inputVector2);
-        weapon.Zoom(inputVector2);
-    }
-
-    public virtual void SetupWeapon(Weapon newWeapon)
-    {
         if (weapon)
         {
             PhotonNetwork.Destroy(weapon.gameObject);
         }
-        weapon = newWeapon;
-        weapon.newAttacker = this;
-        weapon.transform.ResetTransform(_animator.GetBoneTransform(HumanBodyBones.RightHand));  //무기오브젝트
-        weapon.UICanvas.transform.ResetTransform(this.transform);       //UI
-        weapon.AttackSucessEvent = AttackSucess;
-        weapon.AttackEndEvent = AttackEnd;
+    }
+
+    public virtual void SetupWeapon(Weapon newWeapon)
+    {
+        if(newWeapon.type == Weapon.Type.Permanent)
+        {
+            weapon = newWeapon;
+        }
+        newWeapon.transform.ResetTransform(_animator.GetBoneTransform(HumanBodyBones.RightHand));  //무기오브젝트
+        newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
+    }
+
+    //가지고있는 Permeanet아이템 사용으로 전환
+    public void UsePermanent()
+    {
+        if (weapon == null) return;
+        UseWeapon(weapon);
+    }
+    public void UseWeapon(Weapon newWeapon)
+    {
+        print("UseWeapon " + newWeapon);
+        currentWeapon = newWeapon;
+        currentWeapon.AttackSucessEvent -= AttackSucess;
+        currentWeapon.AttackSucessEvent += AttackSucess;
+
+        currentWeapon.AttackEndEvent -= AttackEnd;
+        currentWeapon.AttackEndEvent += AttackEnd;
+
+        if (currentWeapon.type == Weapon.Type.Disposable)
+        {
+            //currentWeapon.AttackSucessEvent
+        }
         SetupAnimation();
     }
 
-    void SetupAnimation()
+    protected void SetupAnimation()
     {
-        switch (weapon.weaponType)
+        switch (currentWeapon.weaponType)
         {
             case Weapon.WeaponType.Gun:
                 _animator.SetBool("Gun", true);
@@ -76,20 +93,26 @@ public class AttackBase : MonoBehaviourPun
     {
         State = state.Attack;
         _animator.SetTrigger(weapon.AttackAnim);
+
     }
     public void UpdateAttack(Vector2 inputVector2)
     {
         if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
-        weapon.AttackCheck(inputVector2);
+        currentWeapon.AttackCheck(inputVector2);
     }
     protected virtual void AttackEnd()
     {
         State = state.Idle;
+        if (currentWeapon.type == Weapon.Type.Disposable)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
+        {
+            PhotonNetwork.Destroy(currentWeapon.gameObject);
+        }
+        currentWeapon = weapon; //사용할무기를 오리지널무기로 대체
     }
     protected void UpdateAttackCoolTime()
     {
         InputManager.Instacne.AttackCoolTime(weapon.InitCoolTime, weapon.ReaminCoolTime);
     }
 
-
+  
 }

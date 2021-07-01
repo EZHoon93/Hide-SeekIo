@@ -128,30 +128,28 @@ public class GameState_Count : GameState_Base
 
     void Local_MyPlayerCharacter(int index)
     {
-        object[] userData = { "User1", PlayerInfo.CurrentAvater };
-        if (PhotonNetwork.IsMasterClient)
-        {
-            var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
-        }
-        else
-        {
-            var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
-        }
-        //index = 0,1은 좀비 
-        //if (index <= 1)
+        //object[] userData = { "User1", PlayerInfo.CurrentAvater };
+        //if (PhotonNetwork.IsMasterClient)
         //{
-        //    var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
-        //    GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserSeeker, pos);
+        //    var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
+        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
         //}
         //else
         //{
-        //    var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(index);
-        //    GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserHider, pos);
-        //    //var pos = GameManager.Instance.CurrentGameScene.GetHiderPosition(index);
-        //    //GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.UserHider, pos);
+        //    var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
+        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
         //}
+        //index = 0,1은 좀비 
+        if (index <= 1)
+        {
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, Vector3.zero);
+
+        }
+        else
+        {
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, Vector3.zero);
+
+        }
     }
  
     void Master_Creat_AIPlayer(int index)

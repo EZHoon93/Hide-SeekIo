@@ -27,6 +27,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] UltimateJoystick _moveJoystick;
     [SerializeField] UltimateJoystick _attackJoystick;
     [SerializeField] UltimateJoystick _skillJoystick;
+    [SerializeField] UI_ItemButton[] uI_ItemButtons;
 
 
 
@@ -136,6 +137,10 @@ public class InputManager : MonoBehaviour
         _attackJoystick.gameObject.SetActive(isAcitve);
         _skillJoystick.gameObject.SetActive(isAcitve);
         _runButton.gameObject.SetActive(false);
+        foreach(var itemButton in uI_ItemButtons)
+        {
+            itemButton.gameObject.SetActive(false);
+        }
     }
     public void SetActiveHiderController(bool isAcitve)
     {
@@ -143,6 +148,10 @@ public class InputManager : MonoBehaviour
         _attackJoystick.gameObject.SetActive(isAcitve);
         _skillJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(isAcitve);
+        foreach (var itemButton in uI_ItemButtons)
+        {
+            itemButton.gameObject.SetActive(false);
+        }
     }
     public void OffAllController()
     {
@@ -150,6 +159,10 @@ public class InputManager : MonoBehaviour
         _attackJoystick.gameObject.SetActive(false);
         _skillJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
+        foreach (var itemButton in uI_ItemButtons)
+        {
+            itemButton.gameObject.SetActive(false);
+        }
     }
 
     public void AttackCoolTime(float maxCoolTime, float currentCoolTime)
@@ -157,7 +170,16 @@ public class InputManager : MonoBehaviour
         _attackCoolTimeUI.UpdateCoolTime(maxCoolTime, currentCoolTime);
     }
 
-    
+    public void AddItemByButton(int index , InGameItemController newItem)
+    {
+        uI_ItemButtons[index].gameObject.SetActive(true);
+        uI_ItemButtons[index].AddItem(newItem);
+    }
+    public void RemoveItemButton(int index)
+    {
+        uI_ItemButtons[index].gameObject.SetActive(false);
+        uI_ItemButtons[index].RemoveItem();
+    }
 
     public void Clear()
     {

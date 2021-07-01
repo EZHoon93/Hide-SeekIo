@@ -33,10 +33,10 @@ public class UI_Main : UI_Scene
         Avater,
         Weapon,
         Etc,
-        UserListButton,
+        //UserListButton,
         AppExit,
         FindPlayer,
-            Test
+        Test
     }
 
     public enum TextMeshProUGUIs
@@ -75,7 +75,7 @@ public class UI_Main : UI_Scene
         GetButton((int)Buttons.Avater).gameObject.BindEvent(OnAvaterStore_ButtonClicked);
         GetButton((int)Buttons.Weapon).gameObject.BindEvent(OnWeaponStore_ButtonClicked);
         GetButton((int)Buttons.Etc).gameObject.BindEvent(OnEtcStore_ButtonClicked);
-        GetButton((int)Buttons.UserListButton).gameObject.BindEvent(OnUserListGame_ButtonClicked);
+        //GetButton((int)Buttons.UserListButton).gameObject.BindEvent(OnUserListGame_ButtonClicked);
         GetButton((int)Buttons.AppExit).gameObject.BindEvent(OnAppExit_ButtonClicked);
         GetButton((int)Buttons.FindPlayer).gameObject.BindEvent(OnFindPlayer_ButtonClicked);
         GetButton((int)Buttons.FindPlayer).gameObject.BindEvent(Test);
@@ -83,7 +83,7 @@ public class UI_Main : UI_Scene
 
 
         GetObject((int)GameObjects.InGameStore).SetActive(false);
-        GetObject((int)GameObjects.UserList_Game).SetActive(false);
+        //GetObject((int)GameObjects.UserList_Game).SetActive(false);
 
         ChangePanel(Define.GameScene.Lobby);
     }
@@ -197,19 +197,19 @@ public class UI_Main : UI_Scene
 
     public void OnAvaterStore_ButtonClicked(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_AvaterStore>();
+        Managers.UI.ShowPopupUI<UI_Store_Character>();
 
     }
 
     public void OnEtcStore_ButtonClicked(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_EtcStore>();
+        Managers.UI.ShowPopupUI<UI_Store_Etc>();
 
     }
 
     public void OnWeaponStore_ButtonClicked(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_WeaponStore>();
+        Managers.UI.ShowPopupUI<UI_Store_Weapon>();
     }
 
     public void OnUserListGame_ButtonClicked(PointerEventData data)

@@ -21,7 +21,7 @@ public class MakeRunEffect : MonoBehaviour
     }
     private void Update()
     {
-        if (_makeRunEffect.IsLocal() == false) return;
+        //if (_makeRunEffect.IsLocal() == false) return;
         if (_makeRunEffect.HearState == Define.MoveHearState.Effect)
         {
             if (Time.time >= lastTime + timeBiet)

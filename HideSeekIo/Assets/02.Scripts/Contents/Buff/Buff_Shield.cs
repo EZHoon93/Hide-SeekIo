@@ -12,6 +12,5 @@ public class Buff_Shield : BuffBase
 
     public override void ProcessEnd()
     {
-        base.ProcessEnd();
     }
 }

@@ -4,10 +4,11 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using System;
+using System.Linq;
 
 public abstract class PlayerController : MonoBehaviourPun
 {
-    protected int _coin;    
+    protected int _coin;
     public int Coin { get => _coin; set { _coin = value; CoinChangeEvent?.Invoke(value); } }
     public int TimeCoinAmount { get; set; } = 1;
     public string NickName { get; protected set; }
@@ -16,8 +17,9 @@ public abstract class PlayerController : MonoBehaviourPun
     public Define.Team Team => GetLivingEntity().Team;
     public abstract LivingEntity GetLivingEntity();
 
+    public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
-    public virtual void OnPhotonInstantiate() 
+    public virtual void OnPhotonInstantiate()
     {
         if (this.IsMyCharacter())    //내캐릭 이라면
         {
@@ -26,7 +28,11 @@ public abstract class PlayerController : MonoBehaviourPun
             CoinChangeEvent = mainSceneUI.InGameStore.UpdateCoinText; ; //코인 변경 이벤트
         }
         Coin = 300;   //모든 플레이어 캐릭들은 코인 0으로시작
-        print("OnPhotonInstantiate PlayerController     ;");
+        for(int i =0; i < itemInventory.Length; i++)
+        {
+            itemInventory[i] = null;
+        }
+
         StartCoroutine(AddCoinByTime());
     }
 
@@ -36,6 +42,39 @@ public abstract class PlayerController : MonoBehaviourPun
     }
 
 
+    //아이템 살 수 있는지 체크 => 인벤토리 공간이 남는지.
+    public bool IsBuyItem()
+    {
+        return itemInventory.Any(s => s == null);
+    }
+    public void AddItem(InGameItemController newItem)
+    {
+        for (int i = 0; i < itemInventory.Length; i++)
+        {
+            if (itemInventory[i] != null) continue;
+
+            itemInventory[i] = newItem;
+            if (this.IsMyCharacter())
+            {
+                InputManager.Instacne.AddItemByButton(i, newItem);
+            }
+            return;
+        }
+    }
+    public void RemoveItem(InGameItemController useItem)
+    {
+        for (int i = 0; i < itemInventory.Length; i++)
+        {
+            if (itemInventory[i] != useItem) continue;
+            
+            itemInventory[i] = null;
+            if (this.IsMyCharacter())
+            {
+                InputManager.Instacne.RemoveItemButton(i);
+            }
+            return;
+        }
+    }
 
 
     ////포톤뷰 그룹을 위한 동기화 필요 여부
