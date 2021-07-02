@@ -71,8 +71,11 @@ public class UI_InGameStore : MonoBehaviour
             var price = Managers.Data.InGameItemDic[itemName].price;
             var sprite = Managers.Resource.Load<Sprite>($"Sprites/InGameItem/{itemName}");
             Define.GameItemStateCallBack itemEvent = () => InGameStoreManager.Instance.BuyItem_OnLocal(itemEnum, Managers.Game.myPlayer);   //버튼클릭시 성공여부
+            var info = Lean.Localization.LeanLocalization.GetTranslationText(itemName);
+            print(info + " @@@@@@@@@@@################" + itemName);
             go.transform.localPosition = Vector3.zero;
-            go.Setup(sprite, price, itemEvent); //셋업,이미지,가격,콜백함수
+
+            go.Setup(sprite, price,info, itemEvent); //셋업,이미지,가격,콜백함수
         }
     }
 

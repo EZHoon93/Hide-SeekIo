@@ -25,12 +25,19 @@ public class SeekerAttack : AttackBase
         if (this.photonView.IsMine == false || weapon == null) return;
         UpdateAttackCoolTime();
         UpdateAttack(_seekerInput.LastAttackVector);
-        weapon.Zoom(_seekerInput.AttackVector);
     }
+
+
    
     public void Update()
     {
         OnUpdate();
     }
-  
+
+    private void LateUpdate()
+    {
+        if (this.IsMyCharacter() == false || weapon == null) return;
+        UpdateZoom(_seekerInput.AttackVector);
+    }
+
 }

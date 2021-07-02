@@ -20,8 +20,6 @@ public class LoginScene : BaseScene
     {
         base.Init();
         SceneType = Define.Scene.Login;
-
-        
         StartCoroutine(LoadAllData());
     }
     public override void Clear()

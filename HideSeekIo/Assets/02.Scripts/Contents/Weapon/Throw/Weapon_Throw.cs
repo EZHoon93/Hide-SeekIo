@@ -6,14 +6,14 @@ public abstract class Weapon_Throw : Weapon
 {
     [SerializeField] GameObject _projectilePrefab;
     
-    Transform _attackRangeUI;
+    //Transform _attackRangeUI;
 
     public float attackRange { get; protected set; }
 
     protected override void Awake()
     {
         base.Awake();
-        _attackRangeUI = GetComponentInChildren<Canvas>().transform;
+        //_attackRangeUI = GetComponentInChildren<Canvas>().transform;
         weaponType = WeaponType.Throw;
     }
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
@@ -27,7 +27,7 @@ public abstract class Weapon_Throw : Weapon
 
     public override void Zoom(Vector2 inputVector)
     {
-        UtillGame.ThrowZoom(inputVector, AttackDistance, newAttacker.CenterPivot, _attackRangeUI);
+        UtillGame.ThrowZoom(inputVector, AttackDistance, newAttacker.CenterPivot, UICanvas.transform);
     }
 
 

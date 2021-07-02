@@ -11,7 +11,6 @@ public class Weapon_Melee2 : Weapon
 
     [SerializeField] Transform _modelTransform;
     [SerializeField] Transform _attackRangeUI;
-    [SerializeField] Transform _attackWarningRangeUI;   //공격시 범위표시
 
     //[SerializeField] float _angle = 120;
 
@@ -27,7 +26,7 @@ public class Weapon_Melee2 : Weapon
     private void Start()
     {
         AttackAnim = "Attack";
-        AttackDelay= 0.4f;
+        AttackDelay= 0.5f;
         AfaterAttackDelay= 0.5f;
         AttackDistance= 1.5f;
     }
@@ -38,7 +37,6 @@ public class Weapon_Melee2 : Weapon
         var weaponSkin = Managers.Resource.Instantiate($"Melee2/{weaponId}");   //유저 무기 아바타 생성
         weaponSkin.transform.ResetTransform(_modelTransform);   //아바타 생성된것 자식오브젝트로 이동
         _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
-        _attackWarningRangeUI.gameObject.SetActive(false);
         newAttacker.UseWeapon(this);    //무기 사용상태로 전환
 
     }
@@ -73,15 +71,11 @@ public class Weapon_Melee2 : Weapon
         state = State.Delay;
         LastAttackInput = inputVector;
         AttackSucessEvent?.Invoke();
-        _attackWarningRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
         //var angle = _attackRangeUI.rotation.eulerAngles;
         //angle.y = angle.y - 180;
         //_attackWarningRangeUI.rotation = Quaternion.Euler( angle);
-        _attackWarningRangeUI.gameObject.SetActive(true);
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         AttackEffect();
-        _attackWarningRangeUI.gameObject.SetActive(false);
-
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();
         state = State.End;

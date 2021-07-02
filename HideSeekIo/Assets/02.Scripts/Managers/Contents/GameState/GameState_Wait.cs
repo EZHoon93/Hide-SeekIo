@@ -12,7 +12,6 @@ public class GameState_Wait : GameState_Base
         _initRemainTime = _initSceneWaitTime;
         CameraManager.Instance.SetupTarget(Managers.Game.CurrentGameScene.CameraView);  //카메라 초기화
         InputManager.Instacne.OffAllController();       //조이스틱 오프 
-
     }
     protected override void ChangeRemainTime()
     {

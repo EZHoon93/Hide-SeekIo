@@ -10,6 +10,7 @@ namespace Data
     {
 		public string key;
 		public int price;
+		public string info;
     }
 
     [Serializable]

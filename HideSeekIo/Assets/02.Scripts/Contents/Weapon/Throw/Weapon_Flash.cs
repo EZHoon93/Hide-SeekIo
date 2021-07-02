@@ -18,7 +18,7 @@ public class Weapon_Flash : Weapon_Throw
 
     private void Start()
     {
-        Setup("Throw", .2f, .2f, 5.0f, 1);
+        Setup("Throw", .2f, .2f, 7.0f, 1);
     }
 
 

@@ -9,7 +9,6 @@ public class SpawnManager
 {
     public void WorldItemSpawn(Define.WorldItem photonObject ,Vector3 pos , int itemUseViewID =0  )
     {
-
         switch (photonObject)
         {
             case Define.WorldItem.Box:
@@ -17,14 +16,23 @@ public class SpawnManager
                 break;
 
         }
-
         PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
 
     public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
     {
+        int sendEnumValue = -1;
+        if( @enum.GetType() == typeof( Define.HiderStoreList))
+        {
+            sendEnumValue = 0;
+        }
+        else
+        {
+            sendEnumValue = 1;
+        }
 
-        PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() , @enum }); //사용한 플레이어 ViewID
+
+        PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() ,sendEnumValue, @enum }); //사용한 플레이어 ViewID
     }
 
 

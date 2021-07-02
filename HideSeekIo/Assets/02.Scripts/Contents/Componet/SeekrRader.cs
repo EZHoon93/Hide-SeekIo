@@ -23,7 +23,7 @@ public class SeekrRader : MonoBehaviour
         Clear();
         Util.StartCoroutine(this, ref  _enumerator, RaderUpdate());
         Color color2 = Color.gray;
-        color2.a = 0.5f;
+        color2.a = 0.3f;
         _spriteRenderer.color = color2;
         isDectedColor = false;
     }
@@ -67,7 +67,7 @@ public class SeekrRader : MonoBehaviour
         {
             if (isDectedColor) return;
             Color color = Color.red;
-            color.a = 0.5f;
+            color.a = 0.3f;
             _spriteRenderer.color = color;
             isDectedColor = true;
 
@@ -76,7 +76,7 @@ public class SeekrRader : MonoBehaviour
         {
             if (!isDectedColor) return;
             Color color2 = Color.gray;
-            color2.a = 0.5f;
+            color2.a = 0.3f;
             _spriteRenderer.color = color2;
             isDectedColor = false;
         }

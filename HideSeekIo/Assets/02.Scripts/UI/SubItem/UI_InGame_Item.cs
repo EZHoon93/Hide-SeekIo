@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UI_InGame_Item : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _priceText;
+    [SerializeField] TextMeshProUGUI _infoText;
     [SerializeField] Image _itemImage;
     [SerializeField] Image _coolTimeImage;
 
@@ -25,9 +26,10 @@ public class UI_InGame_Item : MonoBehaviour
         _coolTimeImage.enabled = false;
     }
 
-    public void Setup(Sprite sprite, int price, Define.GameItemStateCallBack itemStateCallBack = null)
+    public void Setup(Sprite sprite, int price, string infoContent, Define.GameItemStateCallBack itemStateCallBack = null)
     {
         _priceText.text = price.ToString();
+        _infoText.text = infoContent;
         _itemImage.sprite = sprite;
         _itemCallBackEvent = itemStateCallBack;
     }

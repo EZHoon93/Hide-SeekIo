@@ -89,10 +89,15 @@ public class AttackBase : MonoBehaviourPun
 
     }
 
+    protected void UpdateZoom(Vector2 inputVector2)
+    {
+        currentWeapon.Zoom(inputVector2);
+    }
+
     protected virtual void AttackSucess()
     {
         State = state.Attack;
-        _animator.SetTrigger(weapon.AttackAnim);
+        _animator.SetTrigger(currentWeapon.AttackAnim);
 
     }
     public void UpdateAttack(Vector2 inputVector2)

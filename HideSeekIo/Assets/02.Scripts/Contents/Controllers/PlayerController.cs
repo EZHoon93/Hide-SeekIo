@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using TMPro;
 using System;
 using System.Linq;
 
@@ -19,6 +17,7 @@ public abstract class PlayerController : MonoBehaviourPun
 
     public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
+
     public virtual void OnPhotonInstantiate()
     {
         if (this.IsMyCharacter())    //내캐릭 이라면
@@ -34,11 +33,23 @@ public abstract class PlayerController : MonoBehaviourPun
         }
 
         StartCoroutine(AddCoinByTime());
+        //StartCoroutine(UpdateFog());
+
     }
 
     protected virtual void HandleDeath()
     {
+    }
 
+    IEnumerator UpdateFog()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            FoW.FogOfWarTeam.GetTeam(this.ViewID()).ManualUpdate(1);
+        }
+        
     }
 
 

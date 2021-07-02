@@ -762,7 +762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  mapResolution: {x: 512, y: 512}
+  mapResolution: {x: 128, y: 128}
   mapSize: 128
   mapOffset: {x: 0, y: 0}
   plane: 2
@@ -772,15 +772,15 @@ MonoBehaviour:
   blurIterations: 1
   blurType: 0
   updateUnits: 1
-  updateAutomatically: 1
+  updateAutomatically: 0
   outputToTexture: 1
   partialFogAmount: 0
   fadeInDuration: 0.1
-  fadeOutDuration: 2
+  fadeOutDuration: 1
   renderType: 0
-  multithreaded: 0
+  multithreaded: 1
   threads: 2
-  maxMillisecondsPerFrame: 5
+  maxMillisecondsPerFrame: 1
 --- !u!114 &4846987685621090090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,7 +799,7 @@ MonoBehaviour:
   absoluteOffset: 0
   offset: {x: 0, y: 0}
   boxSize: {x: 5, y: 5}
-  circleRadius: 10
+  circleRadius: 8
   innerRadius: 1
   angle: 180
   texture: {fileID: 0}
@@ -815,7 +815,7 @@ MonoBehaviour:
   lineOfSightSeeOutsideRange: 0
   multithreading: 0
   cellBased: 0
-  snapToPixelCenter: 0
+  snapToPixelCenter: 1
 --- !u!1 &3072544977696879335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d50defbf2e20814fa39dd2feeec72da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBiet: 1.5
+  timeBiet: 0.7
 --- !u!1 &7671727511728766624
 GameObject:
   m_ObjectHideFlags: 0

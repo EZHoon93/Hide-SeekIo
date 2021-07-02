@@ -15,17 +15,32 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
     {
         var data = info.photonView.InstantiationData;
         if (data == null) return;
-
         int buyPlayerViewID = (int)data[0];
-        itemEnum = (System.Enum)data[1];
+        var type = (int)data[1];
         hasPlayer = Managers.Game.GetLivingEntity(buyPlayerViewID).GetComponent<PlayerController>();
-        if(hasPlayer == null)
+        if (hasPlayer == null)
         {
             return;
         }
+        Component c = GetComponent<Item_Base>();
+        if (c != null)
+        {
+            Destroy(c);
+        }
 
-        AddComponenyByItemEnum(itemEnum, hasPlayer);    //해당 컴포넌트 추가.. 
 
+        //타입으로 구분
+        switch (type)
+        {
+            case 0:
+                itemEnum = (Define.HiderStoreList)data[2];
+                UseHideItem_OnLocal(itemEnum, hasPlayer as HiderController);
+                break;
+            case 1:
+                itemEnum = (Define.SeekrStoreList)data[2];
+                UseSeeker_OnLocal(itemEnum, hasPlayer as SeekerController);
+                break;
+        }
 
         hasPlayer.AddItem(this);    //플레이어에게 할당
     }
@@ -35,27 +50,6 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
         hasPlayer.RemoveItem(this);
     }
 
-    public void AddComponenyByItemEnum(Enum @enum, PlayerController playerController)
-    {
-
-        Component c = GetComponent<Item_Base>();
-        if (c != null)
-        {
-            Destroy(c);
-        }
-
-        if (typeof(Define.HiderStoreList) == @enum.GetType())
-        {
-            UseHideItem_OnLocal(@enum, playerController as HiderController);
-            return;
-        }
-        //Seekr
-        else
-        {
-            UseSeeker_OnLocal(@enum, playerController as SeekerController);
-            return;
-        }
-    }
     public void UseHideItem_OnLocal(Enum @enum, HiderController hiderController)
     {
 
@@ -114,6 +108,17 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
                 itemType = Define.InGameItemType.Weapon;
                 this.gameObject.GetOrAddComponent<Item_Soil>();
                 break;
+            case Define.SeekrStoreList.Curse1:
+                itemType = Define.InGameItemType.use;
+                this.gameObject.GetOrAddComponent<Item_Curse1>();
+
+                break;
+            case Define.SeekrStoreList.Curse2:
+                itemType = Define.InGameItemType.use;
+                this.gameObject.GetOrAddComponent<Item_Curse2>();
+
+                break;
+            
         }
     }
 

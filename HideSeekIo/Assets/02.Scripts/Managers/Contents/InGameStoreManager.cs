@@ -94,39 +94,31 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 break;
 
             case Define.SeekrStoreList.Mask:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
+                resultState = Define.InGameItemUIState.Sucess;
                 break;
             case Define.SeekrStoreList.Rader:
                 break;
             case Define.SeekrStoreList.PowerUp:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
+                resultState = Define.InGameItemUIState.Sucess;
                 break;
             case Define.SeekrStoreList.Curse1:
+                Managers.Spawn.InGameItemSpawn(@enum, seekerController);
+                resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
             case Define.SeekrStoreList.Curse2:
+                Managers.Spawn.InGameItemSpawn(@enum, seekerController);
+                resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
             case Define.SeekrStoreList.SightUp:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
+                resultState = Define.InGameItemUIState.Sucess;
                 break;
             case Define.SeekrStoreList.Speed2:
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
+                resultState = Define.InGameItemUIState.Sucess;
                 break;
-                //case Define.SeekrStoreList.ChangeWeapon:
-                //    Managers.Spawn.WeaponSpawn(Define.Weapon.Sniper, seekerController.seekerAttack);
-                //    break;
-                //case Define.SeekrStoreList.DirectionCurse:
-                //    BuffManager.Instance.HiderTeamBuffControllerToServer(Define.BuffType.Direction, seekerController.ViewID());
-
-                //    break;
-                //case Define.SeekrStoreList.SightCurse:
-                //    BuffManager.Instance.HiderTeamBuffControllerToServer(Define.BuffType.Sight, seekerController.ViewID());
-
-                //    break;
-                //case Define.SeekrStoreList.Speed:
-                //    BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Speed, seekerController.GetLivingEntity());
-                //    break;
-                //case Define.SeekrStoreList.BodyUp:
-                //    BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, seekerController.GetLivingEntity());
-                //    break;
-                //case Define.SeekrStoreList.AllumanClap:
-                //    //BuffManager.Instance.HiderTeamBuffControllerOnLocal
-                //    break;
         }
         //photonView.RPC("ResultBuyInGameItem_OnAllClients", RpcTarget.All, Define.InGameItemUIState.Sucess,Define.Team.Seek, (int)seekerItemEnum, seekerController.ViewID());
 

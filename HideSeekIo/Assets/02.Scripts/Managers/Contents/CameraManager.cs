@@ -37,7 +37,7 @@ public class CameraManager : GenricSingleton<CameraManager>
             _fogOfWarLegacy = Camera.main.GetComponent<FogOfWarLegacy>();
 
         _fogOfWarLegacy.team = 0;
-        _fogOfWarLegacy.enabled = true;
+        _fogOfWarLegacy.enabled = false;
     }
 
 
