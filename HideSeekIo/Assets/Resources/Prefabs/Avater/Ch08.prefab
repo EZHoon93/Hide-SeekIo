@@ -838,6 +838,7 @@ Transform:
   - {fileID: 8561964471052742076}
   - {fileID: 2616187577811513270}
   - {fileID: 2219059847877244639}
+  - {fileID: 755723521339749412}
   m_Father: {fileID: 6603780129968532601}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -871,6 +872,51 @@ Transform:
   m_Father: {fileID: 7654329972461132642}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2965524778023131667
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 755723521339749412}
+  - component: {fileID: 8153695331336409601}
+  m_Layer: 0
+  m_Name: AvaterRightHand(Clone)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &755723521339749412
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2965524778023131667}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 365967951296787984}
+  m_Father: {fileID: 3578640938944851858}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8153695331336409601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2965524778023131667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c033b27c63ea6488fb40b0c6e90237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rightHand: {fileID: 365967951296787984}
 --- !u!1 &3218023430127953576
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,6 +1020,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2209771476525817123}
   - component: {fileID: -6953543196785759995}
+  - component: {fileID: 6800538800380396566}
   m_Layer: 0
   m_Name: Ch08
   m_TagString: Untagged
@@ -1015,6 +1062,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6800538800380396566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3361064856391106329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1737253541e4604e90b4506bf6698ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rightHandTransform: {fileID: 365967951296787984}
 --- !u!1 &3364976852702980338
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,6 +1793,36 @@ Transform:
   m_Father: {fileID: 8949276147977344200}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5473361170541504626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 365967951296787984}
+  m_Layer: 0
+  m_Name: Change Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &365967951296787984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5473361170541504626}
+  m_LocalRotation: {x: 0.63862985, y: -0.12469944, z: -0.20868999, w: 0.7301031}
+  m_LocalPosition: {x: -0.047999945, y: 0.06099932, z: 0.04200005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 755723521339749412}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 61.701004, y: 288.854, z: 281.831}
 --- !u!1 &5829065300826800290
 GameObject:
   m_ObjectHideFlags: 0
@@ -2322,7 +2412,7 @@ Transform:
   m_GameObject: {fileID: 7227289710588312461}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 1402171490576716151}
   - {fileID: 6911824876801555165}

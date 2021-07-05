@@ -226,15 +226,18 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         leftUserList?.Invoke(otherPlayer);
     }
 
-    public void HiderDieOnLocal(int dieViewID)
+    public void HiderDieOnLocal(int dieViewID, int attackViewID)
     {
-        photonView.RPC("HiderDieOnServer", RpcTarget.MasterClient);
+        photonView.RPC("HiderDieOnServer", RpcTarget.MasterClient , dieViewID,attackViewID);
     }
     [PunRPC]
-    public void HiderDieOnServer()
+    public void HiderDieOnServer(int dieViewID, int attackViewID)
     {
         if (State == Define.GameState.Gameing)
         {
+            var dieEntity =  Managers.Game.GetLivingEntity(dieViewID);
+
+
             var gameingState = _gameState as GameState_Gameing;
             gameingState.UpdatePlayerCount();
         }

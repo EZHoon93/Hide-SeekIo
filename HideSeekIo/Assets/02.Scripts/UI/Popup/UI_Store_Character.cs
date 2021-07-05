@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Coffee.UIExtensions;
+
 public class UI_Store_Character: UI_Popup
 {
     [SerializeField] Transform _content;
-
+    [SerializeField] UIParticle _uIParticle;
     GameObject currentAvaterObject;
     GameObject currentWeaponObject;
     enum Buttons
@@ -51,10 +53,10 @@ public class UI_Store_Character: UI_Popup
         currentAvaterObject.transform.ResetTransform(_content);
         var avaterAnimator = currentAvaterObject.GetComponent<Animator>();
         avaterAnimator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(Define.Team.Seek);
-        GetWeapon(avaterAnimator);
+        GetWeapon(currentAvaterObject.GetComponent<CharacterAvater>());
     }
 
-    void GetWeapon(Animator avaterAnimator)
+    void GetWeapon(CharacterAvater characterAvater)
     {
         if (currentWeaponObject != null)
         {
@@ -62,7 +64,7 @@ public class UI_Store_Character: UI_Popup
         }
         var currentWeapon = PlayerInfo.CurrentWeapon;
         currentWeaponObject = Managers.Resource.Instantiate($"Melee2/{currentWeapon}");
-        currentWeaponObject.transform.ResetTransform(avaterAnimator.GetBoneTransform(HumanBodyBones.RightHand));
+        currentWeaponObject.transform.ResetTransform(characterAvater.RightHandAmount);
 
     }
     void Cancel(PointerEventData pointerEventData)
@@ -76,13 +78,14 @@ public class UI_Store_Character: UI_Popup
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
             StoreManager.ChangeSkin();
             GetAvater();
+            _uIParticle.Play();
          });
     }
     void Weapon(PointerEventData pointerEventData)
     {
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
             StoreManager.ChangeWeapon();
-            GetWeapon(currentAvaterObject.GetComponent<Animator>());
+            GetWeapon(currentAvaterObject.GetComponent<CharacterAvater>());
         });
     }
     void NickName(PointerEventData pointerEventData)

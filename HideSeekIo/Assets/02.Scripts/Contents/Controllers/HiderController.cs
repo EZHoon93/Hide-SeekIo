@@ -51,7 +51,7 @@ public class HiderController : PlayerController
 
         if (photonView.IsMine)
         {
-            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID());
+            //PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID());
         }
     }
 

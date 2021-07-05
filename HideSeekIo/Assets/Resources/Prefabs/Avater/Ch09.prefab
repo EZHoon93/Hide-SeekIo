@@ -200,6 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8725915687585074997}
   - component: {fileID: 8718543910704863910}
+  - component: {fileID: 1870866376891125880}
   m_Layer: 0
   m_Name: Ch09
   m_TagString: Untagged
@@ -241,6 +242,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1870866376891125880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552822521865834791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1737253541e4604e90b4506bf6698ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rightHandTransform: {fileID: 2987145281080575773}
 --- !u!1 &596647228125798015
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,6 +598,36 @@ Transform:
   m_Father: {fileID: 6304986166593679399}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2099750174077343187
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2987145281080575773}
+  m_Layer: 0
+  m_Name: Change Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2987145281080575773
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099750174077343187}
+  m_LocalRotation: {x: 0.63862985, y: -0.12469944, z: -0.20868999, w: 0.7301031}
+  m_LocalPosition: {x: -0.047999945, y: 0.06099932, z: 0.04200005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3387150622609458307}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 61.701004, y: 288.854, z: 281.831}
 --- !u!1 &2188633506042374891
 GameObject:
   m_ObjectHideFlags: 0
@@ -952,7 +996,7 @@ Transform:
   m_GameObject: {fileID: 3674922943181731916}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 4038217641770435025}
   - {fileID: 5809508339363450095}
@@ -1610,6 +1654,7 @@ Transform:
   - {fileID: 7583238534869286515}
   - {fileID: 4058184635066633729}
   - {fileID: 8002367136569700095}
+  - {fileID: 3387150622609458307}
   m_Father: {fileID: 2839311100588538528}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2573,6 +2618,51 @@ Transform:
   m_Father: {fileID: 5809112907684284899}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8118187609897015854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3387150622609458307}
+  - component: {fileID: 2427531294303686187}
+  m_Layer: 0
+  m_Name: AvaterRightHand(Clone)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3387150622609458307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8118187609897015854}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2987145281080575773}
+  m_Father: {fileID: 1337920510378347836}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2427531294303686187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8118187609897015854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c033b27c63ea6488fb40b0c6e90237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rightHand: {fileID: 2987145281080575773}
 --- !u!1 &8222000236152602719
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 // 생명체로서 동작할 게임 오브젝트들을 위한 뼈대를 제공
 // 체력, 데미지 받아들이기, 사망 기능, 사망 이벤트를 제공
-public class LivingEntity : MonoBehaviourPun, IDamageable , IPunObservable
-    
+public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
+
 {
     public int initHealth = 2; // 시작 체력
 
@@ -48,7 +48,6 @@ public class LivingEntity : MonoBehaviourPun, IDamageable , IPunObservable
     }
     private void OnEnable()
     {
-        print("Livngetity OnEnable @@@@@@@@@@@@@@@@@@@@@@@");
         InitSetup();
     }
 
@@ -59,37 +58,39 @@ public class LivingEntity : MonoBehaviourPun, IDamageable , IPunObservable
         Health = initHealth;
     }
 
-  
+
     public virtual void OnPhotonInstantiate()
     {
         Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
-        print("OnPhotonInstantiate Living       ;");
     }
 
+
     // 데미지 처리
-    // 호스트에서 먼저 단독 실행되고, 호스트를 통해 다른 클라이언트들에서 일괄 실행됨
+    //로컬 유저가 처리 
     [PunRPC]
     public virtual void OnDamage(int damagerViewId, int damage, Vector3 hitPoint)
     {
         if (photonView.IsMine)
         {
             Health -= damage;
+            _lastAttackViewID = damagerViewId;  //공격을 가한 플레이어 뷰아이디 저장
 
             // 체력이 0 이하 && 아직 죽지 않았다면 사망 처리 실행
             if (Health <= 0 && !Dead)
             {
-                photonView.RPC("Die", RpcTarget.All);
+                Die();
             }
         }
-   
-
     }
 
-    [PunRPC]
+
     public virtual void Die()
     {
         // onDeath 이벤트에 등록된 메서드가 있다면 실행
-
+        if (photonView.IsMine)
+        {
+            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID(), _lastAttackViewID);  //다른 유저에게 알림 =>viewGroup을 위해매니저가 동작
+        }
         if (onDeath != null)
         {
             onDeath();

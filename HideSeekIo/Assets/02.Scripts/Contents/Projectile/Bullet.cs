@@ -17,13 +17,13 @@ public class Bullet : Poolable , IEnterTrigger
     }
     public void Enter(GameObject Gettingobject)
     {
-        var damageable = Gettingobject.GetComponent<IDamageable>();
-        if (damageable != null)
-        {
-            print("Enter" + Gettingobject.name);
-            damageable.OnDamage(2, 2, Gettingobject.transform.position);
-            Expolosion();
-        }
+        //var damageable = Gettingobject.GetComponent<IDamageable>();
+        //if (damageable != null)
+        //{
+        //    print("Enter" + Gettingobject.name);
+        //    damageable.OnDamage(2, 2, Gettingobject.transform.position);
+        //    Expolosion();
+        //}
 
     }
 

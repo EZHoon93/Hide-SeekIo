@@ -43,7 +43,7 @@ public class AttackBase : MonoBehaviourPun
         {
             weapon = newWeapon;
         }
-        newWeapon.transform.ResetTransform(_animator.GetBoneTransform(HumanBodyBones.RightHand));  //무기오브젝트
+        newWeapon.transform.ResetTransform(_animator.GetComponent<CharacterAvater>().RightHandAmount);  //무기오브젝트
         newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
     }
 
@@ -108,7 +108,7 @@ public class AttackBase : MonoBehaviourPun
     protected virtual void AttackEnd()
     {
         State = state.Idle;
-        if (currentWeapon.type == Weapon.Type.Disposable)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
+        if (currentWeapon.type == Weapon.Type.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
         {
             PhotonNetwork.Destroy(currentWeapon.gameObject);
         }

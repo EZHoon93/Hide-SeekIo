@@ -122,7 +122,7 @@ public class Util
         target.localPosition = Vector3.zero;
         target.localRotation = Quaternion.Euler(Vector3.zero);
         
-        target.localScale = Vector3.one;
+        //target.localScale = Vector3.one;
         
     }
 
