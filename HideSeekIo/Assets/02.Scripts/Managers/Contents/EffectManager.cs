@@ -27,7 +27,6 @@ public class EffectManager : MonoBehaviourPun
     [PunRPC]
     public void EffectOnLocal(Define.EffectType effectType, Vector3 position,int isSee)
     {
-        print("¿Ã∆Â∆Æ " + effectType);
         var go = Managers.Resource.Instantiate($"Effect/{effectType.ToString()}");
         go.transform.position = position;
         if(isSee == 0)

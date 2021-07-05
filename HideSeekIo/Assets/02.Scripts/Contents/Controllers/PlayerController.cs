@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 using System.Linq;
+using FoW;
 
 public abstract class PlayerController : MonoBehaviourPun
 {
@@ -43,10 +44,10 @@ public abstract class PlayerController : MonoBehaviourPun
 
     IEnumerator UpdateFog()
     {
+        GetComponentInChildren<FogOfWarTeam>().team = this.ViewID();
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
-
             FoW.FogOfWarTeam.GetTeam(this.ViewID()).ManualUpdate(1);
         }
         

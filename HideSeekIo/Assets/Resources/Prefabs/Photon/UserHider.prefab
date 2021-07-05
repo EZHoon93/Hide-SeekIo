@@ -629,7 +629,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65856c261636ff14088fbe226a05a1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _testSpeed: 3
+  _testSpeed: 2
 --- !u!114 &3295484255691854537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,7 +743,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2385051777071463208}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 81821122796615512}
@@ -768,19 +768,19 @@ MonoBehaviour:
   plane: 2
   physics: 2
   pointFiltering: 0
-  blurAmount: 1
-  blurIterations: 1
+  blurAmount: 0
+  blurIterations: 0
   blurType: 0
   updateUnits: 1
-  updateAutomatically: 0
+  updateAutomatically: 1
   outputToTexture: 1
   partialFogAmount: 0
   fadeInDuration: 0.1
-  fadeOutDuration: 1
+  fadeOutDuration: 0.6
   renderType: 0
   multithreaded: 1
   threads: 2
-  maxMillisecondsPerFrame: 1
+  maxMillisecondsPerFrame: 2
 --- !u!114 &4846987685621090090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,8 +799,8 @@ MonoBehaviour:
   absoluteOffset: 0
   offset: {x: 0, y: 0}
   boxSize: {x: 5, y: 5}
-  circleRadius: 8
-  innerRadius: 1
+  circleRadius: 5
+  innerRadius: 0.5
   angle: 180
   texture: {fileID: 0}
   rotateToForward: 0
@@ -808,14 +808,14 @@ MonoBehaviour:
   lineOfSightMask:
     serializedVersion: 2
     m_Bits: 1
-  lineOfSightRaycastCount: 36
+  lineOfSightRaycastCount: 15
   lineOfSightPenetration: 0
   lineOfSightRaycastAngle: 360
   lineOfSightRaycastOffset: 0
   lineOfSightSeeOutsideRange: 0
-  multithreading: 0
+  multithreading: 1
   cellBased: 0
-  snapToPixelCenter: 1
+  snapToPixelCenter: 0
 --- !u!1 &3072544977696879335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d50defbf2e20814fa39dd2feeec72da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBiet: 0.7
+  timeBiet: 1
 --- !u!1 &7671727511728766624
 GameObject:
   m_ObjectHideFlags: 0

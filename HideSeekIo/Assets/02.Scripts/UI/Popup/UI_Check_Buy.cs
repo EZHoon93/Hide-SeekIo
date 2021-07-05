@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class UI_Check_Buy : UI_Popup
 {
+    Action _confirmEvent;
     enum Buttons
     {
         Confirm,
@@ -26,8 +28,10 @@ public class UI_Check_Buy : UI_Popup
 
     void Confirm(PointerEventData pointerEventData)
     {
+        _confirmEvent?.Invoke();
+        print("Confirm");
         Managers.UI.ClosePopupUI();
-        PhotonManager.Instance.ChangeChannel();
+        
     }
 
     void Cancel(PointerEventData pointerEventData)
@@ -35,8 +39,8 @@ public class UI_Check_Buy : UI_Popup
         Managers.UI.ClosePopupUI();
     }
 
-    public void Setup(string key)
+    public void Setup(string content, Action confirmEvent)
     {
-
+        _confirmEvent = confirmEvent;
     }
 }

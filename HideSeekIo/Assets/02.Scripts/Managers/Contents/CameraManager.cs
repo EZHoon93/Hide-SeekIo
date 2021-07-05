@@ -184,5 +184,20 @@ public class CameraManager : GenricSingleton<CameraManager>
     }
 
 
+    public void TestChange()
+    {
+        if(offsetCamera.m_Offset == Vector3.zero)
+        {
+            VirtualCamera.transform.rotation = Quaternion.Euler(60, 45, 0);
+            offsetCamera.m_Offset = new Vector3(-17, -5, 0);
+        }
+        else
+        {
+            VirtualCamera.transform.rotation = Quaternion.Euler(60, 0, 0);
+            offsetCamera.m_Offset = Vector3.zero;
+        }
+        
+
+    }
 
 }

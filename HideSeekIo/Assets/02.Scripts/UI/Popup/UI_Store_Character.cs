@@ -3,13 +3,20 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 public class UI_Store_Character: UI_Popup
 {
-    [SerializeField] UI_Product_Character uI_ProductPrefab;   //상품프리팹
     [SerializeField] Transform _content;
 
+    GameObject currentAvaterObject;
+    GameObject currentWeaponObject;
     enum Buttons
     {
         Cancel,
-        Confirm
+        Skin,
+        Weapon,
+        NickName,
+        AddList,
+        Coin1,
+        Coin2
+            
     }
 
     private void Reset()
@@ -23,20 +30,67 @@ public class UI_Store_Character: UI_Popup
         Bind<Button>(typeof(Buttons));
 
         GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
+        GetButton((int)Buttons.Skin).gameObject.BindEvent(Skin);
+        GetButton((int)Buttons.Weapon).gameObject.BindEvent(Weapon);
+
+
     }
     private void Start()
     {
-        uI_ProductPrefab = Managers.Resource.Load<UI_Product_Character>("Prefabs/UI/SubItem/UI_Product_Character");
-        var sprites =  Resources.LoadAll<Sprite>("Sprites/Character");
-        foreach(var s in sprites)
+        GetAvater();
+    }
+
+    void GetAvater()
+    {
+        if(currentAvaterObject != null)
         {
-            var go =  Instantiate(uI_ProductPrefab , _content);
-            go.Setup(s.name, s);
+            Managers.Resource.Destroy(currentAvaterObject);
         }
+        var currentAvater = PlayerInfo.CurrentAvater;
+        currentAvaterObject = Managers.Resource.Instantiate($"Avater/{currentAvater}");
+        currentAvaterObject.transform.ResetTransform(_content);
+        var avaterAnimator = currentAvaterObject.GetComponent<Animator>();
+        avaterAnimator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(Define.Team.Seek);
+        GetWeapon(avaterAnimator);
+    }
+
+    void GetWeapon(Animator avaterAnimator)
+    {
+        if (currentWeaponObject != null)
+        {
+            Managers.Resource.Destroy(currentWeaponObject);
+        }
+        var currentWeapon = PlayerInfo.CurrentWeapon;
+        currentWeaponObject = Managers.Resource.Instantiate($"Melee2/{currentWeapon}");
+        currentWeaponObject.transform.ResetTransform(avaterAnimator.GetBoneTransform(HumanBodyBones.RightHand));
+
     }
     void Cancel(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
     }
 
+    void Skin(PointerEventData pointerEventData)
+    {
+
+        Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
+            StoreManager.ChangeSkin();
+            GetAvater();
+         });
+    }
+    void Weapon(PointerEventData pointerEventData)
+    {
+        Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
+            StoreManager.ChangeWeapon();
+            GetWeapon(currentAvaterObject.GetComponent<Animator>());
+        });
+    }
+    void NickName(PointerEventData pointerEventData)
+    {
+        
+    }
+    void AddList(PointerEventData pointerEventData)
+    {
+        
+    }
 }

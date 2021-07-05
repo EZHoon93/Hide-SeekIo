@@ -224,6 +224,7 @@ public class UI_Main : UI_Scene
     public void OnFindPlayer_ButtonClicked(PointerEventData data)
     {
         CameraManager.Instance.FindNextPlayer();
+        
     }
     public void Test(PointerEventData data)
     {
@@ -233,6 +234,11 @@ public class UI_Main : UI_Scene
     public void Test1()
     {
         PhotonGameManager.Instacne.ChangeRoomStateToServer(Define.GameState.CountDown);
+
+    }
+    public void Test2()
+    {
+        CameraManager.Instance.TestChange();
 
     }
     #endregion

@@ -25,6 +25,6 @@ public class UI_Product_Weapon : MonoBehaviour
     {
         if (string.IsNullOrEmpty(_key)) return;
         var popup = Managers.UI.ShowPopupUI<UI_Check_Buy>();
-        popup.Setup(_key);
+        //popup.Setup(_key);
     }
 }

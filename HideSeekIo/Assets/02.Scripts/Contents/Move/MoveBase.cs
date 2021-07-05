@@ -114,7 +114,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3) , 0, 2);
                 break;
             case MoveState.Walk:
-                _animationValue =Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 0.5f, Time.deltaTime * 3) , 0 ,2);
+                _animationValue =Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 0.7f, Time.deltaTime * 3) , 0 ,2);
                 break;
             case MoveState.Run:
                 _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 1, Time.deltaTime * 3) ,0 , 2);
@@ -148,7 +148,6 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         }
 
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
-        print(ResultSpeed + "스피드");
         Vector3 moveDistance = this.transform.forward * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
