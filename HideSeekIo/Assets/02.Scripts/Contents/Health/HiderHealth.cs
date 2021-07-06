@@ -27,9 +27,9 @@ public class HiderHealth : LivingEntity
     public override void Die()
     {
         base.Die();
-        _cageObject.gameObject.SetActive(true);
-        _animator.transform.localPosition = new Vector3(0, 0.3f, 0);
-        _animator.SetFloat("Speed", -0.1f);
+        //_cageObject.gameObject.SetActive(true);
+        //_animator.transform.localPosition = new Vector3(0, 0.3f, 0);
+        _animator.SetTrigger("Die");
         _animator.gameObject.SetLayerRecursively((int)Define.Layer.Cage);
         EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position, 0 );
         

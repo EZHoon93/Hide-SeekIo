@@ -44,6 +44,8 @@ public class CameraManager : GenricSingleton<CameraManager>
     private void Start()
     {
         StartCoroutine(UpdateCameraIsViewTarget());
+
+        
     }
 
     IEnumerator UpdateCameraIsViewTarget()
@@ -135,13 +137,13 @@ public class CameraManager : GenricSingleton<CameraManager>
     //술래팀 카메라
     IEnumerator CameraOffset()
     {
-        offsetCamera.m_Offset = new Vector3(0, 0, 6);
+        offsetCamera.m_Offset = new Vector3(0, 1.5f, 32);
         yield return new WaitForSeconds(3.0f);
 
         while (offsetCamera.m_Offset.z >= 0)
         {
             Vector3 offset = offsetCamera.m_Offset;
-            offset.z -= Time.deltaTime * 3;
+            offset.z -= Time.deltaTime * 10;
             offsetCamera.m_Offset = offset;
             yield return null;
 

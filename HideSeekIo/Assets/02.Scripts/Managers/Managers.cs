@@ -36,6 +36,10 @@ public class Managers : MonoBehaviour
 
     void Start()
     {
+#if UNITY_ANDROID
+        Application.targetFrameRate = 30;
+#endif
+
         Init();
 	}
 

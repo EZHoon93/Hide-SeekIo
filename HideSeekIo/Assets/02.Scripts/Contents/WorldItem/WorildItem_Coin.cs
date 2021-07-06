@@ -13,6 +13,11 @@ public class WorildItem_Coin : MonoBehaviour , IEnterTrigger
     private void OnEnable()
     {
         _isCollect = false;
+        CoinSpawnManager.coinCount ++;
+    }
+    private void OnDisable()
+    {
+        CoinSpawnManager.coinCount --;
     }
     public void CollectEffect()
     {

@@ -142,12 +142,12 @@ public class GameState_Count : GameState_Base
         //index = 0,1은 좀비 
         if (PhotonNetwork.IsMasterClient)
         {
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, Vector3.zero);
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, Vector3.zero);
 
         }
         else
         {
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, Vector3.zero);
+            Managers.Spawn.PlayerSpawn(Define.Team.Seek, Vector3.zero);
 
         }
     }

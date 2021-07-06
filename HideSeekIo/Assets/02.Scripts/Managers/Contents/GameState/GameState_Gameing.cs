@@ -47,6 +47,7 @@ public class GameState_Gameing : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             UpdatePlayerCount();
+            
         }
 
     }

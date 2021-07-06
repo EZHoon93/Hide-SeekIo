@@ -89,6 +89,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         // onDeath 이벤트에 등록된 메서드가 있다면 실행
         if (photonView.IsMine)
         {
+
             PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID(), _lastAttackViewID);  //다른 유저에게 알림 =>viewGroup을 위해매니저가 동작
         }
         if (onDeath != null)
@@ -97,6 +98,10 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         }
         // 사망 상태를 참으로 변경
         Dead = true;
+
+        //var uiMain = Managers.UI.SceneUI as UI_Main;
+        //uiMain.KillNotice
+
     }
 
 

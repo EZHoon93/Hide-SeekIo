@@ -7,7 +7,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 
-public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback 
+public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
 
 
@@ -56,9 +56,11 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     break;
                 case Define.GameState.GameReady:
                     _gameState = this.gameObject.AddComponent<GameState_GameReady>();
+                    GameReadytEvent?.Invoke();
                     break;
                 case Define.GameState.Gameing:
                     _gameState = this.gameObject.AddComponent<GameState_Gameing>();
+                    GameStartEvent?.Invoke();   //게임 스타트 이벤트 시작
                     break;
                 case Define.GameState.End:
                     _gameState = this.gameObject.AddComponent<GameState_End>();
@@ -73,13 +75,16 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #region 변수
     public event Action<Player> enterUserList;
     public event Action<Player> leftUserList;
-    public event Action<Define.ChattingColor,string> reciveChattingEvent;
+    public event Action<Define.ChattingColor, string> reciveChattingEvent;
+    public event Action GameStartEvent;
+    public event Action GameReadytEvent;
+
     #endregion
 
- 
 
 
-   
+
+
     private void Awake()
     {
         // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
@@ -91,7 +96,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         DontDestroyOnLoad(this.gameObject);
     }
 
-   
+
     public override void OnEnable()
     {
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
@@ -152,7 +157,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
         }
     }
-   
+
     public void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
@@ -201,10 +206,10 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     #region Chatting
     [PunRPC]
-    public void SendChattingMessageOnServer(Define.ChattingColor chattingColor, string content, PhotonMessageInfo _photonMessageInfo )
+    public void SendChattingMessageOnServer(Define.ChattingColor chattingColor, string content, PhotonMessageInfo _photonMessageInfo)
     {
-        var playerMessage= _photonMessageInfo.Sender.NickName + ": " + content;
-        reciveChattingEvent?.Invoke( chattingColor , playerMessage);
+        var playerMessage = _photonMessageInfo.Sender.NickName + ": " + content;
+        reciveChattingEvent?.Invoke(chattingColor, playerMessage);
     }
 
     public void SendChattingMessageOnLocal(Define.ChattingColor chattingColor, string content)
@@ -219,7 +224,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         enterUserList?.Invoke(newPlayer);
     }
 
- 
+
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -228,19 +233,23 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void HiderDieOnLocal(int dieViewID, int attackViewID)
     {
-        photonView.RPC("HiderDieOnServer", RpcTarget.MasterClient , dieViewID,attackViewID);
+        photonView.RPC("DieOnServer", RpcTarget.MasterClient, dieViewID, attackViewID);
     }
     [PunRPC]
-    public void HiderDieOnServer(int dieViewID, int attackViewID)
+    public void DieOnServer(int dieViewID, int attackViewID)
     {
-        if (State == Define.GameState.Gameing)
-        {
-            var dieEntity =  Managers.Game.GetLivingEntity(dieViewID);
+        //if (State != Define.GameState.Gameing) return;
 
+        var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
+        var killPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
+        var uiMain = Managers.UI.SceneUI as UI_Main;
+        //uiMain.UpdateKillNotice(killPlayer.NickName, deathPlayer.NickName);
+        uiMain.UpdateKillNotice("dsdowok", "playertEst");
+        uiMain.UpdateMyCharacterDie("3번째로 잡히셨습니다");
+        print("DieOnServer ");
 
-            var gameingState = _gameState as GameState_Gameing;
-            gameingState.UpdatePlayerCount();
-        }
+        //var gameingState = _gameState as GameState_Gameing;
+        //gameingState.UpdatePlayerCount();
     }
 
 
@@ -311,5 +320,5 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-  
+
 }

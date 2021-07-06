@@ -6,7 +6,8 @@ using System.Collections.Generic;
 //More events should be added to the list
 public enum EVENT_TYPE {
 	
-	GameJoin
+	Game_Join,
+	Game_Start
 	};
 //-----------------------------------------------------------
 //Singleton EventManagerEx to send events to listeners
@@ -131,5 +132,31 @@ public class EventManagerEx : MonoBehaviour
 		Listeners = TmpListeners;
 	}
 
-	#endregion
+    #endregion
+
+
+ //   private void Start()
+ //   {
+ //   EventManagerEx.Instance.AddListener(EVENT_TYPE.Game_Start, OnEvent);
+
+	//}
+
+	//public void OnEvent(EVENT_TYPE Event_Type, Component Sender, object Param = null)
+	//{
+	//	//Detect event type
+	//	switch (Event_Type)
+	//	{
+	//		case EVENT_TYPE.Game_Start:
+	//			OnGameStart(Sender, (int)Param);
+	//			break;
+	//	}
+	//}
+
+	//void OnGameStart(Component Enemy, int NewHealth)
+	//{
+	//	//If health has changed of this object
+	//	if (this.GetInstanceID() != Enemy.GetInstanceID()) return;
+
+	//	Debug.Log("Object: " + gameObject.name + " Health is: " + NewHealth.ToString());
+	//}
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using DG.Tweening;
 
 public class UI_Main : UI_Scene
 {
@@ -12,7 +13,8 @@ public class UI_Main : UI_Scene
         InGameStore,
         UserList_Lobby,
         UserList_Game,
-        GameInfo
+        GameInfo,
+        KillNotice
     }
 
     enum Panels
@@ -51,8 +53,12 @@ public class UI_Main : UI_Scene
     public UI_InGameStore InGameStore => GetObject((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
     public UI_InGameInfo InGameInfo => GetObject((int)GameObjects.GameInfo).GetComponent<UI_InGameInfo>();
 
+
+
     public Button FindButton => GetButton((int)Buttons.FindPlayer);
-    
+
+    UI_KillNotice uI_KillNoticePrefab;
+
 
 
     public override void Init()
@@ -86,20 +92,22 @@ public class UI_Main : UI_Scene
         //GetObject((int)GameObjects.UserList_Game).SetActive(false);
 
         ChangePanel(Define.GameScene.Lobby);
+
+        //uI_KillNoticePrefab = Managers.Resource.Load<GameO>
     }
 
     public void ChangePanel(Define.GameScene selectGameType)
     {
-        foreach(var p in Enum.GetValues(typeof(Panels)))
+        foreach (var p in Enum.GetValues(typeof(Panels)))
         {
             var go = Get<Transform>((int)p);
             print(go.gameObject.name + "/" + p.ToString());
             var active = string.Compare(selectGameType.ToString(), p.ToString()) == 0 ? true : false;
             go.gameObject.SetActive(active);
-            
+
         }
         //로비로 돌아갈시 필요버튼 켜줌
-        if(selectGameType == Define.GameScene.Lobby)
+        if (selectGameType == Define.GameScene.Lobby)
         {
             FindButton.gameObject.SetActive(true);
         }
@@ -108,8 +116,8 @@ public class UI_Main : UI_Scene
     #region Texts
     public void ResetTexts()
     {
-        var array = Enum.GetValues( typeof(TextMeshProUGUIs)) ;
-        foreach(var e in array)
+        var array = Enum.GetValues(typeof(TextMeshProUGUIs));
+        foreach (var e in array)
         {
             GetText((int)e).text = null;
         }
@@ -122,7 +130,7 @@ public class UI_Main : UI_Scene
 
     public void UpdateCountText(int newTime)
     {
-        if(newTime <= 0 )
+        if (newTime <= 0)
         {
             GetText(TextMeshProUGUIs.CountDown).text = null;
         }
@@ -151,6 +159,18 @@ public class UI_Main : UI_Scene
     public void UpdateInGameTime(int newtime)
     {
         InGameInfo.UpdateGameTimeText(newtime);
+    }
+
+    public void UpdateMyCharacterDie(string content )
+    {
+        var deathText =  GetText(TextMeshProUGUIs.DeathInfo);
+        deathText.text = content;
+        Color color = deathText.color;
+        color.a = 1;
+        deathText.color = color;
+        deathText.DOFade(0.0f, 2.0f);
+        
+
     }
 
     #endregion
@@ -224,7 +244,7 @@ public class UI_Main : UI_Scene
     public void OnFindPlayer_ButtonClicked(PointerEventData data)
     {
         CameraManager.Instance.FindNextPlayer();
-        
+
     }
     public void Test(PointerEventData data)
     {
@@ -240,6 +260,15 @@ public class UI_Main : UI_Scene
     {
         CameraManager.Instance.TestChange();
 
+    }
+
+    public void UpdateKillNotice(string killPlayer, string deathPlayer)
+    {
+        var killNoticeTransform = GetObject((int)GameObjects.KillNotice);
+
+        var killNoticeUI = Managers.Resource.Instantiate("UI/SubItem/UI_KillNotice").GetComponent<UI_KillNotice>();
+        killNoticeUI.transform.ResetTransform(killNoticeTransform.transform);
+        killNoticeUI.Setup(killPlayer, deathPlayer);
     }
     #endregion
 

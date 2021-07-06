@@ -10,13 +10,18 @@ public class MakeRunEffect : MonoBehaviour
 
     private void Awake()
     {
-        _makeRunEffect =  this.GetComponentInParent<IMakeRunEffect>();
+        _makeRunEffect = this.GetComponentInParent<IMakeRunEffect>();
         GetComponentInParent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
+        GetComponentInParent<LivingEntity>().onDeath += () => this.gameObject.SetActive(false);
     }
 
     void OnPhotonInstantiate()
     {
-        this.gameObject.SetActive(true);
+        if (_makeRunEffect.IsLocal())
+        {
+            this.gameObject.SetActive(true);
+        }
+
         lastTime = 0;
     }
     private void Update()
@@ -35,7 +40,7 @@ public class MakeRunEffect : MonoBehaviour
 
     void CreateEffect()
     {
-        EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0 );
+        EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
     }
 
 

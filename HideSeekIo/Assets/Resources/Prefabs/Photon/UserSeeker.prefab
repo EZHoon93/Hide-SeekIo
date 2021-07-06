@@ -431,7 +431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5450464438848781205
 Transform:
   m_ObjectHideFlags: 0
@@ -567,7 +567,7 @@ GameObject:
   - component: {fileID: 6750951311583199895}
   - component: {fileID: 5601432800420343632}
   - component: {fileID: 1349161520846245115}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Fog Of War
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,8 +607,8 @@ MonoBehaviour:
   plane: 2
   physics: 2
   pointFiltering: 0
-  blurAmount: 1
-  blurIterations: 1
+  blurAmount: 0
+  blurIterations: 0
   blurType: 0
   updateUnits: 1
   updateAutomatically: 1
@@ -617,7 +617,7 @@ MonoBehaviour:
   fadeInDuration: 0.1
   fadeOutDuration: 2
   renderType: 0
-  multithreaded: 0
+  multithreaded: 1
   threads: 2
   maxMillisecondsPerFrame: 5
 --- !u!114 &1349161520846245115
@@ -646,12 +646,12 @@ MonoBehaviour:
   mesh: {fileID: 0}
   lineOfSightMask:
     serializedVersion: 2
-    m_Bits: 1025
+    m_Bits: 1024
   lineOfSightRaycastCount: 36
   lineOfSightPenetration: 0
   lineOfSightRaycastAngle: 360
   lineOfSightRaycastOffset: 0
   lineOfSightSeeOutsideRange: 0
-  multithreading: 0
+  multithreading: 1
   cellBased: 0
-  snapToPixelCenter: 0
+  snapToPixelCenter: 1
