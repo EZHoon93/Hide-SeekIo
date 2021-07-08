@@ -55,9 +55,13 @@ public static class UtillGame
 
     public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform)
     {
-      
+
         //_attackRangeUI.position = _newAttacker.CenterPivot.position;
-        Vector3 pos = pivotTransform.transform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance;
+        //Vector3 pos = pivotTransform.transform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance;
+        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+        var converVector3 = ConventToVector3(inputVector2);
+        var newDirection = quaternion * converVector3;
+        Vector3 pos = pivotTransform.transform.position + newDirection * distance;
         pos.y = 0;
 
         return pos;

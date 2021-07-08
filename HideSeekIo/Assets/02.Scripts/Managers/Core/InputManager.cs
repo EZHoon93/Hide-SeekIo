@@ -37,8 +37,15 @@ public class InputManager : MonoBehaviour
     public Vector2 SkillVector { get; set; }
     public bool AttackTouch { get; private set; }
     public bool SkillTouch { get; private set; }
-    public bool IsRun => _runButton.IsRun;
-
+    public bool IsRun
+    {
+        get => _runButton.IsRun;
+        set
+        {
+            _runButton.IsRun = value;
+        }
+    }
+    
     [SerializeField] UI_Slider_CoolTime _attackCoolTimeUI;
 
 

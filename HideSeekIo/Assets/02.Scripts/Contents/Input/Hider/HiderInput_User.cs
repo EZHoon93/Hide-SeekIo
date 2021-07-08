@@ -12,6 +12,8 @@ public class HiderInput_User : HiderInput
             InputManager.Instacne.SetActiveHiderController(true);
             var uiMain = Managers.UI.SceneUI as UI_Main;
             uiMain.FindButton.gameObject.SetActive(false);
+            IsRun = true;
+
         }
     }
 
@@ -39,7 +41,10 @@ public class HiderInput_User : HiderInput
         UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
     }
 
-
+    public override void EnegyZero()
+    {
+        InputManager.Instacne.IsRun = false;
+    }
     //스탑 상태에서 발생
     protected void UpdateStopState()
     {

@@ -10,7 +10,7 @@ public abstract class PlayerController : MonoBehaviourPun
     protected int _coin;
     public int Coin { get => _coin; set { _coin = value; CoinChangeEvent?.Invoke(value); } }
     public int TimeCoinAmount { get; set; } = 1;
-    public string NickName { get; protected set; }
+    public string NickName { get;  set; }
 
     public event Action<int> CoinChangeEvent;   //코인변경 이벤트
     public Define.Team Team => GetLivingEntity().Team;
@@ -34,7 +34,7 @@ public abstract class PlayerController : MonoBehaviourPun
         }
 
         StartCoroutine(AddCoinByTime());
-        //StartCoroutine(UpdateFog());
+        StartCoroutine(UpdateFog());
 
     }
 

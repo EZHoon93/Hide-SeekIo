@@ -37,7 +37,7 @@ public class CameraManager : GenricSingleton<CameraManager>
             _fogOfWarLegacy = Camera.main.GetComponent<FogOfWarLegacy>();
 
         _fogOfWarLegacy.team = 0;
-        _fogOfWarLegacy.enabled = false;
+        _fogOfWarLegacy.enabled = true;
     }
 
 
@@ -96,16 +96,14 @@ public class CameraManager : GenricSingleton<CameraManager>
 
         if (targetPlayer.IsMyCharacter() && targetPlayer.Team == Define.Team.Seek)
         {
-            StartCoroutine(CameraOffset());
+            //StartCoroutine(CameraOffset());
         }
     }
 
     public void FindNextPlayer()
     {
-        print("FinxNextPlayer@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         PlayerController findTarget = null;
         var livingEntities = Managers.Game.GetAllLivingEntity();
-        print("FinxNextPlayer@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + livingEntities.Length);
 
         if (livingEntities.Length <= 0) return;  //없으면 X
         int i = 0;
@@ -137,13 +135,15 @@ public class CameraManager : GenricSingleton<CameraManager>
     //술래팀 카메라
     IEnumerator CameraOffset()
     {
-        offsetCamera.m_Offset = new Vector3(0, 1.5f, 32);
+        var amount = new Vector3(0, 1, 10);
+        offsetCamera.m_Offset = amount;
         yield return new WaitForSeconds(3.0f);
 
         while (offsetCamera.m_Offset.z >= 0)
         {
             Vector3 offset = offsetCamera.m_Offset;
-            offset.z -= Time.deltaTime * 10;
+            offset -= amount * Time.deltaTime * 5;
+           
             offsetCamera.m_Offset = offset;
             yield return null;
 

@@ -1,19 +1,34 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UI_Input_Run : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class UI_Input_Run : MonoBehaviour, IPointerDownHandler
 {
+    [SerializeField] GameObject _runEffectImage;
     bool _isRun;
 
-    public bool IsRun => _isRun;
 
-    public void OnPointerUp(PointerEventData eventData)
+    public bool IsRun
     {
-        _isRun = false;
+        get => _isRun;
+
+        set
+        {
+            _isRun = value;
+            _runEffectImage.gameObject.SetActive(_isRun);
+        }
+
     }
+
+
+    private void OnEnable()
+    {
+        IsRun = true;
+    }
+
+    
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _isRun = true;
+        IsRun = !_isRun;
     }
 }

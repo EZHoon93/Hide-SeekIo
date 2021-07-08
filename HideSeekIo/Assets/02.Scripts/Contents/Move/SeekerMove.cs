@@ -18,6 +18,8 @@ public class SeekerMove : MoveBase
     {
         base.OnPhotonInstantiate();
     }
+
+  
     protected void FixedUpdate()
     {
         if (photonView.IsMine == false) return;

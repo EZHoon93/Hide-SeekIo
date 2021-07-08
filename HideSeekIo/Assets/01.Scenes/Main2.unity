@@ -17074,6 +17074,11 @@ MonoBehaviour:
   _nightVisionColor: {r: 0.5, g: 1, b: 0.5, a: 0.5}
   _outline: 1
   _outlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+  _outlineCustomize: 0
+  _outlineStage: 0
+  _outlineSpread: 1
+  _outlineBlurPassCount: 1
+  _outlineIntensityMultiplier: 1
   _thermalVision: 0
   _lensDirt: 0
   _lensDirtThreshold: 0.5
@@ -17150,6 +17155,7 @@ MonoBehaviour:
   _depthOfFieldAperture: 2.8
   _depthOfFieldForegroundBlur: 1
   _depthOfFieldForegroundBlurHQ: 0
+  _depthOfFieldForegroundBlurHQSpread: 16
   _depthOfFieldForegroundDistance: 0.25
   _depthOfFieldBokeh: 1
   _depthOfFieldBokehThreshold: 1
@@ -17214,7 +17220,10 @@ MonoBehaviour:
   _pixelateDownscale: 0
   _antialiasStrength: 5
   _antialiasDepthThreshold: 0.001
-  isDirty: 1
+  _chromaticAberration: 0
+  _chromaticAberrationIntensity: 0
+  _chromaticAberrationSmoothing: 0
+  isDirty: 0
   bMat: {fileID: 0}
 --- !u!4 &1320540111 stripped
 Transform:

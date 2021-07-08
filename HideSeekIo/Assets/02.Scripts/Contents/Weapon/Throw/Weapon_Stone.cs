@@ -12,7 +12,7 @@ public class Weapon_Stone : Weapon_Throw
     }
     private void Start()
     {
-        Setup("Throw", .2f, .3f, 7.0f, 1);
+        Setup("Throw", .2f, .3f, 5.0f, 1);
     }
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info)

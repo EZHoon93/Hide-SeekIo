@@ -17,6 +17,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         var avaterId = (string)info.photonView.InstantiationData[1]; //캐릭터
 
         var playerController = this.GetComponent<PlayerController>();
+        playerController.NickName = nickName;       //닉네임 설정
         //-데이터받아옴//
         var avater = Managers.Resource.Instantiate($"Avater/{avaterId}",this.transform);
         avater.transform.ResetTransform();

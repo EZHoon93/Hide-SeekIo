@@ -31,6 +31,8 @@ public class CoinSpawnManager : MonoBehaviour
                 PhotonNetwork.InstantiateRoomObject(coinPrefab.name, spawnPoint, Quaternion.identity);
                 yield return new WaitForSeconds(10.0f);
             }
+
+            yield return new WaitForSeconds(2.0f);
         }
     }
 
