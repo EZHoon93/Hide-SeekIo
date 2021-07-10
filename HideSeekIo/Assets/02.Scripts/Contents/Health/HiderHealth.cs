@@ -6,21 +6,22 @@ using System;
 
 public class HiderHealth : LivingEntity
 {
-    [SerializeField] HiderCage _cageObject;
+    //[SerializeField] HiderCage _cageObject;
     Animator _animator;
 
     public event Action onReviveEvent;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         Team = Define.Team.Hide;
-        _cageObject.reviveEvent += Revive;
+        //_cageObject.reviveEvent += Revive;
     }
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
         _animator = GetComponentInChildren<Animator>();
-        _cageObject.gameObject.SetActive(false);
+        //_cageObject.gameObject.SetActive(false);
     }
 
     [PunRPC]

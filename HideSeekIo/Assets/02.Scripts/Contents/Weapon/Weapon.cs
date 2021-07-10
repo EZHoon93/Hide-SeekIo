@@ -72,6 +72,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         var playerViewID = (int)info.photonView.InstantiationData[0];
         newAttacker = Managers.Game.GetLivingEntity(playerViewID).GetComponent<AttackBase>();
         newAttacker.SetupWeapon(this);
+        newAttacker.GetComponentInChildren<FogOfWarController>().AddHideRender(this.GetComponentInChildren<Renderer>());
         ReaminCoolTime = 0;
     }
     public void OnPreNetDestroy(PhotonView rootView)

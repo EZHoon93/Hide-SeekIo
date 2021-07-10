@@ -39,6 +39,11 @@ public class Define
         Seek,
         Hide,
     }
+
+    public enum PhotonObject
+    {
+
+    }
     public enum LocalWorldObject
     {
     }
@@ -66,6 +71,18 @@ public class Define
         ItemCoin ,       //중립 아이템
         Trap = 101,
         Box,
+    }
+
+    public enum RoomItem
+    {
+        HiderRandomBox,
+        SeekerRandomBox,
+        TNT,
+    }
+
+    public enum TimerItem
+    {
+        TNT
     }
 
 	
@@ -193,7 +210,8 @@ public class Define
         Shoes,
         Speed,
         Shield,
-        Sight
+        Sight,
+        Revive
             
     }
 
@@ -205,7 +223,8 @@ public class Define
     }
     public enum PhotonOnEventCode
     {
-         AbilityCode = 111
+         AbilityCode = 111, 
+         Projectile
     }
 
     public enum ChattingColor

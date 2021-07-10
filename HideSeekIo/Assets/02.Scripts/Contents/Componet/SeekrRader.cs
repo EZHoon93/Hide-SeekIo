@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
+using Photon.Pun;
+
 using UnityEngine;
 
 public class SeekrRader : MonoBehaviour
@@ -18,7 +20,7 @@ public class SeekrRader : MonoBehaviour
 
         this.transform.parent.GetComponent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
     }
-    private void OnPhotonInstantiate()
+    private void OnPhotonInstantiate(PhotonView photonView)
     {
         Clear();
         Util.StartCoroutine(this, ref  _enumerator, RaderUpdate());

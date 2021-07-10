@@ -6,7 +6,7 @@ public class Poolable : MonoBehaviour
 {
 	public bool IsUsing;
 
-	protected virtual void Push()
+	public virtual void Push()
     {
         Managers.Pool.Push(this);
     }

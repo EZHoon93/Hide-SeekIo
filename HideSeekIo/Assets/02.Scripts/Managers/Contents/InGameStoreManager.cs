@@ -53,7 +53,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
 
                 break;
             case Define.HiderStoreList.Shield:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.GetLivingEntity());
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.GetLivingEntity() );
                 resultState = Define.InGameItemUIState.Sucess;
 
                 break;

@@ -16,6 +16,7 @@ public class Weapon_Flash : Weapon_Throw
         type = Type.Disposable;
     }
 
+
     private void Start()
     {
         Setup("Throw", .2f, .2f, 7.0f, 1);

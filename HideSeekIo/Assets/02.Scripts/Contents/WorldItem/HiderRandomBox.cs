@@ -1,11 +1,26 @@
 ﻿using System.Collections;
 
+using Photon.Pun;
+
 using UnityEngine;
 
-public class HiderRandomBox : MonoBehaviour, IGetWorldItem
+public class HiderRandomBox : MonoBehaviour, IGetWorldItem , IPunInstantiateMagicCallback , IOnPhotonViewPreNetDestroy
 {
+    int _spawnIndex;
     
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        if (info.photonView.InstantiationData == null) return;
+        _spawnIndex = (int)info.photonView.InstantiationData[0];
 
+        ItemSpawnManager.HiderItem_ExistSpawnIndex.Add(_spawnIndex);
+
+    }
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        ItemSpawnManager.HiderItem_ExistSpawnIndex.Remove(_spawnIndex);
+
+    }
 
     public void Get(GameObject getObject)
     {
@@ -21,5 +36,5 @@ public class HiderRandomBox : MonoBehaviour, IGetWorldItem
         return (Define.HiderStoreList)result;
     }
 
-   
+
 }

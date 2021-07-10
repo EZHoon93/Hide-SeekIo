@@ -43,6 +43,7 @@ public abstract class Weapon_Throw : Weapon
     [PunRPC]
     public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
+        print("어택온서버!!!!");
         LastAttackInput = inputVector;
         Vector3 startPoint = newAttacker.CenterPivot.position;
         StartCoroutine(AttackProcessOnAllClinets(startPoint, endPoint));

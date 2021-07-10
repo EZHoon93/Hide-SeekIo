@@ -1,9 +1,7 @@
-﻿using System.Collections;
-
+﻿
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UI_KillNotice : MonoBehaviour
 {
@@ -14,6 +12,12 @@ public class UI_KillNotice : MonoBehaviour
     {
         _textKillPlayer.text = killPlayer;
         _deathKillPlayer.text = deathPlayer;
+        Invoke("AfeterDestroy", 3.0f);
+    }
+
+    void AfeterDestroy()
+    {
+        Managers.Resource.Destroy(this.gameObject);
     }
   
 }

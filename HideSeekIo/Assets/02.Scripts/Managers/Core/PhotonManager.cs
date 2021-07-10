@@ -79,6 +79,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             {
                 // 최대 4명을 수용 가능한 빈방을 생성
                 int ran =  Random.Range(0, 999);
+
                 PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions()
                 {
                     IsVisible = _isScret,
@@ -100,6 +101,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
+
             //PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable()
             //{
             //    {"lv" , PlayerInfo.level }

@@ -19,6 +19,24 @@ public class SpawnManager
         PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
 
+    public void RoomItemSpawn(Define.RoomItem roomObject, Vector3 pos, int spawnIndex)
+    {
+        switch (roomObject)
+        {
+
+        }
+
+        PhotonNetwork.InstantiateRoomObject(roomObject.ToString(), pos, Quaternion.identity , 0 , new object[] { spawnIndex });
+    }
+
+    public void TimerItemControllerSpawn(Define.TimerItem timerItem, Vector3 pos , int useViewID)
+    {
+        switch (timerItem)
+        {
+
+        }
+        PhotonNetwork.InstantiateRoomObject("TimerItem", pos, Quaternion.identity, 0, new object[] {timerItem,10 , useViewID  });
+    }
     public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
     {
         int sendEnumValue = -1;

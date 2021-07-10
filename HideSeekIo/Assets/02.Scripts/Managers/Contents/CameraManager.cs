@@ -19,9 +19,10 @@ public class CameraManager : GenricSingleton<CameraManager>
 
 
 
-    PlayerController _target;
+    public PlayerController Target { get; set; }
 
     FogOfWarLegacy _fogOfWarLegacy;
+    public event Action<int> fogChangeEvent;
     int _observerNumber = -1;  //현재 관찰하고있는 유저의 actNumber;
 
 
@@ -43,9 +44,9 @@ public class CameraManager : GenricSingleton<CameraManager>
 
     private void Start()
     {
-        StartCoroutine(UpdateCameraIsViewTarget());
+        //StartCoroutine(UpdateCameraIsViewTarget());
 
-        
+
     }
 
     IEnumerator UpdateCameraIsViewTarget()
@@ -56,7 +57,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             if (PhotonGameManager.Instacne.State == Define.GameState.GameReady || PhotonGameManager.Instacne.State == Define.GameState.Gameing)
             {
-                if (_target == null)
+                if (Target == null)
                 {
                     FindNextPlayer();
                 }
@@ -81,23 +82,24 @@ public class CameraManager : GenricSingleton<CameraManager>
         var targetPlayer = target.GetComponent<PlayerController>();
 
         if (targetPlayer == null) return;
-        _target = targetPlayer;
-        if (targetPlayer.Team == Define.Team.Hide)
-        {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.UI);
-            _fogOfWarLegacy.team = targetPlayer.ViewID();
-        }
-        else
-        {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider | 1 << (int)Define.Layer.UI);
-            _fogOfWarLegacy.team = targetPlayer.ViewID();
+        Target = targetPlayer;
+        _fogOfWarLegacy.team = targetPlayer.ViewID();
+        fogChangeEvent?.Invoke(targetPlayer.ViewID());
+        //if (targetPlayer.Team == Define.Team.Hide)
+        //{
+        //    Camera.main.cullingMask = ~(1 << (int)Define.Layer.UI);
+        //    _fogOfWarLegacy.team = targetPlayer.ViewID();
+        //}
+        //else
+        //{
+        //    Camera.main.cullingMask = ~(1 << (int)Define.Layer.Hider | 1 << (int)Define.Layer.UI);
+        //    _fogOfWarLegacy.team = targetPlayer.ViewID();
 
-        }
-
-        if (targetPlayer.IsMyCharacter() && targetPlayer.Team == Define.Team.Seek)
-        {
-            //StartCoroutine(CameraOffset());
-        }
+        //}
+        //if (targetPlayer.IsMyCharacter() && targetPlayer.Team == Define.Team.Seek)
+        //{
+        //    StartCoroutine(CameraOffset());
+        //}
     }
 
     public void FindNextPlayer()
@@ -143,7 +145,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             Vector3 offset = offsetCamera.m_Offset;
             offset -= amount * Time.deltaTime * 5;
-           
+
             offsetCamera.m_Offset = offset;
             yield return null;
 
@@ -188,7 +190,7 @@ public class CameraManager : GenricSingleton<CameraManager>
 
     public void TestChange()
     {
-        if(offsetCamera.m_Offset == Vector3.zero)
+        if (offsetCamera.m_Offset == Vector3.zero)
         {
             VirtualCamera.transform.rotation = Quaternion.Euler(60, 45, 0);
             offsetCamera.m_Offset = new Vector3(-17, -5, 0);
@@ -198,7 +200,7 @@ public class CameraManager : GenricSingleton<CameraManager>
             VirtualCamera.transform.rotation = Quaternion.Euler(60, 0, 0);
             offsetCamera.m_Offset = Vector3.zero;
         }
-        
+
 
     }
 

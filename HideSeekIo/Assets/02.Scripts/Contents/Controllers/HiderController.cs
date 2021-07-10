@@ -23,15 +23,17 @@ public class HiderController : PlayerController
     }
 
 
-    public override void OnPhotonInstantiate()
+    public override void OnPhotonInstantiate(PhotonView photonView)
     {
-        base.OnPhotonInstantiate();
+        base.OnPhotonInstantiate(photonView);
         hiderHealth.OnPhotonInstantiate();
         hiderMove.OnPhotonInstantiate();
         hiderInput.OnPhotonInstantiate();
         hiderAttack.OnPhotonInstantiate();
 
         SetActiveComponent(true);
+
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Revive , this.GetLivingEntity() );
     }
 
     void SetActiveComponent(bool active)

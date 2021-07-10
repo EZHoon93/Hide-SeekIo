@@ -26,7 +26,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     public int RotationSpeed { get; protected set; } = 15;
     public float ResultSpeed { get; protected set; }
 
-    [SerializeField] float _testSpeed;
+    [SerializeField] protected float _testSpeed;
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

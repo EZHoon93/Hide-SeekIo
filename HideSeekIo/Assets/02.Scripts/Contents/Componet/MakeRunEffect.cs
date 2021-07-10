@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 
+using Photon.Pun;
+
 using UnityEngine;
 
 public class MakeRunEffect : MonoBehaviour
@@ -15,8 +17,9 @@ public class MakeRunEffect : MonoBehaviour
         GetComponentInParent<LivingEntity>().onDeath += () => this.gameObject.SetActive(false);
     }
 
-    void OnPhotonInstantiate()
+    void OnPhotonInstantiate(PhotonView photonView)
     {
+        
         if (_makeRunEffect.IsLocal())
         {
             this.gameObject.SetActive(true);

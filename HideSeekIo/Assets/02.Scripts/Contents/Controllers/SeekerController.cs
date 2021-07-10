@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 
+using Photon.Pun;
+
 using UnityEngine;
 
 public class SeekerController : PlayerController
@@ -13,26 +15,21 @@ public class SeekerController : PlayerController
 
     protected void Awake()
     {
-        print("Awake seeker        ;" + seekerHealth);
-
         seekerInput = GetComponent<SeekerInput>();
         seekerMove = GetComponent<SeekerMove>();
         seekerAttack = GetComponent<SeekerAttack>();
         seekerHealth = GetComponent<SeekerHealth>();
         TimeCoinAmount = 2;
     }
-    public override void OnPhotonInstantiate()
+    public override void OnPhotonInstantiate(PhotonView photonView)
     {
-        base.OnPhotonInstantiate();
+        base.OnPhotonInstantiate(photonView);
         seekerHealth.OnPhotonInstantiate();
         seekerInput.OnPhotonInstantiate();
         seekerMove.OnPhotonInstantiate();
         seekerAttack.OnPhotonInstantiate();
-        SetActiveComponent(false);
-        Util.CallBackFunction(this, 3.0f, () => SetActiveComponent(true));
         if (this.IsMyCharacter())
         {
-
         }
     }
 

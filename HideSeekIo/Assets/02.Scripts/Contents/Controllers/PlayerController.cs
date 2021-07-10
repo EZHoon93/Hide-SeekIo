@@ -19,7 +19,7 @@ public abstract class PlayerController : MonoBehaviourPun
     public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
 
-    public virtual void OnPhotonInstantiate()
+    public virtual void OnPhotonInstantiate(PhotonView photonView)
     {
         if (this.IsMyCharacter())    //내캐릭 이라면
         {
@@ -34,7 +34,7 @@ public abstract class PlayerController : MonoBehaviourPun
         }
 
         StartCoroutine(AddCoinByTime());
-        StartCoroutine(UpdateFog());
+        //StartCoroutine(UpdateFog());
 
     }
 

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class SeekerHealth : LivingEntity
 {
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         Team = Define.Team.Seek;
     }
 }

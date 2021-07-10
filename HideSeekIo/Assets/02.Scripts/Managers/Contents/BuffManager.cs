@@ -29,31 +29,32 @@ public class BuffManager : GenricSingleton<BuffManager>
     /// </summary>
     /// <param name="buffController"></param>
     /// <param name="playerController"></param>
-    public void BuffControllerCheckOnLocal(Define.BuffType buffType, LivingEntity livingEntity)
+    public void BuffControllerCheckOnLocal(Define.BuffType buffType, LivingEntity livingEntity )
     {
         var buffControllerList = livingEntity.BuffControllerList;
         BuffController buffController = buffControllerList.Find(s => s.BuffType == buffType);
-        float createServerTime = (float)PhotonNetwork.Time;
         float durationTime = 10;
+        float createServerTime = (float)PhotonNetwork.Time;
+        
         if (buffController == null)
         {
             buffController = MakeBuffController(livingEntity.transform);
-            RegisterBuffControllerOnLivingEntity(buffController, livingEntity);
+            livingEntity.AddBuffController(buffController);
         }
         buffController.Setup(buffType, livingEntity, createServerTime, durationTime);
     }
     //최초 버프 생성시 로컬 및 서버에 사용
-    public void RegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)
-    {
-        livingEntity.BuffControllerList.Add(buffController);
-        livingEntity.photonView.ObservedComponents.Add(buffController);
-    }
+    //public void RegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)
+    //{
+    //    livingEntity.BuffControllerList.Add(buffController);
+    //    livingEntity.photonView.ObservedComponents.Add(buffController);
+    //}
 
-    public void UnRegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)
-    {
-        livingEntity.BuffControllerList.Remove(buffController);
-        livingEntity.photonView.ObservedComponents.Remove(buffController);
-    }
+    //public void UnRegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)
+    //{
+    //    livingEntity.BuffControllerList.Remove(buffController);
+    //    livingEntity.photonView.ObservedComponents.Remove(buffController);
+    //}
 
     //Hider 팀 전체에게 버프 적용
     public void HiderTeamBuffControllerToServer(Define.BuffType buffType, int useSeekerViewID)
@@ -88,7 +89,7 @@ public class BuffManager : GenricSingleton<BuffManager>
         if (myPlayer)
         {
             if (myPlayer.Team == Define.Team.Seek) return;   //술래팀은 적용X
-            BuffControllerCheckOnLocal(buffType, myPlayer.GetLivingEntity());
+            BuffControllerCheckOnLocal(buffType, myPlayer.GetLivingEntity() );
             EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, myPlayer.transform.position, 1);
 
         }

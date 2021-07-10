@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 
 using UnityEngine;
-
 public class FlashProjectile : ThrowProjectileObject
 {
+
     public override void Play(Vector3 startPoint, Vector3 endPoint)
     {
         base.Play(startPoint, endPoint);

@@ -48,6 +48,10 @@ public class BuffController : MonoBehaviourPun, IPunObservable
     //재갱신 및 최초
     public void Setup(Define.BuffType buffType, LivingEntity newLivingEntity, float createServerTime, float durationTime)
     {
+        livingEntity = newLivingEntity;
+        _createServerTime = createServerTime;
+        _durationTime = durationTime;
+
 
         if (_buffBase == null)
         {
@@ -55,10 +59,12 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             _buffBase = BuffManager.Instance.MakeBuffObject(buffType, this.transform);
             _buffBase.Setup(this);
             SetupIsPostiveBuff(BuffType);
+            foreach(var render in _buffBase.renderers)
+            {
+                livingEntity.fonController.AddHideRender(render);
+            }
         }
-        livingEntity = newLivingEntity;
-        _createServerTime = createServerTime;
-        _durationTime = durationTime;
+       
         _buffBase.ProcessStart();
         //LocalEffect();
     }
@@ -98,9 +104,15 @@ public class BuffController : MonoBehaviourPun, IPunObservable
         _buffBase.Push();
         _createServerTime = 0;
         BuffType = Define.BuffType.Null;
-        BuffManager.Instance.UnRegisterBuffControllerOnLivingEntity(this, livingEntity);
-        Managers.Pool.Push(_poolable);
+        foreach (var render in _buffBase.renderers)
+        {
+            livingEntity.fonController.RemoveRenderer(render);
+        }
+        livingEntity.RemoveBuffController(this);
+        livingEntity = null;
         _buffBase = null;
+
+        Managers.Pool.Push(_poolable);
     }
 
 

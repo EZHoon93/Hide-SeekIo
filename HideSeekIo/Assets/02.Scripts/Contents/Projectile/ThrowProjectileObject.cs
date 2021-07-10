@@ -25,9 +25,9 @@ public class ThrowProjectileObject : Poolable
         transform.DOMoveY(endPoint.y, arriveTime * 0.5f).SetEase(Ease.InSine);
         yield return new WaitForSeconds(arriveTime * 0.5f);
         Explosion();
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, this.transform.position , 0);
+        //EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, this.transform.position , 0);
 
-        Push();
+        //Push();
     }
     
 

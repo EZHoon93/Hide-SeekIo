@@ -9,6 +9,13 @@ public class Buff_Direction : BuffBase
 {
     InputBase _InputBase;
 
+    [SerializeField] Renderer renderer;
+
+    private void Start()
+    {
+        renderer.enabled = false;
+    }
+
     public override void ProcessStart()
     {
         _InputBase = _buffController.livingEntity.GetComponent<InputBase>();

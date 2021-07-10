@@ -99,7 +99,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnEnable()
     {
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
 
         PhotonNetwork.AddCallbackTarget(this);
     }
@@ -170,7 +169,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    public void SendEvent(int photonViewID, byte keyCode, bool isIA, Hashtable hashtable)
+    public void SendEvent(int photonViewID, byte keyCode,  Hashtable hashtable)
     {
         byte evCode = keyCode;
         object content = hashtable;
@@ -183,8 +182,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             //TargetActors = new int[] { 1 }
         };
         //AI플레이어가 한것이라면 글로벌룸으로 업데이트.
-        if (isIA)
-            raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        
+        raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
 
 
         SendOptions sendOptions = new SendOptions { Reliability = true };

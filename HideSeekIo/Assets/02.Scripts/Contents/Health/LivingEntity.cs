@@ -6,7 +6,6 @@ using System.Collections.Generic;
 // 생명체로서 동작할 게임 오브젝트들을 위한 뼈대를 제공
 // 체력, 데미지 받아들이기, 사망 기능, 사망 이벤트를 제공
 public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
-
 {
     public int initHealth = 2; // 시작 체력
 
@@ -19,10 +18,10 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
     int _lastAttackViewID;  //최근에 공격한플레이어 뷰아이디
 
-    //public Transform HideTransform { get; private set; }
 
-
-    public List<BuffController> BuffControllerList { get; set; } = new List<BuffController>();
+    public List<BuffController> BuffControllerList { get; private set; } = new List<BuffController>();
+    public FogOfWarController fonController { get; private set; }
+    
 
 
 
@@ -41,11 +40,18 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
             if (buffCount > BuffControllerList.Count)
             {
                 var buffController = BuffManager.Instance.MakeBuffController(this.transform);
-                BuffManager.Instance.RegisterBuffControllerOnLivingEntity(buffController, this);
+                AddBuffController(buffController);
             }
 
         }
     }
+
+    protected virtual void Awake()
+    {
+        fonController = Managers.Resource.Instantiate("Contents/FogOfWar",this.transform).GetComponent<FogOfWarController>();
+        fonController.transform.localPosition = new Vector3(0, 0.5f, 0);
+    }
+    
     private void OnEnable()
     {
         InitSetup();
@@ -104,6 +110,17 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
     }
 
+    public void AddBuffController(BuffController newBuff)
+    {
+        BuffControllerList.Add(newBuff);
+        this.photonView.ObservedComponents.Add(newBuff);
 
+    }
+
+    public void RemoveBuffController(BuffController removeBuff)
+    {
+        BuffControllerList.Remove(removeBuff);
+        this.photonView.ObservedComponents.Remove(removeBuff);
+    }
 
 }

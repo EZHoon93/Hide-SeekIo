@@ -8,7 +8,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
     HiderInput _hiderInput;
 
     public float MaxEnergy { get; private set; } = 10;
-    public float CurrentEnergy { get; private set; }
+    public float CurrentEnergy { get; set; }
 
 
     protected override void Awake()
@@ -66,6 +66,8 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
     public override void OnUpdate(Vector2 inputVector2, bool isRun)
     {
+        MoveSpeed = _testSpeed;
+
         switch (_attackBase.State)
         {
             case AttackBase.state.Idle:
