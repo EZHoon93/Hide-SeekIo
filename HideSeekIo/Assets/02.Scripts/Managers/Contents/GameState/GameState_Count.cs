@@ -185,7 +185,7 @@ public class GameState_Count : GameState_Base
         else
         {
             var pos = _gameMainScene.GetHiderPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos);
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
 
         }
     }

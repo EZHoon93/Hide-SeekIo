@@ -9,7 +9,7 @@ public class Buff_Stun : BuffBase
     public override void ProcessStart()
     {
         _inputBase = _buffController.livingEntity.GetComponent<InputBase>();
-        _inputBase.Stop(2.0f);
+        _inputBase.Stop(5.0f);
     }
     public override void ProcessEnd()
     {

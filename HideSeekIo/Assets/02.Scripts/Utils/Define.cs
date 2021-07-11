@@ -52,12 +52,14 @@ public class Define
         Melee2 = 1,
 
         Stone = 101,    //투척류
+        TNT,
         Grenade,
         Flash,
         Dynamite,
         Fire,
         Soil,
-
+        Glue,
+        PosionBomb,
         Sniper = 201
     }
 
@@ -156,26 +158,32 @@ public class Define
     public enum HiderStoreList
     {
         Trap,
+        TNT,
         Flash,
         Grenade,
         Vaccine,
         Speed,
         Shoes,
-        Shield
+        Shield,
+        Stealth,
+        Glue
     }
 
     public enum SeekrStoreList
     {
         Dynamite,
-        Fire    ,   //시야공유용 파이어 던지기가능.
+        Flash,
+        PosionBomb,
+        Speed2,
+        SightUp,//시야증가
+        Immune,
+        Fire,   //시야공유용 파이어 던지기가능.
         Soil,   //끈끈이
         Mask,   //마스크, 방해효과 무시
         Rader,
         PowerUp,    //대미지증가
         Curse1,    //저주1    시야감소
         Curse2,    //저주2    방향전환
-        SightUp ,//시야증가
-        Speed2,
 
         //AI추가,팀끼리 시야공유 등
 
@@ -211,7 +219,10 @@ public class Define
         Speed,
         Shield,
         Sight,
-        Revive
+        Revive,
+        Stealth,
+        SightUp,
+        Immune
             
     }
 

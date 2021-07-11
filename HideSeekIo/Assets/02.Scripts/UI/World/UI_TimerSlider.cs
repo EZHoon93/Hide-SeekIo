@@ -6,23 +6,23 @@ using UnityEngine.UI;
 public class UI_TimerSlider : MonoBehaviour
 {
     Slider _slider;
-    PunTimerObject _punTimerObject;
+    TimerItemController _timerItemController;
 
     private void Awake()
     {
         _slider = GetComponent<Slider>();
-        _punTimerObject = this.transform.parent.GetComponentInParent<PunTimerObject>();
+        _timerItemController = this.transform.parent.GetComponentInParent<TimerItemController>();
     }
 
 
     private void Update()
     {
-        if (_slider.maxValue != _punTimerObject.InitRemainTime)
+        if (_slider.maxValue != _timerItemController.DurationTime)
         {
-            _slider.maxValue = _punTimerObject.InitRemainTime;
+            _slider.maxValue = _timerItemController.DurationTime;
             _slider.value = _slider.maxValue;
         }
 
-        _slider.value = Mathf.Lerp(_slider.value, _punTimerObject.RemainTime, Time.deltaTime * 3);
+        _slider.value = Mathf.Lerp(_slider.value, _timerItemController.RemainTime, Time.deltaTime * 3);
     }
 }

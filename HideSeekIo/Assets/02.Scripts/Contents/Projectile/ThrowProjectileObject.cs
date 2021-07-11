@@ -2,14 +2,24 @@
 
 using DG.Tweening;
 
+using FoW;
+
 using UnityEngine;
 
 public class ThrowProjectileObject : Poolable
 {
     [SerializeField] protected GameObject _modelObject;
-
-    public virtual void Play(Vector3 startPoint, Vector3 endPoint)
+    protected int _useViewID;
+    protected FogOfWarUnit _fogOfWarUnit;
+    private void Awake()
     {
+        _fogOfWarUnit = GetComponentInChildren<FogOfWarUnit>();
+    }
+    public virtual void Play(int useViewID, Vector3 startPoint, Vector3 endPoint)
+    {
+        _fogOfWarUnit.enabled = false;
+        _useViewID = useViewID;
+        _fogOfWarUnit.team = _useViewID;
         StartCoroutine(Move(startPoint,endPoint, .5f, .1f, 2.0f ));
     }
     IEnumerator Move(Vector3 startPoint, Vector3 endPoint, float arriveMinTime , float addTimeByDistance, float arriveMaxTime)
@@ -36,5 +46,6 @@ public class ThrowProjectileObject : Poolable
     {
 
     }
-    
+
+
 }

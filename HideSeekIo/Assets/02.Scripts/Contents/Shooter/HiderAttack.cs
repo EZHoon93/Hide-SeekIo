@@ -36,7 +36,7 @@ public class HiderAttack : AttackBase
     private void LateUpdate()
     {
         if (this.IsMyCharacter() == false || weapon == null) return;
-        weapon.Zoom(_hiderInput.AttackVector);
+        UpdateZoom(_hiderInput.AttackVector);
     }
 
 

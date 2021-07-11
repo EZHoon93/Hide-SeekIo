@@ -33,8 +33,6 @@ public class FogOfWarController : MonoBehaviour
         _fogOfWarTeam.team = photonView.ViewID;
         _fogOfWarUnit.team = photonView.ViewID;
         CheckIsCamaeraTarget(false);
-
-
     }
 
     void ChangeCameraTarget(int cameraViewID)
@@ -58,8 +56,14 @@ public class FogOfWarController : MonoBehaviour
         _hideInFog.enabled = !isTargetInCamera;
     }
 
+    public void ChangeTransParent(bool isTransParent)
+    {
+        _hideInFog.ChangeTransParent(isTransParent);
+    }
+
     public void AddHideRender(Renderer renderer)
     {
+        print("추가!!! " + renderer.gameObject.name);
         if (renderer == null) return;
         _hideInFog.AddRenderer(renderer);
     }
@@ -68,5 +72,10 @@ public class FogOfWarController : MonoBehaviour
     {
         if (renderer == null) return;
         _hideInFog.RemoveRenderer(renderer);
+    }
+
+    public void ChangeSight(float value)
+    {
+        _fogOfWarUnit.circleRadius = value;
     }
 }

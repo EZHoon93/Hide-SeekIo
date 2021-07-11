@@ -38,7 +38,6 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         else
         {
             State = (MoveState)stream.ReceiveNext();
-            print("받음" + State);
         }
     }
     protected virtual void Awake()

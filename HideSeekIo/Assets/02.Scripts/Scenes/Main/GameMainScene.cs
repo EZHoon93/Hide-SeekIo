@@ -15,11 +15,6 @@ public class GameMainScene : GameScene
         base.Init();
         Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
         Managers.Game.CurrentGameScene = this;
-
-
-        PhotonNetwork.InstantiateRoomObject("HiderRandomBox", new Vector3(3,0,3) , Quaternion.identity);
-
-
     }
 
     
@@ -30,7 +25,6 @@ public class GameMainScene : GameScene
 
     public Vector3 GetHiderPosition(int index)
     {
-        print(_mainSpawnPoints.HiderSpawnPoints.Length + "/" + _mainSpawnPoints.SeekerSpawnPoints.Length);
         if(_mainSpawnPoints.HiderSpawnPoints.Length <= index)
         {
             Debug.LogError("Hider 스폰포인트 위치가 더작음");

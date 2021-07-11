@@ -2,18 +2,8 @@
 
 using UnityEngine;
 
-    public class UtillLayer : MonoBehaviour
-    {
+public class UtillLayer
+{
+    public static int seekerToHiderAttack = (1 << (int)Define.Layer.Hider) | (1 << (int)Define.Layer.Item);
 
-        // Use this for initialization
-        void Start()
-        {
-                //Invoke(,,)
-            }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-    }
+}

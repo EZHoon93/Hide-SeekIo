@@ -3,6 +3,7 @@
 using UnityEngine;
 using Photon.Pun;
 using System;
+using UnityEditor;
 
 public class AttackBase : MonoBehaviourPun 
 {

@@ -27,6 +27,7 @@ public abstract class Weapon_Throw : Weapon
 
     public override void Zoom(Vector2 inputVector)
     {
+        print(AttackDistance);
         UtillGame.ThrowZoom(inputVector, AttackDistance, newAttacker.CenterPivot, UICanvas.transform);
     }
 
@@ -55,7 +56,7 @@ public abstract class Weapon_Throw : Weapon
         AttackSucessEvent?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(startPoint, endPoint);
+        projectile.Play(newAttacker.ViewID(),  startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();
         state = State.End;
@@ -63,11 +64,11 @@ public abstract class Weapon_Throw : Weapon
     }
 
 
-    public void AttackEffect(Vector3 startPoint, Vector3 endPoint)
-    {
-        var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(startPoint, endPoint);
-    }
+    //public void AttackEffect(Vector3 startPoint, Vector3 endPoint)
+    //{
+    //    var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
+    //    projectile.Play(newAttacker.ViewID() , startPoint, endPoint) ;
+    //}
 
     #endregion
     public void UseToPlayerToServer()

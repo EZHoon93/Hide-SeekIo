@@ -65,8 +65,20 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
             case Define.HiderStoreList.Flash:
                 this.gameObject.GetOrAddComponent<Item_Flash>();
                 itemType = Define.InGameItemType.Weapon;
-
                 break;
+            case Define.HiderStoreList.Stealth:
+                this.gameObject.GetOrAddComponent<Item_Stealth>();
+                itemType = Define.InGameItemType.Weapon;
+                break;
+            case Define.HiderStoreList.TNT:
+                this.gameObject.GetOrAddComponent<Item_TNT>();
+                itemType = Define.InGameItemType.Weapon;
+                break;
+            case Define.HiderStoreList.Glue:
+                this.gameObject.GetOrAddComponent<Item_Glue>();
+                itemType = Define.InGameItemType.Weapon;
+                break;
+
             case Define.HiderStoreList.Grenade:
                 this.gameObject.GetOrAddComponent<Item_Grenade>();
                 itemType = Define.InGameItemType.Weapon;
@@ -99,26 +111,27 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
                 this.gameObject.GetOrAddComponent<Item_Dynamite>();
 
                 break;
-            case Define.SeekrStoreList.Fire:
+            case Define.SeekrStoreList.Flash:
+                this.gameObject.GetOrAddComponent<Item_Flash>();
                 itemType = Define.InGameItemType.Weapon;
-                this.gameObject.GetOrAddComponent<Item_Fire>();
-
                 break;
-            case Define.SeekrStoreList.Soil:
+            case Define.SeekrStoreList.Speed2:
+                this.gameObject.GetOrAddComponent<Item_Speed2>();
                 itemType = Define.InGameItemType.Weapon;
-                this.gameObject.GetOrAddComponent<Item_Soil>();
-                break;
-            case Define.SeekrStoreList.Curse1:
-                itemType = Define.InGameItemType.use;
-                this.gameObject.GetOrAddComponent<Item_Curse1>();
-
-                break;
-            case Define.SeekrStoreList.Curse2:
-                itemType = Define.InGameItemType.use;
-                this.gameObject.GetOrAddComponent<Item_Curse2>();
-
                 break;
             
+            case Define.SeekrStoreList.PosionBomb:
+                itemType = Define.InGameItemType.use;
+                this.gameObject.GetOrAddComponent<Item_PosionBomb>();
+                break;
+            case Define.SeekrStoreList.SightUp:
+                this.gameObject.GetOrAddComponent<Item_SightUp>();
+                itemType = Define.InGameItemType.Weapon;
+                break;
+            case Define.SeekrStoreList.Immune:
+                this.gameObject.GetOrAddComponent<Item_Immune>();
+                itemType = Define.InGameItemType.use;
+                break;
         }
     }
 

@@ -22,6 +22,12 @@ public class HiderRandomBox : MonoBehaviour, IGetWorldItem , IPunInstantiateMagi
 
     }
 
+    private void OnDisable()
+    {
+        ItemSpawnManager.HiderItem_ExistSpawnIndex.Remove(_spawnIndex);
+
+    }
+
     public void Get(GameObject getObject)
     {
         var playerController =  getObject.GetComponent<PlayerController>();

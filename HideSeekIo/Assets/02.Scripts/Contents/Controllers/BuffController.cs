@@ -61,7 +61,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             SetupIsPostiveBuff(BuffType);
             foreach(var render in _buffBase.renderers)
             {
-                livingEntity.fonController.AddHideRender(render);
+                livingEntity.fogController.AddHideRender(render);
             }
         }
        
@@ -106,7 +106,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
         BuffType = Define.BuffType.Null;
         foreach (var render in _buffBase.renderers)
         {
-            livingEntity.fonController.RemoveRenderer(render);
+            livingEntity.fogController.RemoveRenderer(render);
         }
         livingEntity.RemoveBuffController(this);
         livingEntity = null;

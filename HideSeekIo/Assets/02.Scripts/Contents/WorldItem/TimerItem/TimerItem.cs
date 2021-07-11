@@ -8,5 +8,8 @@ public abstract class TimerItem : MonoBehaviour
     {
 
     }
-    public abstract void EndTime();
+    public virtual void EndTime()
+    {
+
+    }
 }

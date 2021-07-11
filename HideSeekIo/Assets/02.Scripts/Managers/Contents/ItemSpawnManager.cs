@@ -35,7 +35,7 @@ public class ItemSpawnManager : MonoBehaviour
     {
         while (true)
         {
-            if(HiderItem_ExistSpawnIndex.Count + 1 < hiderItemPoints.Length )
+            if(HiderItem_ExistSpawnIndex.Count +1 < hiderItemPoints.Length )
             {
                 var spawnIndex = GetSpawnIndex(Define.Team.Hide);
                 var spawnPoint = GetSpawnPoint(Define.Team.Hide, spawnIndex);
@@ -43,7 +43,7 @@ public class ItemSpawnManager : MonoBehaviour
                 yield return new WaitForSeconds(_spawnTimeBet);
             }
 
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(0.3f);
         }
     }
 

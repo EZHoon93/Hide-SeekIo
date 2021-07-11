@@ -24,14 +24,14 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
 
     //[SerializeField]
     //protected GameObject _uICanvas;
-    
+
     //protected string _attackAnimationName;
     //protected float _attackDelayTime;   //대미지 주기까지 시간
     //protected float _afterAttackDelayTime;  //다음움직임 까지 시간
     //protected float _distance;
     //protected float _initCoolTime;
     //protected float _remianCoolTime;
-
+    [SerializeField] protected Transform _weaponModel;
     public string AttackAnim { get; set; }
     public float AttackDelay { get; set; }
     public float AfaterAttackDelay { get; set; }
@@ -70,9 +70,10 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         AttackSucessEvent = null;
         AttackEndEvent = null;
         var playerViewID = (int)info.photonView.InstantiationData[0];
-        newAttacker = Managers.Game.GetLivingEntity(playerViewID).GetComponent<AttackBase>();
+        var livingEntity = Managers.Game.GetLivingEntity(playerViewID);
+        livingEntity.fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
+        newAttacker = livingEntity.GetComponent<AttackBase>();
         newAttacker.SetupWeapon(this);
-        newAttacker.GetComponentInChildren<FogOfWarController>().AddHideRender(this.GetComponentInChildren<Renderer>());
         ReaminCoolTime = 0;
     }
     public void OnPreNetDestroy(PhotonView rootView)

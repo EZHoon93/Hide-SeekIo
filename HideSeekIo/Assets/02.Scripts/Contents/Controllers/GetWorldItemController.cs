@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, IEnterTrigger, IExitTrigger ,
-     IPunObservable , IPunOwnershipCallbacks
+     IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
 {
     [SerializeField] LivingEntity _gettingLivingEntity; //얻고있는 생명체
     [SerializeField] Slider _getSlider;     //얻고있는 UI
@@ -45,9 +45,15 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         _isGet = false;
         _getSlider.value = 0;
         PhotonNetwork.AddCallbackTarget(this);
+        _getSlider.gameObject.SetActive(false);
+
     }
 
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
 
+    }
     private void Update()
     {
 
@@ -124,6 +130,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     //로컬 오브젝트만 실행
     public void Exit(GameObject exitGameObject)
     {
+        print("Exit!!");
         if (photonView.IsMine == false) return;
         var exitLivingEntity = exitGameObject.GetComponent<LivingEntity>();
         if(_gettingLivingEntity == exitLivingEntity)
@@ -138,6 +145,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
     public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
     {
+
     }
 
     public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
@@ -146,10 +154,17 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         {
             _gettingLivingEntity = null;
             n_eneterTime = 0;
+            _getSlider.gameObject.SetActive(false);
+        }
+        else
+        {
+            _getSlider.gameObject.SetActive(true);
         }
     }
 
     public void OnOwnershipTransferFailed(PhotonView targetView, Player senderOfFailedRequest)
     {
     }
+
+    
 }

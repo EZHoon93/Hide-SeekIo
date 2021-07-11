@@ -57,6 +57,15 @@ public class SeekerController : PlayerController
             enterTrigger.Enter(this.gameObject);
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        var exitTrigger = other.gameObject.GetComponent<IExitTrigger>();
+        print(other.gameObject.name + "부디침 Exit");
+        if (exitTrigger != null)
+        {
+            exitTrigger.Exit(this.gameObject);
+        }
+    }
 
     public override LivingEntity GetLivingEntity() => seekerHealth;
     

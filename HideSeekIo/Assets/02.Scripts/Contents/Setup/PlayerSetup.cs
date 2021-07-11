@@ -57,7 +57,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         avater.transform.ResetTransform();
         avater.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
         go = avater;
-
+        print(this.gameObject.name + "추가할끄야");
         fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
     }
 

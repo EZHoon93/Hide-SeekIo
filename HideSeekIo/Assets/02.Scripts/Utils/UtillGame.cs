@@ -185,8 +185,95 @@ public static class UtillGame
 
         // randomPos를 기준으로 maxDistance 반경 안에서, randomPos에 가장 가까운 네브 메시 위의 한 점을 찾음
         NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas);
-
         // 찾은 점 반환
         return hit.position;
+    }
+
+    public static void DamageInRange(Transform center , float radius ,int damage,int damagerViewID,
+        LayerMask attackLayer , float angle = 360)
+    {
+        Collider[] colliders = new Collider[10];
+
+        var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
+        if (hitCount > 0)
+        {
+            for (int i = 0; i < hitCount; i++)
+            {
+                if (IsTargetOnSight( center , colliders[i].transform , angle, attackLayer))
+                {
+                    
+                }
+                else
+                {
+                    
+                }
+                var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
+                if (damageable != null)
+                {
+                    damageable.OnDamage(5, 5, colliders[i].transform.position);
+                }
+            }
+
+        }
+    }
+
+    public static void BuffInRange(Transform center, float radius, Define.BuffType buffType, int damagerViewID,
+        LayerMask attackLayer, float angle = 360)
+    {
+        Collider[] colliders = new Collider[10];
+
+        var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
+        if (hitCount > 0)
+        {
+            for (int i = 0; i < hitCount; i++)
+            {
+                if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
+                {
+                    Debug.LogError("시야 안 " + colliders[i].name);
+                }
+                else
+                {
+                    Debug.LogError("시야 밖 " + colliders[i].name);
+
+                }
+                var livingEntity = colliders[i].gameObject.GetComponent<LivingEntity>();
+                if (livingEntity != null)
+                {
+                    //로컬캐릭이 실행
+                    if(livingEntity.photonView.IsMine )
+                    {
+                        BuffManager.Instance.BuffControllerCheckOnLocal(buffType, livingEntity);
+                    }
+                }
+            }
+
+        }
+    }
+
+    public static bool IsTargetOnSight(Transform center , Transform target, float angle , LayerMask attackLayer)
+    {
+        RaycastHit hit;
+        Vector3 startPoint = center.position;
+        Vector3 endPoint = target.position;
+        LayerMask detectionLayer = (attackLayer | 1 << (int)Define.Layer.Wall );
+        startPoint.y = 0.5f;
+        endPoint.y = 0.5f;
+
+        var direction = endPoint - startPoint;
+
+        Debug.LogError(Vector3.Angle(direction, center.forward) + "각도");
+
+        if (Vector3.Angle(direction, center.forward) > angle* 0.5f)
+        {
+            return false;
+        }
+
+
+        if (Physics.Raycast(startPoint, direction, out hit, 11, detectionLayer))
+        {
+            if (hit.transform == target) return true;
+        }
+
+        return false;
     }
 }

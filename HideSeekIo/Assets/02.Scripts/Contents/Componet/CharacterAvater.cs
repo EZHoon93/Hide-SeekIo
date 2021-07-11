@@ -8,6 +8,7 @@ public class CharacterAvater : MonoBehaviour
 
     public Transform RightHandAmount => _rightHandTransform;//무기 위치할 곳 
 
+
     [ContextMenu("Setup")]
     public void Setup()
     {
@@ -18,6 +19,9 @@ public class CharacterAvater : MonoBehaviour
         rightHandTransformPanel.ResetTransform(righthand);
 
         _rightHandTransform = rightHandTransformPanel.GetComponent<RightHand>().RightHandTransform;
+
+        
     }
+    
 
 }

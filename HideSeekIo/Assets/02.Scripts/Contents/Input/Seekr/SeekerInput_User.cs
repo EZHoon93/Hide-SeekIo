@@ -30,7 +30,25 @@ public class SeekerInput_User : SeekerInput
 
     public void OnUpdate()
     {
+        if (IsStop)
+        {
+            UpdateStopState();
+            return;
+        }
         MoveVector = InputManager.Instacne.MoveVector;
         UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
+    }
+
+    protected void UpdateStopState()
+    {
+        if (_stopTime > 0)
+        {
+            _stopTime -= Time.deltaTime;
+            MoveVector = Vector2.zero;
+        }
+        else
+        {
+            IsStop = false;
+        }
     }
 }

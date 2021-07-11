@@ -89,12 +89,39 @@ public class SpawnManager
     public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase newAttacker)
     {
         List<object> datas = new List<object>() { newAttacker.photonView.ViewID };
+        string weaponID = null;
         switch (weapon)
         {
             case Define.Weapon.Melee2:
+                weaponID = "Melee2";
                 datas.Add(PlayerInfo.CurrentWeapon);
                 break;
+            case Define.Weapon.Sniper:
+
+                datas.Add($"Gun/{weapon.ToString()}");
+                break;
+            default:
+                weaponID = $"Throw/{weapon.ToString()}";
+                break;
         }
-        return PhotonNetwork.Instantiate(weapon.ToString(), new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+        Debug.LogError("생성 " + weaponID);
+        return PhotonNetwork.Instantiate( weaponID , new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+    }
+
+    public void TimerItemSpawn(Define.TimerItem timerItem , int useViewID)
+    {
+
+        //PhotonNetwork.InstantiateRoomObject("TimerItem/TNT", this.transform.position, Quaternion.identity)
+
+    }
+
+    public void MeleeWeaponSpawn(int viewID)
+    {
+        PhotonNetwork.Instantiate("Melee2", Vector3.zero, Quaternion.identity);
+    }
+
+    public void ThrowWeaponSpawn(int viewID)
+    {
+
     }
 }

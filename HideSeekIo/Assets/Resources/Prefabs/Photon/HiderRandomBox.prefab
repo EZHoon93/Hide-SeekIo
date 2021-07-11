@@ -847,6 +847,7 @@ GameObject:
   - component: {fileID: -2784505663924609107}
   - component: {fileID: -8284995793168787894}
   - component: {fileID: 2728761629465731879}
+  - component: {fileID: 4235751427057330019}
   m_Layer: 11
   m_Name: HiderRandomBox
   m_TagString: Untagged
@@ -937,6 +938,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 848ee91c07dbc0649b75aa5cd2df7760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4235751427057330019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4904806006423369658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e790a7cab88cbe0469aef7a442bca56d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  minFogStrength: 0.8
+  _renderers:
+  - {fileID: 1712442848721646370}
+  - {fileID: 1713007567184327530}
 --- !u!1 &6413935200584030828
 GameObject:
   m_ObjectHideFlags: 0

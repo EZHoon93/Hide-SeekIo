@@ -20,7 +20,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
 
     public List<BuffController> BuffControllerList { get; private set; } = new List<BuffController>();
-    public FogOfWarController fonController { get; private set; }
+    public FogOfWarController fogController { get; private set; }
     
 
 
@@ -48,8 +48,9 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
     protected virtual void Awake()
     {
-        fonController = Managers.Resource.Instantiate("Contents/FogOfWar",this.transform).GetComponent<FogOfWarController>();
-        fonController.transform.localPosition = new Vector3(0, 0.5f, 0);
+        fogController = Managers.Resource.Instantiate("Contents/FogOfWar",this.transform).GetComponent<FogOfWarController>();
+        fogController.transform.localPosition = new Vector3(0, 0.5f, 0);
+        
     }
     
     private void OnEnable()
@@ -62,6 +63,16 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         Dead = false;
         // 체력을 시작 체력으로 초기화
         Health = initHealth;
+
+        switch (Team)
+        {
+            case Define.Team.Hide:
+                fogController.ChangeSight(5);
+                break;
+            case Define.Team.Seek:
+                fogController.ChangeSight(2);
+                break;
+        }
     }
 
 

@@ -43,6 +43,9 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
             case Define.HiderStoreList.Speed:
             case Define.HiderStoreList.Vaccine:
             case Define.HiderStoreList.Grenade:
+            case Define.HiderStoreList.TNT:
+            case Define.HiderStoreList.Stealth:
+            case Define.HiderStoreList.Glue:
                 Managers.Spawn.InGameItemSpawn(@enum, hiderController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
@@ -87,8 +90,12 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
         switch (seekerItemEnum)
         {
             case Define.SeekrStoreList.Dynamite:
-            case Define.SeekrStoreList.Fire:
-            case Define.SeekrStoreList.Soil:
+            case Define.SeekrStoreList.Flash:
+            case Define.SeekrStoreList.PosionBomb:
+            case Define.SeekrStoreList.Speed2:
+            case Define.SeekrStoreList.SightUp:
+            case Define.SeekrStoreList.Immune:
+            case Define.SeekrStoreList.Rader:
                 Managers.Spawn.InGameItemSpawn(@enum, seekerController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
@@ -97,8 +104,7 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
                 BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
                 resultState = Define.InGameItemUIState.Sucess;
                 break;
-            case Define.SeekrStoreList.Rader:
-                break;
+            
             case Define.SeekrStoreList.PowerUp:
                 BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
                 resultState = Define.InGameItemUIState.Sucess;
@@ -110,14 +116,6 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
             case Define.SeekrStoreList.Curse2:
                 Managers.Spawn.InGameItemSpawn(@enum, seekerController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
-                break;
-            case Define.SeekrStoreList.SightUp:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
-                resultState = Define.InGameItemUIState.Sucess;
-                break;
-            case Define.SeekrStoreList.Speed2:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
-                resultState = Define.InGameItemUIState.Sucess;
                 break;
         }
         //photonView.RPC("ResultBuyInGameItem_OnAllClients", RpcTarget.All, Define.InGameItemUIState.Sucess,Define.Team.Seek, (int)seekerItemEnum, seekerController.ViewID());

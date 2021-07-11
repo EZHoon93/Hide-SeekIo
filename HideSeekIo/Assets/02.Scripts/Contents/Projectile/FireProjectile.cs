@@ -5,9 +5,9 @@ using UnityEngine;
 public class FireProjectile : ThrowProjectileObject
 {
 
-    public override void Play(Vector3 startPoint, Vector3 endPoint)
+    public override void Play(int useViewID, Vector3 startPoint, Vector3 endPoint)
     {
-        base.Play(startPoint, endPoint);
+        base.Play(useViewID, startPoint, endPoint);
         _modelObject.SetActive(true);
     }
     protected override void Explosion()
