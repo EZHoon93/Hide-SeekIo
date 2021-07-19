@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4407811, g: 0.48946398, b: 0.56958133, a: 1}
+  m_IndirectSpecularColor: {r: 0.4391818, g: 0.48745728, b: 0.5677074, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1598,7 +1598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 11, z: -7}
+  m_FollowOffset: {x: 0, y: 13.2, z: -5.7}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1919,7 +1919,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 1868335978}
+  m_Follow: {fileID: 1446203924}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 10
@@ -1942,14 +1942,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282257014}
-  m_LocalRotation: {x: 0.5067862, y: -0, z: -0, w: 0.86207175}
-  m_LocalPosition: {x: -5.72, y: 29.34, z: -16.66}
+  m_LocalRotation: {x: 0.5699968, y: 0, z: 0, w: 0.8216469}
+  m_LocalPosition: {x: -0.57, y: 13.2, z: -10.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1159132386}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 60.9, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 69.5, y: 0, z: 0}
 --- !u!114 &1282257017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2116,12 +2116,12 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 7959
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -2134,8 +2134,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313267548}
-  m_LocalRotation: {x: 0.5067862, y: 0, z: 0, w: 0.86207175}
-  m_LocalPosition: {x: -5.72, y: 29.34, z: -16.66}
+  m_LocalRotation: {x: 0.5699968, y: 0, z: 0, w: 0.8216469}
+  m_LocalPosition: {x: -0.57, y: 13.2, z: -10.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 185850004}
@@ -2206,194 +2206,59 @@ MonoBehaviour:
   m_GameObject: {fileID: 1313267548}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54415757aaddf4b8a9cd7122fd120cc6, type: 3}
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _preset: 999
-  _quality: 1
-  _profile: {fileID: 0}
-  _syncWithProfile: 1
-  _compareMode: 0
-  _compareLineAngle: 0
-  _compareLineWidth: 0.0091
-  _dither: 0.02
-  _ditherDepth: 0
-  _sharpenMinDepth: 0
-  _sharpenMaxDepth: 0.999
-  _sharpenMinMaxDepthFallOff: 0
-  _sharpen: 3
-  _sharpenDepthThreshold: 0.035
-  _tintColor: {r: 1, g: 1, b: 1, a: 0}
-  _sharpenRelaxation: 0.07
-  _sharpenClamp: 0.45
-  _sharpenMotionSensibility: 0.5
-  _saturate: 1
-  _contrast: 0.634
-  _brightness: 1
-  _daltonize: 0
-  _hardLightIntensity: 0.5
-  _hardLightBlend: 0
-  _vignetting: 0
-  _vignettingColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.05}
-  _vignettingFade: 0
-  _vignettingCircularShape: 0
-  _vignettingAspectRatio: 1
-  _vignettingBlink: 0
-  _vignettingBlinkStyle: 0
-  _vignettingCenter: {x: 0.5, y: 0.5}
-  _vignettingMask: {fileID: 0}
-  _frame: 0
-  _frameColor: {r: 1, g: 1, b: 1, a: 0.047}
-  _frameMask: {fileID: 0}
-  _lut: 0
-  _lutIntensity: 1
-  _lutTexture: {fileID: 0}
-  _nightVision: 0
-  _nightVisionColor: {r: 0.5, g: 1, b: 0.5, a: 0.5}
-  _outline: 1
-  _outlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-  _thermalVision: 0
-  _lensDirt: 0
-  _lensDirtThreshold: 0.5
-  _lensDirtIntensity: 0.9
-  _lensDirtTexture: {fileID: 2800000, guid: f5c5080de097a4274bab7bc2bf5017f6, type: 3}
-  _bloom: 0
-  _bloomCullingMask:
+  volumeTrigger: {fileID: 1313267551}
+  volumeLayer:
     serializedVersion: 2
-    m_Bits: 0
-  _bloomLayerMaskDownsampling: 1
-  _bloomIntensity: 0.12
-  _bloomMaxBrightness: 1000
-  _bloomBoost0: 0
-  _bloomBoost1: 0
-  _bloomBoost2: 0
-  _bloomBoost3: 0
-  _bloomBoost4: 0
-  _bloomBoost5: 0
-  _bloomAntiflicker: 0
-  _bloomUltra: 0
-  _bloomUltraResolution: 10
-  _bloomThreshold: 0.17
-  _bloomTint: {r: 1, g: 1, b: 1, a: 0}
-  _bloomCustomize: 0
-  _bloomDebug: 0
-  _bloomWeight0: 0.5
-  _bloomWeight1: 0.5
-  _bloomWeight2: 0.5
-  _bloomWeight3: 0.5
-  _bloomWeight4: 0.5
-  _bloomWeight5: 0.5
-  _bloomBlur: 1
-  _bloomQuickerBlur: 0
-  _bloomDepthAtten: 0
-  _bloomNearAtten: 0
-  _bloomLayerZBias: 0.0001
-  _preRenderCameraEvent: 0
-  _anamorphicFlares: 0
-  _anamorphicFlaresIntensity: 1
-  _anamorphicFlaresAntiflicker: 0
-  _anamorphicFlaresUltra: 0
-  _anamorphicFlaresUltraResolution: 10
-  _anamorphicFlaresThreshold: 0.75
-  _anamorphicFlaresSpread: 1
-  _anamorphicFlaresVertical: 0
-  _anamorphicFlaresTint: {r: 0.5, g: 0.5, b: 1, a: 0}
-  _anamorphicFlaresBlur: 1
-  _depthOfField: 0
-  _depthOfFieldTransparencySupport: 0
-  _depthOfFieldTransparencyLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _depthOfFieldTargetFocus: {fileID: 0}
-  _depthOfFieldDebug: 0
-  _depthOfFieldAutofocus: 0
-  _depthofFieldAutofocusViewportPoint: {x: 0.5, y: 0.5}
-  _depthOfFieldAutofocusMinDistance: 0
-  _depthOfFieldAutofocusDistanceShift: 0
-  _depthOfFieldAutofocusMaxDistance: 10000
-  _depthOfFieldAutofocusLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _depthOfFieldExclusionLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  _depthOfFieldExclusionLayerMaskDownsampling: 1
-  _depthOfFieldTransparencySupportDownsampling: 1
-  _depthOfFieldExclusionBias: 0.99
-  _depthOfFieldDistance: 1
-  _depthOfFieldFocusSpeed: 1
-  _depthOfFieldDownsampling: 2
-  _depthOfFieldMaxSamples: 4
-  _depthOfFieldFocalLength: 0.05
-  _depthOfFieldAperture: 2.8
-  _depthOfFieldForegroundBlur: 1
-  _depthOfFieldForegroundBlurHQ: 0
-  _depthOfFieldForegroundDistance: 0.25
-  _depthOfFieldBokeh: 1
-  _depthOfFieldBokehThreshold: 1
-  _depthOfFieldBokehIntensity: 2
-  _depthOfFieldMaxBrightness: 1000
-  _depthOfFieldMaxDistance: 1
-  _depthOfFieldFilterMode: 1
-  _eyeAdaptation: 0
-  _eyeAdaptationMinExposure: 0.2
-  _eyeAdaptationMaxExposure: 5
-  _eyeAdaptationSpeedToLight: 0.4
-  _eyeAdaptationSpeedToDark: 0.2
-  _eyeAdaptationInEditor: 1
-  _purkinje: 0
-  _purkinjeAmount: 1
-  _purkinjeLuminanceThreshold: 0.15
-  _tonemap: 0
-  _sunFlares: 0
-  _sun: {fileID: 0}
-  _sunFlaresLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _sunFlaresIntensity: 1
-  _sunFlaresRevealSpeed: 1
-  _sunFlaresHideSpeed: 1
-  _sunFlaresSolarWindSpeed: 0.01
-  _sunFlaresTint: {r: 1, g: 1, b: 1, a: 1}
-  _sunFlaresDownsampling: 2
-  _sunFlaresSunIntensity: 0.1
-  _sunFlaresSunDiskSize: 0.05
-  _sunFlaresSunRayDiffractionIntensity: 3.5
-  _sunFlaresSunRayDiffractionThreshold: 0.13
-  _sunFlaresCoronaRays1Length: 0.02
-  _sunFlaresCoronaRays1Streaks: 12
-  _sunFlaresCoronaRays1Spread: 0.001
-  _sunFlaresCoronaRays1AngleOffset: 0
-  _sunFlaresCoronaRays2Length: 0.05
-  _sunFlaresCoronaRays2Streaks: 12
-  _sunFlaresCoronaRays2Spread: 0.1
-  _sunFlaresCoronaRays2AngleOffset: 0
-  _sunFlaresGhosts1Size: 0.03
-  _sunFlaresGhosts1Offset: 1.04
-  _sunFlaresGhosts1Brightness: 0.037
-  _sunFlaresGhosts2Size: 0.1
-  _sunFlaresGhosts2Offset: 0.71
-  _sunFlaresGhosts2Brightness: 0.03
-  _sunFlaresGhosts3Size: 0.24
-  _sunFlaresGhosts3Brightness: 0.025
-  _sunFlaresGhosts3Offset: 0.31
-  _sunFlaresGhosts4Size: 0.016
-  _sunFlaresGhosts4Offset: 0
-  _sunFlaresGhosts4Brightness: 0.017
-  _sunFlaresHaloOffset: 0.22
-  _sunFlaresHaloAmplitude: 15.1415
-  _sunFlaresHaloIntensity: 0.01
-  _sunFlaresRotationDeadZone: 0
-  _blur: 0
-  _blurIntensity: 0
-  _downscale: 1
-  _superSampling: 1
-  _pixelateAmount: 1
-  _pixelateDownscale: 0
-  _antialiasStrength: 5
-  _antialiasDepthThreshold: 0.001
-  isDirty: 1
-  bMat: {fileID: 0}
+    m_Bits: 131072
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 1
+  temporalAntialiasing:
+    jitterSpread: 0.75
+    sharpness: 0.25
+    stationaryBlending: 0.95
+    motionBlending: 0.85
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 0
+    keepAlpha: 0
+  fog:
+    enabled: 1
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles:
+  - assemblyQualifiedName: FoW.FogOfWarPPSv2, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  m_AfterStackBundles: []
 --- !u!4 &1320540111 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3653690941660610714, guid: b404c159bb32cf343ae3ca875329488a,
@@ -2487,17 +2352,17 @@ PrefabInstance:
     - target: {fileID: 2807817522770786424, guid: 50d57d58f2624d24db20e9565e1c55ea,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2807817522770786424, guid: 50d57d58f2624d24db20e9565e1c55ea,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.8
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2807817522770786424, guid: 50d57d58f2624d24db20e9565e1c55ea,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2807817522770786424, guid: 50d57d58f2624d24db20e9565e1c55ea,
         type: 3}
@@ -2557,10 +2422,16 @@ PrefabInstance:
     - target: {fileID: 8241075489869508221, guid: 50d57d58f2624d24db20e9565e1c55ea,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50d57d58f2624d24db20e9565e1c55ea, type: 3}
+--- !u!4 &1446203924 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2807817522770786424, guid: 50d57d58f2624d24db20e9565e1c55ea,
+    type: 3}
+  m_PrefabInstance: {fileID: 1446203923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1481370431 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3653690941660610714, guid: b404c159bb32cf343ae3ca875329488a,
@@ -2871,6 +2742,54 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8885723004077043690}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1879322173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1879322175}
+  - component: {fileID: 1879322174}
+  m_Layer: 17
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1879322174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879322173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: eecc8b228fdf9ae449ba47662d1c9156, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
+--- !u!4 &1879322175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879322173}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.363319, y: -5.389374, z: 7.133245}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1886109303 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3653690941660610714, guid: b404c159bb32cf343ae3ca875329488a,
@@ -5085,13 +5004,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2384697033193149913}
-  m_LocalRotation: {x: -0.31397456, y: 0.52349293, z: -0.77302843, w: -0.1726331}
+  m_LocalRotation: {x: -0.1548015, y: 0.76744837, z: -0.5694135, w: -0.25065473}
   m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2384697034134858047}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 113.4, y: -489.9, z: 8.955994}
+  m_LocalEulerAnglesHint: {x: 72.1, y: -497.3, z: 8.955994}
 --- !u!1 &2384697034134858032
 GameObject:
   m_ObjectHideFlags: 0
@@ -5905,7 +5824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1001 &3379882788914692972
 PrefabInstance:
   m_ObjectHideFlags: 0

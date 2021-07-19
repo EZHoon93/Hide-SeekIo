@@ -195,23 +195,25 @@ public static class UtillGame
         Collider[] colliders = new Collider[10];
 
         var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
+        Debug.Log(hitCount);
         if (hitCount > 0)
         {
             for (int i = 0; i < hitCount; i++)
             {
                 if (IsTargetOnSight( center , colliders[i].transform , angle, attackLayer))
                 {
-                    
+
+                    var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
+                    if (damageable != null)
+                    {
+                        damageable.OnDamage(5, 5, colliders[i].transform.position);
+                    }
                 }
                 else
                 {
-                    
+
                 }
-                var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    damageable.OnDamage(5, 5, colliders[i].transform.position);
-                }
+
             }
 
         }
@@ -229,11 +231,12 @@ public static class UtillGame
             {
                 if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
                 {
-                    Debug.LogError("시야 안 " + colliders[i].name);
+                    //Debug.LogError("시야 안 " + colliders[i].name);
+
                 }
                 else
                 {
-                    Debug.LogError("시야 밖 " + colliders[i].name);
+                    //Debug.LogError("시야 밖 " + colliders[i].name);
 
                 }
                 var livingEntity = colliders[i].gameObject.GetComponent<LivingEntity>();
@@ -261,7 +264,7 @@ public static class UtillGame
 
         var direction = endPoint - startPoint;
 
-        Debug.LogError(Vector3.Angle(direction, center.forward) + "각도");
+        //Debug.LogError(Vector3.Angle(direction, center.forward) + "각도" + target.name);
 
         if (Vector3.Angle(direction, center.forward) > angle* 0.5f)
         {

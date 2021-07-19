@@ -19,7 +19,6 @@ public class HiderController : PlayerController
         hiderHealth = GetComponent<HiderHealth>();
         hiderHealth.onDeath += HandleDeath;
         hiderHealth.onReviveEvent += HandleRevive;
-        TimeCoinAmount = 1;
     }
 
 
@@ -33,7 +32,7 @@ public class HiderController : PlayerController
 
         SetActiveComponent(true);
 
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Revive , this.GetLivingEntity() );
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Revive , this.GetLivingEntity() );
     }
 
     void SetActiveComponent(bool active)
@@ -50,10 +49,10 @@ public class HiderController : PlayerController
     {
         base.HandleDeath();
         SetActiveComponent(false);
-
+        PhotonNetwork.Destroy(this.gameObject);
         if (photonView.IsMine)
         {
-            //PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID());
+            //Util.CallBackFunction(this, 3.0f, () => PhotonNetwork.Destroy(this.gameObject));
         }
     }
 

@@ -1,26 +1,8 @@
 ﻿
-using Photon.Pun;
 public class Item_PosionBomb : Item_Weapon
 {
-
-    public override void Use(PlayerController usePlayer)
+    protected override void SetupWeaponType()
     {
-        if (_weapon_Throw == null)
-        {
-            _weapon_Throw = Managers.Spawn.WeaponSpawn(Define.Weapon.PosionBomb, usePlayer.GetComponent<AttackBase>()).GetComponent<Weapon_Throw>();
-
-            _weapon_Throw.AttackSucessEvent += () => PhotonNetwork.Destroy(this.gameObject);
-
-        }
-
-        _weapon_Throw.UseToPlayerToServer();
-    }
-    [PunRPC]
-    public void UseUseOnOtherClinets(int useViewID)
-    {
-        var usePlayer = Managers.Game.GetLivingEntity(useViewID);
-        if (usePlayer == null) return;
-
-
+        _weaponType = Define.Weapon.PoisonBomb;
     }
 }

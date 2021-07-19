@@ -4,13 +4,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IPointerUpHandler, IPointerDownHandler
+public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField] TextMeshProUGUI _chattingText;
     [SerializeField] Scrollbar _scrollbar;
     [SerializeField] TMP_InputField _inputField;
     [SerializeField] ScrollRect _scrollRect;
     [SerializeField] Button _sendButton;
+    [SerializeField] Button _openButton;
+    [SerializeField] Button _closeButton;
+    [SerializeField] Transform _panel;
 
 
     bool isTouch;
@@ -19,15 +22,26 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IP
 
     private void Awake()
     {
-        _sendButton.onClick.AddListener(() => SendChattingMessage());
+        //_sendButton.onClick.AddListener(() => SendChattingMessage());
+        _openButton.onClick.AddListener(() => ChangeChattingActive(true));
+        _closeButton.onClick.AddListener(() => ChangeChattingActive(false));
+        _inputField.text = null;
         PhotonGameManager.Instacne.reciveChattingEvent += UpdateChatting;
 
     }
     private void Start()
     {
-        print("이벤트추가");
         Invoke("ChangeBarSize", 1.0f);
     }
+    
+    void ChangeChattingActive(bool active)
+    {
+        _panel.gameObject.SetActive(active);
+        _closeButton.gameObject.SetActive(active);
+        _openButton.gameObject.SetActive(!active);
+        ChangeBarSize();
+    }
+
     void ChangeBarSize()
     {
         _scrollbar.value = 0f;
@@ -36,6 +50,7 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IP
     public void OnBeginDrag(PointerEventData eventData)
     {
         isTouch = true;
+
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -46,68 +61,52 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IP
     public void UpdateChatting(Define.ChattingColor chattingColor,  string _text)
     {
         Color textColor = UISetting.Instance.ChattingColorDic[chattingColor];
+        
         _chattingText.text += Util.GetColorContent(textColor, _text) + "\n";
-        print("ㅋㅋ");
-
         if (isTouch == false) //채팅 스크롤 터지웅이 아니라면
         {
             _scrollbar.value = 0;
         }
         _scrollbar.value = 0f;
     }
-
-    public void EChangeValue()
-    {
-        if (isTouch) //터치중이라면 ..
-        {
-            print("Change Value 1111");
-        }
-        else
-        {
-            print("Change Value 00");
-            _scrollbar.value = 0;
-
-            //scrollbar.value = 0;
-        }
-    }
-
-    public void SendChattingMessage()
-    {
-        var content = _inputField.text;
-        _inputField.text = null;
-        if (content.Length > 0)
-        {
-            PhotonGameManager.Instacne.photonView.RPC("SendChattingMessageOnServer", Photon.Pun.RpcTarget.All, Define.ChattingColor.Message, content);
-        }
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        print("드래그 클릭");
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        print("드래그시작");
-    }
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        print("드래그 업");
-
-    }
-
     public void OnValueChanged()
     {
         _scrollbar.size = 0.1f;
     }
+    public void SendChattingMessage(string content)
+    {
+        if (content.Length > 0)
+        {
+            PhotonGameManager.Instacne.photonView.RPC("SendChattingMessageOnServer", Photon.Pun.RpcTarget.All, Define.ChattingColor.Message, content);
+            _inputField.text = null;
+        }
+    }
+    public void UpdateInputField()
+    {
+        var content = _inputField.text;
+        if (string.IsNullOrEmpty(content)) return;
+        SendChattingMessage(content);
+    }
+    //public void OnPointerClick(PointerEventData eventData)
+    //{
+    //    print("드래그 클릭");
+    //}
+
+    //public void OnPointerDown(PointerEventData eventData)
+    //{
+    //    print("드래그시작");
+    //}
+    //public void OnPointerUp(PointerEventData eventData)
+    //{
+    //    print("드래그 업");
+    //    ChangeBarSize();
+    //}
+
 
     public void ClickChattingButton()
     {
         //_chattingPanel.gameObject.SetActive(!_chattingPanel.activeSelf);
     }
 
-    public void ClearChatting()
-    {
-        _chattingText.text = null;
-    }
+ 
 }

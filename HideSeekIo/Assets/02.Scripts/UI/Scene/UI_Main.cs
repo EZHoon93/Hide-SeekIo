@@ -33,12 +33,10 @@ public class UI_Main : UI_Scene
         QuickChannel,
         ChangeServer,
         Avater,
-        Weapon,
         Etc,
-        //UserListButton,
         AppExit,
         FindPlayer,
-        Test
+        ADMop
     }
 
     public enum TextMeshProUGUIs
@@ -49,27 +47,38 @@ public class UI_Main : UI_Scene
         KillCount,
     }
 
+    public enum Images
+    {
+        NoticeBg
+    }
 
-    public UI_InGameStore InGameStore => GetObject((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
+
+    //public UI_InGameStore InGameStore => GetObject((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
     public UI_InGameInfo InGameInfo => GetObject((int)GameObjects.GameInfo).GetComponent<UI_InGameInfo>();
 
 
 
     public Button FindButton => GetButton((int)Buttons.FindPlayer);
+    public Button ADButton => GetButton((int)Buttons.ADMop);
 
     UI_KillNotice uI_KillNoticePrefab;
+    public TextMeshProUGUI killText => GetText(TextMeshProUGUIs.KillCount);
+    public Image noticeBg => GetImage((int)Images.NoticeBg);
 
+    public UI_Store_Character storeAvater;
+    public UI_Store_Etc storeEtc;
 
 
     public override void Init()
     {
         base.Init();
-        Managers.Game.GameResetEvent += () => InGameStore.gameObject.SetActive(false);
+        //Managers.Game.GameResetEvent += () => InGameStore.gameObject.SetActive(false);
 
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
         Bind<TextMeshProUGUI>(typeof(TextMeshProUGUIs));
         Bind<Transform>(typeof(Panels));
+        Bind<Image>(typeof(Images));
 
 
         GetButton((int)Buttons.GameExit).gameObject.BindEvent(OnGameExit_ButtonClicked);
@@ -79,16 +88,16 @@ public class UI_Main : UI_Scene
         GetButton((int)Buttons.QuickChannel).gameObject.BindEvent(OnQuickChangeChannel_ButtonClicked);
         GetButton((int)Buttons.ChangeServer).gameObject.BindEvent(OnChangeServer_ButtonClicked);
         GetButton((int)Buttons.Avater).gameObject.BindEvent(OnAvaterStore_ButtonClicked);
-        GetButton((int)Buttons.Weapon).gameObject.BindEvent(OnWeaponStore_ButtonClicked);
         GetButton((int)Buttons.Etc).gameObject.BindEvent(OnEtcStore_ButtonClicked);
         //GetButton((int)Buttons.UserListButton).gameObject.BindEvent(OnUserListGame_ButtonClicked);
         GetButton((int)Buttons.AppExit).gameObject.BindEvent(OnAppExit_ButtonClicked);
         GetButton((int)Buttons.FindPlayer).gameObject.BindEvent(OnFindPlayer_ButtonClicked);
-        GetButton((int)Buttons.FindPlayer).gameObject.BindEvent(Test);
+        GetButton((int)Buttons.ADMop).gameObject.BindEvent(OnADMop_ButtonClicked);
 
 
 
-        GetObject((int)GameObjects.InGameStore).SetActive(false);
+
+        //GetObject((int)GameObjects.InGameStore).SetActive(false);
         //GetObject((int)GameObjects.UserList_Game).SetActive(false);
 
         ChangePanel(Define.GameScene.Lobby);
@@ -122,6 +131,8 @@ public class UI_Main : UI_Scene
             GetText((int)e).text = null;
         }
         InGameInfo.ResetTextes();
+
+        noticeBg.enabled = false;
     }
     public TextMeshProUGUI GetText(TextMeshProUGUIs textType)
     {
@@ -184,7 +195,7 @@ public class UI_Main : UI_Scene
 
     void OnGameJoin_ButtonClicked(PointerEventData data)
     {
-        Managers.Game.GameJoin();
+        PhotonGameManager.Instacne.GameJoin();
         ChangePanel(Define.GameScene.Game);
     }
 
@@ -217,13 +228,45 @@ public class UI_Main : UI_Scene
 
     public void OnAvaterStore_ButtonClicked(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_Store_Character>();
+        var outLine = data.selectedObject.GetComponent<UI_SelectButtonOutLine>();
+        if (outLine)
+        {
+            outLine.Click();
+
+        }
+        if (storeEtc)
+            storeEtc.gameObject.SetActive(false);
+        if (storeAvater == null)
+        {
+            storeAvater =  Managers.UI.ShowPopupUI<UI_Store_Character>();
+
+        }
+        else
+        {
+            storeAvater.gameObject.SetActive(!storeAvater.gameObject.activeInHierarchy);
+
+        }
+
 
     }
 
     public void OnEtcStore_ButtonClicked(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_Store_Etc>();
+        var outLine = data.selectedObject.GetComponent<UI_SelectButtonOutLine>();
+        if (outLine)
+        {
+            outLine.Click();
+        }
+        if (storeAvater)
+            storeAvater.gameObject.SetActive(false);
+        if(storeEtc== null)
+        {
+            storeEtc = Managers.UI.ShowPopupUI<UI_Store_Etc>();
+        }
+        else
+        {
+            storeEtc.gameObject.SetActive(!storeEtc.gameObject.activeInHierarchy);
+        }
 
     }
 
@@ -244,6 +287,10 @@ public class UI_Main : UI_Scene
     public void OnFindPlayer_ButtonClicked(PointerEventData data)
     {
         CameraManager.Instance.FindNextPlayer();
+        //Managers.UI.Root.gameObject.SetActive(false);
+    }
+    public void OnADMop_ButtonClicked(PointerEventData data)
+    {
 
     }
     public void Test(PointerEventData data)
@@ -258,7 +305,8 @@ public class UI_Main : UI_Scene
     }
     public void Test2()
     {
-        CameraManager.Instance.TestChange();
+        //CameraManager.Instance.TestChange();
+        Managers.UI.Root.gameObject.SetActive(false);
 
     }
 

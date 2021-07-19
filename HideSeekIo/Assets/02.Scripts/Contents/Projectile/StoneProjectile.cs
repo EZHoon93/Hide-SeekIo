@@ -14,6 +14,7 @@ public class StoneProjectile : ThrowProjectileObject
     protected override void Explosion()
     {
         _modelObject.SetActive(false);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, this.transform.position, 0);
     }
 
 }

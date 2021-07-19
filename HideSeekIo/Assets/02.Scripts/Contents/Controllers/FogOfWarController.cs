@@ -3,9 +3,9 @@ using FoW;
 using Photon.Pun;
 public class FogOfWarController : MonoBehaviour
 {
-    FogOfWarTeam _fogOfWarTeam;
-    FogOfWarUnit _fogOfWarUnit;
-    HideInFog _hideInFog;
+    public FogOfWarTeam _fogOfWarTeam { get; private set; }
+    public FogOfWarUnit _fogOfWarUnit { get; private set; }
+    public HideInFog _hideInFog { get; private set; }
 
     private void Awake()
     {
@@ -26,6 +26,7 @@ public class FogOfWarController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (CameraManager.Instance == null) return;
         CameraManager.Instance.fogChangeEvent -= ChangeCameraTarget;
     }
     public void OnPhotonInstantiate(PhotonView photonView)
@@ -63,7 +64,6 @@ public class FogOfWarController : MonoBehaviour
 
     public void AddHideRender(Renderer renderer)
     {
-        print("추가!!! " + renderer.gameObject.name);
         if (renderer == null) return;
         _hideInFog.AddRenderer(renderer);
     }

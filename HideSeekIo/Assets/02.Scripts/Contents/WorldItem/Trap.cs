@@ -23,7 +23,7 @@ public class Trap : MonoBehaviourPun , IPunInstantiateMagicCallback
     public void TrapCollider(GameObject trapEnemeyObject)
     {
         print("Trap Collider !! " + trapEnemeyObject.name);
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Stun, trapEnemeyObject.GetComponent<LivingEntity>());
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stun, trapEnemeyObject.GetComponent<LivingEntity>());
         EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 1);
         PhotonNetwork.Destroy(this.gameObject);
     }

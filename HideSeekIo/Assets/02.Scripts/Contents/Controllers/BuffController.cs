@@ -121,9 +121,9 @@ public class BuffController : MonoBehaviourPun, IPunObservable
     {
         switch (buffType)
         {
-            case Define.BuffType.Direction:
-            case Define.BuffType.Sight:
-            case Define.BuffType.Stun:
+            case Define.BuffType.B_Direction:
+            case Define.BuffType.B_Sight:
+            case Define.BuffType.B_Stun:
                 IsNuff = true;
                 break;
             default:

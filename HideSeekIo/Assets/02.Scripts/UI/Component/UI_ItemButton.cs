@@ -24,7 +24,7 @@ public class UI_ItemButton : MonoBehaviour
         _button.onClick.AddListener(() => Click());
         _clickImage.enabled = false;
         _weaponUseImage.enabled = false;
-        _itemImage.sprite = Managers.Resource.Load<Sprite>($"Sprites/InGameItem/{newItem.itemEnum.ToString()}");
+        _itemImage.sprite = newItem._item_Base.ItemSprite;
     }
 
     public void RemoveItem()
@@ -41,7 +41,7 @@ public class UI_ItemButton : MonoBehaviour
         if(touchCount >= 1)
         {
             
-            if(_inGameItem.itemType == Define.InGameItemType.use )
+            if(_inGameItem._item_Base.useType ==  Item_Base.UseType.Item)
             {
                 _inGameItem.Use(Managers.Game.myPlayer);
                 _inGameItem = null;

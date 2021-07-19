@@ -33,7 +33,9 @@ public class DynamiteProjectile : ThrowProjectileObject
 
     IEnumerator WaitExplosion()
     {
-        while(_remainTime > 0)
+        _fogOfWarUnit.enabled = true;
+
+        while (_remainTime > 0)
         {
             _slider.value = _remainTime;
             print(_remainTime);

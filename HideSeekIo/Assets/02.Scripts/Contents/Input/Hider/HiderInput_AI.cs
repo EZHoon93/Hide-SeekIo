@@ -9,15 +9,27 @@ public class HiderInput_AI : HiderInput
 {
     NavMeshAgent _agent;
     BehaviorTree _behaviorTree;
+    SharedGameObject sharedGameObject;
     protected override void Awake()
     {
         _agent = this.gameObject.GetOrAddComponent<NavMeshAgent>();
         _behaviorTree = GetComponent<BehaviorTree>();
     }
+
+    private void Start()
+    {
+        var initPoint = _behaviorTree.GetVariable("InitPoint");
+
+        var mainScene =  Managers.Game.CurrentGameScene as GameMainScene;
+        int ran = Random.Range(0, mainScene.itemSpawnManager.SeekerItemPoints.Length);
+        var randomPoint = UtillGame.GetRandomPointOnNavMesh(mainScene.itemSpawnManager.SeekerItemPoints[ran].transform.position, 3);
+        initPoint.SetValue( randomPoint);
+    }
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
         SetActiveComponent(true);
+
     }
     protected override void HandleDeath()
     {
@@ -33,6 +45,10 @@ public class HiderInput_AI : HiderInput
         OnUpdate();
     }
 
+    public override void EnegyZero()
+    {
+        IsRun = false;
+    }
     public void OnUpdate()
     {
         //if (IsStop)

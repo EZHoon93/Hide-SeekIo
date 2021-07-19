@@ -27,7 +27,7 @@ public abstract class Weapon_Throw : Weapon
 
     public override void Zoom(Vector2 inputVector)
     {
-        print(AttackDistance);
+
         UtillGame.ThrowZoom(inputVector, AttackDistance, newAttacker.CenterPivot, UICanvas.transform);
     }
 

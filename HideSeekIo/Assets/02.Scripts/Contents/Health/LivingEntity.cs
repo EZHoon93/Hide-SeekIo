@@ -67,10 +67,18 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         switch (Team)
         {
             case Define.Team.Hide:
+                fogController._fogOfWarUnit.shapeType = FoW.FogOfWarShapeType.Circle;
+                fogController._fogOfWarUnit.offset = Vector2.zero;
                 fogController.ChangeSight(5);
                 break;
             case Define.Team.Seek:
-                fogController.ChangeSight(2);
+                fogController._fogOfWarUnit.shapeType = FoW.FogOfWarShapeType.Box;
+                fogController._fogOfWarUnit.boxSize = new Vector2(2.5f, 2.5f);
+                //fogController.ChangeSight(2);
+                //fogController._fogOfWarUnit.angle = 30;
+                //fogController._fogOfWarUnit.innerRadius = 0.1f;
+                //fogController._fogOfWarUnit.circleRadius = 2.5f;
+                fogController._fogOfWarUnit.offset = new Vector2(0, 1.0f);
                 break;
         }
     }

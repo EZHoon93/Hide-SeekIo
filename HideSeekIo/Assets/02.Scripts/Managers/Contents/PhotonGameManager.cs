@@ -6,6 +6,7 @@ using ExitGames.Client.Photon;
 using System.Linq;
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
@@ -35,6 +36,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #region GameState
     GameState_Base _gameState;
     Define.GameState _state; //게임 상태, 최초상태 wait
+
+    public GameState_Base GameState => _gameState;
     public Define.GameState State
     {
         get => _state;
@@ -56,17 +59,20 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     break;
                 case Define.GameState.GameReady:
                     _gameState = this.gameObject.AddComponent<GameState_GameReady>();
-                    GameReadytEvent?.Invoke();
                     break;
                 case Define.GameState.Gameing:
                     _gameState = this.gameObject.AddComponent<GameState_Gameing>();
-                    GameStartEvent?.Invoke();   //게임 스타트 이벤트 시작
                     break;
                 case Define.GameState.End:
                     _gameState = this.gameObject.AddComponent<GameState_End>();
                     break;
             }
-
+            //이벤트 있으면 실행
+            if (StateChangeEventDic.ContainsKey(State))
+            {
+                print(State + "이벤트실행");
+                StateChangeEventDic[State]?.Invoke();
+            }
             this.photonView.ObservedComponents.Add(_gameState);
         }
     }
@@ -75,9 +81,11 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #region 변수
     public event Action<Player> enterUserList;
     public event Action<Player> leftUserList;
+    public event Action gameJoin;
+    public event Action gameExit;
+
     public event Action<Define.ChattingColor, string> reciveChattingEvent;
-    public event Action GameStartEvent;
-    public event Action GameReadytEvent;
+    public Dictionary<Define.GameState, Action> StateChangeEventDic = new Dictionary<Define.GameState, Action>();
 
     #endregion
 
@@ -108,6 +116,35 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
+    public void AddListenr(Define.GameState gameState, Action newAction)
+    {
+        if (StateChangeEventDic.ContainsKey(gameState))
+        {
+            StateChangeEventDic[gameState] += newAction;
+        }
+        else
+        {
+            StateChangeEventDic.Add(gameState, newAction);
+        }
+    }
+    public void GameJoin()
+    {
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", true } });
+        gameJoin?.Invoke();
+    }
+
+    public void GameExit()
+    {
+        if (Managers.Game.myPlayer)
+        {
+            PhotonNetwork.Destroy(Managers.Game.myPlayer.gameObject);
+        }
+        gameExit?.Invoke();
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
+        CameraManager.Instance.ResetCamera();
+        InputManager.Instacne.OffAllController();
+    }
+
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         if (propertiesThatChanged.ContainsKey("gs"))
@@ -115,21 +152,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             var CP = PhotonNetwork.CurrentRoom.CustomProperties;
             var gameState = (Define.GameState)CP["gs"];
             State = gameState;
-        }
-        if (propertiesThatChanged.ContainsKey("jn"))
-        {
-            var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
-            if (joinUserCount <= 0)
-            {
-                //게임에 참여중인 유저가 한명도없다면.
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
-                    {
-                        {"gs" ,Define.GameState.Wait }
-                    });
-                }
-            }
         }
         //유저 정보변경  level => lv 닉네임변경시도 동일레벨,lv호출
         if (propertiesThatChanged.ContainsKey("lv"))
@@ -143,7 +165,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (changedProps.ContainsKey("jn"))
         {
-            print("Jn변경!!!");
             if (PhotonNetwork.IsMasterClient == false) return;
             var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
             if (joinUserCount <= 0)
@@ -169,7 +190,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    public void SendEvent(int photonViewID, byte keyCode,  Hashtable hashtable)
+    public void SendEvent(int photonViewID, byte keyCode, Hashtable hashtable)
     {
         byte evCode = keyCode;
         object content = hashtable;
@@ -182,7 +203,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             //TargetActors = new int[] { 1 }
         };
         //AI플레이어가 한것이라면 글로벌룸으로 업데이트.
-        
+
         raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
 
 
@@ -213,7 +234,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void SendChattingMessageOnLocal(Define.ChattingColor chattingColor, string content)
     {
-        print("인사받음");
         reciveChattingEvent?.Invoke(chattingColor, content);
     }
 
@@ -239,16 +259,20 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         //if (State != Define.GameState.Gameing) return;
 
+        Util.CallBackFunction(this, 1.0f, () => DelayDie(dieViewID, attackViewID));
+    }
+
+    void DelayDie(int dieViewID, int attackViewID)
+    {
         var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
         var killPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
         var uiMain = Managers.UI.SceneUI as UI_Main;
         //uiMain.UpdateKillNotice(killPlayer.NickName, deathPlayer.NickName);
         uiMain.UpdateKillNotice("dsdowok", "playertEst");
-        uiMain.UpdateMyCharacterDie("3번째로 잡히셨습니다");
-        print("DieOnServer ");
 
-        //var gameingState = _gameState as GameState_Gameing;
-        //gameingState.UpdatePlayerCount();
+        Managers.Sound.Play("Die", Define.Sound.Effect);
+        //uiMain.UpdateMyCharacterDie("3번째로 잡히셨습니다");
+        print("DieOnServer ");
     }
 
 
@@ -317,7 +341,33 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             Camera.main.orthographic = false;
 
         }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            var myPlayer = Managers.Game.myPlayer;
+            if (myPlayer == null) return;
+            print(myPlayer.Team + "마이팀");
+            PhotonNetwork.InstantiateRoomObject("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+            myPlayer.ViewID(),
+            GetRandomItemEnum(myPlayer.Team)
+             }); ;
+
+        }
+
     }
 
+    Define.InGameItem GetRandomItemEnum(Define.Team team)
+    {
+        switch (team)
+        {
+            case Define.Team.Hide:
+                int hiderRandom = UnityEngine.Random.Range(0, RandomItemBox.hiderItemArray.Length);
+                return RandomItemBox.hiderItemArray[hiderRandom];
+            case Define.Team.Seek:
+                int seekerRandom = UnityEngine.Random.Range(0, RandomItemBox.seekerItemArray.Length);
+                return RandomItemBox.seekerItemArray[seekerRandom];
+        }
+
+        return Define.InGameItem.Null;
+    }
 
 }

@@ -15,7 +15,7 @@ public class FlashProjectile : ThrowProjectileObject
         _modelObject.SetActive(false);
         EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
         _fogOfWarUnit.enabled = true;
-        UtillGame.BuffInRange(this.transform, _range, Define.BuffType.Stun, _useViewID, UtillLayer.seekerToHiderAttack);
+        UtillGame.BuffInRange(this.transform, _range, Define.BuffType.B_Stun, _useViewID, UtillLayer.seekerToHiderAttack);
 
         Invoke("Push", 1.0f);
     }

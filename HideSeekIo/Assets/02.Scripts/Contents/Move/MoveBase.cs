@@ -17,6 +17,8 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     protected CharacterController _characterController;
     protected Animator _animator;
     protected AttackBase _attackBase;
+    AudioClip _stepClip;
+
 
     float _animationValue;
     List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
@@ -27,6 +29,9 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     public float ResultSpeed { get; protected set; }
 
     [SerializeField] protected float _testSpeed;
+
+    float _lastTime;
+    float _stepTimeBet = 0.5f;
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -44,10 +49,13 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     {
         _characterController = GetComponent<CharacterController>();
         _attackBase = GetComponent<AttackBase>();
+        _stepClip = Managers.Resource.Load<AudioClip>("Sounds/Step1");
+
     }
     private void OnEnable()
     {
         State = MoveState.Idle;
+        _lastTime = 0;
     }
     public virtual void OnPhotonInstantiate()
     {
@@ -89,6 +97,21 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 break;
         }
 
+    }
+
+    protected void UpdateStepSound()
+    {
+        
+        if(_lastTime < 0)
+        {
+            if(State == MoveState.Run)
+            {
+                Managers.Sound.Play(_stepClip, Define.Sound.Effect, 0.5f);
+                _lastTime = _stepTimeBet;
+            }
+            
+        }
+        _lastTime -= Time.deltaTime;
     }
 
 

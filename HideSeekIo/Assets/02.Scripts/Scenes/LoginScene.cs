@@ -10,7 +10,6 @@ public class LoginScene : BaseScene
 {
     [SerializeField] GameObject _craeteIDPanel;
 
-
     enum State
     {
         UnLoad,
@@ -24,6 +23,7 @@ public class LoginScene : BaseScene
         base.Init();
         SceneType = Define.Scene.Login;
         StartCoroutine(LoadAllData());
+
     }
     public override void Clear()
     {
@@ -41,6 +41,8 @@ public class LoginScene : BaseScene
             if (GetIsAllOnLoad())
             {
                 _state = State.AllLoad;
+                PhotonManager.Instance.PhotonLogin();   //정보 업데이트. 닉네임,레벨,참여여부등
+
             }
             yield return new WaitForSeconds(1.0f);
         }

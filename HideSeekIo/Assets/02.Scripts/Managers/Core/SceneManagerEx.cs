@@ -18,7 +18,9 @@ public class SceneManagerEx
         if( (int)type > 20)
         {
             // PhotonNetwork.LoadLevel(GetSceneName(type));
-            PhotonNetwork.LoadLevel("Main1");
+            PhotonNetwork.LoadLevel("Main1a");
+            //PhotonNetwork.LoadLevel("Main1");
+
             //PhotonNetwork.LoadLevel("Main2");
 
         }

@@ -31,6 +31,8 @@ public class BuffManager : GenricSingleton<BuffManager>
     /// <param name="playerController"></param>
     public void BuffControllerCheckOnLocal(Define.BuffType buffType, LivingEntity livingEntity )
     {
+        if (livingEntity == null) return;
+        if (livingEntity.Dead) return;
         var buffControllerList = livingEntity.BuffControllerList;
         BuffController buffController = buffControllerList.Find(s => s.BuffType == buffType);
         float durationTime = 10;

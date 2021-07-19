@@ -27,6 +27,7 @@ public class GameState_Count : GameState_Base
     protected override void ChangeRemainTime()
     {
         uI_Main.UpdateCountText(RemainTime);
+        Managers.Sound.Play("TimeCount", Define.Sound.Effect);
     }
 
     protected override void EndRemainTime()
@@ -35,7 +36,7 @@ public class GameState_Count : GameState_Base
         {
             List<int> playerList = GetJoinUserList();   //참가한 유저수 채워넣음.
             int aiNumber = -1;
-            for (int i = playerList.Count; i < 10; i++)
+            for (int i = playerList.Count; i < 8; i++)
             {
                 playerList.Add(aiNumber); // -1은 AI수 
                 aiNumber--;
@@ -87,12 +88,7 @@ public class GameState_Count : GameState_Base
                 else
                 {
                     var ranIndex = Random.Range(0, hiderSpawnIndexList.Count);
-
-
                     selectSpawnIndex = hiderSpawnIndexList[ranIndex];
-
-                    print(hiderSpawnIndexList.Count + "/" + ranIndex +"/"+selectSpawnIndex);
-
                     hiderSpawnIndexList.RemoveAt(ranIndex);
                 }
             }
@@ -153,9 +149,19 @@ public class GameState_Count : GameState_Base
     [PunRPC]
     void CreatePlayer(Dictionary<int, int> spawnPosDic)
     {
-        print(spawnPosDic.Count + "스폰카운트");
-        Local_MyPlayerCharacter(0);
-        Master_Creat_AIPlayer(2);
+        foreach(var s in spawnPosDic)
+        {
+            if(s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                Local_MyPlayerCharacter(s.Value);
+            }
+            //방장만 AI생성
+            if (PhotonNetwork.IsMasterClient == false) return;
+            if(s.Key < 0)
+            {
+                Master_Creat_AIPlayer(s.Value);
+            }
+        }
 
 
         Master_ChangeState(Define.GameState.GameReady);
@@ -197,13 +203,13 @@ public class GameState_Count : GameState_Base
         //술래
         if (index <= 1)
         {
-            var pos = _gameMainScene.GetSeekerPosition(0);
+            var pos = _gameMainScene.GetSeekerPosition(index);
             //Managers.Spawn.AISpawn(Define.Team.Seek, pos);
         }
         //숨는팀 생성
         else
         {
-            var pos = _gameMainScene.GetSeekerPosition(0);
+            var pos = _gameMainScene.GetHiderPosition(index);
             Managers.Spawn.AISpawn(Define.Team.Hide, pos);
         }
 

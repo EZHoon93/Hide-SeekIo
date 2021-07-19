@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using DG.Tweening;
+using FoW;
 
 public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, IEnterTrigger, IExitTrigger ,
      IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
@@ -10,14 +11,18 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     [SerializeField] LivingEntity _gettingLivingEntity; //얻고있는 생명체
     [SerializeField] Slider _getSlider;     //얻고있는 UI
     [SerializeField] Transform _modelTransform;     //모델 객체 collect Effect할
-
+    HideInFog _hideInFog;
     [SerializeField] float _maxGetTime;    //얻기 위해필요한시간
     [SerializeField] private float _shakeScaleDuration = 1;
     [SerializeField] private float _hideScaleDuration = .25f;
     [SerializeField] public int Value = 1;
 
+    
+
     float n_eneterTime;  //얻을 때 시간
+    float n_getTime;    //얻었던 시간
     bool _isGet; //얻으면 
+
     IGetWorldItem getWorldItem;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -25,10 +30,15 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         if (stream.IsWriting)
         {
             stream.SendNext(n_eneterTime);
+            stream.SendNext(n_getTime);
+            stream.SendNext(_isGet);
+
         }
         else
         {
             n_eneterTime = (float)stream.ReceiveNext();
+            n_getTime = (float)stream.ReceiveNext();
+            _isGet = (bool)stream.ReceiveNext();
         }
     }
 
@@ -36,6 +46,11 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     {
         _getSlider.maxValue = _maxGetTime;
         getWorldItem = GetComponent<IGetWorldItem>();
+        _hideInFog = GetComponent<HideInFog>();
+    }
+    private void OnEnable()
+    {
+        _isGet = false;
     }
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -44,6 +59,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         _gettingLivingEntity = null;
         _isGet = false;
         _getSlider.value = 0;
+        n_getTime = 0;
         PhotonNetwork.AddCallbackTarget(this);
         _getSlider.gameObject.SetActive(false);
 
@@ -51,6 +67,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
+        //EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, this.transform.position, 0);
         PhotonNetwork.RemoveCallbackTarget(this);
 
     }
@@ -76,18 +93,39 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
         }
 
+        if (_isGet == false) return;
+        //시간이 지났는데도 파괴가되지않았다면.. 
+        if((float)PhotonNetwork.Time - n_getTime >= 5)
+        {
+            if (photonView.IsMine)
+            {
+                n_getTime = (float)PhotonNetwork.Time;
+                PhotonNetwork.Destroy(this.gameObject);
+            }
+        }
+
     }
 
     //시간지나 얻었을떄
     public void CollectEffect()
     {
-        print("Collect Effect!! ");
         _isGet = true;
         this.transform.DOShakeScale(_shakeScaleDuration);
         this.transform.DOScale(Vector3.zero, _hideScaleDuration).SetDelay(_shakeScaleDuration);
 
-        getWorldItem.Get(_gettingLivingEntity.gameObject);  //아이템 얻기 효과
-        Invoke("AfaterDestroy", 2.0f);  //Destroy
+        if (_gettingLivingEntity.photonView.IsMine)
+        {
+            getWorldItem.Get(_gettingLivingEntity.gameObject);  //아이템 얻기 효과
+            n_getTime = (float)PhotonNetwork.Time;
+            if (_gettingLivingEntity.IsMyCharacter())
+            {
+                Managers.Sound.Play("Get", Define.Sound.Effect);
+            }
+            //PhotonNetwork.Destroy(this.gameObject);
+            Invoke("AfaterDestroy", 2.0f);  //Destroy
+
+        }
+
     }
 
     void AfaterDestroy()
@@ -106,6 +144,12 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         if (living.photonView.IsMine == false) return;  //얻은캐릭이 자기자신캐릭이아니라면 x
         if (living)
         {
+            _hideInFog.enabled = false;
+            _hideInFog.SetActiveRender(true);
+            if (living.IsMyCharacter())
+            {
+                Managers.Sound.Play("Getting", Define.Sound.Effect);
+            }
             photonView.RPC("Check_IsGetOnServer", RpcTarget.AllViaServer, living.ViewID());
         }
     }
@@ -122,6 +166,10 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         //변수 할당
         _gettingLivingEntity = newGetLivingEntity;
         n_eneterTime = (float)photonMessageInfo.SentServerTime;
+        if (_gettingLivingEntity.IsMyCharacter())
+        {
+            _getSlider.gameObject.SetActive(true);
+        }
         //권한 넘김
         this.photonView.TransferOwnership(photonMessageInfo.Sender.ActorNumber);
 
@@ -137,6 +185,9 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         {
             _gettingLivingEntity = null;
             this.photonView.TransferOwnership(0);   //중립오브젝트로 전환
+            _getSlider.gameObject.SetActive(false);
+            _hideInFog.enabled = true;
+
         }
     }
   
@@ -154,11 +205,9 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         {
             _gettingLivingEntity = null;
             n_eneterTime = 0;
-            _getSlider.gameObject.SetActive(false);
         }
         else
         {
-            _getSlider.gameObject.SetActive(true);
         }
     }
 

@@ -27,12 +27,13 @@ public class HiderHealth : LivingEntity
     [PunRPC]
     public override void Die()
     {
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position, 0);
+
         base.Die();
         //_cageObject.gameObject.SetActive(true);
         //_animator.transform.localPosition = new Vector3(0, 0.3f, 0);
         _animator.SetTrigger("Die");
-        _animator.gameObject.SetLayerRecursively((int)Define.Layer.Cage);
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position, 0 );
+        //_animator.gameObject.SetLayerRecursively((int)Define.Layer.Cage);
         
         //this.gameObject.SetLayerRecursively((int)Define.Layer.Seeker);
 

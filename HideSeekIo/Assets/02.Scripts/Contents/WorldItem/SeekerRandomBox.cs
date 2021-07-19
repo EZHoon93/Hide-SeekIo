@@ -11,7 +11,7 @@ public class SeekerRandomBox : MonoBehaviour, IGetWorldItem
     {
         var playerController = getObject.GetComponent<PlayerController>();
         if (playerController == null) return;
-        Managers.Spawn.InGameItemSpawn(GetRandomItemEnum(), playerController);
+        //Managers.Spawn.InGameItemSpawn(GetRandomItemEnum(), playerController);
     }
 
     Define.SeekrStoreList GetRandomItemEnum()

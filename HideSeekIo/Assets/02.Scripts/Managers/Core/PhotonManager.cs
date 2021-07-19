@@ -100,13 +100,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         //마스터 서버에 접속중이라면
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
-
-            //PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable()
-            //{
-            //    {"lv" , PlayerInfo.level }
-            //});
             // 룸 접속 실행
             State = Define.ServerState.Connect;
         }
@@ -116,6 +109,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             //접속 실패시 접솔 실패 UI
             PhotonNetwork.ConnectUsingSettings();
         }
+    }
+
+    //정보 업데이트. 닉네임,레벨,참여여부등
+    public void PhotonLogin()
+    {
+        PhotonNetwork.LocalPlayer.NickName = PlayerInfo.nickName;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
+            { "jn", false } 
+        });
     }
     
     // (빈 방이 없어)랜덤 룸 참가에 실패한 경우 자동 실행

@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameScene : BaseScene
 {
     Transform _cameraView;
-    protected int _initGameTime = 120;
+    protected int _initGameTime = 180;
 
     public Transform CameraView => _cameraView;
     public int InitGameTime => _initGameTime;

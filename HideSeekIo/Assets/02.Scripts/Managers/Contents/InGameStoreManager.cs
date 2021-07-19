@@ -17,8 +17,8 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
     {
         int coinPrice = 0;  //아이템 가격
         //코인부족, 인벤토리 부족이면 실패
-        if (playerController.Coin < coinPrice || playerController.IsBuyItem() == false)
-            return Define.InGameItemUIState.Failed;
+        //if (playerController.Coin < coinPrice || playerController.IsBuyItem() == false)
+        //    return Define.InGameItemUIState.Failed;
         //Hider
         if (typeof(Define.HiderStoreList) == @enum.GetType())
         {
@@ -46,17 +46,17 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
             case Define.HiderStoreList.TNT:
             case Define.HiderStoreList.Stealth:
             case Define.HiderStoreList.Glue:
-                Managers.Spawn.InGameItemSpawn(@enum, hiderController);
+                //Managers.Spawn.InGameItemSpawn(@enum, hiderController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
 
             case Define.HiderStoreList.Shoes:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, hiderController.GetLivingEntity());
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shoes, hiderController.GetLivingEntity());
                 resultState = Define.InGameItemUIState.Sucess;
 
                 break;
             case Define.HiderStoreList.Shield:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shield, hiderController.GetLivingEntity() );
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shield, hiderController.GetLivingEntity() );
                 resultState = Define.InGameItemUIState.Sucess;
 
                 break;
@@ -96,25 +96,25 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
             case Define.SeekrStoreList.SightUp:
             case Define.SeekrStoreList.Immune:
             case Define.SeekrStoreList.Rader:
-                Managers.Spawn.InGameItemSpawn(@enum, seekerController);
+                //Managers.Spawn.InGameItemSpawn(@enum, seekerController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
 
             case Define.SeekrStoreList.Mask:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shoes, seekerController.GetLivingEntity());
                 resultState = Define.InGameItemUIState.Sucess;
                 break;
             
             case Define.SeekrStoreList.PowerUp:
-                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.Shoes, seekerController.GetLivingEntity());
+                BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shoes, seekerController.GetLivingEntity());
                 resultState = Define.InGameItemUIState.Sucess;
                 break;
             case Define.SeekrStoreList.Curse1:
-                Managers.Spawn.InGameItemSpawn(@enum, seekerController);
+                //Managers.Spawn.InGameItemSpawn(@enum, seekerController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
             case Define.SeekrStoreList.Curse2:
-                Managers.Spawn.InGameItemSpawn(@enum, seekerController);
+                //Managers.Spawn.InGameItemSpawn(@enum, seekerController);
                 resultState = Define.InGameItemUIState.SucessRecycle;
                 break;
         }

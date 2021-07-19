@@ -1,7 +1,4 @@
 ﻿using System.Collections;
-
-using ExitGames.Client.Photon.StructWrapping;
-
 using Photon.Pun;
 using UnityEngine;
 
@@ -11,10 +8,11 @@ public class Weapon_Melee2 : Weapon
 
     [SerializeField] Transform _modelTransform;
     [SerializeField] Transform _attackRangeUI;
+    AudioClip _attackClip;
 
     //[SerializeField] float _angle = 120;
 
-    int _attackLayer = (1 << (int)Define.Layer.Hider) | (1 << (int)Define.Layer.Item);
+    int _attackLayer = 1 << (int)Define.Layer.Hider ;
 
     protected override void Awake()
     {
@@ -29,6 +27,8 @@ public class Weapon_Melee2 : Weapon
         AttackDelay= 0.5f;
         AfaterAttackDelay= 0.5f;
         AttackDistance= 1.5f;
+
+        _attackClip = Resources.Load<AudioClip>("Sounds/SMelee2");
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -87,38 +87,39 @@ public class Weapon_Melee2 : Weapon
         var attackPos = newAttacker.transform.position + newAttacker.transform.forward * AttackDistance;
         print(attackPos + "어택이펙트");
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
+        UtillGame.DamageInRange(newAttacker.transform, AttackDistance, 1, newAttacker.ViewID(), UtillLayer.seekerToHiderAttack, 120);
+        Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        //Collider[] colliders = new Collider[10];
 
-        Collider[] colliders = new Collider[10];
+        //var hitCount = Physics.OverlapSphereNonAlloc(this.transform.position, AttackDistance, colliders, _attackLayer);
+        //if (hitCount > 0)
+        //{
+        //    print(hitCount + "힛카운트");
+        //    for (int i = 0; i < hitCount; i++)
+        //    {
 
-        var hitCount = Physics.OverlapSphereNonAlloc(this.transform.position, AttackDistance, colliders, _attackLayer);
-        if (hitCount > 0)
-        {
-            print(hitCount + "힛카운트");
-            for (int i = 0; i < hitCount; i++)
-            {
+        //        print(colliders[i].gameObject.name);
+        //        if (IsTargetOnSight(colliders[i].transform))
+        //        {
+        //            print("시야안");
+        //        }
+        //        else
+        //        {
+        //            print("시야박");
+        //        }
+        //        var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
+        //        if (damageable != null)
+        //        {
+        //            damageable.OnDamage(5, 5, colliders[i].transform.position);
+        //        }
+        //    }
 
-                print(colliders[i].gameObject.name);
-                if (IsTargetOnSight(colliders[i].transform))
-                {
-                    print("시야안");
-                }
-                else
-                {
-                    print("시야박");
-                }
-                var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    damageable.OnDamage(5, 5, colliders[i].transform.position);
-                }
-            }
-
-        }
+        //}
     }
 
     #endregion
 
-  
+
     private bool IsTargetOnSight(Transform target)
     {
         RaycastHit hit;

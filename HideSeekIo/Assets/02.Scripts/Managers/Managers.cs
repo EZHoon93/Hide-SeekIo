@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,6 +35,7 @@ public class Managers : MonoBehaviour
 
     #endregion
 
+    public static event Action ClearEvent;
     void Start()
     {
 #if UNITY_ANDROID
@@ -78,5 +80,6 @@ public class Managers : MonoBehaviour
         UI.Clear();
         Pool.Clear();
         Game.Clear();
+        ClearEvent?.Invoke();
     }
 }

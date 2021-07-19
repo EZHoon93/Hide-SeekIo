@@ -1,0 +1,1 @@
+The cemetery set has had a large style overhaul, the legacy_cemetery_set.unitypackge is the old version and won't be updated moving forward, but is included in case you've used it in old projects.

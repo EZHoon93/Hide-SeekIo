@@ -43,6 +43,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         if (this.IsMyCharacter())
         {
             CameraManager.Instance.SetupTarget(playerController.transform);
+            SetActiveADNCamera(false);
         }
         else
         {
@@ -61,12 +62,27 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
     }
 
+    void SetActiveADNCamera(bool active)
+    {
+        var mainUI = Managers.UI.SceneUI as UI_Main;
+        mainUI.FindButton.gameObject.SetActive(active);
+        mainUI.ADButton.gameObject.SetActive(active);
+    }
+
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
         if (Managers.Resource == null) return;
+        Managers.Game.UnRegisterLivingEntity(this.ViewID());
         Managers.Resource.Destroy(GetComponentInChildren<Animator>().gameObject);
-        //OnPhotonDestroyEvent?.Invoke();
+        if(PhotonGameManager.Instacne.State == Define.GameState.Gameing)
+        {
+            PhotonGameManager.Instacne.GetComponent<GameState_Gameing>().UpdatePlayerCount();
+        }
 
+        if (this.IsMyCharacter())
+        {
+            SetActiveADNCamera(true);
+        }
     }
 }

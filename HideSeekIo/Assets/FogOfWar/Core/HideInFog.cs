@@ -37,7 +37,9 @@ namespace FoW
 
         private void OnDisable()
         {
-            if (CameraManager.Instance.Target == null) return;
+            if (Managers.Game == null) return;
+            if (CameraManager.Instance == null) return;
+
 
             CameraManager.Instance.fogChangeEvent -= ChangeCameraTarget;
         }
@@ -64,17 +66,7 @@ namespace FoW
                 visible = false;
             }
 
-            if (_canvas != null)
-                _canvas.enabled = visible;
-
-            if (_renderers.Count > 0)
-            {
-                foreach (var r in _renderers)
-                {
-                    r.enabled = visible;
-                }
-
-            }
+            SetActiveRender(visible);
 
 
         }
@@ -93,6 +85,21 @@ namespace FoW
             _renderers.Remove(renderer);
         }
 
+        public void SetActiveRender(bool visible)
+        {
+
+            if (_canvas != null)
+                _canvas.enabled = visible;
+
+            if (_renderers.Count > 0)
+            {
+                foreach (var r in _renderers)
+                {
+                    r.enabled = visible;
+                }
+
+            }
+        }
         public void ChangeTransParent(bool isTransParent)
         {
             _isTransParent = isTransParent;

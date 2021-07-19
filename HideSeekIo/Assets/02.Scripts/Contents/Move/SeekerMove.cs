@@ -24,7 +24,7 @@ public class SeekerMove : MoveBase
     {
         if (photonView.IsMine == false) return;
         OnUpdate(_seekerInput.MoveVector ,true  );
-        print(ResultSpeed);
+        //UpdateStepSound();
 
     }
 

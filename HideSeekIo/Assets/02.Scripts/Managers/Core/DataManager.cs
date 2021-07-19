@@ -37,11 +37,6 @@ public class DataManager
         //InGameItemDic.Add( typeof(Define.HiderStoreList), InGameHiderItems);
         //InGameItemDic.Add(typeof(Define.SeekrStoreList) , inGameSeekrItems);
 
-        foreach(var s in InGameItemDic)
-        {
-            Debug.Log(s.Key + "ssssssssssssss");
-        }
-
 
 
         State = Define.GameDataState.Load;

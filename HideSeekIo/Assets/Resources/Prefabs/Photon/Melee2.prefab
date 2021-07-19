@@ -68,8 +68,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a2783006a70a42a1dec3d3665d34c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weaponModel: {fileID: 0}
   _modelTransform: {fileID: 5576906626062825140}
   _attackRangeUI: {fileID: 3858767604331830712}
+  _attackClip: {fileID: 8300000, guid: 0b30fb104c535d7429405eb65825a996, type: 3}
 --- !u!1 &2203322055441929699
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +99,7 @@ RectTransform:
   m_GameObject: {fileID: 2203322055441929699}
   m_LocalRotation: {x: -0.6532815, y: 0.27059805, z: 0.27059805, w: 0.6532815}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 1}
   m_Children: []
   m_Father: {fileID: 8565022352150532309}
   m_RootOrder: 0

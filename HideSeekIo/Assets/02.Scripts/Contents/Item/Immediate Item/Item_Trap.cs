@@ -6,22 +6,18 @@ using UnityEngine;
 
 public class Item_Trap : Item_Base
 {
-
+    protected override void Start()
+    {
+        State = UseState.Local;
+    }
     public override void Use(PlayerController usePlayer)
     {
-        photonView.RPC("UseUseOnOtherClinets", RpcTarget.All, usePlayer.ViewID());
-    }
-    [PunRPC]
-    public  void UseUseOnOtherClinets(int useViewID)
-    {
-        var usePlayer = Managers.Game.GetLivingEntity(useViewID);
-        if (usePlayer == null) return;
-
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst , usePlayer.transform.position, 1);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
         if (photonView.IsMine)
         {
             Managers.Spawn.WorldItemSpawn(Define.WorldItem.Trap, usePlayer.transform.position);
-            PhotonNetwork.Destroy(this.gameObject);
+            Destroy();
+
         }
     }
 

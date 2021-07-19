@@ -31,7 +31,7 @@ public class UI_Store_Character: UI_Popup
         base.Init();
         Bind<Button>(typeof(Buttons));
 
-        GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
+        //GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
         GetButton((int)Buttons.Skin).gameObject.BindEvent(Skin);
         GetButton((int)Buttons.Weapon).gameObject.BindEvent(Weapon);
 
@@ -40,6 +40,13 @@ public class UI_Store_Character: UI_Popup
     private void Start()
     {
         GetAvater();
+        PhotonGameManager.Instacne.gameJoin += Destroy;
+    }
+    
+    void Destroy()
+    {
+        PhotonGameManager.Instacne.gameJoin -= Destroy;
+        Managers.Resource.Destroy(this.gameObject);
     }
 
     void GetAvater()
@@ -86,6 +93,7 @@ public class UI_Store_Character: UI_Popup
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
             StoreManager.ChangeWeapon();
             GetWeapon(currentAvaterObject.GetComponent<CharacterAvater>());
+            _uIParticle.Play();
         });
     }
     void NickName(PointerEventData pointerEventData)

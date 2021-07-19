@@ -16,7 +16,7 @@ public class PosionBombProjectile : ThrowProjectileObject
         _modelObject.SetActive(false);
         EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
 
-        UtillGame.BuffInRange(this.transform, _range, Define.BuffType.Stun, _useViewID, _attackLayer);
+        UtillGame.BuffInRange(this.transform, _range, Define.BuffType.B_Stun, _useViewID, _attackLayer);
 
     }
 }

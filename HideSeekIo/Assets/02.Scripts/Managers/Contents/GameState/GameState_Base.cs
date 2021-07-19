@@ -44,12 +44,15 @@ public abstract class GameState_Base : MonoBehaviourPun , IPunObservable
 
     private void OnEnable()
     {
-        n_createTime = PhotonNetwork.Time; 
+        n_createTime = PhotonNetwork.Time;
+    }
+    void Test(int s)
+    {
+
     }
     private void Awake()
     {
         uI_Main = Managers.UI.SceneUI as UI_Main;
-        uI_Main.ResetTexts();
     }
     private void Start()
     {

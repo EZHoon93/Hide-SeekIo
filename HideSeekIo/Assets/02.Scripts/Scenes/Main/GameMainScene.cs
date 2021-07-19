@@ -8,13 +8,18 @@ using UnityEngine;
 public class GameMainScene : GameScene
 {
     [SerializeField] MainSpawnPoints _mainSpawnPoints;
+    [SerializeField] ItemSpawnManager _itemSpawnManager;
 
     public MainSpawnPoints mainSpawnPoints => _mainSpawnPoints;
+    public ItemSpawnManager itemSpawnManager => _itemSpawnManager;
+
     protected override void Init()
     {
         base.Init();
         Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
         Managers.Game.CurrentGameScene = this;
+        print("Sound 시작");
+        Managers.Sound.Play("BGM_Main1", Define.Sound.Bgm, 0.5f);
     }
 
     

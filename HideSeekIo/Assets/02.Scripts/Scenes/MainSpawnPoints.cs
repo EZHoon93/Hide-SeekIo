@@ -7,6 +7,7 @@ public class MainSpawnPoints : MonoBehaviour
 {
     [SerializeField] SpawnPoint[] _hiderPoints;
     [SerializeField] SpawnPoint[] _seekerPoints;
+    //[SerializeField] SpawnPoint[]  
 
     public SpawnPoint[] HiderSpawnPoints => _hiderPoints;
     public SpawnPoint[] SeekerSpawnPoints => _seekerPoints;

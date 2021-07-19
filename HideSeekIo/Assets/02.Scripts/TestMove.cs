@@ -22,7 +22,7 @@ public class TestMove : MonoBehaviour
     {
         var moveVector = new Vector3( UltimateJoystick.GetHorizontalAxis("Move"),0 , UltimateJoystick.GetVerticalAxis("Move"));
 
-        Vector3 moveDistance = moveVector.normalized * 4 * Time.deltaTime;
+        Vector3 moveDistance = moveVector.normalized * 2 * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
             moveDistance.y -= 9.8f * Time.deltaTime;

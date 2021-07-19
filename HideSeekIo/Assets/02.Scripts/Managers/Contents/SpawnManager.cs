@@ -19,39 +19,22 @@ public class SpawnManager
         PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
 
-    public void RoomItemSpawn(Define.RoomItem roomObject, Vector3 pos, int spawnIndex)
-    {
-        switch (roomObject)
-        {
-
-        }
-
-        PhotonNetwork.InstantiateRoomObject(roomObject.ToString(), pos, Quaternion.identity , 0 , new object[] { spawnIndex });
-    }
-
-    public void TimerItemControllerSpawn(Define.TimerItem timerItem, Vector3 pos , int useViewID)
-    {
-        switch (timerItem)
-        {
-
-        }
-        PhotonNetwork.InstantiateRoomObject("TimerItem", pos, Quaternion.identity, 0, new object[] {timerItem,10 , useViewID  });
-    }
-    public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
-    {
-        int sendEnumValue = -1;
-        if( @enum.GetType() == typeof( Define.HiderStoreList))
-        {
-            sendEnumValue = 0;
-        }
-        else
-        {
-            sendEnumValue = 1;
-        }
+   
+    //public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
+    //{
+    //    int sendEnumValue = -1;
+    //    if( @enum.GetType() == typeof( Define.HiderStoreList))
+    //    {
+    //        sendEnumValue = 0;
+    //    }
+    //    else
+    //    {
+    //        sendEnumValue = 1;
+    //    }
 
 
-        PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() ,sendEnumValue, @enum }); //사용한 플레이어 ViewID
-    }
+    //    PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() ,sendEnumValue, @enum }); //사용한 플레이어 ViewID
+    //}
 
 
 
@@ -108,20 +91,20 @@ public class SpawnManager
         return PhotonNetwork.Instantiate( weaponID , new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
     }
 
-    public void TimerItemSpawn(Define.TimerItem timerItem , int useViewID)
-    {
+    //public void TimerItemSpawn(Define.TimerItem timerItem , int useViewID)
+    //{
 
-        //PhotonNetwork.InstantiateRoomObject("TimerItem/TNT", this.transform.position, Quaternion.identity)
+    //    //PhotonNetwork.InstantiateRoomObject("TimerItem/TNT", this.transform.position, Quaternion.identity)
 
-    }
+    //}
 
-    public void MeleeWeaponSpawn(int viewID)
-    {
-        PhotonNetwork.Instantiate("Melee2", Vector3.zero, Quaternion.identity);
-    }
+    //public void MeleeWeaponSpawn(int viewID)
+    //{
+    //    PhotonNetwork.Instantiate("Melee2", Vector3.zero, Quaternion.identity);
+    //}
 
-    public void ThrowWeaponSpawn(int viewID)
-    {
+    //public void ThrowWeaponSpawn(int viewID)
+    //{
 
-    }
+    //}
 }

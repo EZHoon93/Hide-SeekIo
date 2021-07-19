@@ -7,12 +7,7 @@ using FoW;
 
 public abstract class PlayerController : MonoBehaviourPun
 {
-    protected int _coin;
-    public int Coin { get => _coin; set { _coin = value; CoinChangeEvent?.Invoke(value); } }
-    public int TimeCoinAmount { get; set; } = 1;
     public string NickName { get;  set; }
-
-    public event Action<int> CoinChangeEvent;   //코인변경 이벤트
     public Define.Team Team => GetLivingEntity().Team;
     public abstract LivingEntity GetLivingEntity();
 
@@ -24,17 +19,14 @@ public abstract class PlayerController : MonoBehaviourPun
         if (this.IsMyCharacter())    //내캐릭 이라면
         {
             var mainSceneUI = Managers.UI.SceneUI as UI_Main;
-            mainSceneUI.InGameStore.Setup(Team);
-            CoinChangeEvent = mainSceneUI.InGameStore.UpdateCoinText; ; //코인 변경 이벤트
+            //mainSceneUI.InGameStore.Setup(Team);
         }
-        Coin = 300;   //모든 플레이어 캐릭들은 코인 0으로시작
         for(int i =0; i < itemInventory.Length; i++)
         {
             itemInventory[i] = null;
         }
 
-        StartCoroutine(AddCoinByTime());
-        //StartCoroutine(UpdateFog());
+        //StartCoroutine(UpdateFog());ㅁ
 
     }
 
@@ -102,15 +94,6 @@ public abstract class PlayerController : MonoBehaviourPun
     //    n_sync = true;
     //}
 
-
-    IEnumerator AddCoinByTime()
-    {
-        while (true)
-        {
-            Coin += TimeCoinAmount;
-            yield return new WaitForSeconds(1.0f);
-        }
-    }
 
 
 

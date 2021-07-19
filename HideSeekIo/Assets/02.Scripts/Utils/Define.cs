@@ -8,11 +8,6 @@ public class Define
 
     public static readonly int MaxItemInventory = 3;
 
-    public enum InGameItemType
-    {
-        use,
-        Weapon
-    }
     public enum ServerState
     {
         DisConnect,
@@ -56,10 +51,8 @@ public class Define
         Grenade,
         Flash,
         Dynamite,
-        Fire,
-        Soil,
         Glue,
-        PosionBomb,
+        PoisonBomb,
         Sniper = 201
     }
 
@@ -94,8 +87,15 @@ public class Define
         Seeker = 8,
         Hider,
         Wall,
-        Item,
-        Cage = 12
+        SeekerItem,
+        HiderItem,
+        SeekerCollider,
+        HiderCollider,
+        Ground,
+        Spike,
+        AIHiderItem = 18,
+        AISeekerItem = 19
+            
     }
 
     public enum Scene
@@ -155,6 +155,25 @@ public class Define
         NoEffect
     }
 
+    public enum InGameItem
+    {
+        Null,
+        TNT = 10,
+        Grenade,
+        Glue,
+        Trap,
+        Vaccine,
+        Speed,
+        Shoes,
+        Shield,
+        Stealth ,
+        Dynamite = 100,
+        Flash,
+        PoisonBomb,
+        Speed2,
+        SightUp,
+        Immune
+    }
     public enum HiderStoreList
     {
         Trap,
@@ -213,16 +232,16 @@ public class Define
     public enum BuffType
     {
         Null,
-        Direction,
-        Stun,
-        Shoes,
-        Speed,
-        Shield,
-        Sight,
-        Revive,
-        Stealth,
-        SightUp,
-        Immune
+        B_Direction,
+        B_Stun,
+        B_Shoes,
+        B_Speed,
+        B_Shield,
+        B_Sight,
+        B_Revive,
+        B_Stealth,
+        B_SightUp,
+        B_Immune
             
     }
 

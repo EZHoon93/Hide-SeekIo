@@ -7,10 +7,6 @@ public class SoundManager
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.MaxCount];
     Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 
-    // MP3 Player   -> AudioSource
-    // MP3 음원     -> AudioClip
-    // 관객(귀)     -> AudioListener
-
     public void Init()
     {
         GameObject root = GameObject.Find("@Sound");

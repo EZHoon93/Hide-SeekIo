@@ -19,7 +19,6 @@ public class SeekerController : PlayerController
         seekerMove = GetComponent<SeekerMove>();
         seekerAttack = GetComponent<SeekerAttack>();
         seekerHealth = GetComponent<SeekerHealth>();
-        TimeCoinAmount = 2;
     }
     public override void OnPhotonInstantiate(PhotonView photonView)
     {

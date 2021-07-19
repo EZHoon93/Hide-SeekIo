@@ -32,7 +32,7 @@ public class HiderRandomBox : MonoBehaviour, IGetWorldItem , IPunInstantiateMagi
     {
         var playerController =  getObject.GetComponent<PlayerController>();
         if (playerController == null) return;
-        Managers.Spawn.InGameItemSpawn(GetRandomItemEnum(), playerController);
+        //Managers.Spawn.InGameItemSpawn(GetRandomItemEnum(), playerController);
     }
 
     Define.HiderStoreList GetRandomItemEnum()
