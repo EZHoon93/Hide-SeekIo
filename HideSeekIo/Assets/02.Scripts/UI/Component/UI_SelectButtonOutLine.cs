@@ -15,14 +15,18 @@ public class UI_SelectButtonOutLine : MonoBehaviour
         _image.enabled = false;
         changeOueLineEvent -= ChangeOutLine;
         changeOueLineEvent += ChangeOutLine;
-        PhotonGameManager.Instacne.gameJoin += () => _image.enabled = false;
+        //PhotonGameManager.Instacne.gameJoin += Destroy;
     }
 
     private void OnDestroy()
     {
         changeOueLineEvent -= ChangeOutLine;
-        PhotonGameManager.Instacne.gameJoin -= () => _image.enabled = false;
+        //PhotonGameManager.Instacne.gameJoin -= Destroy;
+    }
 
+    void Destroy()
+    {
+        _image.enabled = false;
     }
     public void Click()
     {

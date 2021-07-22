@@ -32,7 +32,10 @@ public class HiderController : PlayerController
 
         SetActiveComponent(true);
 
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Revive , this.GetLivingEntity() );
+        if (photonView.IsMine)
+        {
+            BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Revive, this.GetLivingEntity());
+        }
     }
 
     void SetActiveComponent(bool active)
@@ -82,5 +85,6 @@ public class HiderController : PlayerController
     }
 
     public override LivingEntity GetLivingEntity() => hiderHealth;
+    public override AttackBase GetAttackBase() => hiderAttack;
     
 }

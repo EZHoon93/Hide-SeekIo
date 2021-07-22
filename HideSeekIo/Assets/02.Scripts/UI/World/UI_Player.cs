@@ -29,7 +29,8 @@ public class UI_Player : MonoBehaviour
                 _hiderMove = _playerController.GetComponent<HiderMove>();
                 _energySlider.maxValue = _hiderMove.MaxEnergy;
                 _energySlider.value = _energySlider.maxValue;
-                _energySlider.gameObject.SetActive(true);
+
+                _energySlider.gameObject.SetActive(_hiderMove.IsMyCharacter());
                 _hearRange.SetActive(false);
                 break;
             case Define.Team.Seek:

@@ -29,11 +29,11 @@ public abstract class Item_Weapon : Item_Base
     {
         if (_weapon_Throw == null)
         {
-            _weapon_Throw = Managers.Spawn.WeaponSpawn(_weaponType, usePlayer.GetComponent<AttackBase>()).GetComponent<Weapon_Throw>();
+            _weapon_Throw = Managers.Spawn.WeaponSpawn(_weaponType, usePlayer.GetAttackBase() ).GetComponent<Weapon_Throw>();
             _weapon_Throw.AttackSucessEvent += () => Destroy();
 
         }
-        _weapon_Throw.UseToPlayerToServer();
+        usePlayer.GetAttackBase().UseWeapon(_weapon_Throw);
     }
 
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
@@ -258,21 +259,26 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void DieOnServer(int dieViewID, int attackViewID)
     {
         //if (State != Define.GameState.Gameing) return;
-
-        Util.CallBackFunction(this, 1.0f, () => DelayDie(dieViewID, attackViewID));
+        DelayDie(dieViewID, attackViewID);
+        //Util.CallBackFunction(this, 1.0f, () => DelayDie(dieViewID, attackViewID));
     }
 
     void DelayDie(int dieViewID, int attackViewID)
     {
         var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
         var killPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
-        var uiMain = Managers.UI.SceneUI as UI_Main;
-        //uiMain.UpdateKillNotice(killPlayer.NickName, deathPlayer.NickName);
-        uiMain.UpdateKillNotice("dsdowok", "playertEst");
-
+        if (killPlayer.IsMyCharacter())
+        {
+            var uiMain = Managers.UI.SceneUI as UI_Main;
+            uiMain.UpdateKillNotice("dsdowok", "playertEst");
+            uiMain.killText.text = $"{deathPlayer.NickName} 를 잡으셨습니다.";
+            Color color = uiMain.killText.color;
+            color.a = 1;
+            uiMain.killText.color = color;
+            uiMain.killText.DOFade(0.0f, 2.0f);
+        }
+        
         Managers.Sound.Play("Die", Define.Sound.Effect);
-        //uiMain.UpdateMyCharacterDie("3번째로 잡히셨습니다");
-        print("DieOnServer ");
     }
 
 
@@ -346,7 +352,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             var myPlayer = Managers.Game.myPlayer;
             if (myPlayer == null) return;
             print(myPlayer.Team + "마이팀");
-            PhotonNetwork.InstantiateRoomObject("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+            PhotonNetwork.Instantiate("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
             myPlayer.ViewID(),
             GetRandomItemEnum(myPlayer.Team)
              }); ;

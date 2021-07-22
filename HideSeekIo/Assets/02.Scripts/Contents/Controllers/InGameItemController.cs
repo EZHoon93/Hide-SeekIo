@@ -32,7 +32,10 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
         }
         //새로운 아이템 으로 설정
         _item_Base = Managers.Resource.Instantiate($"InGameItem/{itemType.ToString()}",this.transform).GetComponent<Item_Base>();
-        _item_Base.DestroyEvent += () => PhotonNetwork.Destroy(this.gameObject);    //사용후 파괴
+        if (_item_Base)
+        {
+            _item_Base.DestroyEvent += () => PhotonNetwork.Destroy(this.gameObject);    //사용후 파괴
+        }
         //플레이어에게 아이템 등록
         _hasPlayer.AddItem(this);    //플레이어에게 할당
     }

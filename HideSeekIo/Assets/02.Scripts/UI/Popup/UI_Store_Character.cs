@@ -2,23 +2,31 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Coffee.UIExtensions;
+using TMPro;
+using Data;
 
 public class UI_Store_Character: UI_Popup
 {
     [SerializeField] Transform _content;
     [SerializeField] UIParticle _uIParticle;
-    GameObject currentAvaterObject;
+    CharacterAvater currentAvaterObject;
     GameObject currentWeaponObject;
+
+    int _currentAvaterIndex;
     enum Buttons
     {
-        Cancel,
         Skin,
         Weapon,
-        NickName,
-        AddList,
-        Coin1,
-        Coin2
-            
+        State    ,
+        Left,
+        Right
+    }
+
+    enum Texts
+    {
+        AvaterCount,
+        StateTxt
+
     }
 
     private void Reset()
@@ -30,16 +38,20 @@ public class UI_Store_Character: UI_Popup
     {
         base.Init();
         Bind<Button>(typeof(Buttons));
+        Bind<TextMeshProUGUI>(typeof(Texts));
+        GetButton((int)Buttons.Skin).gameObject.BindEvent(ChangeSkin);
+        GetButton((int)Buttons.Weapon).gameObject.BindEvent(ChangeWeapon);
+        GetButton((int)Buttons.Right).gameObject.BindEvent(AvaterRightButton);
+        GetButton((int)Buttons.Left).gameObject.BindEvent(AvaterLeftButton);
+        GetButton((int)Buttons.State).gameObject.BindEvent(UseAvater);
 
-        //GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
-        GetButton((int)Buttons.Skin).gameObject.BindEvent(Skin);
-        GetButton((int)Buttons.Weapon).gameObject.BindEvent(Weapon);
 
 
     }
     private void Start()
     {
-        GetAvater();
+        _currentAvaterIndex = PlayerInfo.CurrentAvaterUsingIndex();
+        UpdateAvater(PlayerInfo.CurrentSkin);
         PhotonGameManager.Instacne.gameJoin += Destroy;
     }
     
@@ -49,59 +61,105 @@ public class UI_Store_Character: UI_Popup
         Managers.Resource.Destroy(this.gameObject);
     }
 
-    void GetAvater()
+    void UpdateAvater(ServerKey skinSeverKey)
     {
-        if(currentAvaterObject != null)
+        CreateAvaterObject(skinSeverKey.avaterSeverKey);
+        UpdateStateButtonNText(skinSeverKey.isUsing);
+        UpdaterAvaterCountText();
+    }
+    void CreateAvaterObject(string avaterID)
+    {
+        if (currentAvaterObject != null)
         {
-            Managers.Resource.Destroy(currentAvaterObject);
+            Managers.Resource.Destroy(currentAvaterObject.gameObject);
         }
-        var currentAvater = PlayerInfo.CurrentAvater;
-        currentAvaterObject = Managers.Resource.Instantiate($"Avater/{currentAvater}");
+        currentAvaterObject = Managers.Resource.Instantiate($"Avater/{avaterID}").GetComponent<CharacterAvater>();
         currentAvaterObject.transform.ResetTransform(_content);
         var avaterAnimator = currentAvaterObject.GetComponent<Animator>();
         avaterAnimator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(Define.Team.Seek);
-        GetWeapon(currentAvaterObject.GetComponent<CharacterAvater>());
+        CreateWeaponObject(PlayerInfo.userData.skinList[_currentAvaterIndex].weaponSeverKey);
+
     }
 
-    void GetWeapon(CharacterAvater characterAvater)
+    void UpdateStateButtonNText(bool isUsing)
+    {
+        if (isUsing)
+        {
+            GetButton((int)Buttons.State).interactable = false;
+            GetText((int)Texts.StateTxt).text = "사용중";
+        }
+        else
+        {
+            GetButton((int)Buttons.State).interactable = true;
+            GetText((int)Texts.StateTxt).text = "사용하기";
+        }
+    }
+    void UpdaterAvaterCountText()
+    {
+        GetText((int)Texts.AvaterCount).text = $"{_currentAvaterIndex+1}/{ PlayerInfo.userData.skinList.Count}";
+    }
+
+    void CreateWeaponObject(string weaponID )
     {
         if (currentWeaponObject != null)
         {
             Managers.Resource.Destroy(currentWeaponObject);
         }
-        var currentWeapon = PlayerInfo.CurrentWeapon;
-        currentWeaponObject = Managers.Resource.Instantiate($"Melee2/{currentWeapon}");
-        currentWeaponObject.transform.ResetTransform(characterAvater.RightHandAmount);
+        currentWeaponObject = Managers.Resource.Instantiate($"Melee2/{weaponID}");
+        currentWeaponObject.transform.ResetTransform(currentAvaterObject.RightHandAmount);
 
     }
-    void Cancel(PointerEventData pointerEventData)
-    {
-        Managers.UI.ClosePopupUI();
-    }
 
-    void Skin(PointerEventData pointerEventData)
+
+    #region 버튼 이벤트
+
+    void ChangeSkin(PointerEventData pointerEventData)
     {
 
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
-            StoreManager.ChangeSkin();
-            GetAvater();
+            var selectAvaterID = StoreManager.ChangeSkin(_currentAvaterIndex);
+            CreateAvaterObject(selectAvaterID);
             _uIParticle.Play();
          });
     }
-    void Weapon(PointerEventData pointerEventData)
+    void ChangeWeapon(PointerEventData pointerEventData)
     {
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
-            StoreManager.ChangeWeapon();
-            GetWeapon(currentAvaterObject.GetComponent<CharacterAvater>());
+            var selectWeaponID = StoreManager.ChangeWeapon(_currentAvaterIndex);
+            CreateWeaponObject(selectWeaponID);
             _uIParticle.Play();
         });
     }
-    void NickName(PointerEventData pointerEventData)
+
+    void UseAvater(PointerEventData pointerEventData)
     {
-        
+        PlayerInfo.ChangeCurrentSkin(_currentAvaterIndex);
+        UpdateStateButtonNText(true);
     }
-    void AddList(PointerEventData pointerEventData)
+
+
+    void AvaterLeftButton(PointerEventData pointerEventData)
     {
-        
+        if(--_currentAvaterIndex < 0)
+        {
+            _currentAvaterIndex = PlayerInfo.userData.skinList.Count-1;
+        }
+        UpdateAvater(PlayerInfo.userData.skinList[_currentAvaterIndex]);
+
     }
+
+    void AvaterRightButton(PointerEventData pointerEventData)
+    {
+        if(++_currentAvaterIndex >= PlayerInfo.userData.skinList.Count)
+        {
+            _currentAvaterIndex = 0;
+
+        }
+        UpdateAvater(PlayerInfo.userData.skinList[_currentAvaterIndex]) ;
+
+    }
+
+    #endregion
+
+
 }

@@ -17,6 +17,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     protected CharacterController _characterController;
     protected Animator _animator;
     protected AttackBase _attackBase;
+    PhotonTransformView _TransformView;
     AudioClip _stepClip;
 
 
@@ -38,17 +39,20 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(State);
+            stream.SendNext(_animationValue);
         }
         else
         {
-            State = (MoveState)stream.ReceiveNext();
+            _animationValue = (float)stream.ReceiveNext();
+            _animator.SetFloat("Speed", _animationValue);
+
         }
     }
     protected virtual void Awake()
     {
         _characterController = GetComponent<CharacterController>();
         _attackBase = GetComponent<AttackBase>();
+        _TransformView = GetComponent<PhotonTransformView>();
         _stepClip = Managers.Resource.Load<AudioClip>("Sounds/Step1");
 
     }
@@ -73,10 +77,10 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         switch (_attackBase.State)
         {
             case AttackBase.state.Idle:
-                UpdateMoveAnimation(State);
+                    //UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.weapon.LastAttackInput);
+                UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
@@ -133,7 +137,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         switch (moveState)
         {
             case MoveState.Idle:
-                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3) , 0, 2);
+                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, 0, Time.deltaTime ) , 0, 2);
                 break;
             case MoveState.Walk:
                 _animationValue =Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 0.7f, Time.deltaTime * 3) , 0 ,2);
@@ -166,7 +170,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         else
         {
             State = MoveState.Walk;
-            ResultSpeed = MoveSpeed * 0.5f;
+            ResultSpeed = MoveSpeed * 0.7f;
         }
 
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);

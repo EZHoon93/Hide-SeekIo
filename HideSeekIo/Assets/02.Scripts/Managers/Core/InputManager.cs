@@ -49,7 +49,17 @@ public class InputManager : MonoBehaviour
     [SerializeField] UI_Slider_CoolTime _attackCoolTimeUI;
 
 
-
+    public void Clear()
+    {
+        _moveJoystick.gameObject.SetActive(false);
+        _attackJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
+        _runButton.gameObject.SetActive(false);
+        foreach (var itemButton in uI_ItemButtons)
+        {
+            itemButton.gameObject.SetActive(false);
+        }
+    }
     private void Awake()
     {
         // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
@@ -188,8 +198,5 @@ public class InputManager : MonoBehaviour
         uI_ItemButtons[index].RemoveItem();
     }
 
-    public void Clear()
-    {
-
-    }
+    
 }

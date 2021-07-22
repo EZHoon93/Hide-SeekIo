@@ -43,7 +43,28 @@ public class MakeRunEffect : MonoBehaviour
 
     void CreateEffect()
     {
+        //Photon.r
         EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+
+        if (CameraManager.Instance.Target == null)
+        {
+            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+        }
+        else if(CameraManager.Instance.Target.Team == Define.Team.Hide)
+        {
+        }
+        else
+        {
+
+
+            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+        }
+    }
+
+    [PunRPC]
+    void CreateEffectOnLocal()
+    {
+
     }
 
 

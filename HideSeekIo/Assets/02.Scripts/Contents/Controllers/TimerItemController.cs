@@ -22,8 +22,7 @@ public class TimerItemController : MonoBehaviourPun, IPunInstantiateMagicCallbac
         DurationTime = (float)info.photonView.InstantiationData[1];
         var userViewID = (int)info.photonView.InstantiationData[0];
         _isEnd = false;
-
-        _timerItem.Setup(userViewID);
+        _timerItem.OnPhotonInstantiate(info);
     }
 
     private void Update()

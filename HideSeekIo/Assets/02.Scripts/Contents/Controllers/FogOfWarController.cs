@@ -55,6 +55,11 @@ public class FogOfWarController : MonoBehaviour
         _fogOfWarTeam.enabled = isTargetInCamera;
         _fogOfWarTeam.enabled = isTargetInCamera;
         _hideInFog.enabled = !isTargetInCamera;
+        //카메라로 타겟팅되었을떄 투명부분 풀고 보여줌
+        if (isTargetInCamera)
+        {
+            _hideInFog.SetActiveRender(true);
+        }
     }
 
     public void ChangeTransParent(bool isTransParent)

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9220514001469383647}
   - component: {fileID: 3740236227376843111}
   m_Layer: 0
-  m_Name: Shield
+  m_Name: B_Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,6 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c808c282ffe34649bdc30cc9e38816e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsUsing: 0
+  _particle: {fileID: 0}
+  _buffController: {fileID: 0}
+  _durationTime: 5
 --- !u!1001 &6757697212620396335
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -88,7 +88,7 @@ public class GameState_Gameing : GameState_Base
         }
         uI_Main.UpdateNoticeText(noticeContent);
         uI_Main.noticeBg.enabled = true;
-        uI_Main.killText.text = "잠시 후 다른 게임으로 입장합니다!!";
+        uI_Main.titleText.text = "잠시 후 다른 게임으로 입장합니다!!";
 
         if (PhotonNetwork.IsMasterClient)
         {

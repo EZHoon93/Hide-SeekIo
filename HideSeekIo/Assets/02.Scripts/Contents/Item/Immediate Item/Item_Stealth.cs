@@ -4,8 +4,7 @@ public class Item_Stealth : Item_Base
 {
     public override void Use(PlayerController usePlayer)
     {
-
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.DarkExp, usePlayer.transform.position, 1);
         if (photonView.IsMine)
         {
             BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stealth, usePlayer.GetLivingEntity());

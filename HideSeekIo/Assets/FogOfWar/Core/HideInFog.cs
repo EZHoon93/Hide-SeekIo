@@ -14,7 +14,8 @@ namespace FoW
         public float minFogStrength = 0.2f;
 
         Transform _transform;
-        Canvas _canvas;
+        [SerializeField] Canvas _canvas1;
+        [SerializeField] Canvas _canvas2;
 
         [SerializeField] List<Renderer> _renderers;
 
@@ -33,6 +34,7 @@ namespace FoW
                 team = CameraManager.Instance.Target.ViewID();
             }
             CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
+            SetActiveRender(false);
         }
 
         private void OnDisable()
@@ -46,8 +48,6 @@ namespace FoW
         void Start()
         {
             _transform = transform;
-            _canvas = GetComponentInChildren<Canvas>();
-
         }
 
         void Update()
@@ -88,8 +88,10 @@ namespace FoW
         public void SetActiveRender(bool visible)
         {
 
-            if (_canvas != null)
-                _canvas.enabled = visible;
+            if (_canvas1 != null)
+                _canvas1.enabled = visible;
+            if (_canvas2 != null)
+                _canvas2.enabled = visible;
 
             if (_renderers.Count > 0)
             {

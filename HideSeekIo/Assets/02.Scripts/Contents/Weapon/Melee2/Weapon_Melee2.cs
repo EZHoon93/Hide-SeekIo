@@ -38,7 +38,7 @@ public class Weapon_Melee2 : Weapon
         base.OnPhotonInstantiate(info);
         
         _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
-        newAttacker.UseWeapon(this);    //무기 사용상태로 전환
+        //attackPlayer.UseWeapon(this);    //무기 사용상태로 전환
 
     }
     public override void Zoom(Vector2 inputVector)
@@ -84,10 +84,10 @@ public class Weapon_Melee2 : Weapon
 
     void AttackEffect()
     {
-        var attackPos = newAttacker.transform.position + newAttacker.transform.forward * AttackDistance;
+        var attackPos = attackPlayer.transform.position + attackPlayer.transform.forward * AttackDistance;
         print(attackPos + "어택이펙트");
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
-        UtillGame.DamageInRange(newAttacker.transform, AttackDistance, 1, newAttacker.ViewID(), UtillLayer.seekerToHiderAttack, 120);
+        UtillGame.DamageInRange(attackPlayer.transform, AttackDistance, 1, attackPlayer.ViewID(), UtillLayer.seekerToHiderAttack, 120);
         Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         //Collider[] colliders = new Collider[10];
 
@@ -123,7 +123,7 @@ public class Weapon_Melee2 : Weapon
     private bool IsTargetOnSight(Transform target)
     {
         RaycastHit hit;
-        Vector3 startPoint = newAttacker.transform.position;
+        Vector3 startPoint = attackPlayer.transform.position;
         Vector3 endPoint = target.transform.position;
 
         startPoint.y = 0.5f;
@@ -131,7 +131,7 @@ public class Weapon_Melee2 : Weapon
 
         var direction = endPoint - startPoint;
 
-        if (Vector3.Angle(direction, newAttacker.transform.forward) > 120 * 0.5f)
+        if (Vector3.Angle(direction, attackPlayer.transform.forward) > 120 * 0.5f)
         {
             return false;
         }

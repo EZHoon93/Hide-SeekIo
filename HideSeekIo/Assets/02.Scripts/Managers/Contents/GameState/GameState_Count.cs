@@ -51,7 +51,9 @@ public class GameState_Count : GameState_Base
         var playerList = PhotonNetwork.CurrentRoom.Players.Values.Where(s => (bool)s.CustomProperties["jn"] == true).ToList();
         List<int> result = new List<int>();
         foreach (var p in playerList)
+        {
             result.Add(p.ActorNumber);
+        }
 
         return result;
     }
@@ -66,9 +68,6 @@ public class GameState_Count : GameState_Base
 
         List<int> seekerSpawnIndexList = UserPlayerSpawnSetup(Define.Team.Seek);
         List<int> hiderSpawnIndexList = UserPlayerSpawnSetup(Define.Team.Hide);
-
-        print(hiderSpawnIndexList.Count + "/" + seekerSpawnIndexList.Count);
-
         foreach (var p in playerNumberList)
         {
             int selectSpawnIndex; //선택된 위치
@@ -149,14 +148,16 @@ public class GameState_Count : GameState_Base
     [PunRPC]
     void CreatePlayer(Dictionary<int, int> spawnPosDic)
     {
+        print(spawnPosDic.Count + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         foreach(var s in spawnPosDic)
         {
+            print(s.Key + "/" + PhotonNetwork.LocalPlayer.ActorNumber);
             if(s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 Local_MyPlayerCharacter(s.Value);
             }
             //방장만 AI생성
-            if (PhotonNetwork.IsMasterClient == false) return;
+            if (PhotonNetwork.IsMasterClient == false) continue;
             if(s.Key < 0)
             {
                 Master_Creat_AIPlayer(s.Value);
@@ -198,7 +199,7 @@ public class GameState_Count : GameState_Base
 
     void Master_Creat_AIPlayer(int index)
     {
-        object[] userData = { "User1", PlayerInfo.CurrentAvater };
+        object[] userData = { "User1", PlayerInfo.CurrentSkin.avaterSeverKey };
 
         //술래
         if (index <= 1)

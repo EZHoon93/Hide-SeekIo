@@ -35,7 +35,7 @@ public class BuffManager : GenricSingleton<BuffManager>
         if (livingEntity.Dead) return;
         var buffControllerList = livingEntity.BuffControllerList;
         BuffController buffController = buffControllerList.Find(s => s.BuffType == buffType);
-        float durationTime = 10;
+        //float durationTime = 10;
         float createServerTime = (float)PhotonNetwork.Time;
         
         if (buffController == null)
@@ -43,7 +43,7 @@ public class BuffManager : GenricSingleton<BuffManager>
             buffController = MakeBuffController(livingEntity.transform);
             livingEntity.AddBuffController(buffController);
         }
-        buffController.Setup(buffType, livingEntity, createServerTime, durationTime);
+        buffController.Setup(buffType, livingEntity, createServerTime );
     }
     //최초 버프 생성시 로컬 및 서버에 사용
     //public void RegisterBuffControllerOnLivingEntity(BuffController buffController, LivingEntity livingEntity)

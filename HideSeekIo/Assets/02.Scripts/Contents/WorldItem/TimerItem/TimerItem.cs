@@ -1,10 +1,9 @@
-﻿using System.Collections;
-
-using UnityEngine;
+﻿using UnityEngine;
+using Photon.Pun;
 
 public abstract class TimerItem : MonoBehaviour
 {
-    public virtual void Setup(int useViewID)
+    public virtual void OnPhotonInstantiate(PhotonMessageInfo info )
     {
 
     }

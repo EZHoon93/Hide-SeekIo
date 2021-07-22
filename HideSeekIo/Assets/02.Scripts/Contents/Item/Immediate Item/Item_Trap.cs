@@ -12,7 +12,6 @@ public class Item_Trap : Item_Base
     }
     public override void Use(PlayerController usePlayer)
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
         if (photonView.IsMine)
         {
             Managers.Spawn.WorldItemSpawn(Define.WorldItem.Trap, usePlayer.transform.position);

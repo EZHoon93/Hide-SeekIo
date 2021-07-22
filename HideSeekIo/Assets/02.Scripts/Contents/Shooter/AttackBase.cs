@@ -18,8 +18,8 @@ public class AttackBase : MonoBehaviourPun
     protected Animator _animator;
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
-    public Weapon weapon { get; protected set; }    //안없어지는무기
-    public Weapon currentWeapon;    //임시무기
+    public Weapon baseWeapon { get; protected set; }    //안없어지는무기
+    public Weapon currentWeapon { get; protected set; }   //현재 사용 무기
 
 
     
@@ -32,41 +32,44 @@ public class AttackBase : MonoBehaviourPun
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
-        if (weapon)
+        if (baseWeapon)
         {
-            PhotonNetwork.Destroy(weapon.gameObject);
+            PhotonNetwork.Destroy(baseWeapon.gameObject);
         }
     }
 
     public virtual void SetupWeapon(Weapon newWeapon)
     {
-        if(newWeapon.type == Weapon.Type.Permanent)
-        {
-            weapon = newWeapon;
-        }
         newWeapon.transform.ResetTransform(_animator.GetComponent<CharacterAvater>().RightHandAmount);  //무기오브젝트
         newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
+
+        if(currentWeapon == null)
+        {
+            UseWeapon(newWeapon);
+        }
     }
 
     //가지고있는 Permeanet아이템 사용으로 전환
     public void UsePermanent()
     {
-        if (weapon == null) return;
-        UseWeapon(weapon);
+        if (baseWeapon == null) return;
+        UseWeapon(baseWeapon);
     }
     public void UseWeapon(Weapon newWeapon)
     {
-        print("UseWeapon " + newWeapon);
+        if(currentWeapon != null)
+        {
+            currentWeapon.useState = Weapon.UseState.NoUse;
+        }
         currentWeapon = newWeapon;
         currentWeapon.AttackSucessEvent -= AttackSucess;
         currentWeapon.AttackSucessEvent += AttackSucess;
-
         currentWeapon.AttackEndEvent -= AttackEnd;
         currentWeapon.AttackEndEvent += AttackEnd;
-
-        if (currentWeapon.type == Weapon.Type.Disposable)
+        currentWeapon.useState = Weapon.UseState.Use;
+        if (currentWeapon.type == Weapon.Type.Permanent)
         {
-            //currentWeapon.AttackSucessEvent
+            baseWeapon = currentWeapon;
         }
         SetupAnimation();
     }
@@ -113,11 +116,15 @@ public class AttackBase : MonoBehaviourPun
         {
             PhotonNetwork.Destroy(currentWeapon.gameObject);
         }
-        currentWeapon = weapon; //사용할무기를 오리지널무기로 대체
+        if (baseWeapon)
+        {
+            UseWeapon(baseWeapon);//사용할무기를 오리지널무기로 대체
+        }
+        
     }
     protected void UpdateAttackCoolTime()
     {
-        InputManager.Instacne.AttackCoolTime(weapon.InitCoolTime, weapon.ReaminCoolTime);
+        InputManager.Instacne.AttackCoolTime(currentWeapon.InitCoolTime, currentWeapon.ReaminCoolTime);
     }
 
   

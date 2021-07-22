@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UI_ItemButton : MonoBehaviour
 {
     Button _button;
-    InGameItemController _inGameItem;
+    [SerializeField] InGameItemController _inGameItem;
     [SerializeField] Image _clickImage;
     [SerializeField] Image _itemImage;
     [SerializeField] Image _weaponUseImage; //수류탄같은 일회성 사용 아이템
@@ -52,7 +52,7 @@ public class UI_ItemButton : MonoBehaviour
                 //이미 사용중이라면 => 취소로전환
                 if (_weaponUseImage.enabled)
                 {
-                    Managers.Game.myPlayer.GetComponent<AttackBase>().UsePermanent();   //기본무기로전환
+                    Managers.Game.myPlayer.GetAttackBase().UsePermanent();   //기본무기로전환
                     _clickImage.enabled = false;
                     _weaponUseImage.enabled = false;
                 }

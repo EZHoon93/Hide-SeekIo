@@ -56,7 +56,7 @@ public static class UtillGame
     public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform)
     {
 
-        //_attackRangeUI.position = _newAttacker.CenterPivot.position;
+        //_attackRangeUI.position = _attackPlayer.CenterPivot.position;
         //Vector3 pos = pivotTransform.transform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance;
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         var converVector3 = ConventToVector3(inputVector2);
@@ -95,7 +95,7 @@ public static class UtillGame
         //Vector3 center;
         //Vector3 targetPoint;
         //var temp = new Vector3(inputVector.x, 0, inputVector.y);  //direct 변환을 위해 사용
-        ////_newAttacker.CenterPivot.localPosition = inputVector.normalized * 0.4f;
+        ////_attackPlayer.CenterPivot.localPosition = inputVector.normalized * 0.4f;
         //var target = this.transform.position + (temp * 5); //타겟범위
         //float hitdist; // out 값.
 
@@ -105,10 +105,10 @@ public static class UtillGame
         //if (playerPlane.Raycast(ray, out hitdist))
         //{
         //    targetPoint = ray.GetPoint(hitdist);
-        //    center = (_newAttacker.CenterPivot.position + targetPoint) * 0.5f;
+        //    center = (_attackPlayer.CenterPivot.position + targetPoint) * 0.5f;
         //    center.y -= 0.5f + y;
         //    RaycastHit hitInfo;
-        //    if (Physics.Linecast(_newAttacker.CenterPivot.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Wall))
+        //    if (Physics.Linecast(_attackPlayer.CenterPivot.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Wall))
         //    {
         //        targetPoint = hitInfo.point;
         //    }
@@ -121,7 +121,7 @@ public static class UtillGame
         ////targetPoint.y = 0;
         ////playerUI.UpdateDamageUI(targetPoint, 5);   //타겟 위치 UI 표시
         //print(targetPoint);
-        //Vector3 RelCenter = _newAttacker.CenterPivot.position - center;
+        //Vector3 RelCenter = _attackPlayer.CenterPivot.position - center;
         //Vector3 aimRelCenter = targetPoint - center;
         //for (float index = 0.0f, interval = -0.0417f; interval < 1.0f;)
         //{

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-
+using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Data;
@@ -11,8 +11,8 @@ public static class PlayerInfo
     public static Action chnageInfoEvent;
     public static Define.UserDataState State { get;  set; }  //로그인 여부 
 
-    public static string CurrentAvater => userData.HasAvaters[0];
-    public static string CurrentWeapon => userData.HasWeapons[0];
+    public static ServerKey CurrentSkin=> userData.skinList.Find(s => s.isUsing == true);
+    //public static ServerKey CurrentWeapon => userData.weaponList.Find(s => s.isUsing == true);
     public static string nickName => userData.nickName;
     public static int level => userData.level;
     public static int coin => userData.coin;
@@ -47,8 +47,11 @@ public static class PlayerInfo
         userData.exp = 0;
         userData.maxExp = 10;
         userData.key = "222";
-        userData.HasAvaters = new string[] { "Ch01" };
-        userData.HasWeapons= new string[] { "Wm01" };
+        userData.skinList = new List<ServerKey>()
+        {
+            new ServerKey("Ch01","Wm01", true)
+        };
+        
         SaveUserData();
         Login();
     }
@@ -82,4 +85,25 @@ public static class PlayerInfo
     {
         //chnageInfoEvent();
     }
+
+    public static int CurrentAvaterUsingIndex()
+    {
+        return  userData.skinList.FindIndex(s => s.isUsing == true);
+    }
+
+
+    public static void ChangeCurrentSkin(int useSelectIndex)
+    {
+        foreach(var skin in userData.skinList)
+        {
+            skin.isUsing = false;
+        }
+
+        userData.skinList[useSelectIndex].isUsing = true;
+        SaveUserData();
+    }
+   
+
+    
+
 }

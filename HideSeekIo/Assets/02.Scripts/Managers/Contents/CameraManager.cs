@@ -44,9 +44,7 @@ public class CameraManager : GenricSingleton<CameraManager>
 
     private void Start()
     {
-        //StartCoroutine(UpdateCameraIsViewTarget());
-
-
+        StartCoroutine(UpdateCameraIsViewTarget());
     }
 
     IEnumerator UpdateCameraIsViewTarget()

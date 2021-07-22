@@ -1,16 +1,17 @@
-﻿using System.Collections;
+﻿
+using Photon.Pun;
 
 using UnityEngine;
-
 public class HiderMove : MoveBase , IMakeRunEffect
 {
     public Define.MoveHearState HearState { get; set; }
     HiderInput _hiderInput;
 
-    public float MaxEnergy { get; private set; } = 10;
+    public float MaxEnergy { get; private set; } = 11;
     public float CurrentEnergy { get; set; }
 
-
+    float lastTime;
+    [SerializeField] float timeBiet = 1.5f;
     protected override void Awake()
     {
         base.Awake();
@@ -21,6 +22,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
         base.OnPhotonInstantiate();
         HearState = Define.MoveHearState.NoEffect;
         CurrentEnergy = MaxEnergy;
+        lastTime = 0;
     }
     public bool IsLocal()
     {
@@ -41,11 +43,11 @@ public class HiderMove : MoveBase , IMakeRunEffect
         switch (State)
         {
             case MoveState.Run:
-                CurrentEnergy = Mathf.Clamp(CurrentEnergy -  Time.deltaTime, 0, MaxEnergy);
+                CurrentEnergy = Mathf.Clamp(CurrentEnergy -  1* Time.deltaTime, 0, MaxEnergy);
                 break;
             case MoveState.Idle:
             case MoveState.Walk:
-                CurrentEnergy = Mathf.Clamp(CurrentEnergy + 3* Time.deltaTime, 0, MaxEnergy);
+                CurrentEnergy = Mathf.Clamp(CurrentEnergy + 0.5f* Time.deltaTime, 0, MaxEnergy);
                 break;
         }
     }
@@ -60,6 +62,11 @@ public class HiderMove : MoveBase , IMakeRunEffect
                 break;
             case MoveState.Run:
                 HearState = Define.MoveHearState.Effect;
+                if (Time.time >= lastTime + timeBiet)
+                {
+                    lastTime = Time.time;
+                    CreateEffect();
+                }
                 break;
         }
     }
@@ -96,6 +103,32 @@ public class HiderMove : MoveBase , IMakeRunEffect
     {
         //_animationValue = 0.0f;
         _animator.SetFloat("Speed", 0.0f);
+    }
+
+
+    void CreateEffect()
+    {
+        photonView.RPC("CreateEffectOnLocal", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void CreateEffectOnLocal()
+    {
+        if (CameraManager.Instance.Target == null)
+        {
+            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+        }
+        else if (CameraManager.Instance.Target.Team == Define.Team.Hide)
+        {
+            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+        }
+        else
+        {
+            if(Vector3.Distance(this.transform.position , CameraManager.Instance.Target.transform.position) <= 4)
+            {
+                EffectManager.Instance.EffectToServer(Define.EffectType.Ripple, this.transform.position, 0);
+            }
+        }
     }
 
 }

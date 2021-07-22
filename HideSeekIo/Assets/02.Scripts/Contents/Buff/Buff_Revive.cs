@@ -10,12 +10,12 @@ public class Buff_Revive : BuffBase
     public override void ProcessStart()
     {
         _hiderMove =  _buffController.livingEntity.GetComponent<HiderMove>();
-        _makeRunEffect = _buffController.livingEntity.GetComponentInChildren<MakeRunEffect>();
+        //_makeRunEffect = _buffController.livingEntity.GetComponentInChildren<MakeRunEffect>();
 
-        if (_hiderMove == null || _makeRunEffect == null) return;
+        if (_hiderMove == null ) return;
 
         _hiderMove.AddMoveBuffList(0.5f, true);
-        _makeRunEffect.enabled = false;
+        //_makeRunEffect.enabled = false;
 
     }
 
@@ -30,6 +30,6 @@ public class Buff_Revive : BuffBase
     public override void ProcessEnd()
     {
         _hiderMove.AddMoveBuffList(0.5f, false);
-        _makeRunEffect.enabled = true;
+        //_makeRunEffect.enabled = true;
     }
 }

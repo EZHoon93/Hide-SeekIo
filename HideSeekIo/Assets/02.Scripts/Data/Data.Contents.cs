@@ -70,10 +70,22 @@ namespace Data
 		public int exp;
 		public int maxExp;
 
-		public string[] HasAvaters;
-		public string[] HasWeapons;
-
+		public List<ServerKey> skinList;
 	}
+	[Serializable]
+	public class ServerKey
+    {
+		public bool isUsing;
+		public string avaterSeverKey;
+		public string weaponSeverKey;
+
+		public ServerKey(string newServerKey,string newWeaponServerKey , bool newUsing)
+        {
+			avaterSeverKey= newServerKey;
+			weaponSeverKey = newWeaponServerKey;
+			isUsing = newUsing;
+        }
+    }
 
 	#endregion
 

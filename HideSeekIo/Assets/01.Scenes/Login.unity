@@ -255,6 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28c1ba99701ae4f408a781d40c32be89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inGameItem: {fileID: 0}
   _clickImage: {fileID: 1111797158}
   _itemImage: {fileID: 46592598}
   _weaponUseImage: {fileID: 2051567802}
@@ -778,6 +779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28c1ba99701ae4f408a781d40c32be89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inGameItem: {fileID: 0}
   _clickImage: {fileID: 912350948}
   _itemImage: {fileID: 1194257046}
   _weaponUseImage: {fileID: 262763125}
@@ -4348,6 +4350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28c1ba99701ae4f408a781d40c32be89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inGameItem: {fileID: 0}
   _clickImage: {fileID: 1971832001}
   _itemImage: {fileID: 1432373927}
   _weaponUseImage: {fileID: 140166347}
@@ -5165,7 +5168,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1971832001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5475,7 +5478,7 @@ MonoBehaviour:
   extendRadius: 0
   axis: 0
   boundary: 0
-  deadZone: 0.1
+  deadZone: 0.25
   tapCountOption: 0
   tapCountDuration: 0.5
   targetTapCount: 2

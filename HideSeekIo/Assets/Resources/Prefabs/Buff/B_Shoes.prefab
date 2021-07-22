@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4391353814654554308}
   - component: {fileID: 6863502390596484511}
   m_Layer: 0
-  m_Name: Shoes
+  m_Name: B_Shoes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd856c0ad999bfa40a80ca502a4dd57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsUsing: 0
   _particle: {fileID: 0}
   _buffController: {fileID: 0}
+  _durationTime: 5
 --- !u!1001 &6506288390784464899
 PrefabInstance:
   m_ObjectHideFlags: 0

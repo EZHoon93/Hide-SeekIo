@@ -113,6 +113,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         this.transform.DOShakeScale(_shakeScaleDuration);
         this.transform.DOScale(Vector3.zero, _hideScaleDuration).SetDelay(_shakeScaleDuration);
 
+        if (photonView.IsMine == false) return;
         if (_gettingLivingEntity.photonView.IsMine)
         {
             getWorldItem.Get(_gettingLivingEntity.gameObject);  //아이템 얻기 효과
@@ -144,10 +145,11 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         if (living.photonView.IsMine == false) return;  //얻은캐릭이 자기자신캐릭이아니라면 x
         if (living)
         {
-            _hideInFog.enabled = false;
-            _hideInFog.SetActiveRender(true);
+            
             if (living.IsMyCharacter())
             {
+                _hideInFog.enabled = false;
+                _hideInFog.SetActiveRender(true);
                 Managers.Sound.Play("Getting", Define.Sound.Effect);
             }
             photonView.RPC("Check_IsGetOnServer", RpcTarget.AllViaServer, living.ViewID());

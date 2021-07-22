@@ -37,7 +37,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             if (n_createServerTime == _createServerTime) return;
 
             var newLivingEntity = this.transform.parent.GetComponent<LivingEntity>();
-            Setup(n_BuffType, newLivingEntity, n_createServerTime, n_durationTime);
+            Setup(n_BuffType, newLivingEntity, n_createServerTime );
         }
 
     }
@@ -46,18 +46,17 @@ public class BuffController : MonoBehaviourPun, IPunObservable
         _poolable = GetComponent<Poolable>();
     }
     //재갱신 및 최초
-    public void Setup(Define.BuffType buffType, LivingEntity newLivingEntity, float createServerTime, float durationTime)
+    public void Setup(Define.BuffType buffType, LivingEntity newLivingEntity, float createServerTime )
     {
         livingEntity = newLivingEntity;
         _createServerTime = createServerTime;
-        _durationTime = durationTime;
-
 
         if (_buffBase == null)
         {
             BuffType = buffType;
             _buffBase = BuffManager.Instance.MakeBuffObject(buffType, this.transform);
             _buffBase.Setup(this);
+            _durationTime = _buffBase.durationTime;
             SetupIsPostiveBuff(BuffType);
             foreach(var render in _buffBase.renderers)
             {

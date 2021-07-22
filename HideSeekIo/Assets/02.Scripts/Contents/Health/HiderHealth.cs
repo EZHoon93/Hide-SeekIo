@@ -27,7 +27,7 @@ public class HiderHealth : LivingEntity
     [PunRPC]
     public override void Die()
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Death, this.transform.position, 0);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 0);
 
         base.Die();
         //_cageObject.gameObject.SetActive(true);

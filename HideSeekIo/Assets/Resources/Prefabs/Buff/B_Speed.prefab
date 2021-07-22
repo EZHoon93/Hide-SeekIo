@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6619016296626837274}
   - component: {fileID: 6299860254464578066}
   m_Layer: 0
-  m_Name: Speed
+  m_Name: B_Speed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c719951c003f8c142a30c49858dfe363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsUsing: 0
   _particle: {fileID: 0}
   _buffController: {fileID: 0}
+  _durationTime: 5
 --- !u!1001 &1697598682247358529
 PrefabInstance:
   m_ObjectHideFlags: 0

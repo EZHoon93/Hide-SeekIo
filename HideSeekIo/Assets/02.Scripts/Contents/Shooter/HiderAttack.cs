@@ -24,7 +24,7 @@ public class HiderAttack : AttackBase
 
     public void OnUpdate()
     {
-        if (this.photonView.IsMine == false || weapon == null) return;
+        if (this.photonView.IsMine == false || currentWeapon == null) return;
         UpdateAttackCoolTime();
         UpdateAttack(_hiderInput.LastAttackVector);
     }
@@ -35,7 +35,7 @@ public class HiderAttack : AttackBase
 
     private void LateUpdate()
     {
-        if (this.IsMyCharacter() == false || weapon == null) return;
+        if (this.IsMyCharacter() == false || currentWeapon == null) return;
         UpdateZoom(_hiderInput.AttackVector);
     }
 

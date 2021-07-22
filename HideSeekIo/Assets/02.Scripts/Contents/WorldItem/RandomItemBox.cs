@@ -13,7 +13,7 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
 
     public static Define.InGameItem[] hiderItemArray = {
         Define.InGameItem.TNT , Define.InGameItem.Grenade , Define.InGameItem.Glue,Define.InGameItem.Trap,
-        Define.InGameItem.Vaccine, Define.InGameItem.Speed,Define.InGameItem.Shoes, Define.InGameItem.Shield,
+        Define.InGameItem.Vaccine, Define.InGameItem.Speed, Define.InGameItem.SightUp,
         Define.InGameItem.Stealth
     };
 
@@ -29,6 +29,7 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
         if (info.photonView.InstantiationData == null) return;
         _team = (Define.Team)info.photonView.InstantiationData[0];
         _spawnIndex = (int)info.photonView.InstantiationData[1];
+
 
         switch (_team)
         {

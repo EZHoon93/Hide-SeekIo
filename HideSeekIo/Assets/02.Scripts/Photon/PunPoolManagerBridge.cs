@@ -24,6 +24,7 @@ public class PunPoolManagerBridge : MonoBehaviour, IPunPrefabPool
         {
             Debug.LogError("찾을수없음  " + prefabId);
         }
+        print(position + "/"+prefabId);
         go.transform.position = position;
         go.transform.rotation = rotation;
         go.gameObject.SetActive(false);

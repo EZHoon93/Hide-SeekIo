@@ -28,7 +28,7 @@ public abstract class Weapon_Throw : Weapon
     public override void Zoom(Vector2 inputVector)
     {
 
-        UtillGame.ThrowZoom(inputVector, AttackDistance, newAttacker.CenterPivot, UICanvas.transform);
+        UtillGame.ThrowZoom(inputVector, AttackDistance, attackPlayer.CenterPivot, UICanvas.transform);
     }
 
 
@@ -36,7 +36,7 @@ public abstract class Weapon_Throw : Weapon
     public override void Attack(Vector2 inputVector)
     {
         state = State.Delay;
-        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, newAttacker.transform);
+        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, attackPlayer.transform);
         LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
@@ -46,7 +46,7 @@ public abstract class Weapon_Throw : Weapon
     {
         print("어택온서버!!!!");
         LastAttackInput = inputVector;
-        Vector3 startPoint = newAttacker.CenterPivot.position;
+        Vector3 startPoint = attackPlayer.CenterPivot.position;
         StartCoroutine(AttackProcessOnAllClinets(startPoint, endPoint));
     }
 
@@ -56,7 +56,7 @@ public abstract class Weapon_Throw : Weapon
         AttackSucessEvent?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(newAttacker.ViewID(),  startPoint, endPoint);
+        projectile.Play(attackPlayer.ViewID(),  startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();
         state = State.End;
@@ -67,7 +67,7 @@ public abstract class Weapon_Throw : Weapon
     //public void AttackEffect(Vector3 startPoint, Vector3 endPoint)
     //{
     //    var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-    //    projectile.Play(newAttacker.ViewID() , startPoint, endPoint) ;
+    //    projectile.Play(attackPlayer.ViewID() , startPoint, endPoint) ;
     //}
 
     #endregion
@@ -79,6 +79,6 @@ public abstract class Weapon_Throw : Weapon
     [PunRPC]
     public void UserToPlayerOnLocal()
     {
-        newAttacker.UseWeapon(this);
+        //attackPlayer.UseWeapon(this);
     }
 }

@@ -13,7 +13,7 @@ public class Weapon_Glue : Weapon_Throw
 
     private void Start()
     {
-        Setup("Throw", .2f, .2f, 5.0f, 1);
+        Setup("Throw", .2f, .2f, 4.0f, 1);
     }
 
 }

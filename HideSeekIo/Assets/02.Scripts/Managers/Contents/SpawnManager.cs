@@ -40,7 +40,7 @@ public class SpawnManager
 
     public void PlayerSpawn(Define.Team team, Vector3 pos)
     {
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey };
 
         switch (team)
         {
@@ -48,14 +48,14 @@ public class SpawnManager
                 Managers.Game.myPlayer = PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
             case Define.Team.Seek:
-                datas.Add(PlayerInfo.CurrentWeapon);
+                datas.Add(PlayerInfo.CurrentSkin.avaterSeverKey);
                 Managers.Game.myPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
         }
     }
     public void AISpawn(Define.Team team, Vector3 pos)
     {
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentAvater };
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey };
 
         switch (team)
         {
@@ -63,21 +63,21 @@ public class SpawnManager
                 PhotonNetwork.InstantiateRoomObject("AISeeker", pos, Quaternion.identity, 0, datas.ToArray());
                 break;
             case Define.Team.Hide:
-                datas.Add(PlayerInfo.CurrentWeapon);
+                datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
                 PhotonNetwork.InstantiateRoomObject("AIHider", pos, Quaternion.identity, 0, datas.ToArray());
                 break;
         }
 
     }
-    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase newAttacker)
+    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer)
     {
-        List<object> datas = new List<object>() { newAttacker.photonView.ViewID };
+        List<object> datas = new List<object>() { attackPlayer.photonView.ViewID };
         string weaponID = null;
         switch (weapon)
         {
             case Define.Weapon.Melee2:
                 weaponID = "Melee2";
-                datas.Add(PlayerInfo.CurrentWeapon);
+                datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
                 break;
             case Define.Weapon.Sniper:
 

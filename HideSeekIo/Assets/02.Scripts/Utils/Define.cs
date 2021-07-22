@@ -165,7 +165,7 @@ public class Define
         Vaccine,
         Speed,
         Shoes,
-        Shield,
+        //Shield,
         Stealth ,
         Dynamite = 100,
         Flash,
@@ -226,7 +226,11 @@ public class Define
         CloudBurst,
         TrapEffect,
         BuffEffect,
-        GrenadeEffect
+        GrenadeEffect,
+        Ripple,
+        AcidExp,
+        DarkExp
+            
     }
 
     public enum BuffType

@@ -10,7 +10,8 @@ public abstract class PlayerController : MonoBehaviourPun
     public string NickName { get;  set; }
     public Define.Team Team => GetLivingEntity().Team;
     public abstract LivingEntity GetLivingEntity();
-
+    public abstract AttackBase GetAttackBase();
+    
     public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
 
@@ -28,6 +29,11 @@ public abstract class PlayerController : MonoBehaviourPun
 
         //StartCoroutine(UpdateFog());¤±
 
+    }
+
+    private void Awake()
+    {
+        
     }
 
     protected virtual void HandleDeath()
@@ -53,6 +59,7 @@ public abstract class PlayerController : MonoBehaviourPun
     }
     public void AddItem(InGameItemController newItem)
     {
+        print("AddITem");
         for (int i = 0; i < itemInventory.Length; i++)
         {
             if (itemInventory[i] != null) continue;

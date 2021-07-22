@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class ItemSpawnManager : MonoBehaviour
 {
-	public static int coinCount;	//총 생성된 코인 수 
-    
+    public static int coinCount;    //총 생성된 코인 수 
+
     [SerializeField] SpawnPoint[] _hiderItemPoints;
     [SerializeField] SpawnPoint[] _seekerItemPoints;
 
@@ -29,8 +29,8 @@ public class ItemSpawnManager : MonoBehaviour
         _hiderItemPoints = transform.GetChild(0).GetComponentsInChildren<SpawnPoint>();
         _seekerItemPoints = transform.GetChild(1).GetComponentsInChildren<SpawnPoint>();
 
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, () => StartCoroutine(UpdateSpawn_HiderItem()))  ;
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, () =>StartCoroutine(UpdateSpawn_SeekerItem())) ;
+        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, () => StartCoroutine(UpdateSpawn_HiderItem()));
+        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, () => StartCoroutine(UpdateSpawn_SeekerItem()));
 
 
     }
@@ -46,8 +46,9 @@ public class ItemSpawnManager : MonoBehaviour
                 {
                     var spawnIndex = GetSpawnIndex(Define.Team.Hide);
                     var spawnPoint = GetSpawnPoint(Define.Team.Hide, spawnIndex);
-                    PhotonNetwork.InstantiateRoomObject("ItemRandomBox", spawnPoint, Quaternion.identity,0,
-                        new object[] { Define.Team.Hide, spawnIndex  } );
+                    print($"{spawnPoint } / {spawnIndex}");
+                    PhotonNetwork.InstantiateRoomObject("ItemRandomBox", spawnPoint, Quaternion.identity, 0,
+                        new object[] { Define.Team.Hide, spawnIndex });
 
                     yield return new WaitForSeconds(_spawnTimeBet);
                 }
@@ -63,13 +64,12 @@ public class ItemSpawnManager : MonoBehaviour
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                print("생성 !!");
                 if (SeekerItem_ExistSpawnIndex.Count + 1 < _seekerItemPoints.Length)
                 {
                     var spawnIndex = GetSpawnIndex(Define.Team.Seek);
                     var spawnPoint = GetSpawnPoint(Define.Team.Seek, spawnIndex);
-                    PhotonNetwork.InstantiateRoomObject("ItemRandomBox", spawnPoint, Quaternion.identity, 0,
-                        new object[] { Define.Team.Seek, spawnIndex });
+                    PhotonNetwork.InstantiateRoomObject(
+                        "ItemRandomBox", spawnPoint, Quaternion.identity, 0, new object[] { Define.Team.Seek, spawnIndex });
 
                     yield return new WaitForSeconds(_spawnTimeBet);
                 }
@@ -92,23 +92,26 @@ public class ItemSpawnManager : MonoBehaviour
                     resultSpawnIndex = Random.Range(0, _seekerItemPoints.Length);
                     break;
             }
-        } while ( IsOkSpawnIndex(team , resultSpawnIndex));
+        } while (IsOkSpawnIndex(team, resultSpawnIndex));
 
         return resultSpawnIndex;
     }
 
-    Vector3 GetSpawnPoint(Define.Team team , int spawnIndex)
+    Vector3 GetSpawnPoint(Define.Team team, int spawnIndex)
     {
-        
-        switch (team)
+        var result = Vector3.zero;
+        if (team == Define.Team.Hide)
         {
-            case Define.Team.Hide:
-                return UtillGame.GetRandomPointOnNavMesh(_hiderItemPoints[spawnIndex].transform.position, _spawnDistance);
-            case Define.Team.Seek:
-                return UtillGame.GetRandomPointOnNavMesh(_seekerItemPoints[spawnIndex].transform.position, _spawnDistance);
+            result = UtillGame.GetRandomPointOnNavMesh(_hiderItemPoints[spawnIndex].transform.position, _spawnDistance);
+        }
+        else
+        {
+           result = UtillGame.GetRandomPointOnNavMesh(_seekerItemPoints[spawnIndex].transform.position, _spawnDistance);
         }
 
-        return Vector3.zero;
+        result.y = 0;
+        print(result + "/" + spawnIndex);
+        return result;
     }
 
     bool IsOkSpawnIndex(Define.Team team, int spawnIndex)

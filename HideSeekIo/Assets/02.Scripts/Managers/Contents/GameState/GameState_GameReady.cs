@@ -11,21 +11,25 @@ public class GameState_GameReady : GameState_Base
         _initRemainTime = _initGameTime;
         uI_Main.UpdateInGameTime(Managers.Game.CurrentGameScene.InitGameTime); //플레이타임 갖고옴
 
-        if(Managers.Game.myPlayer.Team == Define.Team.Hide)
+        if (Managers.Game.myPlayer)
         {
-            var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
-            uI_Main.UpdateNoticeText(noticeContent);
-            uI_Main.killText.text = "끝까지 살아 남으세요!!";
-            uI_Main.noticeBg.enabled = true;
+            if (Managers.Game.myPlayer.Team == Define.Team.Hide)
+            {
+                var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
+                uI_Main.UpdateNoticeText(noticeContent);
+                uI_Main.titleText.text = "끝까지 살아 남으세요!!";
+                uI_Main.noticeBg.enabled = true;
 
+            }
+            else
+            {
+                var noticeContent = Util.GetColorContent(Color.red, "술래 팀 ");
+                uI_Main.UpdateNoticeText(noticeContent);
+                uI_Main.titleText.text = "숨는팀을 모두 잡으세요!!";
+                uI_Main.noticeBg.enabled = true;
+            }
         }
-        else
-        {
-            var noticeContent = Util.GetColorContent(Color.red, "술래 팀 ");
-            uI_Main.UpdateNoticeText(noticeContent);
-            uI_Main.killText.text = "숨는팀을 모두 잡으세요!!";
-            uI_Main.noticeBg.enabled = true;
-        }
+        
     }
 
 

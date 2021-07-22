@@ -43,6 +43,7 @@ public class UI_Main : UI_Scene
     {
         CountDown,
         Notice,
+        Title,
         DeathInfo,
         KillCount,
     }
@@ -53,15 +54,11 @@ public class UI_Main : UI_Scene
     }
 
 
-    //public UI_InGameStore InGameStore => GetObject((int)GameObjects.InGameStore).GetComponent<UI_InGameStore>();
     public UI_InGameInfo InGameInfo => GetObject((int)GameObjects.GameInfo).GetComponent<UI_InGameInfo>();
-
-
-
     public Button FindButton => GetButton((int)Buttons.FindPlayer);
     public Button ADButton => GetButton((int)Buttons.ADMop);
+    public TextMeshProUGUI titleText => GetText(TextMeshProUGUIs.Title);
 
-    UI_KillNotice uI_KillNoticePrefab;
     public TextMeshProUGUI killText => GetText(TextMeshProUGUIs.KillCount);
     public Image noticeBg => GetImage((int)Images.NoticeBg);
 

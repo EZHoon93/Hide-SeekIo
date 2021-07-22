@@ -35,6 +35,8 @@ namespace Photon.Pun
 
         bool m_firstTake = false;
 
+        public Vector3 netPos => m_NetworkPosition;
+
         public void Awake()
         {
             m_StoredPosition = transform.localPosition;

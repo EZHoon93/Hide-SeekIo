@@ -14,7 +14,7 @@ public class Weapon_PosionBomb : Weapon_Throw
 
     private void Start()
     {
-        Setup("Throw", .2f, .2f, 7.0f, 1);
+        Setup("Throw", .2f, .2f, 4.0f, 1);
     }
 
 

@@ -22,7 +22,7 @@ public class SeekerAttack : AttackBase
 
     public void OnUpdate()
     {
-        if (this.photonView.IsMine == false || weapon == null) return;
+        if (this.photonView.IsMine == false || currentWeapon == null) return;
         UpdateAttackCoolTime();
         UpdateAttack(_seekerInput.LastAttackVector);
     }
@@ -36,7 +36,7 @@ public class SeekerAttack : AttackBase
 
     private void LateUpdate()
     {
-        if (this.IsMyCharacter() == false || weapon == null) return;
+        if (this.IsMyCharacter() == false || currentWeapon == null) return;
         UpdateZoom(_seekerInput.AttackVector);
     }
 
