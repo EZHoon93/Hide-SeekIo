@@ -5,9 +5,9 @@ using UnityEngine;
 public class SoilProjectile : ThrowProjectileObject
 {
 
-    public override void Play(int useViewID, Vector3 startPoint, Vector3 endPoint)
+    public override void Play(AttackBase attackPlayer, Vector3 startPoint, Vector3 endPoint)
     {
-        base.Play(useViewID, startPoint, endPoint);
+        base.Play(attackPlayer, startPoint, endPoint);
         _modelObject.SetActive(true);
     }
     protected override void Explosion()

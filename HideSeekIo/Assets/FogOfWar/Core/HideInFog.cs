@@ -75,6 +75,11 @@ namespace FoW
         {
             team = cameraViewID;
         }
+
+        public void ClearRenders()
+        {
+            _renderers.Clear();
+        }
         public void AddRenderer(Renderer renderer)
         {
             _renderers.Add(renderer);

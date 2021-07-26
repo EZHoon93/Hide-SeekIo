@@ -2,17 +2,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Coffee.UIExtensions;
 
 public class UI_Store_Etc : UI_Popup
 {
     [SerializeField] TMP_InputField _InputField;
+    [SerializeField] UIParticle _uIParticle;
+
     enum Buttons
     {
         ChangeNick,
         Coin1,
         Coin2,
         RemoveAD,
-        AddSkin
     }
 
     enum Texts
@@ -30,7 +32,6 @@ public class UI_Store_Etc : UI_Popup
         GetButton((int)Buttons.Coin1).gameObject.BindEvent(Coin1);
         GetButton((int)Buttons.Coin2).gameObject.BindEvent(Coin2);
         GetButton((int)Buttons.RemoveAD).gameObject.BindEvent(RemoveAD);
-        GetButton((int)Buttons.AddSkin).gameObject.BindEvent(AddSkin);
 
     }
     private void Start()
@@ -48,6 +49,9 @@ public class UI_Store_Etc : UI_Popup
     void ChangeNickName(PointerEventData pointerEventData)
     {
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
+            StoreManager.ChangeNickName(_InputField.text);
+            _uIParticle.Play();
+
         });
     }
 
@@ -69,10 +73,5 @@ public class UI_Store_Etc : UI_Popup
         });
     }
 
-    void AddSkin(PointerEventData pointerEventData)
-    {
-        Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
-
-        });
-    }
+   
 }

@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using System;
 
 public abstract class InputBase : MonoBehaviourPun
 {
     protected float _stopTime;
     protected bool _isAttack;
-    protected Vector2 _attackVector;
-    protected Vector2 _lastAttackVector;
-
+    
     public Vector2 MoveVector { get; protected set; }
-    public Vector2 AttackVector => _attackVector;
-    public Vector2 LastAttackVector => _lastAttackVector;
+    public Vector2 AttackVector { get; protected set; }
+    public Vector2 ItemVector1 { get; set; }
+
+    public event Action<Vector2> AttackEventCallBack;
+    public event Action<Vector2> ItemEventCallBack1;
+    public event Action<Vector2> ItemEventCallBack2;
+
     public Vector2 RandomVector2 { get; set; }
     public bool IsStop { get; protected set; }
     
@@ -30,6 +34,11 @@ public abstract class InputBase : MonoBehaviourPun
     protected virtual void HandleDeath()
     {
 
+    }
+
+    protected void Call_AttackCallBackEvent(Vector2 vector2)
+    {
+        AttackEventCallBack?.Invoke(vector2);
     }
 
     public virtual void Stop(float newTime)

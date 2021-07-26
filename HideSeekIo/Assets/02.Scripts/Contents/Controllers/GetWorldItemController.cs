@@ -113,7 +113,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         this.transform.DOShakeScale(_shakeScaleDuration);
         this.transform.DOScale(Vector3.zero, _hideScaleDuration).SetDelay(_shakeScaleDuration);
 
-        if (photonView.IsMine == false) return;
+        if (photonView.IsMine == false || _gettingLivingEntity == null) return;
         if (_gettingLivingEntity.photonView.IsMine)
         {
             getWorldItem.Get(_gettingLivingEntity.gameObject);  //아이템 얻기 효과
@@ -180,10 +180,10 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     //로컬 오브젝트만 실행
     public void Exit(GameObject exitGameObject)
     {
-        print("Exit!!");
         if (photonView.IsMine == false) return;
         var exitLivingEntity = exitGameObject.GetComponent<LivingEntity>();
-        if(_gettingLivingEntity == exitLivingEntity)
+        if (exitLivingEntity == null) return;
+        if(_gettingLivingEntity == exitLivingEntity  && n_eneterTime > 0)
         {
             _gettingLivingEntity = null;
             this.photonView.TransferOwnership(0);   //중립오브젝트로 전환

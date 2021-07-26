@@ -9,9 +9,8 @@ public class HiderInput_User : HiderInput
         base.OnPhotonInstantiate();
         if (this.photonView.IsMine)
         {
-            InputManager.Instacne.SetActiveHiderController(true);
-            var uiMain = Managers.UI.SceneUI as UI_Main;
-            uiMain.FindButton.gameObject.SetActive(false);
+            InputManager.Instance.SetActiveHiderController(true);
+            InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
             IsRun = true;
 
         }
@@ -21,7 +20,7 @@ public class HiderInput_User : HiderInput
     {
         if (photonView.IsMine)
         {
-            InputManager.Instacne.SetActiveHiderController(false);
+            InputManager.Instance.SetActiveHiderController(false);
 
         }
     }
@@ -36,14 +35,18 @@ public class HiderInput_User : HiderInput
             UpdateStopState();
             return;
         }
-        MoveVector = InputManager.Instacne.MoveVector;
-        IsRun = InputManager.Instacne.IsRun;
-        UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
+        MoveVector = InputManager.Instance.MoveVector;
+        IsRun = InputManager.Instance.IsRun;
+        AttackVector = InputManager.Instance.baseAttackJoystick.InputVector2;
+        ItemVector1 = InputManager.Instance.itemControllerJoysticks[0].InputVector2;
+        //UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
     }
+
+   
 
     public override void EnegyZero()
     {
-        InputManager.Instacne.IsRun = false;
+        InputManager.Instance.IsRun = false;
     }
     //스탑 상태에서 발생
     protected void UpdateStopState()

@@ -6,28 +6,21 @@ using Photon.Pun;
 
 public class Timer_Glue : TimerItem
 {
-    TimerItemController _timerItemController;
     List<MoveBase> _moveBase = new List<MoveBase>();
     [SerializeField] ParticleSystem _effectAcid;
 
     bool _isSizeChange;
 
-    private void Awake()
-    {
-        _timerItemController = GetComponent<TimerItemController>();
-    }
+    
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        var sendTime =  info.SentServerTime;
-        if(PhotonNetwork.Time - info.SentServerTime < 1)
-        {
-            EffectManager.Instance.EffectOnLocal(Define.EffectType.AcidExp, this.transform.position + new Vector3(0,0.5f,0), 0);
-        }
+        base.OnPhotonInstantiate(info);
         _moveBase.Clear();
         _effectAcid.Play();
         _isSizeChange = false;
         this.transform.localScale = new Vector3(2.5f, 1, 2.5f);
+        _fogOfWarUnit.enabled = false;
     }
 
     public override void EndTime()

@@ -46,7 +46,6 @@ public class ItemSpawnManager : MonoBehaviour
                 {
                     var spawnIndex = GetSpawnIndex(Define.Team.Hide);
                     var spawnPoint = GetSpawnPoint(Define.Team.Hide, spawnIndex);
-                    print($"{spawnPoint } / {spawnIndex}");
                     PhotonNetwork.InstantiateRoomObject("ItemRandomBox", spawnPoint, Quaternion.identity, 0,
                         new object[] { Define.Team.Hide, spawnIndex });
 
@@ -110,7 +109,6 @@ public class ItemSpawnManager : MonoBehaviour
         }
 
         result.y = 0;
-        print(result + "/" + spawnIndex);
         return result;
     }
 

@@ -58,6 +58,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         avater.transform.ResetTransform();
         avater.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
         go = avater;
+        fogOfWarController._hideInFog.ClearRenders();
         fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
     }
 
@@ -74,6 +75,10 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         if (Managers.Resource == null) return;
         Managers.Game.UnRegisterLivingEntity(this.ViewID());
         Managers.Resource.Destroy(GetComponentInChildren<Animator>().gameObject);
+        if(CameraManager.Instance.Target.ViewID() == this.ViewID())
+        {
+            CameraManager.Instance.FindNextPlayer();
+        }
         if(PhotonGameManager.Instacne.State == Define.GameState.Gameing)
         {
             PhotonGameManager.Instacne.GetComponent<GameState_Gameing>().UpdatePlayerCount();

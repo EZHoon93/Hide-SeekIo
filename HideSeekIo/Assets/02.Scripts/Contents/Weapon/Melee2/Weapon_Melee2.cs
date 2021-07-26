@@ -26,7 +26,7 @@ public class Weapon_Melee2 : Weapon
         AttackAnim = "Attack";
         AttackDelay= 0.5f;
         AfaterAttackDelay= 0.5f;
-        AttackDistance= 1.5f;
+        AttackDistance= 2;
 
         _attackClip = Resources.Load<AudioClip>("Sounds/SMelee2");
     }
@@ -84,10 +84,10 @@ public class Weapon_Melee2 : Weapon
 
     void AttackEffect()
     {
-        var attackPos = attackPlayer.transform.position + attackPlayer.transform.forward * AttackDistance;
+        var attackPos = attackPlayer.transform.position + attackPlayer.transform.forward * AttackDistance * 0.5f;
         print(attackPos + "어택이펙트");
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
-        UtillGame.DamageInRange(attackPlayer.transform, AttackDistance, 1, attackPlayer.ViewID(), UtillLayer.seekerToHiderAttack, 120);
+        UtillGame.DamageInRange(attackPlayer.transform, AttackDistance, 10, attackPlayer.ViewID(), UtillLayer.seekerToHiderAttack, 110);
         Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         //Collider[] colliders = new Collider[10];
 

@@ -1,9 +1,17 @@
 ﻿using System.Collections;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_FindCamera : MonoBehaviour
 {
+    Button _button;
+
+    private void Awake()
+    {
+        _button = GetComponent<Button>();
+        //_button.onClick.AddListener(Click);
+    }
     void Start()
     {
         PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, () => SetActive(false));
@@ -40,5 +48,11 @@ public class UI_FindCamera : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
+    }
+
+    void Click()
+    {
+        CameraManager.Instance.FindNextPlayer();
+
     }
 }

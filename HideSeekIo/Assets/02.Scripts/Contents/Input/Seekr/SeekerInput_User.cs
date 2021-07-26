@@ -14,7 +14,7 @@ public class SeekerInput_User : SeekerInput
     {
         if (this.IsMyCharacter())
         {
-            InputManager.Instacne.SetActiveSeekerController(true);
+            InputManager.Instance.SetActiveSeekerController(true);
             var uiMain = Managers.UI.SceneUI as UI_Main;
             uiMain.FindButton.gameObject.SetActive(false);
         }
@@ -24,7 +24,7 @@ public class SeekerInput_User : SeekerInput
     {
         if (this.IsMyCharacter())
         {
-            InputManager.Instacne.SetActiveSeekerController(false);
+            InputManager.Instance.SetActiveSeekerController(false);
         }
     }
 
@@ -35,8 +35,8 @@ public class SeekerInput_User : SeekerInput
             UpdateStopState();
             return;
         }
-        MoveVector = InputManager.Instacne.MoveVector;
-        UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
+        MoveVector = InputManager.Instance.MoveVector;
+        //UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
     }
 
     protected void UpdateStopState()

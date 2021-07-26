@@ -10528,7 +10528,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1756852196711009780}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -10996,6 +10996,7 @@ GameObject:
   - component: {fileID: 8291536244128813159}
   - component: {fileID: 3002913496235448365}
   - component: {fileID: 5916773454753675287}
+  - component: {fileID: 6538073862001500303}
   m_Layer: 5
   m_Name: KillNotice
   m_TagString: Untagged
@@ -11019,8 +11020,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 414, y: -50}
-  m_SizeDelta: {x: 306.91357, y: 147.20844}
+  m_AnchoredPosition: {x: 374.6, y: -50}
+  m_SizeDelta: {x: 346.34412, y: 147.20844}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &3002913496235448365
 CanvasRenderer:
@@ -11059,6 +11060,31 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6538073862001500303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055190980692002922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
 --- !u!1 &2139969913289435556
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,8 @@ public abstract class Weapon_Throw : Weapon
         AfaterAttackDelay = afaterDelayTime;
         AttackDistance = distance;
         attackRange = newAttackRange;
+
+        UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange);
     }
 
     public override void Zoom(Vector2 inputVector)
@@ -56,7 +58,7 @@ public abstract class Weapon_Throw : Weapon
         AttackSucessEvent?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(attackPlayer.ViewID(),  startPoint, endPoint);
+        projectile.Play(attackPlayer,  startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();
         state = State.End;

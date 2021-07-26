@@ -1,9 +1,8 @@
 ﻿
-using UnityEngine;
-using Photon.Pun;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
+using Photon.Pun;
+using UnityEngine;
 
 public class GameState_Count : GameState_Base
 {
@@ -148,45 +147,31 @@ public class GameState_Count : GameState_Base
     [PunRPC]
     void CreatePlayer(Dictionary<int, int> spawnPosDic)
     {
-        print(spawnPosDic.Count + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        foreach(var s in spawnPosDic)
+        foreach (var s in spawnPosDic)
         {
             print(s.Key + "/" + PhotonNetwork.LocalPlayer.ActorNumber);
-            if(s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
+            if (s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 Local_MyPlayerCharacter(s.Value);
             }
             //방장만 AI생성
             if (PhotonNetwork.IsMasterClient == false) continue;
-            if(s.Key < 0)
+            if (s.Key < 0)
             {
                 Master_Creat_AIPlayer(s.Value);
             }
         }
-
 
         Master_ChangeState(Define.GameState.GameReady);
     }
 
     void Local_MyPlayerCharacter(int index)
     {
-        //object[] userData = { "User1", PlayerInfo.CurrentAvater };
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
-        //}
-        //else
-        //{
-        //    var pos = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>().GetSeekerPosition(index);
-        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
-        //}
         //index = 0,1은 좀비 
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = _gameMainScene.GetSeekerPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos);
-
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
 
         }
         else
@@ -213,16 +198,6 @@ public class GameState_Count : GameState_Base
             var pos = _gameMainScene.GetHiderPosition(index);
             Managers.Spawn.AISpawn(Define.Team.Hide, pos);
         }
-
-        //else
-        //{
-        //    _characterManager.CreatePlayer(Define.Team.Human, true, _playerSpawnPoints.spawnPointList[index].position);
-        //}
-        //for(int i = 1; i < 5; i++)
-        //{
-        //    var pos = GameManager.Instance.CurrentGameScene.GetSeekrPosition(i);
-        //    GameManager.Instance.SpawnManager.PhotonSpawn(Define.PhotonObject.AIHider, pos);
-        //}
 
     }
 

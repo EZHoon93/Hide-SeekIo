@@ -75,8 +75,8 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
                 //fogController._fogOfWarUnit.shapeType = FoW.FogOfWarShapeType.Box;
                 //fogController._fogOfWarUnit.boxSize = new Vector2(2.5f, 2.5f);
                 fogController.ChangeSight(2);
-                fogController._fogOfWarUnit.angle = 30;
-                fogController._fogOfWarUnit.innerRadius = 0.1f;
+                fogController._fogOfWarUnit.angle = 360;
+                fogController._fogOfWarUnit.innerRadius = 0.3f;
                 fogController._fogOfWarUnit.circleRadius = 2.5f;
                 fogController._fogOfWarUnit.offset = new Vector2(0, 1.0f);
                 break;
@@ -103,12 +103,13 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
             // 체력이 0 이하 && 아직 죽지 않았다면 사망 처리 실행
             if (Health <= 0 && !Dead)
             {
-                Die();
+                //Die();
+                photonView.RPC("Die", RpcTarget.All);
             }
         }
     }
 
-
+    [PunRPC]
     public virtual void Die()
     {
         // onDeath 이벤트에 등록된 메서드가 있다면 실행

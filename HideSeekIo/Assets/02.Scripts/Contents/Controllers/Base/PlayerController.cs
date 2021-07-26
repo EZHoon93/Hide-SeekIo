@@ -59,7 +59,6 @@ public abstract class PlayerController : MonoBehaviourPun
     }
     public void AddItem(InGameItemController newItem)
     {
-        print("AddITem");
         for (int i = 0; i < itemInventory.Length; i++)
         {
             if (itemInventory[i] != null) continue;
@@ -67,7 +66,7 @@ public abstract class PlayerController : MonoBehaviourPun
             itemInventory[i] = newItem;
             if (this.IsMyCharacter())
             {
-                InputManager.Instacne.AddItemByButton(i, newItem);
+                InputManager.Instance.AddItemByButton(i, newItem);
             }
             return;
         }
@@ -81,7 +80,7 @@ public abstract class PlayerController : MonoBehaviourPun
             itemInventory[i] = null;
             if (this.IsMyCharacter())
             {
-                InputManager.Instacne.RemoveItemButton(i);
+                InputManager.Instance.RemoveItemButton(i);
             }
             return;
         }

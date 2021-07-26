@@ -32,6 +32,15 @@ public class GameScene : BaseScene
             PhotonGameManager.Instacne.State = gameState;
         }
 
+        if((bool)PhotonNetwork.LocalPlayer.CustomProperties["jn"])
+        {
+            PhotonGameManager.Instacne.GameJoin();
+        }
+        else
+        {
+            PhotonGameManager.Instacne.GameExit();
+
+        }
 
         PhotonGameManager.Instacne.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name}{DynamicTextData.gamaSceneNotice}");
 

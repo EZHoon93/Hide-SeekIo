@@ -6,34 +6,23 @@ using Photon.Pun;
 using UnityEngine;
 public class Timer_TNT : TimerItem
 {
-    int _viewID;
 
-    FogOfWarUnit _fogOfWarUnit;
     [SerializeField] ParticleSystem _effect;
+    [SerializeField] float _damageRange;
+    [SerializeField] int _damage = 10;
 
-    private void Awake()
-    {
-        _fogOfWarUnit = GetComponent<FogOfWarUnit>();
-    }
-
-    private void OnEnable()
-    {
-        _effect.Play();
-    }
     public override void EndTime()
     {
-        
+        UtillGame.DamageInRange(this.transform, _damageRange, _damage, _timerItemController.usePlayer.ViewID(), UtillLayer.seekerToHiderAttack);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
+            
     }
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        var userViewID = (int)info.photonView.InstantiationData[0];
-        _viewID = userViewID;
-        _fogOfWarUnit.team = userViewID;
-        if (PhotonNetwork.Time - info.SentServerTime < 1)
-        {
-            EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 0);
-        }
+        base.OnPhotonInstantiate(info);
+        print("TNT Effect Play");
+        _effect.Play();
     }
-  
+
 }

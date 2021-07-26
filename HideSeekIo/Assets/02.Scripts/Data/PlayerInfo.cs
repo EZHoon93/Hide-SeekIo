@@ -7,8 +7,13 @@ using Data;
 public static class PlayerInfo 
 {
     private static readonly string jsonDataName = "userData.json";
+    private static readonly string optionDataName = "optionData.json";
+
     public static UserData userData;
+    public static OptionData optionData;
     public static Action chnageInfoEvent;
+    public static Action chnageOptionInfoEvent;
+
     public static Define.UserDataState State { get;  set; }  //로그인 여부 
 
     public static ServerKey CurrentSkin=> userData.skinList.Find(s => s.isUsing == true);
@@ -36,8 +41,23 @@ public static class PlayerInfo
             Debug.Log("로그인... 존재하지 않습니다..." + userData);
             State = Define.UserDataState.Null;
         }
+
+        
     }
 
+    public static void LoadOptionData()
+    {
+        if (UserDataSystem.DoseSaveGameExist(optionDataName))
+        {
+            optionData = UserDataSystem.LoadData<OptionData>(optionDataName);
+        }
+        else
+        {
+            optionData = new OptionData();
+        }
+
+        
+    }
     public static void CreateFirstID(string nickName)
     {
         userData = new UserData();//초기 데이터 생성
@@ -51,21 +71,12 @@ public static class PlayerInfo
         {
             new ServerKey("Ch01","Wm01", true)
         };
-        
-        SaveUserData();
+
+        SaveOptionData();
         Login();
     }
 
-    //static IEnumerator WaitLogin()
-    //{
-    //    yield return new WaitForSeconds(1.5f);
-    //    //nickName = "EZsss";
-    //    //coin = 999;
-    //    //level = 33;
-    //    //CurrentAvater = "Ch01";
-    //    //CurrentWeapon = "Wm01";
-    //}
-
+   
     public static bool SaveUserData()
     {
         try
@@ -76,7 +87,19 @@ public static class PlayerInfo
         }
         catch (System.Exception)
         {
+            return false;
+        }
+    }
 
+    public static bool SaveOptionData()
+    {
+        try
+        {
+            UserDataSystem.SaveData(optionData, optionDataName);
+            return true;
+        }
+        catch (System.Exception)
+        {
             return false;
         }
     }

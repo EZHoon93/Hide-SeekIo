@@ -74,7 +74,6 @@ public class HiderMove : MoveBase , IMakeRunEffect
     public override void OnUpdate(Vector2 inputVector2, bool isRun)
     {
         MoveSpeed = _testSpeed;
-
         switch (_attackBase.State)
         {
             case AttackBase.state.Idle:
@@ -92,7 +91,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
                 UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
+                UpdateImmediateRotate(_attackBase.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
@@ -114,19 +113,25 @@ public class HiderMove : MoveBase , IMakeRunEffect
     [PunRPC]
     void CreateEffectOnLocal()
     {
+        var pos = this.transform.position;
+        pos.y = 0;
         if (CameraManager.Instance.Target == null)
         {
-            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+            EffectManager.Instance.EffectOnLocal(Define.EffectType.Ripple, pos, 0);
+
+            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, pos, 0);
         }
         else if (CameraManager.Instance.Target.Team == Define.Team.Hide)
         {
-            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+            EffectManager.Instance.EffectOnLocal(Define.EffectType.Ripple, pos, 0);
+
+            //EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
         }
         else
         {
             if(Vector3.Distance(this.transform.position , CameraManager.Instance.Target.transform.position) <= 4)
             {
-                EffectManager.Instance.EffectToServer(Define.EffectType.Ripple, this.transform.position, 0);
+                EffectManager.Instance.EffectToServer(Define.EffectType.Ripple, pos, 0);
             }
         }
     }

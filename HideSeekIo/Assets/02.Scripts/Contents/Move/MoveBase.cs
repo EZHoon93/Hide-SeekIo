@@ -80,7 +80,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                     //UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
+                //UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
@@ -96,7 +96,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
+                //UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
@@ -137,13 +137,13 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         switch (moveState)
         {
             case MoveState.Idle:
-                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, 0, Time.deltaTime ) , 0, 2);
+                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3 ) , 0, MoveSpeed);
                 break;
             case MoveState.Walk:
-                _animationValue =Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 0.7f, Time.deltaTime * 3) , 0 ,2);
+                _animationValue =Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 0.7f, Time.deltaTime * 3) , 0 , MoveSpeed);
                 break;
             case MoveState.Run:
-                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 1, Time.deltaTime * 3) ,0 , 2);
+                _animationValue = Mathf.Clamp( Mathf.Lerp(_animationValue, MoveSpeed * 1, Time.deltaTime * 3) ,0 , MoveSpeed);
                 break;
             case MoveState.Stun:
                 _animationValue = -0.1f;

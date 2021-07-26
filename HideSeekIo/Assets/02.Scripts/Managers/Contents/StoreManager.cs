@@ -55,6 +55,12 @@ public static class StoreManager
         int weaponRan = Random.Range(0, weaponList.Length);
 
         PlayerInfo.userData.skinList.Add(new ServerKey(avaterList[avaterRan].name,weaponList[weaponRan].name,false));   //=>캐릭및 스킨 랜덤
+        PlayerInfo.SaveUserData();
+
+    }
+
+    public static void ChangeNickName(string nickName)
+    {
 
     }
 }

@@ -87,6 +87,43 @@ namespace Data
         }
     }
 
+
+	[System.Serializable]
+	public class OptionData 
+	{
+		public bool bgmValue;
+		public bool soundValue;
+		public bool isLeftHand;
+		public List<InputUIInfo> joystickSettings = new List<InputUIInfo>();
+		//기본값
+		public OptionData()
+		{
+			bgmValue = true;
+			soundValue = true;
+			isLeftHand = false;
+
+			joystickSettings.Clear();
+            foreach (var js in UISetting.Instance.inputUIInfos)
+            {
+                var inputUIInfo = new InputUIInfo();
+				inputUIInfo.joystickName = js.joystickName;
+				inputUIInfo.size = js.size;
+				inputUIInfo.vector2 = js.vector2;
+                joystickSettings.Add(inputUIInfo);
+            }
+
+        }
+	}
+
+	[System.Serializable]
+	public class InputUIInfo
+	{
+		public string joystickName;
+		public Vector2 vector2;
+		public float size;
+	}
+
+
 	#endregion
 
 }

@@ -111,6 +111,7 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	// PUBLIC CALLBACKS //
 	public event Action OnPointerDownCallback, OnPointerUpCallback, OnDragCallback;
 	public event Action OnUpdatePositioning;
+	public event Action OnTapCount;
 	
 	// OBSOLETE // NOTE: We are keeping these variables in the script and public so that the values can be copied to the new variables for a smooth transition to the new version.
 	public enum JoystickTouchSize
@@ -562,7 +563,7 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	/// <summary>
 	/// This function updates the joystick's position on the screen.
 	/// </summary>
-	void UpdateJoystickPositioning ()
+	public void UpdateJoystickPositioning ()
 	{
 		// If the parent canvas is null, then try to get the parent canvas component.
 		if( ParentCanvas == null )
@@ -939,6 +940,7 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	IEnumerator TapCountDelay ()
 	{
 		tapCountAchieved = true;
+		OnTapCount?.Invoke();
 		yield return new WaitForEndOfFrame();
 		tapCountAchieved = false;
 	}

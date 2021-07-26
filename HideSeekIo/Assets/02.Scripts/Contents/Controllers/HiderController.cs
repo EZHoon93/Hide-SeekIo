@@ -52,10 +52,10 @@ public class HiderController : PlayerController
     {
         base.HandleDeath();
         SetActiveComponent(false);
-        PhotonNetwork.Destroy(this.gameObject);
+        //PhotonNetwork.Destroy(this.gameObject);
         if (photonView.IsMine)
         {
-            //Util.CallBackFunction(this, 3.0f, () => PhotonNetwork.Destroy(this.gameObject));
+            Util.CallBackFunction(this, 3.0f, () => PhotonNetwork.Destroy(this.gameObject));
         }
     }
 
@@ -67,7 +67,6 @@ public class HiderController : PlayerController
     private void OnTriggerEnter(Collider other)
     {
         var enterTrigger = other.gameObject.GetComponent<IEnterTrigger>();
-        print(other.gameObject.name + "부디침 Enter");
         if(enterTrigger != null)
         {
             enterTrigger.Enter(this.gameObject);
@@ -77,7 +76,6 @@ public class HiderController : PlayerController
     private void OnTriggerExit(Collider other)
     {
         var exitTrigger = other.gameObject.GetComponent<IExitTrigger>();
-        print(other.gameObject.name + "부디침 Exit");
         if (exitTrigger != null)
         {
             exitTrigger.Exit(this.gameObject);

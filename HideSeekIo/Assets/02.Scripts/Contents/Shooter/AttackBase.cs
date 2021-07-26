@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class AttackBase : MonoBehaviourPun 
 {
@@ -19,10 +20,13 @@ public class AttackBase : MonoBehaviourPun
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-    public Weapon currentWeapon { get; protected set; }   //현재 사용 무기
+    public Weapon[] itemWeapons;
+    //public Weapon skillWeapon { get; protected set; }   //스킬무기
+    //public Weapon currentWeapon { get; protected set; }   //현재 사용 무기
+
+    public Vector2 AttackDirection { get; set; }
 
 
-    
 
     private void OnEnable()
     {
@@ -43,9 +47,13 @@ public class AttackBase : MonoBehaviourPun
         newWeapon.transform.ResetTransform(_animator.GetComponent<CharacterAvater>().RightHandAmount);  //무기오브젝트
         newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
 
-        if(currentWeapon == null)
+        if(newWeapon.type == Weapon.Type.Permanent)
         {
             UseWeapon(newWeapon);
+        }
+        else
+        {
+            
         }
     }
 
@@ -55,28 +63,18 @@ public class AttackBase : MonoBehaviourPun
         if (baseWeapon == null) return;
         UseWeapon(baseWeapon);
     }
-    public void UseWeapon(Weapon newWeapon)
+    public virtual void UseWeapon(Weapon newWeapon)
     {
-        if(currentWeapon != null)
-        {
-            currentWeapon.useState = Weapon.UseState.NoUse;
-        }
-        currentWeapon = newWeapon;
-        currentWeapon.AttackSucessEvent -= AttackSucess;
-        currentWeapon.AttackSucessEvent += AttackSucess;
-        currentWeapon.AttackEndEvent -= AttackEnd;
-        currentWeapon.AttackEndEvent += AttackEnd;
-        currentWeapon.useState = Weapon.UseState.Use;
-        if (currentWeapon.type == Weapon.Type.Permanent)
-        {
-            baseWeapon = currentWeapon;
-        }
+        baseWeapon = newWeapon;
+        baseWeapon.AttackSucessEvent += AttackBaseSucess;
+        baseWeapon.AttackEndEvent += AttackBaseEnd;
+        baseWeapon.useState = Weapon.UseState.Use;
         SetupAnimation();
     }
 
     protected void SetupAnimation()
     {
-        switch (currentWeapon.weaponType)
+        switch (baseWeapon.weaponType)
         {
             case Weapon.WeaponType.Gun:
                 _animator.SetBool("Gun", true);
@@ -93,28 +91,28 @@ public class AttackBase : MonoBehaviourPun
 
     }
 
-    protected void UpdateZoom(Vector2 inputVector2)
+    protected void UpdateBaseZoom(Vector2 inputVector2)
     {
-        currentWeapon.Zoom(inputVector2);
+        print(baseWeapon.gameObject.name + inputVector2 );
+        baseWeapon.Zoom(inputVector2);
     }
-
-    protected virtual void AttackSucess()
+    protected virtual void AttackBaseSucess()
     {
         State = state.Attack;
-        _animator.SetTrigger(currentWeapon.AttackAnim);
-
+        _animator.SetTrigger(baseWeapon.AttackAnim);
     }
-    public void UpdateAttack(Vector2 inputVector2)
+    public void UpdateBaseAttack(Vector2 inputVector2)
     {
         if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
-        currentWeapon.AttackCheck(inputVector2);
+        baseWeapon.AttackCheck(inputVector2);
+        AttackDirection = inputVector2;
     }
-    protected virtual void AttackEnd()
+    protected virtual void AttackBaseEnd()
     {
         State = state.Idle;
-        if (currentWeapon.type == Weapon.Type.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
+        if (baseWeapon.type == Weapon.Type.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
         {
-            PhotonNetwork.Destroy(currentWeapon.gameObject);
+            PhotonNetwork.Destroy(baseWeapon.gameObject);
         }
         if (baseWeapon)
         {
@@ -124,8 +122,14 @@ public class AttackBase : MonoBehaviourPun
     }
     protected void UpdateAttackCoolTime()
     {
-        InputManager.Instacne.AttackCoolTime(currentWeapon.InitCoolTime, currentWeapon.ReaminCoolTime);
+        //InputManager.Instance.AttackCoolTime(currentWeapon.InitCoolTime, currentWeapon.ReaminCoolTime);
     }
 
-  
+    
+    public  void UpdateItemZoom(int index, Vector2 inputVector2)
+    {
+        itemWeapons[index].Zoom(inputVector2);
+    }
+
+
 }

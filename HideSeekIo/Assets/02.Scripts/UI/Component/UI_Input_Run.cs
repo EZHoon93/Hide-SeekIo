@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UI_Input_Run : MonoBehaviour, IPointerDownHandler
+public class UI_Input_Run : MonoBehaviour
 {
     [SerializeField] GameObject _runEffectImage;
     bool _isRun;
@@ -19,6 +19,11 @@ public class UI_Input_Run : MonoBehaviour, IPointerDownHandler
 
     }
 
+    private void Awake()
+    {
+        GetComponent<UltimateButton>().OnGetButtonDown += OnPointerDown;
+        print("@@@@@@@@@@@@@셋업");
+    }
 
     private void OnEnable()
     {
@@ -27,8 +32,9 @@ public class UI_Input_Run : MonoBehaviour, IPointerDownHandler
 
     
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerDown()
     {
         IsRun = !_isRun;
+        print("클릭 런 !!" + IsRun);
     }
 }

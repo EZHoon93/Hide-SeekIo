@@ -37,7 +37,7 @@ public class UI_Zoom : MonoBehaviour
 
     void UpdateZoom()
     {
-        switch (_attackBase.currentWeapon.weaponType)
+        switch (_attackBase.baseWeapon.weaponType)
         {
             case Weapon.WeaponType.Melee:
                 break;
@@ -46,6 +46,6 @@ public class UI_Zoom : MonoBehaviour
             case Weapon.WeaponType.Gun:
                 break;
         }
-        UtillGame.ThrowZoom(_inputBase.AttackVector, _attackBase.currentWeapon.AttackDistance, this.transform, uiZoom);
+        //UtillGame.ThrowZoom(_inputBase.AttackVector, _attackBase.currentWeapon.AttackDistance, this.transform, uiZoom);
     }
 }

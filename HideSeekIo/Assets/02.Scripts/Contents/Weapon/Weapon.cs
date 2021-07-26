@@ -59,7 +59,12 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
             }
             else
             {
-                _weaponModel.gameObject.SetActive(false);
+                switch (weaponType)
+                {
+                    case WeaponType.Throw:
+                        _weaponModel.gameObject.SetActive(false);
+                        break;
+                }
             }
         }
     }

@@ -143,7 +143,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         gameExit?.Invoke();
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
         CameraManager.Instance.ResetCamera();
-        InputManager.Instacne.OffAllController();
+        InputManager.Instance.OffAllController();
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -253,7 +253,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void HiderDieOnLocal(int dieViewID, int attackViewID)
     {
-        photonView.RPC("DieOnServer", RpcTarget.MasterClient, dieViewID, attackViewID);
+        photonView.RPC("DieOnServer", RpcTarget.All, dieViewID, attackViewID);
     }
     [PunRPC]
     public void DieOnServer(int dieViewID, int attackViewID)
@@ -266,11 +266,15 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     void DelayDie(int dieViewID, int attackViewID)
     {
         var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
-        var killPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
+        var killPlayer = Managers.Game.GetLivingEntity(attackViewID).GetComponent<PlayerController>();
+        var uiMain = Managers.UI.SceneUI as UI_Main;
+        uiMain.UpdateKillNotice("dsdowok", "playertEst");
+
+        print(killPlayer.IsMyCharacter() + "킬플레이어 " + killPlayer.gameObject.name);
+
         if (killPlayer.IsMyCharacter())
         {
-            var uiMain = Managers.UI.SceneUI as UI_Main;
-            uiMain.UpdateKillNotice("dsdowok", "playertEst");
+            
             uiMain.killText.text = $"{deathPlayer.NickName} 를 잡으셨습니다.";
             Color color = uiMain.killText.color;
             color.a = 1;

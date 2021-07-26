@@ -20,24 +20,49 @@ public class SeekerAttack : AttackBase
         }
     }
 
-    public void OnUpdate()
-    {
-        if (this.photonView.IsMine == false || currentWeapon == null) return;
-        UpdateAttackCoolTime();
-        UpdateAttack(_seekerInput.LastAttackVector);
-    }
+    //public void OnUpdate()
+    //{
+    //    if (this.photonView.IsMine == false || currentWeapon == null) return;
+    //    UpdateAttackCoolTime();
+    //    UpdateAttack(_seekerInput.LastAttackVector);
+    //}
+
+    //public override void UseWeapon(Weapon newWeapon)
+    //{
+    //    if (currentWeapon != null)
+    //    {
+    //        currentWeapon.useState = Weapon.UseState.NoUse;
+    //    }
+    //    currentWeapon = newWeapon;
+    //    currentWeapon.AttackSucessEvent -= AttackSucess;
+    //    currentWeapon.AttackSucessEvent += AttackSucess;
+    //    currentWeapon.AttackEndEvent -= AttackEnd;
+    //    currentWeapon.AttackEndEvent += AttackEnd;
+    //    currentWeapon.useState = Weapon.UseState.Use;
+    //    if (currentWeapon.type == Weapon.Type.Permanent)
+    //    {
+    //        baseWeapon = currentWeapon;
+    //    }
+    //    else
+    //    {
+    //        skillWeapon = newWeapon;
+
+    //    }
+    //    SetupAnimation();
+    //}
 
 
-   
-    public void Update()
-    {
-        OnUpdate();
-    }
 
-    private void LateUpdate()
-    {
-        if (this.IsMyCharacter() == false || currentWeapon == null) return;
-        UpdateZoom(_seekerInput.AttackVector);
-    }
+    //public void Update()
+    //{
+    //    OnUpdate();
+    //}
+
+    //private void LateUpdate()
+    //{
+    //    if (this.IsMyCharacter() == false) return;
+    //    if()
+    //    UpdateZoom(_seekerInput.AttackVector);
+    //}
 
 }

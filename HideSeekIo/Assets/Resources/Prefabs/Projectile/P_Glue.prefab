@@ -56,6 +56,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4457077968123878557}
   - component: {fileID: 4955061910377261856}
+  - component: {fileID: 5940568997150537375}
+  - component: {fileID: 6501387473422745500}
   m_Layer: 0
   m_Name: P_Glue
   m_TagString: Untagged
@@ -75,7 +77,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5339067396616546785}
-  - {fileID: 7682159801107905904}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -93,57 +94,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsUsing: 0
   _modelObject: {fileID: 2874462675005079000}
---- !u!1 &8715223462521736830
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7682159801107905904}
-  - component: {fileID: 5278559936232382691}
-  m_Layer: 0
-  m_Name: FogOfWar
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7682159801107905904
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8715223462521736830}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4457077968123878557}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5278559936232382691
+--- !u!114 &5940568997150537375
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8715223462521736830}
+  m_GameObject: {fileID: 8094596044185181897}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b130f358dcb26548b2ff0923d496dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  brightness: 0.5
+  brightness: 1
   shapeType: 0
   absoluteOffset: 0
   offset: {x: 0, y: 0}
   boxSize: {x: 5, y: 5}
   circleRadius: 2
-  innerRadius: 0.5
+  innerRadius: 0.3
   angle: 180
   texture: {fileID: 0}
   rotateToForward: 0
@@ -159,6 +129,24 @@ MonoBehaviour:
   multithreading: 0
   cellBased: 0
   snapToPixelCenter: 0
+--- !u!114 &6501387473422745500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094596044185181897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e790a7cab88cbe0469aef7a442bca56d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  minFogStrength: 0.8
+  _canvas1: {fileID: 0}
+  _canvas2: {fileID: 0}
+  _renderers:
+  - {fileID: 7985904980230455568}
 --- !u!1001 &8013292020713220468
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -248,6 +236,12 @@ PrefabInstance:
 --- !u!4 &8008609196804500146 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4685022944560070, guid: 80e020c6b90cf474090922189750f734,
+    type: 3}
+  m_PrefabInstance: {fileID: 8013292020713220468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &7985904980230455568 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 137162865671776356, guid: 80e020c6b90cf474090922189750f734,
     type: 3}
   m_PrefabInstance: {fileID: 8013292020713220468}
   m_PrefabAsset: {fileID: 0}

@@ -229,7 +229,8 @@ public class Define
         GrenadeEffect,
         Ripple,
         AcidExp,
-        DarkExp
+        DarkExp,
+        FlashEffect
             
     }
 

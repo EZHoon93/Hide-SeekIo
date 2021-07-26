@@ -83,6 +83,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         Target = targetPlayer;
         _fogOfWarLegacy.team = targetPlayer.ViewID();
         fogChangeEvent?.Invoke(targetPlayer.ViewID());
+
         if (targetPlayer.Team == Define.Team.Hide)
         {
             Camera.main.cullingMask = ~(1 << (int)Define.Layer.SeekerItem | 1 << (int)Define.Layer.UI);
@@ -102,24 +103,33 @@ public class CameraManager : GenricSingleton<CameraManager>
     {
         PlayerController findTarget = null;
         var livingEntities = Managers.Game.GetAllLivingEntity();
-
+        Array.Sort(livingEntities , (a,b) => (a.ViewID() > b.ViewID() )? -1 : 1 );
         if (livingEntities.Length <= 0) return;  //없으면 X
         int i = 0;
         do
         {
-            if (_observerNumber < livingEntities[i].photonView.ViewID)
+            if (_observerNumber < i )
             {
                 findTarget = livingEntities[i].GetComponent<PlayerController>();
                 if (findTarget == null)
                 {
+                    i++;
                     continue;
                 }
-                _observerNumber = findTarget.photonView.ViewID;
+                if (Target != null)
+                {
+                    if (Target == findTarget)
+                    {
+                        findTarget = null;
+                        i++;
+                        continue;
+                    }
+                }
+                _observerNumber = i;
                 SetupTarget(findTarget.transform);
                 return;
             }
             i++;
-
             if (i > livingEntities.Length - 1)
             {
                 i = 0;

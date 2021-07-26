@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
 
-using UnityEngine;
+using TMPro;
+
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class UI_Check_Buy : UI_Popup
@@ -13,12 +13,20 @@ public class UI_Check_Buy : UI_Popup
         Cancel,
     }
 
+    enum Texts
+    {
+        Content,
+        Price
+    }
+
 
     public override void Init()
     {
         base.Init();
 
         Bind<Button>(typeof(Buttons));
+        Bind<TextMeshProUGUI>(typeof(Texts));
+
         GetButton((int)Buttons.Confirm).gameObject.BindEvent(Confirm);
         GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
 
@@ -29,7 +37,6 @@ public class UI_Check_Buy : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         _confirmEvent?.Invoke();
-        print("Confirm");
         Managers.UI.ClosePopupUI();
         
     }

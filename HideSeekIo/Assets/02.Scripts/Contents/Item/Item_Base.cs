@@ -34,13 +34,13 @@ public abstract class Item_Base : MonoBehaviourPun
         itemSprite = Resources.Load<Sprite>($"Sprites/InGameItem/{this.gameObject.name}");
 
     }
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         State = UseState.Server;
         useType = UseType.Item;
     }
 
-    public virtual void OnPhotonInstantiate()
+    public virtual void OnPhotonInstantiate(PlayerController hasPlayerController)
     {
 
     }

@@ -10,7 +10,7 @@ public class UI_TimerSlider : MonoBehaviour
 
     private void Awake()
     {
-        _slider = GetComponent<Slider>();
+        _slider = GetComponentInChildren<Slider>();
         _timerItemController = this.transform.parent.GetComponentInParent<TimerItemController>();
     }
 

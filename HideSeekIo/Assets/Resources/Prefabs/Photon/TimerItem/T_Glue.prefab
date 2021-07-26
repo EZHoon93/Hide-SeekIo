@@ -105,6 +105,8 @@ GameObject:
   - component: {fileID: 9035597244211953301}
   - component: {fileID: 8339817871740836844}
   - component: {fileID: 3575250952587016506}
+  - component: {fileID: 6478832741020359916}
+  - component: {fileID: 8218334937581691324}
   m_Layer: 13
   m_Name: T_Glue
   m_TagString: Untagged
@@ -174,7 +176,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10643906d5392149993ce7cd5f9b073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _effectExp: {fileID: 0}
   _effectAcid: {fileID: 1581677916988678564}
 --- !u!135 &3575250952587016506
 SphereCollider:
@@ -189,6 +190,64 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6478832741020359916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135648753785477893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b130f358dcb26548b2ff0923d496dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  brightness: 1
+  shapeType: 0
+  absoluteOffset: 0
+  offset: {x: 0, y: 0}
+  boxSize: {x: 5, y: 5}
+  circleRadius: 5
+  innerRadius: 1
+  angle: 180
+  texture: {fileID: 0}
+  rotateToForward: 0
+  mesh: {fileID: 0}
+  lineOfSightMask:
+    serializedVersion: 2
+    m_Bits: 0
+  lineOfSightRaycastCount: 100
+  lineOfSightPenetration: 0
+  lineOfSightRaycastAngle: 360
+  lineOfSightRaycastOffset: 0
+  lineOfSightSeeOutsideRange: 0
+  multithreading: 0
+  cellBased: 0
+  snapToPixelCenter: 0
+--- !u!114 &8218334937581691324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135648753785477893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e790a7cab88cbe0469aef7a442bca56d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  minFogStrength: 0.8
+  _canvas1: {fileID: 0}
+  _canvas2: {fileID: 0}
+  _renderers:
+  - {fileID: 952445895100402371}
+  - {fileID: 1580928141060367184}
+  - {fileID: 333781774997304480}
+  - {fileID: 2061527975615291625}
+  - {fileID: 5449087904885188440}
+  - {fileID: 7622100038265347496}
 --- !u!1001 &4480639868947968950
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -302,6 +361,36 @@ Transform:
 --- !u!198 &1581677916988678564 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 3160772226159481362, guid: e94da34902eb07248b46b001810f3088,
+    type: 3}
+  m_PrefabInstance: {fileID: 4480639868947968950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &1580928141060367184 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 3161241048417226982, guid: e94da34902eb07248b46b001810f3088,
+    type: 3}
+  m_PrefabInstance: {fileID: 4480639868947968950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &333781774997304480 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 4219796955153172246, guid: e94da34902eb07248b46b001810f3088,
+    type: 3}
+  m_PrefabInstance: {fileID: 4480639868947968950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &2061527975615291625 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 2500178381527372639, guid: e94da34902eb07248b46b001810f3088,
+    type: 3}
+  m_PrefabInstance: {fileID: 4480639868947968950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &5449087904885188440 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 8480668066665436398, guid: e94da34902eb07248b46b001810f3088,
+    type: 3}
+  m_PrefabInstance: {fileID: 4480639868947968950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &7622100038265347496 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 6334679706039004702, guid: e94da34902eb07248b46b001810f3088,
     type: 3}
   m_PrefabInstance: {fileID: 4480639868947968950}
   m_PrefabAsset: {fileID: 0}

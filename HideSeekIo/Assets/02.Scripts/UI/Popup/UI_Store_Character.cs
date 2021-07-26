@@ -19,7 +19,9 @@ public class UI_Store_Character: UI_Popup
         Weapon,
         State    ,
         Left,
-        Right
+        Right,
+        AddSkin
+
     }
 
     enum Texts
@@ -44,6 +46,7 @@ public class UI_Store_Character: UI_Popup
         GetButton((int)Buttons.Right).gameObject.BindEvent(AvaterRightButton);
         GetButton((int)Buttons.Left).gameObject.BindEvent(AvaterLeftButton);
         GetButton((int)Buttons.State).gameObject.BindEvent(UseAvater);
+        GetButton((int)Buttons.AddSkin).gameObject.BindEvent(AddSkin);
 
 
 
@@ -112,7 +115,14 @@ public class UI_Store_Character: UI_Popup
 
 
     #region 버튼 이벤트
-
+    void AddSkin(PointerEventData pointerEventData)
+    {
+        Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
+            StoreManager.AddSkinList();
+            _uIParticle.Play();
+            UpdaterAvaterCountText();
+        });
+    }
     void ChangeSkin(PointerEventData pointerEventData)
     {
 

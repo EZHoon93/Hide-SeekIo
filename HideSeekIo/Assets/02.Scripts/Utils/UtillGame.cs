@@ -147,28 +147,28 @@ public static class UtillGame
     //}
     public static void UpdateUserAttackInput(ref Vector2 attackVector,ref Vector2 lastattackVector , ref bool isAttack)
     {
-        if (InputManager.Instacne.AttackTouch)
-        {
-            attackVector = InputManager.Instacne.AttackVector;
-            isAttack = true;
-            if (attackVector.sqrMagnitude == 0)
-            {
-                isAttack = false;
-            }
-        }
-        else
-        {
-            if (isAttack)
-            {
-                lastattackVector = attackVector;
-                isAttack = false;
-            }
-            else
-            {
-                attackVector = Vector2.zero;
-                lastattackVector = Vector2.zero;
-            }
-        }
+        //if (InputManager.Instance.AttackTouch)
+        //{
+        //    attackVector = InputManager.Instance.AttackVector;
+        //    isAttack = true;
+        //    if (attackVector.sqrMagnitude == 0)
+        //    {
+        //        isAttack = false;
+        //    }
+        //}
+        //else
+        //{
+        //    if (isAttack)
+        //    {
+        //        lastattackVector = attackVector;
+        //        isAttack = false;
+        //    }
+        //    else
+        //    {
+        //        attackVector = Vector2.zero;
+        //        lastattackVector = Vector2.zero;
+        //    }
+        //}
     }
 
 
@@ -184,9 +184,16 @@ public static class UtillGame
         NavMeshHit hit;
 
         // randomPos를 기준으로 maxDistance 반경 안에서, randomPos에 가장 가까운 네브 메시 위의 한 점을 찾음
-        NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas);
+        if( NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas))
+        {
+            return hit.position;
+
+        }
+        else
+        {
+            return center;
+        }
         // 찾은 점 반환
-        return hit.position;
     }
 
     public static void DamageInRange(Transform center , float radius ,int damage,int damagerViewID,
@@ -202,11 +209,11 @@ public static class UtillGame
             {
                 if (IsTargetOnSight( center , colliders[i].transform , angle, attackLayer))
                 {
-
+                    Debug.Log(colliders[i].gameObject.name + "각도안..");
                     var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
                     if (damageable != null)
                     {
-                        damageable.OnDamage(5, 5, colliders[i].transform.position);
+                        damageable.OnDamage(damagerViewID, damage, colliders[i].transform.position);
                     }
                 }
                 else
@@ -231,12 +238,12 @@ public static class UtillGame
             {
                 if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
                 {
-                    //Debug.LogError("시야 안 " + colliders[i].name);
+                    Debug.LogError("시야 안 " + colliders[i].name);
 
                 }
                 else
                 {
-                    //Debug.LogError("시야 밖 " + colliders[i].name);
+                    Debug.LogError("시야 밖 " + colliders[i].name);
 
                 }
                 var livingEntity = colliders[i].gameObject.GetComponent<LivingEntity>();
@@ -264,7 +271,7 @@ public static class UtillGame
 
         var direction = endPoint - startPoint;
 
-        //Debug.LogError(Vector3.Angle(direction, center.forward) + "각도" + target.name);
+        Debug.LogError(Vector3.Angle(direction, center.forward) + "각도" + target.name);
 
         if (Vector3.Angle(direction, center.forward) > angle* 0.5f)
         {

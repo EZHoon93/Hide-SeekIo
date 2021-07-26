@@ -61,6 +61,8 @@ public class UISetting : ScriptableObject
 
 
     [SerializeField] TypeColor _chattingColorDic;
+    [SerializeField] InputUIInfo[] _uiInitInfos;
 
     public TypeColor ChattingColorDic => _chattingColorDic;
+    public InputUIInfo[] inputUIInfos => _uiInitInfos;
 }

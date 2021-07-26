@@ -12,6 +12,8 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
     public Item_Base _item_Base { get; private set; }
     public Define.InGameItem itemType { get; private set; }
 
+    public int Index { get;  set; }
+
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         var data = info.photonView.InstantiationData;
@@ -34,6 +36,7 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
         _item_Base = Managers.Resource.Instantiate($"InGameItem/{itemType.ToString()}",this.transform).GetComponent<Item_Base>();
         if (_item_Base)
         {
+            //_item_Base.OnPhotonInstantiate(_hasPlayer);
             _item_Base.DestroyEvent += () => PhotonNetwork.Destroy(this.gameObject);    //사용후 파괴
         }
         //플레이어에게 아이템 등록
