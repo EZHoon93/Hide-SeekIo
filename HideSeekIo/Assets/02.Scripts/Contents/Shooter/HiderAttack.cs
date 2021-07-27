@@ -65,10 +65,11 @@ public class HiderAttack : AttackBase
     {
         if (this.IsMyCharacter() == false) return;
         UpdateBaseZoom(_hiderInput.AttackVector);
-        //if(itemWeapons[0] != null)
-        //{
-        //    UpdateItemZoom(0, _hiderInput.ItemVector1);
-        //}
+        if (itemWeapons[0] != null)
+        {
+            print("낫널");
+            UpdateItemZoom(0, _hiderInput.ItemVector1);
+        }
 
     }
 

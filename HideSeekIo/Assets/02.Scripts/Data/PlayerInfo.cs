@@ -72,7 +72,7 @@ public static class PlayerInfo
             new ServerKey("Ch01","Wm01", true)
         };
 
-        SaveOptionData();
+        SaveUserData();
         Login();
     }
 

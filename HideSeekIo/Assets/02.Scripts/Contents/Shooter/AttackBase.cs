@@ -20,7 +20,7 @@ public class AttackBase : MonoBehaviourPun
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-    public Weapon[] itemWeapons;
+    public Weapon[] itemWeapons = new Weapon[2];
     //public Weapon skillWeapon { get; protected set; }   //스킬무기
     //public Weapon currentWeapon { get; protected set; }   //현재 사용 무기
 
