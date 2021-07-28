@@ -10,7 +10,7 @@ public class Item_Trap : Item_Base
     {
         State = UseState.Local;
     }
-    public override void Use(PlayerController usePlayer)
+    protected override void UsePorecess(PlayerController usePlayer)
     {
         if (photonView.IsMine)
         {

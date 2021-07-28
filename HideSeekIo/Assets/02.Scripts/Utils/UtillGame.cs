@@ -68,16 +68,17 @@ public static class UtillGame
         
     }
 
-    public static void ThrowZoom(Vector2 inputVector2, float distance , Transform pivorTransform, Transform zoomObject)
+    public static bool ThrowZoom(Vector2 inputVector2, float distance , Transform pivorTransform, Transform zoomObject)
     {
         if (inputVector2.sqrMagnitude == 0)
         {
             zoomObject.gameObject.SetActive(false);
-            return;
+            return false;
         }
         var pos = GetThrowPosion(inputVector2, distance, pivorTransform);
         zoomObject.position = pos;
         zoomObject.gameObject.SetActive(true);
+        return true;
     }
 
     public static void ZoomByLinerender()

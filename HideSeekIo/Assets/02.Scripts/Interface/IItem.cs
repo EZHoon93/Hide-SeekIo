@@ -7,9 +7,12 @@ public interface IItem
 {
     Define.UseType useType { get; set; }
 
+    int GetInstanceID();
     Sprite GetSprite();
-    void Zoom(Vector2 inputVector);
+    bool Zoom(Vector2 inputVector);
 
     void Attack(Vector2 inputVector);
+
+    void Use(PlayerController usePlayerController);
 
 }

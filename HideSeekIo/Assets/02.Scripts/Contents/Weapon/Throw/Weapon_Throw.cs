@@ -13,14 +13,19 @@ public abstract class Weapon_Throw : Weapon , IItem
     public Define.UseType useType { get; set; }
     public Action destroyCallBackEvent { get; set; }
 
+
     protected override void Awake()
     {
         base.Awake();
         //_attackRangeUI = GetComponentInChildren<Canvas>().transform;
         useType = Define.UseType.Weapon;
         weaponType = WeaponType.Throw;
-        print(this.name + "@@@@@@@@@@@@@@@@@@@@@" + this.ToString());
-        _sprite = Resources.Load<Sprite>( $"Sprites/InGameItem/{this.gameObject.name}" );
+    }
+
+    public override void OnPreNetDestroy(PhotonView rootView)
+    {
+        base.OnPreNetDestroy(rootView);
+        hasPlayerController.GetAttackBase().RemoveItem(this);
     }
 
     public Sprite GetSprite() => _sprite;
@@ -36,10 +41,15 @@ public abstract class Weapon_Throw : Weapon , IItem
         UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange);
     }
 
-    public override void Zoom(Vector2 inputVector)
+    public override bool Zoom(Vector2 inputVector)
     {
+        var state = UtillGame.ThrowZoom(inputVector, AttackDistance, hasPlayerController.GetAttackBase().CenterPivot, UICanvas.transform);
+        if (state)
+        {
+            useState = UseState.Use;
+        }
+        return state;
 
-        UtillGame.ThrowZoom(inputVector, AttackDistance, attackPlayer.CenterPivot, UICanvas.transform);
     }
 
 
@@ -47,7 +57,8 @@ public abstract class Weapon_Throw : Weapon , IItem
     public override void Attack(Vector2 inputVector)
     {
         state = State.Delay;
-        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, attackPlayer.transform);
+        UICanvas.transform.gameObject.SetActive(false);
+        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, hasPlayerController.transform);
         LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
@@ -55,9 +66,8 @@ public abstract class Weapon_Throw : Weapon , IItem
     [PunRPC]
     public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
-        print("어택온서버!!!!");
         LastAttackInput = inputVector;
-        Vector3 startPoint = attackPlayer.CenterPivot.position;
+        Vector3 startPoint = hasPlayerController.GetAttackBase().CenterPivot.position;
         StartCoroutine(AttackProcessOnAllClinets(startPoint, endPoint));
     }
 
@@ -67,31 +77,26 @@ public abstract class Weapon_Throw : Weapon , IItem
         AttackSucessEvent?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(attackPlayer,  startPoint, endPoint);
+        projectile.Play(hasPlayerController.GetAttackBase(),  startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         AttackEndEvent?.Invoke();
+
         state = State.End;
-        print("끝");
+        Use(hasPlayerController);
     }
 
-
-    //public void AttackEffect(Vector3 startPoint, Vector3 endPoint)
-    //{
-    //    var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-    //    projectile.Play(attackPlayer.ViewID() , startPoint, endPoint) ;
-    //}
 
     #endregion
-    public void UseToPlayerToServer()
+
+    public virtual void Use(PlayerController usePlayerController)
     {
-        photonView.RPC("UserToPlayerOnLocal", RpcTarget.All);
+        if(type == Type.Disposable)
+        {
+            if (photonView.IsMine)
+            {
+                PhotonNetwork.Destroy(this.gameObject);
+            }
+        }
     }
 
-    [PunRPC]
-    public void UserToPlayerOnLocal()
-    {
-        //attackPlayer.UseWeapon(this);
-    }
-
-    
 }

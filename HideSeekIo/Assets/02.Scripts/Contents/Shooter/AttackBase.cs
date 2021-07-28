@@ -19,16 +19,28 @@ public abstract class AttackBase : MonoBehaviourPun
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-
     public Weapon currentWeapon { get; protected set; } //현재사용무기
-    //public List<IItem> itemWeapons;
     public IItem[] itemInventory = new IItem[2];
-    //public Weapon skillWeapon { get; protected set; }   //스킬무기
-    //public Weapon currentWeapon { get; protected set; }   //현재 사용 무기
     public abstract InputBase GetInputBase();
     public Vector2 AttackDirection { get; set; }
 
     Action<int> weaponChangeCallBack;
+
+    //int _currentWeaponIndex;
+    //public int CurrentZoomWeaponIndex
+    //{
+    //    get => _currentWeaponIndex;
+    //    set
+    //    {
+    //        var newIndex = value;
+    //        if(newIndex != _currentWeaponIndex)
+    //        {
+    //            weaponChangeCallBack?.Invoke(newIndex);
+    //            _currentWeaponIndex = newIndex;
+    //            //ChangeWeapon(_currentWeaponIndex);
+    //        }
+    //    }
+    //}
 
 
 
@@ -41,11 +53,14 @@ public abstract class AttackBase : MonoBehaviourPun
     {
         GetInputBase().AttackEventCallBack += UpdateBaseAttack;
         GetInputBase().ItemEventCallBackList1 += UpdateItemAttack1;
-
+        GetInputBase().ItemEventCallBackList2 += UpdateItemAttack2;
     }
+
+
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
+        weaponChangeCallBack = null;
         if (baseWeapon)
         {
             PhotonNetwork.Destroy(baseWeapon.gameObject);
@@ -61,72 +76,51 @@ public abstract class AttackBase : MonoBehaviourPun
         newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
         newWeapon.AttackSucessEvent += AttackBaseSucess;
         newWeapon.AttackEndEvent += AttackBaseEnd;
+        weaponChangeCallBack += newWeapon.WeaponChange;
         if (IsBaseWeapon)
         {
             baseWeapon = newWeapon;
-            baseWeapon.useState = Weapon.UseState.Use;
-            UseWeapon(baseWeapon);
-            if (this.IsMyCharacter())
-            {
-
-            }
+            ChangeWeapon(baseWeapon);
+            //if (this.IsMyCharacter())
+            //{
+            //    InputManager.Instance.baseAttackJoystick._ultimateJoystick.OnPointerDownCallback += () => ChangeWeapon(baseWeapon);
+            //}
         }
         else
         {
             var item = newWeapon.GetComponent<IItem>();
             if (item != null)
             {
-                int inventroyIndex = AddItem(item);
+                newWeapon.AttackSucessEvent += () => { weaponChangeCallBack -= newWeapon.WeaponChange; };
+
+                var index = AddItem(item);
+                //if (this.IsMyCharacter())
+                //{
+
+                //    InputManager.Instance.itemControllerJoysticks[index]._ultimateJoystick.OnPointerDownCallback += () => ChangeWeapon(newWeapon);
+                //    newWeapon.AttackSucessEvent  += () => {
+                //        InputManager.Instance.itemControllerJoysticks[index]._ultimateJoystick.OnPointerDownCallback -= () => ChangeWeapon(newWeapon);
+                //    };
+                //}
                 newWeapon.useState = Weapon.UseState.NoUse;
             }
         }
     }
 
-    
-
+ 
     public virtual void SetupImmdediateItem(Item_Base newItem)
     {
-
+        AddItem(newItem);
     }
 
-    //가지고있는 Permeanet아이템 사용으로 전환
-    public void UsePermanent()
+    public void ChangeWeapon(Weapon useNewWeapon)
     {
-        if (baseWeapon == null) return;
-        //UseWeapon(baseWeapon);
+        weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
+        SetupAnimation(useNewWeapon);
     }
-
-    public void ChangeWeapon(int index)
+    protected void SetupAnimation(Weapon newWeapon)
     {
-        if(index == 0)
-        {
-            UseWeapon(baseWeapon);
-        }
-        else
-        {
-            if( itemInventory[index-1] != null)
-            {
-                //var weapon = itemInventory[index - 1].GetComponent<Weapon>();
-                //if (weapon)
-                //{
-                //    UseWeapon(weapon);
-                //}
-            }
-        }
-    }
-    public virtual void UseWeapon(Weapon newWeapon)
-    {
-        currentWeapon = newWeapon;
-        currentWeapon.AttackSucessEvent += AttackBaseSucess;
-        currentWeapon.AttackEndEvent += AttackBaseEnd;
-        currentWeapon.useState = Weapon.UseState.Use;
-        weaponChangeCallBack?.Invoke(newWeapon.GetInstanceID());
-        SetupAnimation();
-    }
-
-    protected void SetupAnimation()
-    {
-        switch (baseWeapon.weaponType)
+        switch (newWeapon.weaponType)
         {
             case Weapon.WeaponType.Gun:
                 _animator.SetBool("Gun", true);
@@ -137,6 +131,7 @@ public abstract class AttackBase : MonoBehaviourPun
                 _animator.SetBool("Melee", true);
                 break;
             case Weapon.WeaponType.Throw:
+                _animator.SetBool("Melee", false);
 
                 break;
         }
@@ -148,11 +143,6 @@ public abstract class AttackBase : MonoBehaviourPun
         {
             if (itemInventory[i] != null) continue;
             itemInventory[i] = newItem;
-            //var weapon = newItem.GetComponent<Weapon>();
-            //if (weapon)
-            //{
-            //    SetupWeapon(weapon, false);
-            //}
             if (this.IsMyCharacter())
             {
                 InputManager.Instance.itemControllerJoysticks[i].AddItem(newItem);
@@ -162,6 +152,29 @@ public abstract class AttackBase : MonoBehaviourPun
 
         return 0;
     }
+    public void RemoveItem(IItem useItem)
+    {
+        for (int i = 0; i < itemInventory.Length; i++)
+        {
+            if (itemInventory[i] == null) continue;
+            
+            if(itemInventory[i] == useItem)
+            {
+                itemInventory[i] = null;
+                if (this.IsMyCharacter())
+                {
+                    InputManager.Instance.itemControllerJoysticks[i].RemoveItem();
+                }
+            }
+        }
+    }
+
+    public void UpdateBaseAttack(Vector2 inputVector2)
+    {
+        if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
+        baseWeapon.AttackCheck(inputVector2);
+        AttackDirection = inputVector2;
+    }
     public void UpdateItemAttack1(Vector2 inputVector2)
     {
         if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
@@ -169,30 +182,29 @@ public abstract class AttackBase : MonoBehaviourPun
         if( itemInventory[0].useType == Define.UseType.Weapon)
         {
             itemInventory[0].Attack(inputVector2);
-            InputManager.Instance.itemControllerJoysticks[0].RemoveItem();
+            RemoveItem(itemInventory[0]);
 
         }
         AttackDirection = inputVector2;
     }
-    void SetupItem(IItem newItem)
-    {
 
+    public void UpdateItemAttack2(Vector2 inputVector2)
+    {
+        if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
+        if (itemInventory[1] == null) return;
+        if (itemInventory[1].useType == Define.UseType.Weapon)
+        {
+            itemInventory[1].Attack(inputVector2);
+            RemoveItem(itemInventory[1]);
+        }
+        AttackDirection = inputVector2;
     }
 
-    protected void UpdateBaseZoom(Weapon weapon, Vector2 inputVector2)
-    {
-        currentWeapon.Zoom(inputVector2);
-    }
+    
     protected virtual void AttackBaseSucess()
     {
         State = state.Attack;
         _animator.SetTrigger(baseWeapon.AttackAnim);
-    }
-    public void UpdateBaseAttack(Vector2 inputVector2)
-    {
-        if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
-        baseWeapon.AttackCheck(inputVector2);
-        AttackDirection = inputVector2;
     }
     protected virtual void AttackBaseEnd()
     {
@@ -203,7 +215,7 @@ public abstract class AttackBase : MonoBehaviourPun
         }
         if (baseWeapon)
         {
-            UseWeapon(baseWeapon);//사용할무기를 오리지널무기로 대체
+            baseWeapon.useState = Weapon.UseState.Use;
         }
         
     }
@@ -211,24 +223,31 @@ public abstract class AttackBase : MonoBehaviourPun
     {
         //InputManager.Instance.AttackCoolTime(currentWeapon.InitCoolTime, currentWeapon.ReaminCoolTime);
     }
-
-    
-    public  void UpdateItemZoom(int index, Vector2 inputVector2)
-    {
-        print(inputVector2 + " / " + index);
-        //itemWeapons[index].Zoom(inputVector2);
-    }
-
     private void LateUpdate()
     {
         if (this.IsMyCharacter() == false) return;
         if (baseWeapon)
         {
-            currentWeapon.Zoom(GetInputBase().AttackVector);
+            if(baseWeapon.Zoom(GetInputBase().AttackVector))
+            {
+                //CurrentZoomWeaponIndex = baseWeapon.GetInstanceID();
+            }
         }
         if(itemInventory[0] != null)
         {
-            itemInventory[0].Zoom(GetInputBase().ItemVector1);
+            if(itemInventory[0].Zoom(GetInputBase().ItemVector1))
+            {
+                //CurrentZoomWeaponIndex = itemInventory[0].GetInstanceID();
+
+            }
+        }
+        if (itemInventory[1] != null)
+        {
+            if(itemInventory[1].Zoom(GetInputBase().ItemVector2))
+            {
+                //CurrentZoomWeaponIndex = itemInventory[1].GetInstanceID();
+
+            }
         }
     }
 

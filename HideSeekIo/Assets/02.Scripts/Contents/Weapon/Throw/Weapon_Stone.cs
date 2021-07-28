@@ -20,4 +20,9 @@ public class Weapon_Stone : Weapon_Throw
         base.OnPhotonInstantiate(info);
         //attackPlayer.UseWeapon(this);    //무기 사용상태로 전환
     }
+
+    public override void Use(PlayerController usePlayerController)
+    {
+        
+    }
 }

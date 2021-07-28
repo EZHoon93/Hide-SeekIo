@@ -138,6 +138,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     //누군가 얻으려고할때 => 얻으려는 로컬 오브젝트가 서버전송
     public void Enter(GameObject Gettingobject)
     {
+        print("Enter Item!!");
         this._modelTransform.DOShakeScale(_shakeScaleDuration*0.5f);
 
         if (_gettingLivingEntity != null) return;   //이미 얻고있는 플레이어가 있다면 취소
@@ -173,8 +174,9 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
             _getSlider.gameObject.SetActive(true);
         }
         //권한 넘김
+        print("Check_IsGetOnServer" + getViewID);
         this.photonView.TransferOwnership(photonMessageInfo.Sender.ActorNumber);
-
+        //this.photonView.trasn
     }
 
     //로컬 오브젝트만 실행
@@ -205,8 +207,13 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     {
         if (targetView.AmOwner == false)
         {
-            _gettingLivingEntity = null;
-            n_eneterTime = 0;
+            if(this.ViewID() == targetView.ViewID)
+            {
+                _gettingLivingEntity = null;
+                n_eneterTime = 0;
+            }
+            
+            
         }
         else
         {

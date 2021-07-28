@@ -70,15 +70,23 @@ public class SpawnManager
 
     }
 
-    public GameObject ItemSpawn(Define.InGameItem inGameItem, AttackBase attackPlayer, bool isBaseWeapon)
+    public GameObject ItemSpawn(System.Enum inGameItem, PlayerController playerController)
     {
-        //List<object> datas = new List<object>() { attackPlayer.photonView.ViewID, isBaseWeapon };
-        //string weaponID = null;
-        //if()
+        List<object> datas = new List<object>() { playerController.photonView.ViewID, false };
+        string prefabID = $"{inGameItem.GetType().Name}/{inGameItem.ToString()}";
+        //string prefabID = $"ThrowItem/{inGameItem.ToString()}";
 
+        if (playerController.gameObject.IsValidAI())
+        {
 
+        }
+        else
+        {
+            Debug.LogError("생성 " + prefabID);
 
-        //return PhotonNetwork.Instantiate(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+            return PhotonNetwork.Instantiate(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+        }
+
 
         return null;
     }

@@ -1,33 +1,34 @@
-﻿using System.Collections;
-
+﻿
 using UnityEngine;
 
 public class SeekerInput_User : SeekerInput
 {
 
-    private void Update()
-    {
-        if (!photonView.IsMine) return;
-        OnUpdate();
-    }
     public override void OnPhotonInstantiate()
     {
-        if (this.IsMyCharacter())
+        base.OnPhotonInstantiate();
+        if (this.photonView.IsMine)
         {
             InputManager.Instance.SetActiveSeekerController(true);
-            var uiMain = Managers.UI.SceneUI as UI_Main;
-            uiMain.FindButton.gameObject.SetActive(false);
+            InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
+            InputManager.Instance.itemControllerJoysticks[0].onAttackEventCallBack = CallBackItem1;
+            InputManager.Instance.itemControllerJoysticks[1].onAttackEventCallBack = CallBackItem2;
+
         }
     }
 
     protected override void HandleDeath()
     {
-        if (this.IsMyCharacter())
+        if (photonView.IsMine)
         {
-            InputManager.Instance.SetActiveSeekerController(false);
+            InputManager.Instance.SetActiveHiderController(false);
+
         }
     }
-
+    private void Update()
+    {
+        OnUpdate();
+    }
     public void OnUpdate()
     {
         if (IsStop)
@@ -36,9 +37,11 @@ public class SeekerInput_User : SeekerInput
             return;
         }
         MoveVector = InputManager.Instance.MoveVector;
-        //UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
+        AttackVector = InputManager.Instance.baseAttackJoystick.InputVector2;
+        ItemVector1 = InputManager.Instance.itemControllerJoysticks[0].InputVector2;
+        ItemVector2 = InputManager.Instance.itemControllerJoysticks[1].InputVector2;
     }
-
+    //스탑 상태에서 발생
     protected void UpdateStopState()
     {
         if (_stopTime > 0)

@@ -356,25 +356,27 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             var myPlayer = Managers.Game.myPlayer;
             if (myPlayer == null) return;
             var selectItem = GetRandomItemEnum(myPlayer.Team);
+            //if (selectItem.GetType() == typeof(Define.ThrowItem))
+            //{
+            //    print("생성");
+            //    //Managers.Spawn.WeaponSpawn(selectItem.GetType)
+            //    PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+            //myPlayer.ViewID(),
+            //false
+            //   }); ;
+            //}
+            //else
+            //{
 
-            if (selectItem.GetType() == typeof(Define.ThrowItem))
-            {
-                print("생성");
-                //Managers.Spawn.WeaponSpawn(selectItem.GetType)
-                PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-            myPlayer.ViewID(),
-            false
-               }); ;
-            }
-            else
-            {
+            //}
 
-            }
+            Managers.Spawn.ItemSpawn(selectItem, myPlayer);
+
         }
 
-            //PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-            //myPlayer.ViewID(),
-            // }); ;
+        //PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+        //myPlayer.ViewID(),
+        // }); ;
 
 
     }

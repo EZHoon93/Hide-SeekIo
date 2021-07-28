@@ -6,7 +6,7 @@ using Photon.Pun;
 
 using UnityEngine;
 
-public abstract class Item_Base : MonoBehaviourPun
+public abstract class Item_Base : MonoBehaviourPun , IItem,IPunInstantiateMagicCallback , IOnPhotonViewPreNetDestroy
 {
     public event Action DestroyEvent;
     public enum UseState
@@ -27,6 +27,8 @@ public abstract class Item_Base : MonoBehaviourPun
     [SerializeField] Sprite itemSprite;
 
     public Sprite ItemSprite => itemSprite;
+    public PlayerController hasPlayerController { get; set; }
+    Define.UseType IItem.useType { get; set; }
 
     private void Reset()
     {
@@ -39,15 +41,49 @@ public abstract class Item_Base : MonoBehaviourPun
         State = UseState.Server;
         useType = UseType.Item;
     }
-
-    public virtual void OnPhotonInstantiate(PlayerController hasPlayerController)
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        var playerViewID = (int)info.photonView.InstantiationData[0];
+        hasPlayerController = Managers.Game.GetLivingEntity(playerViewID).GetComponent<PlayerController>();
+        hasPlayerController.GetAttackBase().SetupImmdediateItem(this);
 
     }
 
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        if (hasPlayerController)
+        {
+            hasPlayerController.GetAttackBase().RemoveItem(this);
+        }
+    }
     protected void Destroy()
     {
         DestroyEvent?.Invoke();
     }
-    public abstract void Use(PlayerController usePlayer);
+    public virtual void Use(PlayerController usePlayer)
+    {
+        UsePorecess(usePlayer);
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
+    }
+
+    protected abstract void UsePorecess(PlayerController usePlayer);
+
+    public Sprite GetSprite() => itemSprite;
+    
+
+    public bool Zoom(Vector2 inputVector)
+    {
+        return false;
+    }
+    
+
+    public void Attack(Vector2 inputVector)
+    {
+        
+    }
+
+    
 }

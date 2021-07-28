@@ -31,6 +31,15 @@ public class GameManager
 
     }
 
+    public PlayerController GetPlayerController(int viewID)
+    {
+        var livingEntity = GetLivingEntity(viewID);
+        if (livingEntity)
+        {
+            return livingEntity.GetComponent<PlayerController>();
+        }
+        return null;
+    }
     public LivingEntity GetLivingEntity(int viewID)
     {
         if (_livingEntityDic.ContainsKey(viewID))

@@ -18,9 +18,9 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
         Define.InGameItem.Stealth
     };
 
-    public static Define.InGameItem[] seekerItemArray =
+    public static Enum[] seekerItemArray =
     {
-        Define.InGameItem.Dynamite , Define.InGameItem.Flash , Define.InGameItem.PoisonBomb , Define.InGameItem.Speed2,
+        Define.ThrowItem.Dynamite , Define.ThrowItem.Flash , Define.ThrowItem.PoisonBomb , Define.InGameItem.Speed2,
         Define.InGameItem.SightUp, Define.InGameItem.Immune
     };
 
@@ -72,9 +72,9 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
         //아이템
         //
         selectItemEnum.GetType();
-        PhotonNetwork.InstantiateRoomObject("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-            playerController.ViewID(),
-        });
+        //PhotonNetwork.InstantiateRoomObject("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+        //    playerController.ViewID(),
+        //});
     }
 
     Enum GetRandomItemEnum(Define.Team team)

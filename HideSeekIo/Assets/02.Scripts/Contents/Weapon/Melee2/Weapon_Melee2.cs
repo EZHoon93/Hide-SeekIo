@@ -38,19 +38,21 @@ public class Weapon_Melee2 : Weapon
         base.OnPhotonInstantiate(info);
         
         _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
-        attackPlayer.SetupWeapon(this, true);
+        hasPlayerController.GetAttackBase().SetupWeapon(this, true);
         //attackPlayer.UseWeapon(this);    //무기 사용상태로 전환
 
     }
-    public override void Zoom(Vector2 inputVector)
+    public override bool Zoom(Vector2 inputVector)
     {
         if (inputVector.sqrMagnitude == 0)
         {
             _attackRangeUI.gameObject.SetActive(false);
-            return;
+            return false;
         }
         _attackRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
         _attackRangeUI.gameObject.SetActive(true);
+        useState = UseState.Use;
+        return true;
     }
 
 
@@ -85,10 +87,10 @@ public class Weapon_Melee2 : Weapon
 
     void AttackEffect()
     {
-        var attackPos = attackPlayer.transform.position + attackPlayer.transform.forward * AttackDistance * 0.5f;
+        var attackPos = hasPlayerController.transform.position + hasPlayerController.transform.forward * AttackDistance * 0.5f;
         print(attackPos + "어택이펙트");
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
-        UtillGame.DamageInRange(attackPlayer.transform, AttackDistance, 10, attackPlayer.ViewID(), UtillLayer.seekerToHiderAttack, 110);
+        UtillGame.DamageInRange(hasPlayerController.transform, AttackDistance, 10, hasPlayerController.ViewID(), UtillLayer.seekerToHiderAttack, 110);
         Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         //Collider[] colliders = new Collider[10];
 
@@ -124,7 +126,7 @@ public class Weapon_Melee2 : Weapon
     private bool IsTargetOnSight(Transform target)
     {
         RaycastHit hit;
-        Vector3 startPoint = attackPlayer.transform.position;
+        Vector3 startPoint = hasPlayerController.transform.position;
         Vector3 endPoint = target.transform.position;
 
         startPoint.y = 0.5f;
@@ -132,7 +134,7 @@ public class Weapon_Melee2 : Weapon
 
         var direction = endPoint - startPoint;
 
-        if (Vector3.Angle(direction, attackPlayer.transform.forward) > 120 * 0.5f)
+        if (Vector3.Angle(direction, hasPlayerController.transform.forward) > 120 * 0.5f)
         {
             return false;
         }

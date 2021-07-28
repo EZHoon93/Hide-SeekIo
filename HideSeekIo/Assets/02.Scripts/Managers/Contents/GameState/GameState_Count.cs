@@ -149,7 +149,6 @@ public class GameState_Count : GameState_Base
     {
         foreach (var s in spawnPosDic)
         {
-            print(s.Key + "/" + PhotonNetwork.LocalPlayer.ActorNumber);
             if (s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 Local_MyPlayerCharacter(s.Value);
@@ -171,7 +170,7 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = _gameMainScene.GetSeekerPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
+            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos);
 
         }
         else

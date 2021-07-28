@@ -1437,7 +1437,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1531.2, y: 421.2}
+  m_AnchoredPosition: {x: 1531.2, y: 544.6286}
   m_SizeDelta: {x: 172.8, y: 172.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &392628303
@@ -1522,7 +1522,7 @@ MonoBehaviour:
   extendRadius: 0
   axis: 0
   boundary: 0
-  deadZone: 0
+  deadZone: 0.3
   tapCountOption: 1
   tapCountDuration: 0.5
   targetTapCount: 2
@@ -1610,10 +1610,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inGameItem: {fileID: 0}
   _joystickOutLine: {fileID: 1313477218}
   _itemOutLine: {fileID: 1511500778}
   _itemImage: {fileID: 161181945}
+  _panel: {fileID: 1393445540}
+  _ultimateJoystick: {fileID: 0}
 --- !u!1 &396949704
 GameObject:
   m_ObjectHideFlags: 0
@@ -3403,7 +3404,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22468338, guid: 69310ab7970f83546b074beea9d7e12e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 183.6
+      value: 201.23267
       objectReference: {fileID: 0}
     - target: {fileID: 22468338, guid: 69310ab7970f83546b074beea9d7e12e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3846,10 +3847,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inGameItem: {fileID: 0}
   _joystickOutLine: {fileID: 0}
   _itemOutLine: {fileID: 0}
   _itemImage: {fileID: 0}
+  _panel: {fileID: 0}
+  _ultimateJoystick: {fileID: 0}
 --- !u!222 &1099679141
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3912,7 +3914,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 225.59998, y: 223.20001}
+  m_AnchoredPosition: {x: 225.59998, y: 258.4653}
   m_SizeDelta: {x: 288, y: 288}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1099891465
@@ -6256,7 +6258,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1776, y: 500.4}
+  m_AnchoredPosition: {x: 1776, y: 659.0939}
   m_SizeDelta: {x: 172.8, y: 172.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2011860855
@@ -6341,7 +6343,7 @@ MonoBehaviour:
   extendRadius: 0
   axis: 0
   boundary: 0
-  deadZone: 0
+  deadZone: 0.3
   tapCountOption: 1
   tapCountDuration: 0.5
   targetTapCount: 2
@@ -6429,10 +6431,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inGameItem: {fileID: 0}
   _joystickOutLine: {fileID: 669980860}
   _itemOutLine: {fileID: 387489075}
   _itemImage: {fileID: 396949706}
+  _panel: {fileID: 655999206}
+  _ultimateJoystick: {fileID: 0}
 --- !u!1001 &2012930583
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6656,7 +6659,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1735.2, y: 183.6}
+  m_AnchoredPosition: {x: 1735.2, y: 201.23267}
   m_SizeDelta: {x: 288, y: 288}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2028382026
@@ -7009,10 +7012,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inGameItem: {fileID: 0}
   _joystickOutLine: {fileID: 0}
   _itemOutLine: {fileID: 0}
   _itemImage: {fileID: 0}
+  _panel: {fileID: 0}
+  _ultimateJoystick: {fileID: 0}
 --- !u!114 &2042075369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7025,10 +7029,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inGameItem: {fileID: 0}
   _joystickOutLine: {fileID: 0}
   _itemOutLine: {fileID: 0}
   _itemImage: {fileID: 0}
+  _panel: {fileID: 0}
+  _ultimateJoystick: {fileID: 0}
 --- !u!1 &2053634383
 GameObject:
   m_ObjectHideFlags: 0

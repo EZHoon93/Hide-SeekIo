@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Item_Vaccine: Item_Base
 {
-    public override void Use(PlayerController usePlayer)
+    protected override void UsePorecess(PlayerController usePlayer)
     {
         EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
         if (photonView.IsMine)

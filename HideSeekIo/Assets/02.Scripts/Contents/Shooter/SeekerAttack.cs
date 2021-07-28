@@ -6,6 +6,7 @@ public class SeekerAttack : AttackBase
 {
 
     SeekerInput _seekerInput;
+    public override InputBase GetInputBase() => _seekerInput;
 
     private void Awake()
     {
@@ -20,10 +21,7 @@ public class SeekerAttack : AttackBase
         }
     }
 
-    public override InputBase GetInputBase()
-    {
-        throw new System.NotImplementedException();
-    }
+    
 
     //public void OnUpdate()
     //{

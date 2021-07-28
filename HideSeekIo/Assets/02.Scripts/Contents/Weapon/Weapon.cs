@@ -42,7 +42,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     UseState _useState;
     public Type type { get; set; }
     public GameObject UICanvas { get; set; }
-    public AttackBase attackPlayer { get; set; }
+    public PlayerController hasPlayerController { get; set; }
 
     public Action AttackSucessEvent;
     public Action AttackEndEvent;
@@ -52,24 +52,22 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         get => _useState;
         set
         {
-            _useState = value;
+            var newState = value;
+            if (_useState == newState) return;
+            _useState = newState;
             if(_useState == UseState.Use)
             {
+                hasPlayerController.GetAttackBase().ChangeWeapon(this);
                 _weaponModel.gameObject.SetActive(true);
             }
             else
             {
-                switch (weaponType)
-                {
-                    case WeaponType.Throw:
-                        _weaponModel.gameObject.SetActive(false);
-                        break;
-                }
+                _weaponModel.gameObject.SetActive(false);
             }
         }
     }
 
-    public abstract void Zoom(Vector2 inputVector);
+    public abstract bool Zoom(Vector2 inputVector);
     public abstract void Attack(Vector2 inputVector);
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -82,56 +80,42 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         {
             var n_state = (UseState)stream.ReceiveNext();
             if (useState == n_state) return;
-            if (attackPlayer == null) return;
+            if (hasPlayerController == null) return;
             useState = n_state;
-            attackPlayer.UseWeapon(this);
         }
     }
-
     protected virtual void Awake()
     {
         UICanvas = GetComponentInChildren<Canvas>().gameObject;
-        //UICanvas.SetActive(false);
     }
     
    
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
-        useState = UseState.NoUse;  //사용하지않음으로설정
         UICanvas.SetActive(false);
+        _useState = UseState.NoUse;
+        _weaponModel.gameObject.SetActive(false);
         AttackSucessEvent = null;
         AttackEndEvent = null;
         var playerViewID = (int)info.photonView.InstantiationData[0];
         var isBaseWeapon = (bool)info.photonView.InstantiationData[1];  //영구적무기 여부 false면 일회용아이템
-        var livingEntity = Managers.Game.GetLivingEntity(playerViewID);
-        livingEntity.fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
-        attackPlayer = livingEntity.GetComponent<AttackBase>();
-        attackPlayer.SetupWeapon(this, isBaseWeapon);
+        hasPlayerController = Managers.Game.GetPlayerController(playerViewID);
+        hasPlayerController.GetLivingEntity().fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
+        hasPlayerController.GetAttackBase().SetupWeapon(this, isBaseWeapon);
+        //useState = UseState.NoUse;  //사용하지않음으로설정
         ReaminCoolTime = 0;
     }
-    public void OnPreNetDestroy(PhotonView rootView)
+    public virtual void OnPreNetDestroy(PhotonView rootView)
     {
         if (Managers.Resource == null) return;
         UICanvas.transform.SetParent(this.transform);
-        if (attackPlayer)
+        if (hasPlayerController)
         {
-            var livingEntity = attackPlayer.GetComponent<LivingEntity>();
-            if (livingEntity == null) return;
-            livingEntity.fogController.RemoveRenderer(_weaponModel.GetComponentInChildren<Renderer>());
+           hasPlayerController.GetLivingEntity().fogController.RemoveRenderer(_weaponModel.GetComponentInChildren<Renderer>());
         }
     }
 
-    
-    //public void UseWeapon(AttackBase newAttackPlayer , Action newAttackSucessEvent, Action newAttackEndEvent)
-    //{
-    //    attackPlayer = newAttackPlayer;
-    //    AttackSucessEvent = newAttackSucessEvent;
-    //    AttackEndEvent = newAttackEndEvent;
-    //    _weaponModel.gameObject.SetActive(true);
-    //    useState = UseState.Use;
-    //    //newAttackPlayer.Attack
-    //}
     public bool AttackCheck(Vector2 inputVector)
     {
         if(ReaminCoolTime > 0)
@@ -141,6 +125,18 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         ReaminCoolTime = InitCoolTime;
         Attack(inputVector);
         return true;
+    }
+
+    public void WeaponChange(int instanceID)
+    {
+        if(instanceID == GetInstanceID())
+        {
+            useState = UseState.Use;
+        }
+        else
+        {
+            useState = UseState.NoUse;
+        }
     }
 
     private void Update()

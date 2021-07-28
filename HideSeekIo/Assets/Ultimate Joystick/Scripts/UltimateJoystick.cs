@@ -129,12 +129,16 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	public RectTransform joystickSizeFolder;
 	public Image tensionAccentUp, tensionAccentDown;
 	public Image tensionAccentLeft, tensionAccentRight;
-	
 
 	void OnEnable ()
 	{
+
+		joystickState = false;
+		tapCount = 0;
+		currentTapTime = 0;
+		StopAllCoroutines();
 		// If the user wants to calculate using touch input, then start the coroutine to catch the input.
-		if( Application.isPlaying && useTouchInput )
+		if ( Application.isPlaying && useTouchInput )
 			StartCoroutine( ProcessTouchInput() );
 	}
 
@@ -280,9 +284,8 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 		// If the joystick is already in use, then return.
 		if( joystickState )
 			return;
-		
 		// If the user wants a circular boundary but does not want a custom activation range...
-		if( boundary == Boundary.Circular && !customActivationRange )
+		if ( boundary == Boundary.Circular && !customActivationRange )
 		{
 			// distance = distance between the world position of the joystickBase cast to a local position of the ParentCanvas (* by scale factor) - half of the actual canvas size, and the input position.
 			float distance = Vector2.Distance( ( Vector2 )( ParentCanvas.transform.InverseTransformPoint( joystickBase.position ) * ParentCanvas.scaleFactor ) + ( ( canvasRectTrans.sizeDelta * ParentCanvas.scaleFactor ) / 2 ), inputPosition );
@@ -333,10 +336,10 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 		if( tapCountOption != TapCountOption.NoCount )
 		{
 			// If the user is accumulating taps...
-			if( tapCountOption == TapCountOption.Accumulate )
+			if ( tapCountOption == TapCountOption.Accumulate )
 			{
 				// If the TapCountdown is not counting down...
-				if( currentTapTime <= 0 )
+				if ( currentTapTime <= 0 )
 				{
 					// Set tapCount to 1 since this is the initial touch and start the TapCountdown.
 					tapCount = 1;
@@ -940,6 +943,7 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	IEnumerator TapCountDelay ()
 	{
 		tapCountAchieved = true;
+		print("인인이ㅣㅇ닝");
 		OnTapCount?.Invoke();
 		yield return new WaitForEndOfFrame();
 		tapCountAchieved = false;

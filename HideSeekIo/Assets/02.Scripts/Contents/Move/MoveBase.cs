@@ -80,7 +80,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                     //UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                //UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
+                UpdateImmediateRotate(_attackBase.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
@@ -96,7 +96,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                //UpdateImmediateRotate(_attackBase.currentWeapon.LastAttackInput);
+                UpdateImmediateRotate(_attackBase.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }

@@ -10,6 +10,7 @@ public class UI_ControllerJoystick : MonoBehaviour
     [SerializeField] Image _joystickOutLine;
     [SerializeField] Image _itemOutLine;
     [SerializeField] Image _itemImage;
+    [SerializeField] Transform _panel;
     public Vector2 InputVector2 { get; private set; }
 
     public  Action<Vector2> onAttackEventCallBack;
@@ -46,35 +47,31 @@ public class UI_ControllerJoystick : MonoBehaviour
     //즉시아이템 사용
     void Click()
     {
-        print("Click");
-        //var myPlayer = Managers.Game.myPlayer;
-        //if (myPlayer == null || _inGameItem == null) return;
-        //if (_inGameItem._item_Base.useType == Item_Base.UseType.Item)
-        //{
-        //    _inGameItem.Use(myPlayer);
-        //    this.gameObject.SetActive(false);
-
-        //}
-
+        var myPlayer = Managers.Game.myPlayer;
+        if (myPlayer == null || _inGameItem == null) return;
+        if (_inGameItem.useType == Define.UseType.Item)
+        {
+            _inGameItem.Use(myPlayer);
+            RemoveItem();
+            this.gameObject.SetActive(false);
+        }
     }
     public void AddItem(IItem newItem)
     {
         _inGameItem = newItem;
         if (newItem.useType== Define.UseType.Item)
         {
-            print("아잉템타입");
             _joystickOutLine.enabled = false;
             _itemOutLine.enabled = true;
             _itemImage.transform.SetParent(_itemOutLine.transform);
         }
         else
         {
-            print("아잉템타입ㄴㄴㄴㄴㄴㄴㄴ");
-
             _joystickOutLine.enabled = true;
             _itemOutLine.enabled = false;
             _itemImage.transform.SetParent(_joystickOutLine.transform);
         }
+        _joystickOutLine.transform.localPosition = Vector3.zero;
         _itemImage.transform.localPosition = Vector3.zero;
         _itemImage.sprite = newItem.GetSprite();
         _itemImage.enabled = true;

@@ -8,7 +8,7 @@ public class Item_Curse2 : Item_Base
 {
 
 
-    public override void Use(PlayerController usePlayer)
+    protected override void UsePorecess(PlayerController usePlayer)
     {
 
         EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);

@@ -51,42 +51,6 @@ public abstract class PlayerController : MonoBehaviourPun
         
     }
 
-
-    //아이템 살 수 있는지 체크 => 인벤토리 공간이 남는지.
-    public bool IsBuyItem()
-    {
-        return itemInventory.Any(s => s == null);
-    }
-    public void AddItem(InGameItemController newItem)
-    {
-        for (int i = 0; i < itemInventory.Length; i++)
-        {
-            if (itemInventory[i] != null) continue;
-
-            itemInventory[i] = newItem;
-            if (this.IsMyCharacter())
-            {
-                //InputManager.Instance.AddItemByButton(i, newItem);
-            }
-            return;
-        }
-    }
-    public void RemoveItem(InGameItemController useItem)
-    {
-        for (int i = 0; i < itemInventory.Length; i++)
-        {
-            if (itemInventory[i] != useItem) continue;
-            
-            itemInventory[i] = null;
-            if (this.IsMyCharacter())
-            {
-                InputManager.Instance.RemoveItemButton(i);
-            }
-            return;
-        }
-    }
-
-
     ////포톤뷰 그룹을 위한 동기화 필요 여부
     //protected virtual void FixedUpdate()
     //{

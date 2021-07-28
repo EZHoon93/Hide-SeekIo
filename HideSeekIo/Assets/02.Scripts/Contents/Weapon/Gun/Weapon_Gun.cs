@@ -67,19 +67,19 @@ public class Weapon_Gun : Weapon
         AttackEndEvent?.Invoke();
         state = State.End;
     }
-    public override void Zoom(Vector2 inputVector)
+    public override bool Zoom(Vector2 inputVector)
     {
         var pos = UtillGame.ConventToVector3(inputVector);
         if (pos.sqrMagnitude == 0)
         {
             _lineRenderer.enabled = false;
-            return;
+            return false;
         }
         _lineRenderer.SetPosition(0, _lineTransform.position);
         _lineRenderer.SetPosition(1, GetHitPoint(_lineTransform, inputVector));
         _lineRenderer.enabled = true;
 
-
+        return true;
     }
 
     Vector3 GetHitPoint(Transform rayTransform, Vector2 inputVector)

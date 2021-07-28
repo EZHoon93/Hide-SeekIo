@@ -10,14 +10,10 @@ public abstract class InputBase : MonoBehaviourPun
     public Vector2 MoveVector { get; protected set; }
     public Vector2 AttackVector { get; protected set; }
     public Vector2 ItemVector1 { get; set; }
-
+    public Vector2 ItemVector2 { get; set; }
     public event Action<Vector2> AttackEventCallBack;
     public event Action<Vector2> ItemEventCallBackList1;
     public event Action<Vector2> ItemEventCallBackList2;
-
-
-    //public event Action<Vector2> ItemEventCallBack2;
-
     public Vector2 RandomVector2 { get; set; }
     public bool IsStop { get; protected set; }
     

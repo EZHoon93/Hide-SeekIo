@@ -36,16 +36,16 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
         _item_Base = Managers.Resource.Instantiate($"InGameItem/{itemType.ToString()}",this.transform).GetComponent<Item_Base>();
         if (_item_Base)
         {
-            _item_Base.OnPhotonInstantiate(_hasPlayer);
+            //_item_Base.OnPhotonInstantiate(_hasPlayer);
             _item_Base.DestroyEvent += () => PhotonNetwork.Destroy(this.gameObject);    //사용후 파괴
         }
         //플레이어에게 아이템 등록
-        _hasPlayer.AddItem(this);    //플레이어에게 할당
+        //_hasPlayer.AddItem(this);    //플레이어에게 할당
     }
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
-        _hasPlayer.RemoveItem(this);
+        //_hasPlayer.RemoveItem(this);
     }
 
     //일회용 아이템이면 삭제
