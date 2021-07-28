@@ -16,8 +16,13 @@ public class SeekerAttack : AttackBase
         base.OnPhotonInstantiate();
         if (this.IsMyCharacter())
         {
-            Managers.Spawn.WeaponSpawn(Define.Weapon.Melee2, this);
+            Managers.Spawn.WeaponSpawn(Define.Weapon.Melee2, this , true);
         }
+    }
+
+    public override InputBase GetInputBase()
+    {
+        throw new System.NotImplementedException();
     }
 
     //public void OnUpdate()

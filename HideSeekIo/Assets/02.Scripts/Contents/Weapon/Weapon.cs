@@ -103,10 +103,11 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         AttackSucessEvent = null;
         AttackEndEvent = null;
         var playerViewID = (int)info.photonView.InstantiationData[0];
+        var isBaseWeapon = (bool)info.photonView.InstantiationData[1];  //영구적무기 여부 false면 일회용아이템
         var livingEntity = Managers.Game.GetLivingEntity(playerViewID);
         livingEntity.fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
         attackPlayer = livingEntity.GetComponent<AttackBase>();
-        attackPlayer.SetupWeapon(this);
+        attackPlayer.SetupWeapon(this, isBaseWeapon);
         ReaminCoolTime = 0;
     }
     public void OnPreNetDestroy(PhotonView rootView)

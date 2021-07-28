@@ -274,14 +274,14 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         if (killPlayer.IsMyCharacter())
         {
-            
+
             uiMain.killText.text = $"{deathPlayer.NickName} 를 잡으셨습니다.";
             Color color = uiMain.killText.color;
             color.a = 1;
             uiMain.killText.color = color;
             uiMain.killText.DOFade(0.0f, 2.0f);
         }
-        
+
         Managers.Sound.Play("Die", Define.Sound.Effect);
     }
 
@@ -355,17 +355,31 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             var myPlayer = Managers.Game.myPlayer;
             if (myPlayer == null) return;
-            print(myPlayer.Team + "마이팀");
-            PhotonNetwork.Instantiate("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-            myPlayer.ViewID(),
-            GetRandomItemEnum(myPlayer.Team)
-             }); ;
+            var selectItem = GetRandomItemEnum(myPlayer.Team);
 
+            if (selectItem.GetType() == typeof(Define.ThrowItem))
+            {
+                print("생성");
+                //Managers.Spawn.WeaponSpawn(selectItem.GetType)
+                PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+            myPlayer.ViewID(),
+            false
+               }); ;
+            }
+            else
+            {
+
+            }
         }
+
+            //PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+            //myPlayer.ViewID(),
+            // }); ;
+
 
     }
 
-    Define.InGameItem GetRandomItemEnum(Define.Team team)
+    Enum GetRandomItemEnum(Define.Team team)
     {
         switch (team)
         {

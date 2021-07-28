@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 public class UI_ControllerJoystick : MonoBehaviour
 {
-    [SerializeField] InGameItemController _inGameItem;
+    [SerializeField] IItem _inGameItem;
     [SerializeField] Image _joystickOutLine;
     [SerializeField] Image _itemOutLine;
     [SerializeField] Image _itemImage;
     public Vector2 InputVector2 { get; private set; }
 
     public  Action<Vector2> onAttackEventCallBack;
-    UltimateJoystick _ultimateJoystick;
+    public UltimateJoystick _ultimateJoystick;
     private void Awake()
     {
         _ultimateJoystick = GetComponent<UltimateJoystick>();
@@ -47,20 +47,20 @@ public class UI_ControllerJoystick : MonoBehaviour
     void Click()
     {
         print("Click");
-        var myPlayer = Managers.Game.myPlayer;
-        if (myPlayer == null || _inGameItem == null) return;
-        if (_inGameItem._item_Base.useType == Item_Base.UseType.Item)
-        {
-            _inGameItem.Use(myPlayer);
-            this.gameObject.SetActive(false);
+        //var myPlayer = Managers.Game.myPlayer;
+        //if (myPlayer == null || _inGameItem == null) return;
+        //if (_inGameItem._item_Base.useType == Item_Base.UseType.Item)
+        //{
+        //    _inGameItem.Use(myPlayer);
+        //    this.gameObject.SetActive(false);
 
-        }
+        //}
 
     }
-    public void AddItem(InGameItemController newItem)
+    public void AddItem(IItem newItem)
     {
         _inGameItem = newItem;
-        if (_inGameItem._item_Base.useType == Item_Base.UseType.Item)
+        if (newItem.useType== Define.UseType.Item)
         {
             print("아잉템타입");
             _joystickOutLine.enabled = false;
@@ -76,10 +76,15 @@ public class UI_ControllerJoystick : MonoBehaviour
             _itemImage.transform.SetParent(_joystickOutLine.transform);
         }
         _itemImage.transform.localPosition = Vector3.zero;
-        _itemImage.sprite = newItem._item_Base.ItemSprite;
+        _itemImage.sprite = newItem.GetSprite();
         _itemImage.enabled = true;
         this.gameObject.SetActive(true);
         //_ultimateJoystick.OnDragCallback
+    }
+
+    public void RemoveItem()
+    {
+        this.gameObject.SetActive(false);
     }
 
 }

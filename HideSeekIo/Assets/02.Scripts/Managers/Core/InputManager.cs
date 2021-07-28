@@ -115,12 +115,12 @@ public class InputManager : GenricSingleton<InputManager>
         _attackCoolTimeUI.UpdateCoolTime(maxCoolTime, currentCoolTime);
     }
 
-    public void AddItemByButton(int index, InGameItemController newItem)
-    {
-        _itemControllerJoysticks[index].AddItem(newItem);
-        //uI_ItemButtons[index].gameObject.SetActive(true);
-        //uI_ItemButtons[index].AddItem(newItem);
-    }
+    //public void AddItemByButton(int index, InGameItemController newItem)
+    //{
+    //    _itemControllerJoysticks[index].AddItem(newItem);
+    //    //uI_ItemButtons[index].gameObject.SetActive(true);
+    //    //uI_ItemButtons[index].AddItem(newItem);
+    //}
     public void RemoveItemButton(int index)
     {
         //uI_ItemButtons[index].gameObject.SetActive(false);

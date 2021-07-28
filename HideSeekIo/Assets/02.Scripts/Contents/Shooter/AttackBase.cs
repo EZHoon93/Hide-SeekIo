@@ -3,10 +3,9 @@
 using UnityEngine;
 using Photon.Pun;
 using System;
-using UnityEditor;
-using System.Collections.Generic;
 
-public class AttackBase : MonoBehaviourPun 
+
+public abstract class AttackBase : MonoBehaviourPun 
 {
     public enum state
     {
@@ -20,11 +19,16 @@ public class AttackBase : MonoBehaviourPun
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-    public Weapon[] itemWeapons = new Weapon[2];
+
+    public Weapon currentWeapon { get; protected set; } //현재사용무기
+    //public List<IItem> itemWeapons;
+    public IItem[] itemInventory = new IItem[2];
     //public Weapon skillWeapon { get; protected set; }   //스킬무기
     //public Weapon currentWeapon { get; protected set; }   //현재 사용 무기
-
+    public abstract InputBase GetInputBase();
     public Vector2 AttackDirection { get; set; }
+
+    Action<int> weaponChangeCallBack;
 
 
 
@@ -33,6 +37,12 @@ public class AttackBase : MonoBehaviourPun
         State = state.Idle;
     }
 
+    private void Start()
+    {
+        GetInputBase().AttackEventCallBack += UpdateBaseAttack;
+        GetInputBase().ItemEventCallBackList1 += UpdateItemAttack1;
+
+    }
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
@@ -40,35 +50,77 @@ public class AttackBase : MonoBehaviourPun
         {
             PhotonNetwork.Destroy(baseWeapon.gameObject);
         }
+        if (this.IsMyCharacter())
+        {
+        }
     }
 
-    public virtual void SetupWeapon(Weapon newWeapon)
+    public virtual void SetupWeapon(Weapon newWeapon, bool IsBaseWeapon )
     {
         newWeapon.transform.ResetTransform(_animator.GetComponent<CharacterAvater>().RightHandAmount);  //무기오브젝트
         newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
-
-        if(newWeapon.type == Weapon.Type.Permanent)
+        newWeapon.AttackSucessEvent += AttackBaseSucess;
+        newWeapon.AttackEndEvent += AttackBaseEnd;
+        if (IsBaseWeapon)
         {
-            UseWeapon(newWeapon);
+            baseWeapon = newWeapon;
+            baseWeapon.useState = Weapon.UseState.Use;
+            UseWeapon(baseWeapon);
+            if (this.IsMyCharacter())
+            {
+
+            }
         }
         else
         {
-            
+            var item = newWeapon.GetComponent<IItem>();
+            if (item != null)
+            {
+                int inventroyIndex = AddItem(item);
+                newWeapon.useState = Weapon.UseState.NoUse;
+            }
         }
+    }
+
+    
+
+    public virtual void SetupImmdediateItem(Item_Base newItem)
+    {
+
     }
 
     //가지고있는 Permeanet아이템 사용으로 전환
     public void UsePermanent()
     {
         if (baseWeapon == null) return;
-        UseWeapon(baseWeapon);
+        //UseWeapon(baseWeapon);
+    }
+
+    public void ChangeWeapon(int index)
+    {
+        if(index == 0)
+        {
+            UseWeapon(baseWeapon);
+        }
+        else
+        {
+            if( itemInventory[index-1] != null)
+            {
+                //var weapon = itemInventory[index - 1].GetComponent<Weapon>();
+                //if (weapon)
+                //{
+                //    UseWeapon(weapon);
+                //}
+            }
+        }
     }
     public virtual void UseWeapon(Weapon newWeapon)
     {
-        baseWeapon = newWeapon;
-        baseWeapon.AttackSucessEvent += AttackBaseSucess;
-        baseWeapon.AttackEndEvent += AttackBaseEnd;
-        baseWeapon.useState = Weapon.UseState.Use;
+        currentWeapon = newWeapon;
+        currentWeapon.AttackSucessEvent += AttackBaseSucess;
+        currentWeapon.AttackEndEvent += AttackBaseEnd;
+        currentWeapon.useState = Weapon.UseState.Use;
+        weaponChangeCallBack?.Invoke(newWeapon.GetInstanceID());
         SetupAnimation();
     }
 
@@ -90,11 +142,46 @@ public class AttackBase : MonoBehaviourPun
         }
 
     }
-
-    protected void UpdateBaseZoom(Vector2 inputVector2)
+    public int AddItem(IItem newItem)
     {
-        print(baseWeapon.gameObject.name + inputVector2 );
-        baseWeapon.Zoom(inputVector2);
+        for (int i = 0; i < itemInventory.Length; i++)
+        {
+            if (itemInventory[i] != null) continue;
+            itemInventory[i] = newItem;
+            //var weapon = newItem.GetComponent<Weapon>();
+            //if (weapon)
+            //{
+            //    SetupWeapon(weapon, false);
+            //}
+            if (this.IsMyCharacter())
+            {
+                InputManager.Instance.itemControllerJoysticks[i].AddItem(newItem);
+            }
+            return i ;
+        }
+
+        return 0;
+    }
+    public void UpdateItemAttack1(Vector2 inputVector2)
+    {
+        if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
+        if (itemInventory[0] == null) return;
+        if( itemInventory[0].useType == Define.UseType.Weapon)
+        {
+            itemInventory[0].Attack(inputVector2);
+            InputManager.Instance.itemControllerJoysticks[0].RemoveItem();
+
+        }
+        AttackDirection = inputVector2;
+    }
+    void SetupItem(IItem newItem)
+    {
+
+    }
+
+    protected void UpdateBaseZoom(Weapon weapon, Vector2 inputVector2)
+    {
+        currentWeapon.Zoom(inputVector2);
     }
     protected virtual void AttackBaseSucess()
     {
@@ -128,8 +215,21 @@ public class AttackBase : MonoBehaviourPun
     
     public  void UpdateItemZoom(int index, Vector2 inputVector2)
     {
-        itemWeapons[index].Zoom(inputVector2);
+        print(inputVector2 + " / " + index);
+        //itemWeapons[index].Zoom(inputVector2);
     }
 
+    private void LateUpdate()
+    {
+        if (this.IsMyCharacter() == false) return;
+        if (baseWeapon)
+        {
+            currentWeapon.Zoom(GetInputBase().AttackVector);
+        }
+        if(itemInventory[0] != null)
+        {
+            itemInventory[0].Zoom(GetInputBase().ItemVector1);
+        }
+    }
 
 }

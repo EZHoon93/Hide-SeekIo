@@ -56,6 +56,23 @@ public class Define
         Sniper = 201
     }
 
+    public enum ThrowItem
+    {
+        Stone,
+        TNT,
+        Grenade,
+        Flash,
+        Dynamite,
+        Glue,
+        PoisonBomb,
+    }
+
+    public enum UseType
+    {
+        Item,
+        Weapon
+    }
+
     public enum AIType
     {
         AISeeker ,

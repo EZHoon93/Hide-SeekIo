@@ -66,7 +66,7 @@ public abstract class PlayerController : MonoBehaviourPun
             itemInventory[i] = newItem;
             if (this.IsMyCharacter())
             {
-                InputManager.Instance.AddItemByButton(i, newItem);
+                //InputManager.Instance.AddItemByButton(i, newItem);
             }
             return;
         }

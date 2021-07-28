@@ -30,7 +30,7 @@ public abstract class Item_Base : MonoBehaviourPun
 
     private void Reset()
     {
-        print($"Sprites/InGameItem/{this.gameObject.name}" +"ㅇㅇㅇㅇ");
+        print($"Sprites/InGameItem/{this.name}" +"ㅇㅇㅇㅇ");
         itemSprite = Resources.Load<Sprite>($"Sprites/InGameItem/{this.gameObject.name}");
 
     }

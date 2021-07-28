@@ -1,21 +1,30 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using System;
 
-public abstract class Weapon_Throw : Weapon
+public abstract class Weapon_Throw : Weapon , IItem
 {
     [SerializeField] GameObject _projectilePrefab;
-    
+    [SerializeField] Sprite _sprite;
     //Transform _attackRangeUI;
 
     public float attackRange { get; protected set; }
+    public Define.UseType useType { get; set; }
+    public Action destroyCallBackEvent { get; set; }
 
     protected override void Awake()
     {
         base.Awake();
         //_attackRangeUI = GetComponentInChildren<Canvas>().transform;
+        useType = Define.UseType.Weapon;
         weaponType = WeaponType.Throw;
+        print(this.name + "@@@@@@@@@@@@@@@@@@@@@" + this.ToString());
+        _sprite = Resources.Load<Sprite>( $"Sprites/InGameItem/{this.gameObject.name}" );
     }
+
+    public Sprite GetSprite() => _sprite;
+    
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
     {
         AttackAnim = animName;
@@ -83,4 +92,6 @@ public abstract class Weapon_Throw : Weapon
     {
         //attackPlayer.UseWeapon(this);
     }
+
+    
 }

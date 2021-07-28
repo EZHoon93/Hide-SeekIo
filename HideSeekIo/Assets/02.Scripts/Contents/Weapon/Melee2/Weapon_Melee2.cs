@@ -32,12 +32,13 @@ public class Weapon_Melee2 : Weapon
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        var weaponId = (string)info.photonView.InstantiationData[1];
+        var weaponId = (string)info.photonView.InstantiationData[2];
         _weaponModel = Managers.Resource.Instantiate($"Melee2/{weaponId}").transform;   //유저 무기 아바타 생성
         _weaponModel.ResetTransform(_modelTransform);   //아바타 생성된것 자식오브젝트로 이동
         base.OnPhotonInstantiate(info);
         
         _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
+        attackPlayer.SetupWeapon(this, true);
         //attackPlayer.UseWeapon(this);    //무기 사용상태로 전환
 
     }

@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 using Photon.Pun;
-
+using Random = UnityEngine.Random;
 using UnityEngine;
 
 public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy
@@ -11,8 +12,8 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
     [SerializeField] GameObject _modelObject;
     [SerializeField] GameObject _aiColliderObject;
 
-    public static Define.InGameItem[] hiderItemArray = {
-        Define.InGameItem.TNT , Define.InGameItem.Grenade , Define.InGameItem.Glue,Define.InGameItem.Trap,
+    public static Enum[] hiderItemArray = {
+        Define.ThrowItem.TNT , Define.ThrowItem.Grenade , Define.ThrowItem.Glue,Define.InGameItem.Trap,
         Define.InGameItem.Vaccine, Define.InGameItem.Speed, Define.InGameItem.SightUp,
         Define.InGameItem.Stealth
     };
@@ -67,15 +68,16 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
         var playerController = getObject.GetComponent<PlayerController>();
         if (playerController == null) return;
 
-        var selectItem = GetRandomItemEnum(playerController.Team);
-        //아이템 생성
+        var selectItemEnum = GetRandomItemEnum(playerController.Team);
+        //아이템
+        //
+        selectItemEnum.GetType();
         PhotonNetwork.InstantiateRoomObject("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
             playerController.ViewID(),
-            selectItem
         });
     }
 
-    Define.InGameItem GetRandomItemEnum(Define.Team team)
+    Enum GetRandomItemEnum(Define.Team team)
     {
         switch (team)
         {

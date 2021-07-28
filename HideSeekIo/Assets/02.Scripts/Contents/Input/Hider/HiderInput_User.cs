@@ -11,6 +11,7 @@ public class HiderInput_User : HiderInput
         {
             InputManager.Instance.SetActiveHiderController(true);
             InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
+            InputManager.Instance.itemControllerJoysticks[0].onAttackEventCallBack = CallBackItem1;
             IsRun = true;
 
         }

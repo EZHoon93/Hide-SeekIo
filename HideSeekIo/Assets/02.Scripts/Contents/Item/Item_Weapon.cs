@@ -26,8 +26,9 @@ public abstract class Item_Weapon : Item_Base
         }
         if (_weapon_Throw == null)
         {
-            _weapon_Throw = Managers.Spawn.WeaponSpawn(_weaponType, hasPlayerController.GetAttackBase()).GetComponent<Weapon_Throw>();
-            _weapon_Throw.AttackSucessEvent += () => Destroy();
+            print("생성!!");
+            //_weapon_Throw = Managers.Spawn.WeaponSpawn(_weaponType, hasPlayerController.GetAttackBase()).GetComponent<Weapon_Throw>();
+            //_weapon_Throw.AttackSucessEvent += () => Destroy();
 
         }
         hasPlayerController.GetAttackBase().UseWeapon(_weapon_Throw);
@@ -38,7 +39,7 @@ public abstract class Item_Weapon : Item_Base
     {
         if (_weapon_Throw == null)
         {
-            _weapon_Throw = Managers.Spawn.WeaponSpawn(_weaponType, usePlayer.GetAttackBase() ).GetComponent<Weapon_Throw>();
+            //_weapon_Throw = Managers.Spawn.WeaponSpawn(_weaponType, usePlayer.GetAttackBase() ).GetComponent<Weapon_Throw>();
             _weapon_Throw.AttackSucessEvent += () => Destroy();
 
         }

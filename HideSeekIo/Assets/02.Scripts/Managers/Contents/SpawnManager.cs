@@ -69,9 +69,22 @@ public class SpawnManager
         }
 
     }
-    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer)
+
+    public GameObject ItemSpawn(Define.InGameItem inGameItem, AttackBase attackPlayer, bool isBaseWeapon)
     {
-        List<object> datas = new List<object>() { attackPlayer.photonView.ViewID };
+        //List<object> datas = new List<object>() { attackPlayer.photonView.ViewID, isBaseWeapon };
+        //string weaponID = null;
+        //if()
+
+
+
+        //return PhotonNetwork.Instantiate(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+
+        return null;
+    }
+    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer, bool isBaseWeapon)
+    {
+        List<object> datas = new List<object>() { attackPlayer.photonView.ViewID  , isBaseWeapon};
         string weaponID = null;
         switch (weapon)
         {
@@ -84,7 +97,7 @@ public class SpawnManager
                 datas.Add($"Gun/{weapon.ToString()}");
                 break;
             default:
-                weaponID = $"Throw/{weapon.ToString()}";
+                weaponID = $"ThrowItem/{weapon.ToString()}";
                 break;
         }
         Debug.LogError("생성 " + weaponID);

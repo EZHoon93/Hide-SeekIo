@@ -12,8 +12,11 @@ public abstract class InputBase : MonoBehaviourPun
     public Vector2 ItemVector1 { get; set; }
 
     public event Action<Vector2> AttackEventCallBack;
-    public event Action<Vector2> ItemEventCallBack1;
-    public event Action<Vector2> ItemEventCallBack2;
+    public event Action<Vector2> ItemEventCallBackList1;
+    public event Action<Vector2> ItemEventCallBackList2;
+
+
+    //public event Action<Vector2> ItemEventCallBack2;
 
     public Vector2 RandomVector2 { get; set; }
     public bool IsStop { get; protected set; }
@@ -39,6 +42,16 @@ public abstract class InputBase : MonoBehaviourPun
     protected void Call_AttackCallBackEvent(Vector2 vector2)
     {
         AttackEventCallBack?.Invoke(vector2);
+    }
+
+    protected void CallBackItem1(Vector2 vector2)
+    {
+        ItemEventCallBackList1?.Invoke(vector2);
+    }
+
+    protected void CallBackItem2(Vector2 vector2)
+    {
+        ItemEventCallBackList2?.Invoke(vector2);
     }
 
     public virtual void Stop(float newTime)
