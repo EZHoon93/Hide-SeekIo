@@ -34,6 +34,8 @@ public static class PlayerInfo
             Debug.Log("로그인... 존재합니다" + userData);
             State = Define.UserDataState.Load;
 
+            Debug.Log("test");
+
         }
         else
         {
