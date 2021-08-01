@@ -13,7 +13,7 @@ public class GameManager
    
     public void Clear()
     {
-
+        
     }
 
     #region LivingEntity Register&UnRegister, Get
@@ -22,13 +22,17 @@ public class GameManager
     {
         if (_livingEntityDic.ContainsKey(viewID)) return;
         _livingEntityDic.Add(viewID, livingEntity);
+        if (livingEntity.gameObject.IsValidAI())
+        {
+            AIManager.Instance.RegisterAI(livingEntity);
+        }
     }
 
     public void UnRegisterLivingEntity(int viewID )
     {
         if (!_livingEntityDic.ContainsKey(viewID)) return;
         _livingEntityDic.Remove(viewID);
-
+        AIManager.Instance.UnRegisterAI(viewID);
     }
 
     public PlayerController GetPlayerController(int viewID)

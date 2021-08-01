@@ -108,8 +108,16 @@ public class SpawnManager
                 weaponID = $"ThrowItem/{weapon.ToString()}";
                 break;
         }
-        Debug.LogError("생성 " + weaponID);
-        return PhotonNetwork.Instantiate( weaponID , new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+
+        if (attackPlayer.gameObject.IsValidAI())
+        {
+            return PhotonNetwork.InstantiateRoomObject(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+        }
+        else
+        {
+            return PhotonNetwork.Instantiate(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
+        }
+
     }
 
     //public void TimerItemSpawn(Define.TimerItem timerItem , int useViewID)

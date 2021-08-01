@@ -235,6 +235,7 @@ public static class UtillGame
         var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
         if (hitCount > 0)
         {
+            Debug.Log($"{hitCount} 힛");
             for (int i = 0; i < hitCount; i++)
             {
                 if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))

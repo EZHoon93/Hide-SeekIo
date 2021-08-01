@@ -36,10 +36,19 @@ public class SeekerInput_User : SeekerInput
             UpdateStopState();
             return;
         }
-        MoveVector = InputManager.Instance.MoveVector;
+#if UNITY_ANDROID
+        MoveVector = InputManager.Instance.moveJoystick.InputVector2 * RandomVector2;
+#endif
         AttackVector = InputManager.Instance.baseAttackJoystick.InputVector2;
         ItemVector1 = InputManager.Instance.itemControllerJoysticks[0].InputVector2;
         ItemVector2 = InputManager.Instance.itemControllerJoysticks[1].InputVector2;
+        MoveVector = InputManager.Instance.moveJoystick.InputVector2;
+#if UNITY_EDITOR
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        MoveVector = new Vector2(h, v) * RandomVector2;
+#endif
+
     }
     //스탑 상태에서 발생
     protected void UpdateStopState()

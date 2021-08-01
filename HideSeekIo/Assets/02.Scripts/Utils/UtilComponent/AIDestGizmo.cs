@@ -6,6 +6,9 @@ using UnityEngine.AI;
 public class AIDestGizmo : MonoBehaviour
 {
     [SerializeField] NavMeshAgent _agent;
+
+    GameObject cube;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -13,7 +16,11 @@ public class AIDestGizmo : MonoBehaviour
 
     private void Update()
     {
-        this.transform.position = _agent.destination;
+        if(cube  == null)
+        {
+            cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        }
+        cube.transform.position = _agent.destination;
     }
 
    

@@ -3,6 +3,11 @@
 using UnityEngine;
 using FoW;
 
+
+/// <summary>
+/// Flash   에서 발생, 시야 저주 
+/// </summary>
+
 public class Buff_Sight : BuffBase
 {
 

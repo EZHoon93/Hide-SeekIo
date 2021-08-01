@@ -26,24 +26,6 @@ public abstract class AttackBase : MonoBehaviourPun
 
     Action<int> weaponChangeCallBack;
 
-    //int _currentWeaponIndex;
-    //public int CurrentZoomWeaponIndex
-    //{
-    //    get => _currentWeaponIndex;
-    //    set
-    //    {
-    //        var newIndex = value;
-    //        if(newIndex != _currentWeaponIndex)
-    //        {
-    //            weaponChangeCallBack?.Invoke(newIndex);
-    //            _currentWeaponIndex = newIndex;
-    //            //ChangeWeapon(_currentWeaponIndex);
-    //        }
-    //    }
-    //}
-
-
-
     private void OnEnable()
     {
         State = state.Idle;
@@ -91,8 +73,7 @@ public abstract class AttackBase : MonoBehaviourPun
             var item = newWeapon.GetComponent<IItem>();
             if (item != null)
             {
-                newWeapon.AttackSucessEvent += () => { weaponChangeCallBack -= newWeapon.WeaponChange; };
-
+                newWeapon.AttackSucessEvent += RemoveChangeEvent;
                 var index = AddItem(item);
                 //if (this.IsMyCharacter())
                 //{
@@ -118,6 +99,12 @@ public abstract class AttackBase : MonoBehaviourPun
         weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
         SetupAnimation(useNewWeapon);
     }
+
+    protected void RemoveChangeEvent(Weapon usedWeapon)
+    {
+        weaponChangeCallBack -= usedWeapon.WeaponChange;
+    }
+
     protected void SetupAnimation(Weapon newWeapon)
     {
         switch (newWeapon.weaponType)
@@ -201,10 +188,10 @@ public abstract class AttackBase : MonoBehaviourPun
     }
 
     
-    protected virtual void AttackBaseSucess()
+    protected virtual void AttackBaseSucess(Weapon currentUseweapon)
     {
         State = state.Attack;
-        _animator.SetTrigger(baseWeapon.AttackAnim);
+        _animator.SetTrigger(currentUseweapon.AttackAnim);
     }
     protected virtual void AttackBaseEnd()
     {

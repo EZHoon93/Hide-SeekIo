@@ -35,17 +35,17 @@ public abstract class InputBase : MonoBehaviourPun
 
     }
 
-    protected void Call_AttackCallBackEvent(Vector2 vector2)
+    public void Call_AttackCallBackEvent(Vector2 vector2)
     {
         AttackEventCallBack?.Invoke(vector2);
     }
 
-    protected void CallBackItem1(Vector2 vector2)
+    public void CallBackItem1(Vector2 vector2)
     {
         ItemEventCallBackList1?.Invoke(vector2);
     }
 
-    protected void CallBackItem2(Vector2 vector2)
+    public void CallBackItem2(Vector2 vector2)
     {
         ItemEventCallBackList2?.Invoke(vector2);
     }

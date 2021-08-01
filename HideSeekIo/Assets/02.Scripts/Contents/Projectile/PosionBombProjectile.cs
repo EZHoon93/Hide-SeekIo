@@ -13,7 +13,7 @@ public class PosionBombProjectile : ThrowProjectileObject
         _modelObject.SetActive(false);
         _fogOfWarUnit.enabled = true;
         _fogOfWarUnit.team = attackPlayer.ViewID();            
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, this.transform.position, 0);
         UtillGame.BuffInRange(this.transform, _range, Define.BuffType.B_Direction, attackPlayer.ViewID(), _attackLayer);
 
         Invoke("Push", 1.0f);

@@ -44,7 +44,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     public GameObject UICanvas { get; set; }
     public PlayerController hasPlayerController { get; set; }
 
-    public Action AttackSucessEvent;
+    public Action<Weapon> AttackSucessEvent;
     public Action AttackEndEvent;
 
     public UseState useState

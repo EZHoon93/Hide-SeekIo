@@ -8,7 +8,7 @@ using FoW;
 public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, IEnterTrigger, IExitTrigger ,
      IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
 {
-    [SerializeField] LivingEntity _gettingLivingEntity; //얻고있는 생명체
+    public LivingEntity gettingLivingEntity { get; set; } //얻고있는 생명체
     [SerializeField] Slider _getSlider;     //얻고있는 UI
     [SerializeField] Transform _modelTransform;     //모델 객체 collect Effect할
     HideInFog _hideInFog;
@@ -56,7 +56,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     {
         this.transform.localScale = Vector3.one;
         n_eneterTime = 0;
-        _gettingLivingEntity = null;
+        gettingLivingEntity = null;
         _isGet = false;
         _getSlider.value = 0;
         n_getTime = 0;
@@ -113,12 +113,12 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         this.transform.DOShakeScale(_shakeScaleDuration);
         this.transform.DOScale(Vector3.zero, _hideScaleDuration).SetDelay(_shakeScaleDuration);
 
-        if (photonView.IsMine == false || _gettingLivingEntity == null) return;
-        if (_gettingLivingEntity.photonView.IsMine)
+        if (photonView.IsMine == false || gettingLivingEntity == null) return;
+        if (gettingLivingEntity.photonView.IsMine)
         {
-            getWorldItem.Get(_gettingLivingEntity.gameObject);  //아이템 얻기 효과
+            getWorldItem.Get(gettingLivingEntity.gameObject);  //아이템 얻기 효과
             n_getTime = (float)PhotonNetwork.Time;
-            if (_gettingLivingEntity.IsMyCharacter())
+            if (gettingLivingEntity.IsMyCharacter())
             {
                 Managers.Sound.Play("Get", Define.Sound.Effect);
             }
@@ -141,7 +141,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         print("Enter Item!!");
         this._modelTransform.DOShakeScale(_shakeScaleDuration*0.5f);
 
-        if (_gettingLivingEntity != null) return;   //이미 얻고있는 플레이어가 있다면 취소
+        if (gettingLivingEntity != null) return;   //이미 얻고있는 플레이어가 있다면 취소
         var living =  Gettingobject.GetComponent<LivingEntity>();
         if (living.photonView.IsMine == false) return;  //얻은캐릭이 자기자신캐릭이아니라면 x
         if (living)
@@ -161,15 +161,15 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     [PunRPC]
     public void Check_IsGetOnServer(int getViewID , PhotonMessageInfo photonMessageInfo)
     {
-        if (_gettingLivingEntity != null) return;       //누군가 이미 얻었다면  return
+        if (gettingLivingEntity != null) return;       //누군가 이미 얻었다면  return
 
         var newGetLivingEntity = Managers.Game.GetLivingEntity(getViewID);
         if (newGetLivingEntity == null) return; //없으면 X
 
         //변수 할당
-        _gettingLivingEntity = newGetLivingEntity;
+        gettingLivingEntity = newGetLivingEntity;
         n_eneterTime = (float)photonMessageInfo.SentServerTime;
-        if (_gettingLivingEntity.IsMyCharacter())
+        if (gettingLivingEntity.IsMyCharacter())
         {
             _getSlider.gameObject.SetActive(true);
         }
@@ -185,9 +185,9 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         if (photonView.IsMine == false) return;
         var exitLivingEntity = exitGameObject.GetComponent<LivingEntity>();
         if (exitLivingEntity == null) return;
-        if(_gettingLivingEntity == exitLivingEntity  && n_eneterTime > 0)
+        if(gettingLivingEntity == exitLivingEntity  && n_eneterTime > 0)
         {
-            _gettingLivingEntity = null;
+            gettingLivingEntity = null;
             this.photonView.TransferOwnership(0);   //중립오브젝트로 전환
             _getSlider.gameObject.SetActive(false);
             _hideInFog.enabled = true;
@@ -209,7 +209,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         {
             if(this.ViewID() == targetView.ViewID)
             {
-                _gettingLivingEntity = null;
+                gettingLivingEntity = null;
                 n_eneterTime = 0;
             }
             

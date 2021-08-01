@@ -19,13 +19,13 @@ public class Weapon_Gun : Weapon
 
 
 
-    protected virtual void Awake()
-    {
-        _lineRenderer = GetComponentInChildren<LineRenderer>();
-        _lineRenderer.positionCount = 2;
-        _lineRenderer.enabled = false;
-        weaponType = WeaponType.Gun;
-    }
+    //protected virtual void Awake()
+    //{
+    //    _lineRenderer = GetComponentInChildren<LineRenderer>();
+    //    _lineRenderer.positionCount = 2;
+    //    _lineRenderer.enabled = false;
+    //    weaponType = WeaponType.Gun;
+    //}/
     protected virtual void Start()
     {
         //AnimationN = "Attack";
@@ -58,7 +58,7 @@ public class Weapon_Gun : Weapon
     IEnumerator AttackProcessOnAllClinets(Vector3 endPoint)
     {
         state = State.Delay;
-        AttackSucessEvent?.Invoke();
+        //AttackSucessEvent?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var go1 = Managers.Pool.Pop(_bulletPrefab).GetComponent<Bullet>();
         go1.transform.position = _fireTransform.transform.position;

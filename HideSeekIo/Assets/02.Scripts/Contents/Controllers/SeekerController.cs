@@ -69,5 +69,7 @@ public class SeekerController : PlayerController
     public override LivingEntity GetLivingEntity() => seekerHealth;
 
     public override AttackBase GetAttackBase() => seekerAttack;
-    
+
+    public override InputBase GetInputBase() => seekerInput;
+  
 }

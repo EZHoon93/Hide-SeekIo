@@ -7,7 +7,7 @@ public class Timer_Dynamite : TimerItem
 {
     
     [SerializeField] GameObject _dmageUI;
-    float _damageRange = 2;
+    float _damageRange = 1.5f;
     int _damage = 5;
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -18,7 +18,8 @@ public class Timer_Dynamite : TimerItem
     }
     public override void EndTime()
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0,_timerItemController.usePlayer.ViewID());
+        //EffectManager.Instance.EffectOnLocal(Define.EffectType.FogSight, this.transform.position, 0);
         UtillGame.BuffInRange(this.transform, _damageRange, Define.BuffType.B_Stun, _timerItemController.usePlayer.ViewID(), UtillLayer.seekerToHiderAttack);
 
     }

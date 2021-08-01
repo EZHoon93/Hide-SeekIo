@@ -12,13 +12,13 @@ public class UI_InputSetting : MonoBehaviour
     public Slider sizeSlider => _sizeSlider;
      [SerializeField] UltiMateSetting[] settingList;
 
-    private void Reset()
+    private void Reset()    
     {
         settingList = GetComponentsInChildren<UltiMateSetting>();
     }
     
     public void Init()
-    {
+    {   
         foreach(var settingData in PlayerInfo.optionData.joystickSettings)
         {
             foreach(var setting in settingList)

@@ -247,7 +247,8 @@ public class Define
         Ripple,
         AcidExp,
         DarkExp,
-        FlashEffect
+        FlashEffect,
+        FogSight
             
     }
 

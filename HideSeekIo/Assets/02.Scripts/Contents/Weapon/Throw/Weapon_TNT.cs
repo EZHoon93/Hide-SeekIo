@@ -12,7 +12,7 @@ public class Weapon_TNT : Weapon_Throw
     }
     private void Start()
     {
-        Setup("Throw", .2f, .3f, 4.0f, 1);
+        Setup("Throw", .2f, .3f, 6.0f, 1);
     }
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info)

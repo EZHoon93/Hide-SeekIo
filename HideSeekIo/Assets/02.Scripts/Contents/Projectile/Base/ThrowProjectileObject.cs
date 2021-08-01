@@ -21,10 +21,18 @@ public class ThrowProjectileObject : Poolable
         _hideInFog = GetComponent<HideInFog>();
         _fogOfWarUnit = GetComponent<FogOfWarUnit>();
     }
+
+    /// <summary>
+    /// 포그오브워 설정 , 
+    /// </summary>
+    /// <param name="newAttackPlayer"></param>
+    /// <param name="startPoint"></param>
+    /// <param name="endPoint"></param>
     public virtual void Play(AttackBase newAttackPlayer, Vector3 startPoint, Vector3 endPoint)
     {
         attackPlayer = newAttackPlayer;
         _modelObject.SetActive(true);
+        _fogOfWarUnit.team = attackPlayer.ViewID();
         _fogOfWarUnit.enabled = false;
         if (attackPlayer.IsMyCharacter())
         {

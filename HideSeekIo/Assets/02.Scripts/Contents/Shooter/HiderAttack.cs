@@ -17,7 +17,7 @@ public class HiderAttack : AttackBase
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
-        if (this.IsMyCharacter())
+        if (this.photonView.IsMine)
         {
             Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, this, true);
         }

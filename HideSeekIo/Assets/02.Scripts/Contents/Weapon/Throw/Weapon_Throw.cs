@@ -38,7 +38,7 @@ public abstract class Weapon_Throw : Weapon , IItem
         AttackDistance = distance;
         attackRange = newAttackRange;
 
-        UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange);
+        UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange); //범위에 따른 ui변경
     }
 
     public override bool Zoom(Vector2 inputVector)
@@ -74,7 +74,7 @@ public abstract class Weapon_Throw : Weapon , IItem
     IEnumerator AttackProcessOnAllClinets(Vector3 startPoint, Vector3 endPoint)
     {
         state = State.Delay;
-        AttackSucessEvent?.Invoke();
+        AttackSucessEvent?.Invoke(this);
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
         projectile.Play(hasPlayerController.GetAttackBase(),  startPoint, endPoint);

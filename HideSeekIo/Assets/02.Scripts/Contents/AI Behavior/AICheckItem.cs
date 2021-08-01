@@ -12,11 +12,9 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
     public class AICheckItem : Action
     {
         public SharedItemEnum  checkItemEnum;
-        LivingEntity _livingEntity;
         PlayerController _playerController;
         public override void OnAwake()
         {
-            _livingEntity = GetComponent<LivingEntity>();
             _playerController = GetComponent<PlayerController>();
         }
         public override TaskStatus OnUpdate()

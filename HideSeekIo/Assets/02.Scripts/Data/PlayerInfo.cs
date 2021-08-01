@@ -56,6 +56,7 @@ public static class PlayerInfo
         else
         {
             optionData = new OptionData();
+            SaveOptionData();
         }
 
         

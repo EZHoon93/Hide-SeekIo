@@ -15,12 +15,12 @@ public class DynamiteProjectile : ThrowProjectileObject
             if (attackPlayer.gameObject.IsValidAI())
             {
                 PhotonNetwork.InstantiateRoomObject("TimerItem/T_Dynamite", this.transform.position, this.transform.rotation, 0,
-                new object[] { attackPlayer.ViewID(), 10.0f });
+                new object[] { attackPlayer.ViewID(), 1.0f });
             }
             else
             {
                 PhotonNetwork.Instantiate("TimerItem/T_Dynamite", this.transform.position, this.transform.rotation, 0,
-                new object[] { attackPlayer.ViewID(), 2.0f });
+                new object[] { attackPlayer.ViewID(), 1.0f });
             }
         }
 

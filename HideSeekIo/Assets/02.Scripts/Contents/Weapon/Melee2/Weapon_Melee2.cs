@@ -74,7 +74,7 @@ public class Weapon_Melee2 : Weapon
     {
         state = State.Delay;
         LastAttackInput = inputVector;
-        AttackSucessEvent?.Invoke();
+        AttackSucessEvent?.Invoke(this);
         //var angle = _attackRangeUI.rotation.eulerAngles;
         //angle.y = angle.y - 180;
         //_attackWarningRangeUI.rotation = Quaternion.Euler( angle);

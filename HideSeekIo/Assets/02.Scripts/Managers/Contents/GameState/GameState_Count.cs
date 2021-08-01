@@ -170,7 +170,7 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = _gameMainScene.GetSeekerPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos);
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos);
 
         }
         else

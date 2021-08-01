@@ -37,13 +37,19 @@ public class HiderInput_User : HiderInput
             UpdateStopState();
             return;
         }
-        MoveVector = InputManager.Instance.MoveVector;
+#if UNITY_ANDROID
+        MoveVector = InputManager.Instance.moveJoystick.InputVector2 * RandomVector2;
+#endif
         IsRun = InputManager.Instance.IsRun;
         AttackVector = InputManager.Instance.baseAttackJoystick.InputVector2;
         ItemVector1 = InputManager.Instance.itemControllerJoysticks[0].InputVector2;
         ItemVector2 = InputManager.Instance.itemControllerJoysticks[1].InputVector2;
-
         //UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);
+#if UNITY_EDITOR
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        MoveVector = new Vector2(h, v) * RandomVector2;
+#endif
     }
 
 

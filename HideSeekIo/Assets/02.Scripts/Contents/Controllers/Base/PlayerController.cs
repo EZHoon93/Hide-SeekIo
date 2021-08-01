@@ -11,13 +11,14 @@ public abstract class PlayerController : MonoBehaviourPun
     public Define.Team Team => GetLivingEntity().Team;
     public abstract LivingEntity GetLivingEntity();
     public abstract AttackBase GetAttackBase();
+    public abstract InputBase GetInputBase();
     
     public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
 
     public virtual void OnPhotonInstantiate(PhotonView photonView)
     {
-        if (this.IsMyCharacter())    //내캐릭 이라면
+        if (this.IsMyCharacter())    //?????? ??????
         {
             var mainSceneUI = Managers.UI.SceneUI as UI_Main;
             //mainSceneUI.InGameStore.Setup(Team);
@@ -27,7 +28,7 @@ public abstract class PlayerController : MonoBehaviourPun
             itemInventory[i] = null;
         }
 
-        //StartCoroutine(UpdateFog());ㅁ
+        //StartCoroutine(UpdateFog());??
 
     }
 
@@ -51,13 +52,13 @@ public abstract class PlayerController : MonoBehaviourPun
         
     }
 
-    ////포톤뷰 그룹을 위한 동기화 필요 여부
+    ////?????? ?????? ???? ?????? ???? ????
     //protected virtual void FixedUpdate()
     //{
     //    n_sync = false;
     //}
 
-    ////동기화가 필요하면 true => 
+    ////???????? ???????? true => 
     //[PunRPC]
     //public void CallSync()
     //{

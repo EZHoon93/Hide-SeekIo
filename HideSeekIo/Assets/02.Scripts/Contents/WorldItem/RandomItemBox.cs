@@ -67,14 +67,8 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
     {
         var playerController = getObject.GetComponent<PlayerController>();
         if (playerController == null) return;
-
         var selectItemEnum = GetRandomItemEnum(playerController.Team);
-        //아이템
-        //
-        selectItemEnum.GetType();
-        //PhotonNetwork.InstantiateRoomObject("InGameItem", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-        //    playerController.ViewID(),
-        //});
+        Managers.Spawn.ItemSpawn(selectItemEnum, playerController);
     }
 
     Enum GetRandomItemEnum(Define.Team team)
