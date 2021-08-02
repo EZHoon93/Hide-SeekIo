@@ -9,27 +9,23 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
 {
 
     [TaskCategory("EZ")]
-    public class ItemIsGet : Action
+    public class ItemIsGet : Conditional
     {
-        public SharedGameObject seeItemObject;
+        public SharedGetItem seeGetItem;
         public override void OnAwake()
         {
 
         }
         public override TaskStatus OnUpdate()
         {
-            if (seeItemObject.Value == null)
-            {
-                return TaskStatus.Failure;
-            }
-            var getWorldItem = seeItemObject.Value.GetComponent<GetWorldItemController>();
-            if(getWorldItem == null)
+            if (seeGetItem.Value == null)
             {
                 return TaskStatus.Failure;
             }
 
             // null 이면 아이템 얻을 수있음 => sucess
-            return getWorldItem.gettingLivingEntity == null ? TaskStatus.Success : TaskStatus.Failure; 
+            Debug.Log("지속ㄱ 검사");
+            return seeGetItem.Value.gettingLivingEntity == null ? TaskStatus.Success : TaskStatus.Failure; 
 
         }
     }

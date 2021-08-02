@@ -7,7 +7,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
     public Define.MoveHearState HearState { get; set; }
     HiderInput _hiderInput;
 
-    public float MaxEnergy { get; private set; } = 11;
+    public float MaxEnergy { get; private set; } = 16;
     public float CurrentEnergy { get; set; }
 
     float lastTime;

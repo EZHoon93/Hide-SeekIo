@@ -19,6 +19,7 @@ public class AIDestGizmo : MonoBehaviour
         if(cube  == null)
         {
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.SetParent(this.transform);
         }
         cube.transform.position = _agent.destination;
     }

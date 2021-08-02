@@ -9,6 +9,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public SharedFloat fleedDistance = 20;
         public SharedFloat lookAheadDistance = 5;
         public SharedFloat angle;
+        public SharedBool random;
 
         public SharedGameObject target;
         private bool hasMoved;
@@ -64,7 +65,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         private Vector3 Target()
         {
             var direction = (transform.position - target.Value.transform.position).normalized;
-            var newDirection =  Quaternion.Euler(0, angle.Value, 0) * direction;
+            var newAngle = Random.Range(0, angle.Value);
+            var newDirection =  Quaternion.Euler(0, newAngle, 0) * direction;
             return transform.position + newDirection * lookAheadDistance.Value;
         }
 

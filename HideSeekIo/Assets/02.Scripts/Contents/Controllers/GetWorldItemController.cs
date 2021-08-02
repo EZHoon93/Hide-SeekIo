@@ -8,7 +8,9 @@ using FoW;
 public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, IEnterTrigger, IExitTrigger ,
      IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
 {
-    public LivingEntity gettingLivingEntity { get; set; } //얻고있는 생명체
+    //public LivingEntity gettingLivingEntity { get; set; } //얻고있는 생명체
+    public LivingEntity gettingLivingEntity;//얻고있는 생명체
+
     [SerializeField] Slider _getSlider;     //얻고있는 UI
     [SerializeField] Transform _modelTransform;     //모델 객체 collect Effect할
     HideInFog _hideInFog;

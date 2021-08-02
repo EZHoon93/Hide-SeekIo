@@ -24,12 +24,22 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
             {
                 return TaskStatus.Failure;
             }
+
+
+
             var direction = targetObject.Value.transform.position - _playerController.transform.position;
             var inputVector = direction / _playerController.GetAttackBase().baseWeapon.AttackDistance;
             Debug.Log(inputVector);
             _playerController.GetInputBase().Call_AttackCallBackEvent(inputVector);
 
             return TaskStatus.Success;
+        }
+
+        void CheckItem()
+        {
+            foreach(var item in _playerController.GetAttackBase().itemInventory)
+            {
+            }
         }
     }
 }

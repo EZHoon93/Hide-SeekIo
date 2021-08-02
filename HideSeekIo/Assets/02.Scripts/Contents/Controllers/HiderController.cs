@@ -35,7 +35,15 @@ public class HiderController : PlayerController
         if (photonView.IsMine)
         {
             BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Revive, this.GetLivingEntity());
+            if (this.gameObject.IsValidAI())
+            {
+                Managers.Spawn.ItemSpawn(Define.InGameItem.Grenade, this);
+                Managers.Spawn.ItemSpawn(Define.InGameItem.Glue, this);
+
+            }
         }
+
+       
     }
 
     void SetActiveComponent(bool active)

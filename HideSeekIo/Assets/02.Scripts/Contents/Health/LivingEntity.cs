@@ -3,20 +3,20 @@ using Photon.Pun;
 using UnityEngine;
 using System.Collections.Generic;
 
-// 생명체로서 동작할 게임 오브젝트들을 위한 뼈대를 제공
-// 체력, 데미지 받아들이기, 사망 기능, 사망 이벤트를 제공
+// ?????????? ?????? ???? ???????????? ???? ?????? ????
+// ????, ?????? ??????????, ???? ????, ???? ???????? ????
 public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 {
-    public int initHealth = 2; // 시작 체력
+    public int initHealth = 2; // ???? ????
 
     public virtual int Health { get; set; }
 
     public bool Dead { get; protected set; }
     public Define.Team Team;
 
-    public event Action onDeath; // 사망시 발동할 이벤트
+    public event Action onDeath; // ?????? ?????? ??????
 
-    int _lastAttackViewID;  //최근에 공격한플레이어 뷰아이디
+    int _lastAttackViewID;  //?????? ?????????????? ????????
 
 
     public List<BuffController> BuffControllerList { get; private set; } = new List<BuffController>();
@@ -61,7 +61,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     public virtual void InitSetup()
     {
         Dead = false;
-        // 체력을 시작 체력으로 초기화
+        // ?????? ???? ???????? ??????
         Health = initHealth;
 
         switch (Team)
@@ -72,13 +72,13 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
                 fogController.ChangeSight(5);
                 break;
             case Define.Team.Seek:
-                //fogController._fogOfWarUnit.shapeType = FoW.FogOfWarShapeType.Box;
-                //fogController._fogOfWarUnit.boxSize = new Vector2(2.5f, 2.5f);
-                fogController.ChangeSight(2);
-                fogController._fogOfWarUnit.angle = 360;
-                fogController._fogOfWarUnit.innerRadius = 0.3f;
-                fogController._fogOfWarUnit.circleRadius = 2.5f;
-                fogController._fogOfWarUnit.offset = new Vector2(0, 1.0f);
+                fogController._fogOfWarUnit.shapeType = FoW.FogOfWarShapeType.Box;
+                fogController._fogOfWarUnit.boxSize = new Vector2(5f, 5f);
+                //fogController.ChangeSight(2);
+                //fogController._fogOfWarUnit.angle = 360;
+                //fogController._fogOfWarUnit.innerRadius = 0.3f;
+                //fogController._fogOfWarUnit.circleRadius = 2.5f;
+                fogController._fogOfWarUnit.offset = new Vector2(0, 2.0f);
                 break;
         }
     }
@@ -86,21 +86,21 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
     public virtual void OnPhotonInstantiate()
     {
-        Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //등록
+        Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //????
     }
 
 
-    // 데미지 처리
-    //로컬 유저가 처리 
+    // ?????? ????
+    //???? ?????? ???? 
     [PunRPC]
     public virtual void OnDamage(int damagerViewId, int damage, Vector3 hitPoint)
     {
         if (photonView.IsMine)
         {
             Health -= damage;
-            _lastAttackViewID = damagerViewId;  //공격을 가한 플레이어 뷰아이디 저장
+            _lastAttackViewID = damagerViewId;  //?????? ???? ???????? ???????? ????
 
-            // 체력이 0 이하 && 아직 죽지 않았다면 사망 처리 실행
+            // ?????? 0 ???? && ???? ???? ???????? ???? ???? ????
             if (Health <= 0 && !Dead)
             {
                 //Die();
@@ -112,17 +112,17 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     [PunRPC]
     public virtual void Die()
     {
-        // onDeath 이벤트에 등록된 메서드가 있다면 실행
+        // onDeath ???????? ?????? ???????? ?????? ????
         if (photonView.IsMine)
         {
 
-            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID(), _lastAttackViewID);  //다른 유저에게 알림 =>viewGroup을 위해매니저가 동작
+            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID(), _lastAttackViewID);  //???? ???????? ???? =>viewGroup?? ???????????? ????
         }
         if (onDeath != null)
         {
             onDeath();
         }
-        // 사망 상태를 참으로 변경
+        // ???? ?????? ?????? ????
         Dead = true;
 
         //var uiMain = Managers.UI.SceneUI as UI_Main;

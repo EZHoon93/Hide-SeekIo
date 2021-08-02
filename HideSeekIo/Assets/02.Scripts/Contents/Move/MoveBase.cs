@@ -100,6 +100,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
+        UpdateStepSound();
 
     }
 
