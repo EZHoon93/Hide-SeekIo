@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5989112195661839300}
   - component: {fileID: 4941550031652472163}
   m_Layer: 5
-  m_Name: Zoom
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 1785407787675159414}
   - component: {fileID: 8476235852141182606}
   - component: {fileID: -3387981938185399550}
+  - component: {fileID: 4893136089547985138}
   m_Layer: 9
   m_Name: PoisonBomb
   m_TagString: Untagged
@@ -200,9 +201,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 5502124077988943353}
+  _zoomUI: {fileID: 2259796626736311258}
   _projectilePrefab: {fileID: 4117768412101275065, guid: f26e48063ebeacd4bac33c7c324d1b6f,
     type: 3}
-  _sprite: {fileID: 21300000, guid: 24bc003324d27bc4a83a4d8ea0b9d4ca, type: 3}
+  obtainableItem: {fileID: 0}
+--- !u!114 &4893136089547985138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438273016748431005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87186665fe74e474abdb759d7d633447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemSprite: {fileID: 21300000, guid: 24bc003324d27bc4a83a4d8ea0b9d4ca, type: 3}
 --- !u!1 &4295140760138340207
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,7 +228,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2259796626736311258}
   m_Layer: 5
-  m_Name: Ratio
+  m_Name: ZoomUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -37,8 +37,8 @@ public class HiderController : PlayerController
             BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Revive, this.GetLivingEntity());
             if (this.gameObject.IsValidAI())
             {
-                Managers.Spawn.ItemSpawn(Define.InGameItem.Grenade, this);
-                Managers.Spawn.ItemSpawn(Define.InGameItem.Glue, this);
+                Managers.Spawn.ItemSpawn(Define.ThrowItem.Grenade, this);
+                Managers.Spawn.ItemSpawn(Define.ThrowItem.Glue, this);
 
             }
         }

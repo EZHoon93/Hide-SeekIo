@@ -4,10 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 public class Weapon_TNT : Weapon_Throw
 {
+    public override System.Enum GetEnum() => Define.ThrowItem.TNT;
+
     protected override void Awake()
     {
         base.Awake();
         type = Type.Disposable;
+        throwType = Define.ThrowItem.TNT;
 
     }
     private void Start()

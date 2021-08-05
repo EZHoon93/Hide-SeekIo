@@ -10,9 +10,9 @@ public class SeekerInput_User : SeekerInput
         if (this.photonView.IsMine)
         {
             InputManager.Instance.SetActiveSeekerController(true);
-            InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
-            InputManager.Instance.itemControllerJoysticks[0].onAttackEventCallBack = CallBackItem1;
-            InputManager.Instance.itemControllerJoysticks[1].onAttackEventCallBack = CallBackItem2;
+            //InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
+            //InputManager.Instance.itemControllerJoysticks[0].onAttackEventCallBack = CallBackItem1;
+            //InputManager.Instance.itemControllerJoysticks[1].onAttackEventCallBack = CallBackItem2;
 
         }
     }
@@ -39,7 +39,7 @@ public class SeekerInput_User : SeekerInput
 #if UNITY_ANDROID
         MoveVector = InputManager.Instance.moveJoystick.InputVector2 * RandomVector2;
 #endif
-        AttackVector = InputManager.Instance.baseAttackJoystick.InputVector2;
+        AttackVector = InputManager.Instance.mainJoystick.InputVector2;
         ItemVector1 = InputManager.Instance.itemControllerJoysticks[0].InputVector2;
         ItemVector2 = InputManager.Instance.itemControllerJoysticks[1].InputVector2;
         MoveVector = InputManager.Instance.moveJoystick.InputVector2;

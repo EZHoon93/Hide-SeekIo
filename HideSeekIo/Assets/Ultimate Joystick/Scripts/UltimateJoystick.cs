@@ -111,7 +111,7 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	// PUBLIC CALLBACKS //
 	public event Action OnPointerDownCallback, OnPointerUpCallback, OnDragCallback;
 	public event Action OnUpdatePositioning;
-	public event Action OnTapCount;
+	public event Action OnTapCallBack;
 	
 	// OBSOLETE // NOTE: We are keeping these variables in the script and public so that the values can be copied to the new variables for a smooth transition to the new version.
 	public enum JoystickTouchSize
@@ -944,7 +944,7 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	{
 		tapCountAchieved = true;
 		print("인인이ㅣㅇ닝");
-		OnTapCount?.Invoke();
+		OnTapCallBack?.Invoke();
 		yield return new WaitForEndOfFrame();
 		tapCountAchieved = false;
 	}

@@ -941,6 +941,36 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &273287902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 273287903}
+  m_Layer: 0
+  m_Name: Cat
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &273287903
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273287902}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &282973549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4497422787950675448, guid: e36035839be492c4eba6159c142258fd,
@@ -1610,6 +1640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _obtainableItem: {fileID: 0}
   _joystickOutLine: {fileID: 1313477218}
   _itemOutLine: {fileID: 1511500778}
   _itemImage: {fileID: 161181945}
@@ -3215,6 +3246,36 @@ RectTransform:
   m_AnchoredPosition: {x: -0.000061035156, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1023450810
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1023450811}
+  m_Layer: 0
+  m_Name: Bunny
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1023450811
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023450810}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1030909700
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3847,6 +3908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _obtainableItem: {fileID: 0}
   _joystickOutLine: {fileID: 0}
   _itemOutLine: {fileID: 0}
   _itemImage: {fileID: 0}
@@ -4023,6 +4085,36 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1120114528}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1131331282
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1131331283}
+  m_Layer: 0
+  m_Name: Bear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1131331283
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131331282}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1176202096
 GameObject:
   m_ObjectHideFlags: 0
@@ -6431,6 +6523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _obtainableItem: {fileID: 0}
   _joystickOutLine: {fileID: 669980860}
   _itemOutLine: {fileID: 387489075}
   _itemImage: {fileID: 396949706}
@@ -6972,7 +7065,6 @@ GameObject:
   - component: {fileID: 2028102118}
   - component: {fileID: 2042075367}
   - component: {fileID: 2042075368}
-  - component: {fileID: 2042075369}
   m_Layer: 5
   m_Name: Joystick_Attack
   m_TagString: Untagged
@@ -7012,23 +7104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _joystickOutLine: {fileID: 0}
-  _itemOutLine: {fileID: 0}
-  _itemImage: {fileID: 0}
-  _panel: {fileID: 0}
-  _ultimateJoystick: {fileID: 0}
---- !u!114 &2042075369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2042075366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73c409b73d7a9594f8e1b5face47b6bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _obtainableItem: {fileID: 0}
   _joystickOutLine: {fileID: 0}
   _itemOutLine: {fileID: 0}
   _itemImage: {fileID: 0}
@@ -7143,7 +7219,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _runButton: {fileID: 456539974}
   _moveJoystick: {fileID: 1088092683}
-  _attackJoystick: {fileID: 2042075368}
+  _mainJoystick: {fileID: 2042075368}
+  _subJoystick: {fileID: 0}
   _itemControllerJoysticks:
   - {fileID: 2011860861}
   - {fileID: 392628309}

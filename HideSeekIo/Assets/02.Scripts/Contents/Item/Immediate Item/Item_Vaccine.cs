@@ -1,11 +1,22 @@
 ﻿using System.Collections;
 
 using Photon.Pun;
+using System;
 
 using UnityEngine;
 
 public class Item_Vaccine: Item_Base
 {
+    protected override void Awake()
+    {
+        base.Awake();
+        InGameItemType = Define.InGameItem.Vaccine;
+    }
+
+    public override Enum GetEnum()
+    {
+        return Define.InGameItem.Dynamite;
+    }
     protected override void UsePorecess(PlayerController usePlayer)
     {
         EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);

@@ -12,7 +12,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
     public class UseWeaponItem : Action
     {
         public SharedGameObject targetObject;
-        public SharedItemEnum checkItemEnum;
+        public SharedThrowItemEnum checkItemEnum;
         PlayerController _playerController;
         public override void OnAwake()
         {
@@ -25,21 +25,58 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 return TaskStatus.Failure;
             }
 
+            int index = CheckItem(checkItemEnum.Value);
+            if(index == -1)
+            {
+                return TaskStatus.Failure;
+            }
+            else
+            {
+                var direction =  GetInputVector2(targetObject.Value.transform.position);
+                float itemDistance = 0;
+                if (index == 0)
+                {
+                    //_playerController.GetAttackBase().itemInventory[0].getc;
+                }
+                else
+                {
+
+                }
+
+            }
 
 
-            var direction = targetObject.Value.transform.position - _playerController.transform.position;
-            var inputVector = direction / _playerController.GetAttackBase().baseWeapon.AttackDistance;
-            Debug.Log(inputVector);
-            _playerController.GetInputBase().Call_AttackCallBackEvent(inputVector);
+            //var direction = targetObject.Value.transform.position - _playerController.transform.position;
+            //var inputVector = direction / _playerController.GetAttackBase().baseWeapon.AttackDistance;
+            //Debug.Log(inputVector);
+            //_playerController.GetInputBase().Call_AttackCallBackEvent(inputVector);
 
             return TaskStatus.Success;
         }
 
-        void CheckItem()
+        int CheckItem(Define.ThrowItem checkThrowItem )
         {
+            int i = 0;
             foreach(var item in _playerController.GetAttackBase().itemInventory)
             {
+                if(item.GetType() == typeof(Define.ThrowItem))
+                {
+                    //if((Define.ThrowItem) item.GetEnum() == checkThrowItem)
+                    //{
+                    //    return i;
+                    //}
+                }
+                i++;
             }
+            return -1;
+        }
+
+        Vector2 GetInputVector2(Vector3 targetPos)
+        {
+            var direction = (targetPos - _playerController.transform.position).normalized;
+
+
+            return new Vector2(direction.x, direction.z);
         }
     }
 }

@@ -181,7 +181,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1202440167318897790}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -198,8 +199,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 0}
+  _zoomUI: {fileID: 2691245788259507214}
   _projectilePrefab: {fileID: 8094596044185181897, guid: 9c1dd46f5a33e534fa27f141eb458a72,
     type: 3}
+  _sprite: {fileID: 0}
 --- !u!1 &8945184483104698505
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,7 +213,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2691245788259507214}
   m_Layer: 5
-  m_Name: Ratio
+  m_Name: ZoomUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -4,10 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 public class Weapon_Stone : Weapon_Throw
 {
+    public override System.Enum GetEnum() => Define.ThrowItem.Stone;
+
     protected override  void Awake()
     {
         base.Awake();
         type = Type.Permanent;
+        throwType = Define.ThrowItem.Stone;
 
     }
     private void Start()

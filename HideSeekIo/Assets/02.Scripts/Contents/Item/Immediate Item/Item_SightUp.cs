@@ -1,11 +1,22 @@
 ﻿using System.Collections;
 
 using Photon.Pun;
+using System;
 
 using UnityEngine;
 
 public class Item_SightUp : Item_Base
 {
+    protected override void Awake()
+    {
+        base.Awake();
+        InGameItemType = Define.InGameItem.SightUp;
+    }
+
+    public override Enum GetEnum()
+    {
+        return Define.InGameItem.Dynamite;
+    }
     protected override void UsePorecess(PlayerController usePlayer)
     {
 

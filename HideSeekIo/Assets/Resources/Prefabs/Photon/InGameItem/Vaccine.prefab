@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2622812096905004097}
   - component: {fileID: 1895895717889013381}
   - component: {fileID: 7477485777758140082}
+  - component: {fileID: 4232008534557519585}
   m_Layer: 1
   m_Name: Vaccine
   m_TagString: Untagged
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c957f46ce98fd424d8dc00112d20a640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemSprite: {fileID: 21300000, guid: ddf43a6729a91164690adaf2d6349fcd, type: 3}
+  obtainableItem: {fileID: 0}
 --- !u!114 &7477485777758140082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,3 +68,16 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4232008534557519585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695996283211347277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87186665fe74e474abdb759d7d633447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemSprite: {fileID: 21300000, guid: ddf43a6729a91164690adaf2d6349fcd, type: 3}

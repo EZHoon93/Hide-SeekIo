@@ -52,7 +52,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 7091710363743083446}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -68,10 +69,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a2783006a70a42a1dec3d3665d34c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponModel: {fileID: 0}
-  _modelTransform: {fileID: 5576906626062825140}
-  _attackRangeUI: {fileID: 3858767604331830712}
-  _attackClip: {fileID: 8300000, guid: 0b30fb104c535d7429405eb65825a996, type: 3}
+  _weaponModel: {fileID: 5576906626062825140}
+  _zoomUI: {fileID: 8565022352150532309}
 --- !u!1 &2203322055441929699
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8565022352150532309}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: ZoomUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -195,7 +194,7 @@ GameObject:
   - component: {fileID: 2018671152528738962}
   - component: {fileID: 9066300279131195053}
   m_Layer: 5
-  m_Name: Zoom UI
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,15 +1,22 @@
 ﻿using System.Collections;
 
 using Photon.Pun;
+using System;
 
 using UnityEngine;
 
 public class Item_Trap : Item_Base
 {
+    public override Enum GetEnum()
+    {
+        return Define.InGameItem.Dynamite;
+    }
     protected override void Awake()
     {
-        State = UseState.Local;
+        base.Awake();
+        InGameItemType = Define.InGameItem.Trap;
     }
+
     protected override void UsePorecess(PlayerController usePlayer)
     {
         if (photonView.IsMine)

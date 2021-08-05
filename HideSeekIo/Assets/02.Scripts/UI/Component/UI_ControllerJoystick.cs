@@ -6,21 +6,27 @@ using UnityEngine.UI;
 
 public class UI_ControllerJoystick : MonoBehaviour
 {
-    [SerializeField] IItem _inGameItem;
+    [SerializeField] ObtainableItem _obtainableItem;
     [SerializeField] Image _joystickOutLine;
     [SerializeField] Image _itemOutLine;
     [SerializeField] Image _itemImage;
     [SerializeField] Transform _panel;
     public Vector2 InputVector2 { get; private set; }
 
-    public  Action<Vector2> onAttackEventCallBack;
+    //public  Action<Vector2> onAttackEventCallBack;
+    //public Action onTapEventCallBack;
     public UltimateJoystick _ultimateJoystick;
+
+    public MyInput myInput;
     private void Awake()
     {
         _ultimateJoystick = GetComponent<UltimateJoystick>();
-        _ultimateJoystick.OnDragCallback += Down;
+
+        _ultimateJoystick.OnPointerDownCallback += Down;
+        _ultimateJoystick.OnDragCallback += Drag;
         _ultimateJoystick.OnPointerUpCallback += Up;
-        _ultimateJoystick.OnTapCount += Click;
+        _ultimateJoystick.OnTapCallBack += Tap;
+
 
     }
 #if UNITY_ANDROID
@@ -29,36 +35,70 @@ public class UI_ControllerJoystick : MonoBehaviour
 
     void Down()
     {
-
-        InputVector2 = new Vector2(_ultimateJoystick.GetHorizontalAxis(), _ultimateJoystick.GetVerticalAxis());
-
+        if (myInput == null) return;
+        InputVector2 = GetInputVector2();
+        myInput.ControllerDic[ControllerInputType.Drag]?.Invoke(InputVector2);
     }
 
     void Up()
     {
+        if (myInput == null) return;
         if (InputVector2.magnitude >= _ultimateJoystick.deadZone)
         {
-            onAttackEventCallBack?.Invoke(InputVector2);
+            myInput.ControllerDic[ControllerInputType.Up]?.Invoke(InputVector2);
         }
         InputVector2 = Vector2.zero;
     }
 
-  
-    //즉시아이템 사용
-    void Click()
+    void Drag()
     {
-        var myPlayer = Managers.Game.myPlayer;
-        if (myPlayer == null || _inGameItem == null) return;
-        if (_inGameItem.useType == Define.UseType.Item)
+        if (myInput == null) return;
+        InputVector2 = GetInputVector2();
+        myInput.ControllerDic[ControllerInputType.Drag]?.Invoke(InputVector2);
+    }
+
+    void Tap()
+    {
+        if (myInput == null) return;
+        myInput.ControllerDic[ControllerInputType.Tap]?.Invoke(Vector2.zero);
+    }
+
+    Vector2 GetInputVector2()
+    {
+        return new Vector2(_ultimateJoystick.GetHorizontalAxis(), _ultimateJoystick.GetVerticalAxis());
+    }
+
+    public void SetActiveControllerType(Define.ControllerType controllerType)
+    {
+        if (controllerType == Define.ControllerType.Button)
         {
-            _inGameItem.Use(myPlayer);
-            RemoveItem();
-            this.gameObject.SetActive(false);
+            _joystickOutLine.enabled = false;
+            _itemOutLine.enabled = true;
+            _itemImage.transform.SetParent(_itemOutLine.transform);
+        }
+        else
+        {
+            _joystickOutLine.enabled = true;
+            _itemOutLine.enabled = false;
+            _itemImage.transform.SetParent(_joystickOutLine.transform);
         }
     }
-    public void AddItem(IItem newItem)
+    ////즉시아이템 사용
+    //void Click()
+    //{
+    //    onTapEventCallBack?.Invoke();
+    //    var myPlayer = Managers.Game.myPlayer;
+    //    if (myPlayer == null || _inGameItem == null) return;
+    //    if (_inGameItem.useType == Define.UseType.Item)
+    //    {
+    //        _inGameItem.Use(myPlayer);
+    //        RemoveItem();
+    //        this.gameObject.SetActive(false);
+    //    }
+    //}
+    public void AddItem(ObtainableItem newItem)
     {
-        _inGameItem = newItem;
+        _obtainableItem = newItem;
         if (newItem.useType== Define.UseType.Item)
         {
             _joystickOutLine.enabled = false;
@@ -73,7 +113,7 @@ public class UI_ControllerJoystick : MonoBehaviour
         }
         _joystickOutLine.transform.localPosition = Vector3.zero;
         _itemImage.transform.localPosition = Vector3.zero;
-        _itemImage.sprite = newItem.GetSprite();
+        _itemImage.sprite = newItem.itemSprite;
         _itemImage.enabled = true;
         this.gameObject.SetActive(true);
         //_ultimateJoystick.OnDragCallback
@@ -81,6 +121,7 @@ public class UI_ControllerJoystick : MonoBehaviour
 
     public void RemoveItem()
     {
+        print("Remove ITMe11");
         this.gameObject.SetActive(false);
     }
 

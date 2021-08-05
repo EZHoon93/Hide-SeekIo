@@ -5,10 +5,12 @@ using Photon.Pun;
 
 public class Weapon_PosionBomb : Weapon_Throw
 {
+    public override System.Enum GetEnum() => Define.ThrowItem.PoisonBomb;
 
     protected override void Awake()
     {
         base.Awake();
+        throwType = Define.ThrowItem.PoisonBomb;
         type = Type.Disposable;
     }
 

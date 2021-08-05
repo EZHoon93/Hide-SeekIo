@@ -5,6 +5,7 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagicCallback , IOnPhotonViewPreNetDestroy, IPunObservable
 {
+
     public enum WeaponType
     {
         Melee,
@@ -27,8 +28,10 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         Use,    
         NoUse
     }
-
-    [SerializeField] protected Transform _weaponModel;
+    public WeaponType weaponType { get; protected set; }
+    public State state { get; set; }
+    UseState _useState;
+    public Type type { get; set; }
 
     public string AttackAnim { get; set; }
     public float AttackDelay { get; set; }
@@ -36,11 +39,11 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     public float AttackDistance { get; set; }
     public float InitCoolTime { get; set; }
     public float ReaminCoolTime { get; set; }
+
     public Vector2  LastAttackInput { get; protected set; }     //공격 박향. 캐릭터 바라보는방향으로맞추기위해 
-    public WeaponType weaponType { get; protected set; }
-    public State state { get;  set; }
-    UseState _useState;
-    public Type type { get; set; }
+
+    [SerializeField] protected Transform _weaponModel;
+    [SerializeField] protected Transform _zoomUI;
     public GameObject UICanvas { get; set; }
     public PlayerController hasPlayerController { get; set; }
 
@@ -67,7 +70,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         }
     }
 
-    public abstract bool Zoom(Vector2 inputVector);
+    public abstract void Zoom(Vector2 inputVector);
     public abstract void Attack(Vector2 inputVector);
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -93,7 +96,8 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
-        UICanvas.SetActive(false);
+        UICanvas.SetActive(true);
+        _zoomUI.gameObject.SetActive(false);
         _useState = UseState.NoUse;
         _weaponModel.gameObject.SetActive(false);
         AttackSucessEvent = null;
@@ -103,7 +107,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         hasPlayerController = Managers.Game.GetPlayerController(playerViewID);
         hasPlayerController.GetLivingEntity().fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
         hasPlayerController.GetAttackBase().SetupWeapon(this, isBaseWeapon);
-        //useState = UseState.NoUse;  //사용하지않음으로설정
+        useState = UseState.NoUse;  //사용하지않음으로설정
         ReaminCoolTime = 0;
     }
     public virtual void OnPreNetDestroy(PhotonView rootView)

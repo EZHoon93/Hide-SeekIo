@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Weapon_Fire : Weapon_Throw
 {
+    public override System.Enum GetEnum() => Define.ThrowItem.Dynamite;
 
 
     protected override void Awake()

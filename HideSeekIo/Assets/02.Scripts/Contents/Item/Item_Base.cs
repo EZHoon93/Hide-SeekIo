@@ -6,40 +6,22 @@ using Photon.Pun;
 
 using UnityEngine;
 
-public abstract class Item_Base : MonoBehaviourPun , IItem,IPunInstantiateMagicCallback , IOnPhotonViewPreNetDestroy
+[RequireComponent(typeof(ObtainableItem))]
+
+public abstract class Item_Base : MonoBehaviourPun ,IPunInstantiateMagicCallback , IOnPhotonViewPreNetDestroy
 {
-    public event Action DestroyEvent;
-    public enum UseState
-    {
-        Local,
-        Server
-    }
+  
 
-    public enum UseType
-    {
-        Item,
-        Weapon
-    }
-
-    public UseState State { get; protected set; }
-    public UseType useType { get; protected set; }
-
-    [SerializeField] Sprite itemSprite;
-
-    public Sprite ItemSprite => itemSprite;
     public PlayerController hasPlayerController { get; set; }
-    Define.UseType IItem.useType { get; set; }
+    public Action useSuceessCallBack { get; set; }
+    public event Action DestroyEvent;
+    public ObtainableItem obtainableItem;
+    public Define.InGameItem InGameItemType { get; set; }
 
-    private void Reset()
-    {
-        print($"Sprites/InGameItem/{this.name}" +"ㅇㅇㅇㅇ");
-        itemSprite = Resources.Load<Sprite>($"Sprites/InGameItem/{this.gameObject.name}");
 
-    }
     protected virtual void Awake()
     {
-        State = UseState.Server;
-        useType = UseType.Item;
+        obtainableItem = GetComponent<ObtainableItem>();
     }
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -53,7 +35,7 @@ public abstract class Item_Base : MonoBehaviourPun , IItem,IPunInstantiateMagicC
     {
         if (hasPlayerController)
         {
-            hasPlayerController.GetAttackBase().RemoveItem(this);
+            //hasPlayerController.GetAttackBase().RemoveItem(this);
         }
     }
     protected void Destroy()
@@ -63,6 +45,7 @@ public abstract class Item_Base : MonoBehaviourPun , IItem,IPunInstantiateMagicC
     public virtual void Use(PlayerController usePlayer)
     {
         UsePorecess(usePlayer);
+        obtainableItem.removeCallBack?.Invoke();
         if (photonView.IsMine)
         {
             PhotonNetwork.Destroy(this.gameObject);
@@ -71,19 +54,6 @@ public abstract class Item_Base : MonoBehaviourPun , IItem,IPunInstantiateMagicC
 
     protected abstract void UsePorecess(PlayerController usePlayer);
 
-    public Sprite GetSprite() => itemSprite;
-    
+    public abstract Enum GetEnum();
 
-    public bool Zoom(Vector2 inputVector)
-    {
-        return false;
-    }
-    
-
-    public void Attack(Vector2 inputVector)
-    {
-        
-    }
-
-    
 }

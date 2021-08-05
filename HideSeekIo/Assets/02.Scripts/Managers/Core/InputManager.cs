@@ -8,13 +8,15 @@ public class InputManager : GenricSingleton<InputManager>
 {
     [SerializeField] UI_Input_Run _runButton;
     [SerializeField] UI_ControllerJoystick _moveJoystick;
-    [SerializeField] UI_ControllerJoystick _attackJoystick;
+    [SerializeField] UI_ControllerJoystick _mainJoystick;
+    [SerializeField] UI_ControllerJoystick _subJoystick;
     [SerializeField] UI_ControllerJoystick[] _itemControllerJoysticks;
     public Vector2 MoveVector { get; private set; }
-    //public Vector2 AttackVector => _attackJoystick.InputVector2;
+    //public Vector2 AttackVector => _mainJoystick.InputVector2;
 
     public UI_ControllerJoystick moveJoystick => _moveJoystick;
-    public UI_ControllerJoystick baseAttackJoystick => _attackJoystick;
+    public UI_ControllerJoystick subJoystick => _subJoystick;
+    public UI_ControllerJoystick mainJoystick => _mainJoystick;
     public UI_ControllerJoystick[] itemControllerJoysticks => _itemControllerJoysticks;
 
     public bool IsRun
@@ -34,7 +36,7 @@ public class InputManager : GenricSingleton<InputManager>
     public void Clear()
     {
         _moveJoystick.gameObject.SetActive(false);
-        _attackJoystick.gameObject.SetActive(false);
+        _mainJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
         foreach (var itemButton in _itemControllerJoysticks)
         {
@@ -46,7 +48,7 @@ public class InputManager : GenricSingleton<InputManager>
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
         _moveJoystick.gameObject.SetActive(false);
-        _attackJoystick.gameObject.SetActive(false);
+        _mainJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
         
     }
@@ -61,7 +63,7 @@ public class InputManager : GenricSingleton<InputManager>
     public void InitSetup()
     {
         _moveJoystick.gameObject.SetActive(false);
-        _attackJoystick.gameObject.SetActive(false);
+        _mainJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
         foreach (var itemButton in _itemControllerJoysticks)
         {
@@ -85,7 +87,7 @@ public class InputManager : GenricSingleton<InputManager>
     public void SetActiveSeekerController(bool isAcitve)
     {
         _moveJoystick.gameObject.SetActive(isAcitve);
-        _attackJoystick.gameObject.SetActive(isAcitve);
+        _mainJoystick.gameObject.SetActive(isAcitve);
         _runButton.gameObject.SetActive(false);
         foreach (var itemButton in _itemControllerJoysticks)
         {
@@ -95,7 +97,7 @@ public class InputManager : GenricSingleton<InputManager>
     public void SetActiveHiderController(bool isAcitve)
     {
         _moveJoystick.gameObject.SetActive(isAcitve);
-        _attackJoystick.gameObject.SetActive(isAcitve);
+        _mainJoystick.gameObject.SetActive(isAcitve);
         _runButton.gameObject.SetActive(isAcitve);
         foreach (var itemButton in _itemControllerJoysticks)
         {
@@ -105,7 +107,7 @@ public class InputManager : GenricSingleton<InputManager>
     public void OffAllController()
     {
         _moveJoystick.gameObject.SetActive(false);
-        _attackJoystick.gameObject.SetActive(false);
+        _mainJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
         foreach (var itemButton in _itemControllerJoysticks)
         {

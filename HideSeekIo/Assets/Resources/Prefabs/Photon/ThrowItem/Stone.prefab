@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5484993682384362835}
   m_Layer: 5
-  m_Name: Ratio
+  m_Name: ZoomUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 5221291374310469678}
   - component: {fileID: 6049349795054703473}
   m_Layer: 5
-  m_Name: StonZoom
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,8 +256,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 7019863525968471354}
+  _zoomUI: {fileID: 5484993682384362835}
   _projectilePrefab: {fileID: 4117768412101275065, guid: 4dcb0e27d49fa1c44a3412922bd7d838,
     type: 3}
+  _sprite: {fileID: 0}
 --- !u!114 &168911508505676982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,7 +278,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 915586607717384455}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

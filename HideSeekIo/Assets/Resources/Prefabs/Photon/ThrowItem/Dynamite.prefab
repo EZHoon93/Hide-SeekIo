@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 1197892032801771774}
   - component: {fileID: 8741162019270719819}
   - component: {fileID: 1018805312398735190}
+  - component: {fileID: -3804207753091416767}
   m_Layer: 8
   m_Name: Dynamite
   m_TagString: Untagged
@@ -169,9 +170,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 3315294691132731683}
+  _zoomUI: {fileID: 2691245788259507214}
   _projectilePrefab: {fileID: 9182697542772464519, guid: 93433197ff827c741a9051182040cf10,
     type: 3}
-  _sprite: {fileID: 21300000, guid: 6f8b8ea50bcf25547b50075131dbed4c, type: 3}
+  obtainableItem: {fileID: 0}
+--- !u!114 &-3804207753091416767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135648753785477893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87186665fe74e474abdb759d7d633447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemSprite: {fileID: 21300000, guid: 6f8b8ea50bcf25547b50075131dbed4c, type: 3}
 --- !u!1 &6146602932616370405
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,7 +307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2691245788259507214}
   m_Layer: 5
-  m_Name: Ratio
+  m_Name: ZoomUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

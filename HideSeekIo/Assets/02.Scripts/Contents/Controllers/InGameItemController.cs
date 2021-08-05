@@ -51,14 +51,14 @@ public class InGameItemController : MonoBehaviourPun , IPunInstantiateMagicCallb
     //일회용 아이템이면 삭제
     public void Use(PlayerController usePlayer)
     {
-        if (_item_Base.State == Item_Base.UseState.Server)
-        {
-            photonView.RPC("UseOnServer", RpcTarget.All);
-        }
-        else
-        {
-            _item_Base.Use(_hasPlayer);
-        }
+        //if (_item_Base.State == Item_Base.UseState.Server)
+        //{
+        //    photonView.RPC("UseOnServer", RpcTarget.All);
+        //}
+        //else
+        //{
+        //    _item_Base.Use(_hasPlayer);
+        //}
     }
 
     [PunRPC]

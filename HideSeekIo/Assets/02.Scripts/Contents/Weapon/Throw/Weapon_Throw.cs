@@ -3,32 +3,29 @@ using Photon.Pun;
 using System.Collections;
 using System;
 
-public abstract class Weapon_Throw : Weapon , IItem
+[RequireComponent(typeof(ObtainableItem))]
+public abstract class Weapon_Throw : Weapon 
 {
     [SerializeField] GameObject _projectilePrefab;
-    [SerializeField] Sprite _sprite;
-    //Transform _attackRangeUI;
-
+    public ObtainableItem obtainableItem;
     public float attackRange { get; protected set; }
-    public Define.UseType useType { get; set; }
     public Action destroyCallBackEvent { get; set; }
+    public Define.ThrowItem throwType { get; set; }
 
 
     protected override void Awake()
     {
         base.Awake();
-        //_attackRangeUI = GetComponentInChildren<Canvas>().transform;
-        useType = Define.UseType.Weapon;
         weaponType = WeaponType.Throw;
+        obtainableItem = GetComponent<ObtainableItem>();
     }
 
     public override void OnPreNetDestroy(PhotonView rootView)
     {
         base.OnPreNetDestroy(rootView);
-        hasPlayerController.GetAttackBase().RemoveItem(this);
+        //hasPlayerController.GetAttackBase().RemoveItem(this);
     }
 
-    public Sprite GetSprite() => _sprite;
     
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
     {
@@ -41,14 +38,13 @@ public abstract class Weapon_Throw : Weapon , IItem
         UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange); //범위에 따른 ui변경
     }
 
-    public override bool Zoom(Vector2 inputVector)
+    public override void Zoom(Vector2 inputVector)
     {
-        var state = UtillGame.ThrowZoom(inputVector, AttackDistance, hasPlayerController.GetAttackBase().CenterPivot, UICanvas.transform);
+        var state = UtillGame.ThrowZoom(inputVector, AttackDistance, hasPlayerController.GetAttackBase().CenterPivot, _zoomUI);
         if (state)
         {
             useState = UseState.Use;
         }
-        return state;
 
     }
 
@@ -66,6 +62,7 @@ public abstract class Weapon_Throw : Weapon , IItem
     [PunRPC]
     public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
+        obtainableItem.removeCallBack?.Invoke();
         LastAttackInput = inputVector;
         Vector3 startPoint = hasPlayerController.GetAttackBase().CenterPivot.position;
         StartCoroutine(AttackProcessOnAllClinets(startPoint, endPoint));
@@ -98,5 +95,7 @@ public abstract class Weapon_Throw : Weapon , IItem
             }
         }
     }
+
+    public abstract Enum GetEnum();
 
 }

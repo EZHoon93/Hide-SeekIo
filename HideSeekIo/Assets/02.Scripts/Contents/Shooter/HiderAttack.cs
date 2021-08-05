@@ -10,8 +10,9 @@ public class HiderAttack : AttackBase
 
     public override InputBase GetInputBase() => _hiderInput;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _hiderInput = GetComponent<HiderInput>();
     }
     public override void OnPhotonInstantiate()

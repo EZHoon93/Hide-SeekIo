@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class Weapon_Glue : Weapon_Throw
 {
+    public override System.Enum GetEnum() => Define.ThrowItem.Glue;
 
     protected override void Awake()
     {
         base.Awake();
         type = Type.Disposable;
+        throwType = Define.ThrowItem.Glue;
+
     }
 
     private void Start()

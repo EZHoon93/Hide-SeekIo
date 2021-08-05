@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 
 using Photon.Pun;
+using System;
 
 using UnityEngine;
 
 public class Item_Curse2 : Item_Base
 {
 
-
+    public override Enum GetEnum()
+    {
+        return Define.InGameItem.Dynamite;
+    }
     protected override void UsePorecess(PlayerController usePlayer)
     {
 

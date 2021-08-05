@@ -8,6 +8,11 @@ public class Define
 
     public static readonly int MaxItemInventory = 3;
 
+    public enum ControllerType
+    {
+        Button,
+        Joystick
+    }
     public enum ServerState
     {
         DisConnect,
@@ -58,7 +63,7 @@ public class Define
 
     public enum ThrowItem
     {
-        Stone,
+        Stone = 100,
         TNT,
         Grenade,
         Flash,

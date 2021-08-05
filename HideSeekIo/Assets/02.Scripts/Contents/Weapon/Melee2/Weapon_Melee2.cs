@@ -6,8 +6,6 @@ public class Weapon_Melee2 : Weapon
 {
  
 
-    [SerializeField] Transform _modelTransform;
-    [SerializeField] Transform _attackRangeUI;
     AudioClip _attackClip;
 
     //[SerializeField] float _angle = 120;
@@ -33,26 +31,24 @@ public class Weapon_Melee2 : Weapon
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         var weaponId = (string)info.photonView.InstantiationData[2];
-        _weaponModel = Managers.Resource.Instantiate($"Melee2/{weaponId}").transform;   //유저 무기 아바타 생성
-        _weaponModel.ResetTransform(_modelTransform);   //아바타 생성된것 자식오브젝트로 이동
+        var weaponObject = Managers.Resource.Instantiate($"Melee2/{weaponId}");   //유저 무기 아바타 생성
+        _weaponModel.ResetTransform(weaponObject.transform);   //아바타 생성된것 자식오브젝트로 이동
         base.OnPhotonInstantiate(info);
         
-        _attackRangeUI.gameObject.SetActive(false);     // 공격 UI
+        _zoomUI.gameObject.SetActive(false);     // 공격 UI
         hasPlayerController.GetAttackBase().SetupWeapon(this, true);
         //attackPlayer.UseWeapon(this);    //무기 사용상태로 전환
 
     }
-    public override bool Zoom(Vector2 inputVector)
+    public override void Zoom(Vector2 inputVector)
     {
         if (inputVector.sqrMagnitude == 0)
         {
-            _attackRangeUI.gameObject.SetActive(false);
-            return false;
+            _zoomUI.gameObject.SetActive(false);
         }
-        _attackRangeUI.rotation = UtillGame.WorldRotationByInput(inputVector);
-        _attackRangeUI.gameObject.SetActive(true);
+        _zoomUI.rotation = UtillGame.WorldRotationByInput(inputVector);
+        _zoomUI.gameObject.SetActive(true);
         useState = UseState.Use;
-        return true;
     }
 
 
@@ -60,6 +56,8 @@ public class Weapon_Melee2 : Weapon
 
     public override void Attack(Vector2 inputVector)
     {
+        print("Weapon Melee Attack!!");
+        _zoomUI.gameObject.SetActive(false);
         state = State.Delay;
         LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, LastAttackInput);

@@ -9,9 +9,6 @@ public class HiderInput_User : HiderInput
         if (this.photonView.IsMine)
         {
             InputManager.Instance.SetActiveHiderController(true);
-            InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
-            InputManager.Instance.itemControllerJoysticks[0].onAttackEventCallBack = CallBackItem1;
-            InputManager.Instance.itemControllerJoysticks[1].onAttackEventCallBack = CallBackItem2;
 
             IsRun = true;
 
@@ -41,7 +38,7 @@ public class HiderInput_User : HiderInput
         MoveVector = InputManager.Instance.moveJoystick.InputVector2 * RandomVector2;
 #endif
         IsRun = InputManager.Instance.IsRun;
-        AttackVector = InputManager.Instance.baseAttackJoystick.InputVector2;
+        AttackVector = InputManager.Instance.mainJoystick.InputVector2;
         ItemVector1 = InputManager.Instance.itemControllerJoysticks[0].InputVector2;
         ItemVector2 = InputManager.Instance.itemControllerJoysticks[1].InputVector2;
         //UtillGame.UpdateUserAttackInput(ref _attackVector, ref _lastAttackVector, ref _isAttack);

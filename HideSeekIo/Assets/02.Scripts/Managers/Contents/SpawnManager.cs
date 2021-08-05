@@ -78,7 +78,7 @@ public class SpawnManager
 
         if (playerController.gameObject.IsValidAI())
         {
-
+            return PhotonNetwork.InstantiateRoomObject(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
         }
         else
         {
@@ -86,9 +86,6 @@ public class SpawnManager
 
             return PhotonNetwork.Instantiate(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
         }
-
-
-        return null;
     }
     public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer, bool isBaseWeapon)
     {
