@@ -19,7 +19,7 @@ public class SpawnManager
         PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
 
-   
+
     //public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
     //{
     //    int sendEnumValue = -1;
@@ -36,11 +36,19 @@ public class SpawnManager
     //    PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() ,sendEnumValue, @enum }); //사용한 플레이어 ViewID
     //}
 
-
-
-    public void PlayerSpawn(Define.Team team, Vector3 pos)
+    public GameObject CharacterSpawn(Define.CharacterType characterType, PlayerController playerController)
     {
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey };
+        string prefabID = $"Character/{characterType.ToString()}";
+        //List<object> datas = new List<object>() {PlayerInfo.CurrentSkin.avaterSeverKey };
+
+        return  Managers.Resource.Instantiate(prefabID);
+
+    }
+
+    public void PlayerSpawn(Define.Team team, Vector3 pos, bool isAI)
+    {
+        var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey ,isAI, selectCharacterType };
 
         switch (team)
         {
@@ -55,18 +63,18 @@ public class SpawnManager
     }
     public void AISpawn(Define.Team team, Vector3 pos)
     {
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey };
+        //List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey };
 
-        switch (team)
-        {
-            case Define.Team.Seek:
-                PhotonNetwork.InstantiateRoomObject("AISeeker", pos, Quaternion.identity, 0, datas.ToArray());
-                break;
-            case Define.Team.Hide:
-                datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
-                PhotonNetwork.InstantiateRoomObject("AIHider", pos, Quaternion.identity, 0, datas.ToArray());
-                break;
-        }
+        //switch (team)
+        //{
+        //    case Define.Team.Seek:
+        //        PhotonNetwork.InstantiateRoomObject("AISeeker", pos, Quaternion.identity, 0, datas.ToArray());
+        //        break;
+        //    case Define.Team.Hide:
+        //        datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
+        //        PhotonNetwork.InstantiateRoomObject("AIHider", pos, Quaternion.identity, 0, datas.ToArray());
+        //        break;
+        //}
 
     }
 

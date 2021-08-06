@@ -30,18 +30,13 @@ public abstract class InputBase : MonoBehaviourPun
     protected bool _isAttack;
 
     public Vector2 MoveVector { get; protected set; }
-    public Vector2 AttackVector { get; protected set; }
-    public Vector2 ItemVector1 { get; set; }
-    public Vector2 ItemVector2 { get; set; }
     public Vector2 RandomVector2 { get; set; }
+    public bool IsRun { get; set; }
     public bool IsStop { get; protected set; }
-
-
-    public event Action<Vector2> AttackEventCallBack;
-    public Action<Vector2> AttackZoomCallBack;
-
-    public MyInput baseInput = new MyInput();
-    public MyInput[] itemsInput = new MyInput[2] { new MyInput(), new MyInput() };
+    public MyInput skillInput = new MyInput();
+    public MyInput subInput = new MyInput();
+    public MyInput mainInput = new MyInput();
+    public MyInput[] itemsInput = new MyInput[1] { new MyInput()};
 
 
     public Action<int> UseItemCallBack;
@@ -51,8 +46,8 @@ public abstract class InputBase : MonoBehaviourPun
     {
         GetComponent<LivingEntity>().onDeath += HandleDeath;
 
-        //itemsInput[0].ControllerDic[ControllerInputType.Up] = (Vector2)=> UseItem(0);
-        itemsInput[1].ControllerDic[ControllerInputType.Up] = (Vector2) => UseItem(0,Vector2);
+        itemsInput[0].ControllerDic[ControllerInputType.Up] = (Vector2)=> UseItem(0,Vector2);
+        //itemsInput[1].ControllerDic[ControllerInputType.Up] = (Vector2) => UseItem(0,Vector2);
 
 
     }
@@ -62,25 +57,14 @@ public abstract class InputBase : MonoBehaviourPun
         _isAttack = false;
         _stopTime = 0;
         RandomVector2 = Vector2.one;
-        if (this.IsMyCharacter())
-        {
-            InputManager.Instance.mainJoystick.myInput = baseInput;
-            //InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = AttackEventCallBack;
-            //InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = baseInput.ControllerDic[ControllerInputType.Down];
-            //InputManager.Instance
-            //InputManager.Instance.baseAttackJoystick.onapEventCallBack = 
-
-            //아이템 컨트롤러
-            for (int i = 0; i < InputManager.Instance.itemControllerJoysticks.Length; i++)
-            {
-                InputManager.Instance.itemControllerJoysticks[i].myInput = itemsInput[i];
-
-                //items += 
-            }
-
-        }
     }
-
+    private void Start()
+    {
+        IsStop = false;
+        _isAttack = false;
+        _stopTime = 0;
+        RandomVector2 = Vector2.one;
+    }
     void UseItem(int index, Vector2  t)
     {
         UseItemCallBack?.Invoke(index);
@@ -91,19 +75,6 @@ public abstract class InputBase : MonoBehaviourPun
 
     }
 
-
-    public void Call_AttackCallBackEvent(Vector2 vector2)
-    {
-        AttackEventCallBack?.Invoke(vector2);
-    }
-
-    public void CallBackItem1(Vector2 vector2)
-    {
-    }
-
-    public void CallBackItem2(Vector2 vector2)
-    {
-    }
 
     public virtual void Stop(float newTime)
     {

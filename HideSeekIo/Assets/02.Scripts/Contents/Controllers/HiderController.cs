@@ -92,7 +92,6 @@ public class HiderController : PlayerController
 
     public override LivingEntity GetLivingEntity() => hiderHealth;
     public override AttackBase GetAttackBase() => hiderAttack;
-    public override InputBase GetInputBase() => hiderInput;
 
 
 }

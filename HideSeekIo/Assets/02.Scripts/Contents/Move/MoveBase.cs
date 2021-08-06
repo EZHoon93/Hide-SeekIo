@@ -17,6 +17,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     protected CharacterController _characterController;
     protected Animator _animator;
     protected AttackBase _attackBase;
+    protected InputBase _inputBase;
     PhotonTransformView _TransformView;
     AudioClip _stepClip;
 
@@ -64,6 +65,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
+        _inputBase = GetComponent<InputBase>();
         MoveSpeed = _testSpeed;
     }
     private void Update()

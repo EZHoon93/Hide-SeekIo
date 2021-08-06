@@ -15,13 +15,15 @@ public abstract class AttackBase : MonoBehaviourPun
 
     [SerializeField] Transform _centerPivot;
     protected Animator _animator;
+    [SerializeField]
+    protected Character_Base _character_Base;
     protected IEnumerator _attackEnumerator;
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
     public Weapon currentWeapon { get; protected set; } //현재사용무기
     public GameObject[] itemInventory = new GameObject[2];
 
-    public abstract InputBase GetInputBase();
+    protected InputBase _inputBase;
     public Vector2 AttackDirection { get; set; }
 
     Action<int> weaponChangeCallBack;
@@ -42,6 +44,8 @@ public abstract class AttackBase : MonoBehaviourPun
     public virtual void OnPhotonInstantiate()
     {
         _animator = GetComponentInChildren<Animator>();
+        _inputBase = GetComponent<InputBase>();
+        _character_Base = GetComponentInChildren<Character_Base>();
         weaponChangeCallBack = null;
         if (baseWeapon)
         {
@@ -54,7 +58,7 @@ public abstract class AttackBase : MonoBehaviourPun
 
     public virtual void SetupWeapon(Weapon newWeapon, bool IsBaseWeapon )
     {
-        newWeapon.transform.ResetTransform(_animator.GetComponent<CharacterAvater>().RightHandAmount);  //무기오브젝트
+        newWeapon.transform.ResetTransform(_animator.GetComponent<Character_Base>().RightHandAmount);  //무기오브젝트
         newWeapon.UICanvas.transform.ResetTransform(this.transform);       //UI
         newWeapon.AttackSucessEvent += AttackBaseSucess;
         newWeapon.AttackEndEvent += AttackBaseEnd;
@@ -63,26 +67,60 @@ public abstract class AttackBase : MonoBehaviourPun
         {
             baseWeapon = newWeapon;
             ChangeWeapon(baseWeapon);
-            GetInputBase().baseInput.ControllerDic[ControllerInputType.Up] = (input) => UpdateThrowAttackCheck(baseWeapon, input);
-            GetInputBase().baseInput.ControllerDic[ControllerInputType.Drag] = (input) => UpdateWeaponZoom(newWeapon, input);
+            _inputBase.mainInput.ControllerDic[ControllerInputType.Up] = (input) => UpdateThrowAttackCheck(baseWeapon, input);
+            _inputBase.mainInput.ControllerDic[ControllerInputType.Drag] = (input) => UpdateWeaponZoom(newWeapon, input);
         }
         else
         {
             var inventroyIndex = GetItemInventoryIndex();
-            GetInputBase().itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Drag] = (input) => UpdateWeaponZoom(newWeapon,input);
-            GetInputBase().itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Up] = (input) => UpdateThrowAttackCheck(newWeapon,input);
+            _inputBase.itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Drag] = (input) => UpdateWeaponZoom(newWeapon,input);
+            _inputBase.itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Up] = (input) => UpdateThrowAttackCheck(newWeapon,input);
             AddItem(newWeapon.gameObject, inventroyIndex);  //인벤토리추
             newWeapon.useState = Weapon.UseState.NoUse;
         }
     }
 
- 
+    public virtual void SetupSkillObject(Skill_Base newInputControllerObject, bool IsBaseWeapon)
+    {
+        newInputControllerObject.transform.ResetTransform(_animator.GetComponent<Character_Base>().RightHandAmount);  //무기오브젝트
+        //newInputControllerObject.UICanvas.transform.ResetTransform(this.transform);       //UI
+        //newInputControllerObject.UseSucessEvent += AttackBaseSucess;
+        //newInputControllerObject.UseEndEvent += AttackBaseEnd;
+
+        //if(newInputControllerObject.controllerType == Define.ControllerType.Button)
+        //{
+
+        //}
+        //else
+        //{
+
+        //}
+        //weaponChangeCallBack += newWeapon.WeaponChange;
+        //if (IsBaseWeapon)
+        //{
+        //    baseWeapon = newWeapon;
+        //    ChangeWeapon(baseWeapon);
+        //    Get_inputBase().baseInput.ControllerDic[ControllerInputType.Up] = (input) => UpdateThrowAttackCheck(baseWeapon, input);
+        //    Get_inputBase().baseInput.ControllerDic[ControllerInputType.Drag] = (input) => UpdateWeaponZoom(newWeapon, input);
+        //}
+        //else
+        //{
+        //    var inventroyIndex = GetItemInventoryIndex();
+        //    Get_inputBase().itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Drag] = (input) => UpdateWeaponZoom(newWeapon, input);
+        //    Get_inputBase().itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Up] = (input) => UpdateThrowAttackCheck(newWeapon, input);
+        //    AddItem(newWeapon.gameObject, inventroyIndex);  //인벤토리추
+        //    newWeapon.useState = Weapon.UseState.NoUse;
+        //}
+    }
+
+
+
     public virtual void SetupImmdediateItem(Item_Base newItem)
     {
         //AddItem(newItem);
         int inventroyIndex = GetItemInventoryIndex();
         itemInventory[inventroyIndex] = newItem.gameObject;
-        GetInputBase().itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Tap] = (Vector2)=> newItem.Use(GetComponent<PlayerController>());
+        _inputBase.itemsInput[inventroyIndex].ControllerDic[ControllerInputType.Tap] = (Vector2)=> newItem.Use(GetComponent<PlayerController>());
 
         AddItem(newItem.gameObject,inventroyIndex);
 
@@ -146,10 +184,10 @@ public abstract class AttackBase : MonoBehaviourPun
     public void RemoveItem(int useIndex)
     {
         itemInventory[useIndex] = null;
-        GetInputBase().itemsInput[useIndex].ControllerDic[ControllerInputType.Down] = null;
-        GetInputBase().itemsInput[useIndex].ControllerDic[ControllerInputType.Drag] = null;
-        GetInputBase().itemsInput[useIndex].ControllerDic[ControllerInputType.Tap] = null;
-        GetInputBase().itemsInput[useIndex].ControllerDic[ControllerInputType.Up] = null;
+        _inputBase.itemsInput[useIndex].ControllerDic[ControllerInputType.Down] = null;
+        _inputBase.itemsInput[useIndex].ControllerDic[ControllerInputType.Drag] = null;
+        _inputBase.itemsInput[useIndex].ControllerDic[ControllerInputType.Tap] = null;
+        _inputBase.itemsInput[useIndex].ControllerDic[ControllerInputType.Up] = null;
 
         if (this.IsMyCharacter())
         {
@@ -204,14 +242,14 @@ public abstract class AttackBase : MonoBehaviourPun
         if (this.IsMyCharacter() == false) return;
         //if (baseWeapon)
         //{
-        //    if(baseWeapon.Zoom(GetInputBase().AttackVector))
+        //    if(baseWeapon.Zoom(Get_inputBase().AttackVector))
         //    {
         //        //CurrentZoomWeaponIndex = baseWeapon.GetInstanceID();
         //    }
         //}
         //if(itemInventory[0] != null)
         //{
-        //    if(itemInventory[0].Zoom(GetInputBase().ItemVector1))
+        //    if(itemInventory[0].Zoom(Get_inputBase().ItemVector1))
         //    {
         //        //CurrentZoomWeaponIndex = itemInventory[0].GetInstanceID();
 
@@ -219,7 +257,7 @@ public abstract class AttackBase : MonoBehaviourPun
         //}
         if (itemInventory[1] != null)
         {
-            //if (itemInventory[1].Zoom(GetInputBase().ItemVector2))
+            //if (itemInventory[1].Zoom(Get_inputBase().ItemVector2))
             //{
             //    //CurrentZoomWeaponIndex = itemInventory[1].GetInstanceID();
 

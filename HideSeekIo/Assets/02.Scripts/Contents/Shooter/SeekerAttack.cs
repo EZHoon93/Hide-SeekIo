@@ -5,13 +5,10 @@ using Photon.Pun;
 public class SeekerAttack : AttackBase
 {
 
-    SeekerInput _seekerInput;
-    public override InputBase GetInputBase() => _seekerInput;
 
     protected override void Awake()
     {
         base.Awake();
-        _seekerInput = GetComponent<SeekerInput>();
     }
     public override void OnPhotonInstantiate()
     {

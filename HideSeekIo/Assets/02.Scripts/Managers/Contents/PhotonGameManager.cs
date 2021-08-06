@@ -331,17 +331,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             Destroy(c);
         }
 
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, Vector3.zero);
-
-        }
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, Vector3.zero);
-
-        }
-
+       
         if (Input.GetKeyDown(KeyCode.O))
         {
             Camera.main.orthographic = true;

@@ -7,27 +7,18 @@ using UnityEngine.UI;
 public class UI_ControllerJoystick : MonoBehaviour
 {
     [SerializeField] ObtainableItem _obtainableItem;
-    [SerializeField] Image _joystickOutLine;
-    [SerializeField] Image _itemOutLine;
-    [SerializeField] Image _itemImage;
-    [SerializeField] Transform _panel;
     public Vector2 InputVector2 { get; private set; }
-
-    //public  Action<Vector2> onAttackEventCallBack;
-    //public Action onTapEventCallBack;
     public UltimateJoystick _ultimateJoystick;
-
     public MyInput myInput;
+
     private void Awake()
     {
         _ultimateJoystick = GetComponent<UltimateJoystick>();
-
         _ultimateJoystick.OnPointerDownCallback += Down;
         _ultimateJoystick.OnDragCallback += Drag;
         _ultimateJoystick.OnPointerUpCallback += Up;
         _ultimateJoystick.OnTapCallBack += Tap;
-
-
+        SetActiveControllerType(Define.ControllerType.Button);
     }
 #if UNITY_ANDROID
 
@@ -35,6 +26,7 @@ public class UI_ControllerJoystick : MonoBehaviour
 
     void Down()
     {
+        print("Down!!");
         if (myInput == null) return;
         InputVector2 = GetInputVector2();
         myInput.ControllerDic[ControllerInputType.Drag]?.Invoke(InputVector2);
@@ -72,15 +64,16 @@ public class UI_ControllerJoystick : MonoBehaviour
     {
         if (controllerType == Define.ControllerType.Button)
         {
-            _joystickOutLine.enabled = false;
-            _itemOutLine.enabled = true;
-            _itemImage.transform.SetParent(_itemOutLine.transform);
+            _ultimateJoystick.joystick.gameObject.SetActive(false);
+            if (_obtainableItem)
+            {
+                _ultimateJoystick.joystick.GetComponent<Image>().sprite = _obtainableItem.itemSprite;
+            }
         }
         else
         {
-            _joystickOutLine.enabled = true;
-            _itemOutLine.enabled = false;
-            _itemImage.transform.SetParent(_joystickOutLine.transform);
+            _ultimateJoystick.joystick.gameObject.SetActive(true);
+
         }
     }
     ////즉시아이템 사용
@@ -98,25 +91,25 @@ public class UI_ControllerJoystick : MonoBehaviour
     //}
     public void AddItem(ObtainableItem newItem)
     {
-        _obtainableItem = newItem;
-        if (newItem.useType== Define.UseType.Item)
-        {
-            _joystickOutLine.enabled = false;
-            _itemOutLine.enabled = true;
-            _itemImage.transform.SetParent(_itemOutLine.transform);
-        }
-        else
-        {
-            _joystickOutLine.enabled = true;
-            _itemOutLine.enabled = false;
-            _itemImage.transform.SetParent(_joystickOutLine.transform);
-        }
-        _joystickOutLine.transform.localPosition = Vector3.zero;
-        _itemImage.transform.localPosition = Vector3.zero;
-        _itemImage.sprite = newItem.itemSprite;
-        _itemImage.enabled = true;
-        this.gameObject.SetActive(true);
-        //_ultimateJoystick.OnDragCallback
+        //_obtainableItem = newItem;
+        //if (newItem.useType== Define.UseType.Item)
+        //{
+        //    _joystickOutLine.enabled = false;
+        //    _itemOutLine.enabled = true;
+        //    _itemImage.transform.SetParent(_itemOutLine.transform);
+        //}
+        //else
+        //{
+        //    _joystickOutLine.enabled = true;
+        //    _itemOutLine.enabled = false;
+        //    _itemImage.transform.SetParent(_joystickOutLine.transform);
+        //}
+        //_joystickOutLine.transform.localPosition = Vector3.zero;
+        //_itemImage.transform.localPosition = Vector3.zero;
+        //_itemImage.sprite = newItem.itemSprite;
+        //_itemImage.enabled = true;
+        //this.gameObject.SetActive(true);
+        ////_ultimateJoystick.OnDragCallback
     }
 
     public void RemoveItem()

@@ -7,16 +7,18 @@ using UnityEngine.UI;
 public class InputManager : GenricSingleton<InputManager>
 {
     [SerializeField] UI_Input_Run _runButton;
-    [SerializeField] UI_ControllerJoystick _moveJoystick;
+    [SerializeField] UltimateJoystick _moveJoystick;
     [SerializeField] UI_ControllerJoystick _mainJoystick;
     [SerializeField] UI_ControllerJoystick _subJoystick;
+    [SerializeField] UI_ControllerJoystick _skillJoystick;
     [SerializeField] UI_ControllerJoystick[] _itemControllerJoysticks;
     public Vector2 MoveVector { get; private set; }
     //public Vector2 AttackVector => _mainJoystick.InputVector2;
 
-    public UI_ControllerJoystick moveJoystick => _moveJoystick;
+    public UltimateJoystick moveJoystick => _moveJoystick;
     public UI_ControllerJoystick subJoystick => _subJoystick;
     public UI_ControllerJoystick mainJoystick => _mainJoystick;
+    public UI_ControllerJoystick skillJoystick => _skillJoystick;
     public UI_ControllerJoystick[] itemControllerJoysticks => _itemControllerJoysticks;
 
     public bool IsRun
@@ -28,7 +30,6 @@ public class InputManager : GenricSingleton<InputManager>
         }
     }
 
-    public bool TestRun;
 
     [SerializeField] UI_Slider_CoolTime _attackCoolTimeUI;
 
@@ -36,7 +37,9 @@ public class InputManager : GenricSingleton<InputManager>
     public void Clear()
     {
         _moveJoystick.gameObject.SetActive(false);
+        _subJoystick.gameObject.SetActive(false);
         _mainJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
         foreach (var itemButton in _itemControllerJoysticks)
         {
@@ -50,7 +53,9 @@ public class InputManager : GenricSingleton<InputManager>
         _moveJoystick.gameObject.SetActive(false);
         _mainJoystick.gameObject.SetActive(false);
         _runButton.gameObject.SetActive(false);
-        
+        _moveJoystick.gameObject.SetActive(false);
+        _skillJoystick.gameObject.SetActive(false);
+
     }
 
 
@@ -77,6 +82,11 @@ public class InputManager : GenricSingleton<InputManager>
 
     private void Update()
     {
+
+#if UNITY_ANDROID
+        MoveVector = new Vector2(_moveJoystick.GetHorizontalAxis(), _moveJoystick.GetVerticalAxis());
+#endif
+
 #if UNITY_EDITOR
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");

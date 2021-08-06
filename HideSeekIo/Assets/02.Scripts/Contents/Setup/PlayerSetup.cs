@@ -30,12 +30,16 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
 
         //-데이터받아옴//
         var nickName = (string)info.photonView.InstantiationData[0]; //닉네임
-        var avaterId = (string)info.photonView.InstantiationData[1]; //캐릭터
+        var avaterId = (string)info.photonView.InstantiationData[1]; //캐릭터 스킨
+        var isAI = (bool)info.photonView.InstantiationData[2];  //AI 여부
+        var characterType = (Define.CharacterType)info.photonView.InstantiationData[3]; //캐릭터 타
         var fogController = this.GetComponentInChildren<FogOfWarController>();
         var playerController = this.GetComponent<PlayerController>();
+        AddInputComponent(isAI);
         playerController.NickName = nickName;       //닉네임 설정
+        CreateCharacter(characterType, playerController, fogController);
+        //CreaterAvater(avaterId, playerController, fogController);
 
-        CreaterAvater(avaterId, playerController, fogController);
 
         playerController.OnPhotonInstantiate(this.photonView);
         _onPhotonInstantiateEvent?.Invoke(this.photonView);
@@ -47,9 +51,37 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         }
         else
         {
-
+            
         }
 
+    }
+
+    void AddInputComponent(bool isAI )
+    {
+        var inputBase = GetComponent<InputBase>();
+        if (inputBase)
+        {
+            Destroy(inputBase);
+        }
+
+        if (isAI)
+        {
+
+        }
+        else
+        {
+            inputBase=this.gameObject.GetOrAddComponent<UserInput>();
+        }
+        inputBase.OnPhotonInstantiate();
+    }
+
+    void CreateCharacter(Define.CharacterType characterType, PlayerController playerController, FogOfWarController fogOfWarController)
+    {
+        var go = Managers.Spawn.CharacterSpawn(characterType, playerController);
+        go.transform.ResetTransform(this.transform);
+        go.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
+        fogOfWarController._hideInFog.ClearRenders();
+        fogOfWarController.AddHideRender(go.GetComponentInChildren<SkinnedMeshRenderer>());
     }
 
     void CreaterAvater(string avaterID, PlayerController playerController, FogOfWarController fogOfWarController )

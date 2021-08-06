@@ -11,7 +11,7 @@ public abstract class PlayerController : MonoBehaviourPun
     public Define.Team Team => GetLivingEntity().Team;
     public abstract LivingEntity GetLivingEntity();
     public abstract AttackBase GetAttackBase();
-    public abstract InputBase GetInputBase();
+    //public InputBase inputBase;
     
     public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 

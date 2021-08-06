@@ -16,6 +16,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
     {
         base.Awake();
         _hiderInput = GetComponent<HiderInput>();
+
     }
     public override void OnPhotonInstantiate()
     {

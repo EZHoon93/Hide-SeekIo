@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Character_Cat : Character_Base
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override void SetupSkill()
     {
-        
+        _mainSkill = this.gameObject.GetOrAddComponent<Skill_Stealth>();
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void SetupUI()
     {
-        
+
     }
 }

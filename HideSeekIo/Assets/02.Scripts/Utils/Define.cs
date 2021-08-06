@@ -290,5 +290,24 @@ public class Define
         System,
         Message
     }
+
+    public enum Skill
+    {
+        Invinc  ,   //무적
+        Staeth,     //은신
+        Track,      //추적
+        Dash,       //대쉬
+        Jump,       //점프
+        Banana,      //바나나
+        Flash,      //섬광탄
+        Food        //식
+    }
+
+    public enum CharacterType
+    {
+        Bear,
+        Bunny,
+        Cat
+    }
     //public enum AttackSta
 }

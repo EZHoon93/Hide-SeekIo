@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class SeekerController : PlayerController
 {
-    public SeekerInput seekerInput { get; private set; }
     public SeekerMove seekerMove { get; private set; }
     public SeekerAttack seekerAttack { get; private set; }
 
@@ -15,7 +14,6 @@ public class SeekerController : PlayerController
 
     protected void Awake()
     {
-        seekerInput = GetComponent<SeekerInput>();
         seekerMove = GetComponent<SeekerMove>();
         seekerAttack = GetComponent<SeekerAttack>();
         seekerHealth = GetComponent<SeekerHealth>();
@@ -24,7 +22,6 @@ public class SeekerController : PlayerController
     {
         base.OnPhotonInstantiate(photonView);
         seekerHealth.OnPhotonInstantiate();
-        seekerInput.OnPhotonInstantiate();
         seekerMove.OnPhotonInstantiate();
         seekerAttack.OnPhotonInstantiate();
         if (this.IsMyCharacter())
@@ -35,7 +32,6 @@ public class SeekerController : PlayerController
     void SetActiveComponent(bool acitve)
     {
         seekerHealth.enabled = acitve;
-        seekerInput.enabled = acitve;
         seekerMove.enabled = acitve;
         seekerAttack.enabled = acitve;
     }
@@ -70,6 +66,5 @@ public class SeekerController : PlayerController
 
     public override AttackBase GetAttackBase() => seekerAttack;
 
-    public override InputBase GetInputBase() => seekerInput;
   
 }

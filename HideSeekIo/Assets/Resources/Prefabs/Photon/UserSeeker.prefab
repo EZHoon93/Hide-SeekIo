@@ -48,7 +48,6 @@ GameObject:
   - component: {fileID: 7682236500054097928}
   - component: {fileID: 1999317484807970439}
   - component: {fileID: 2803996618418529021}
-  - component: {fileID: 3763222160251579843}
   - component: {fileID: 2930464553841016706}
   m_Layer: 8
   m_Name: UserSeeker
@@ -197,7 +196,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _centerPivot: {fileID: 991523987053287494}
-  currentWeapon: {fileID: 0}
+  itemInventory:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &2803996618418529021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,18 +213,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initHealth: 2
   Team: 0
---- !u!114 &3763222160251579843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3298288023677589299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7cb1aa4d190d5045aeb863ead43c2cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2930464553841016706
 MonoBehaviour:
   m_ObjectHideFlags: 0
