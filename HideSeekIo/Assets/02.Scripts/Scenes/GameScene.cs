@@ -13,6 +13,8 @@ public class GameScene : BaseScene
     public int InitGameTime => _initGameTime;
 
 
+    public Transform test;
+
     protected override void Init()
     {
         base.Init();

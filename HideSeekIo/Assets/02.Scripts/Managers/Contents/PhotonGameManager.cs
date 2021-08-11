@@ -143,7 +143,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         gameExit?.Invoke();
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
         CameraManager.Instance.ResetCamera();
-        InputManager.Instance.OffAllController();
+        InputManager.Instance.SetActiveController(false);
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -346,21 +346,19 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             var myPlayer = Managers.Game.myPlayer;
             if (myPlayer == null) return;
             var selectItem = GetRandomItemEnum(myPlayer.Team);
-            //if (selectItem.GetType() == typeof(Define.ThrowItem))
-            //{
-            //    print("생성");
-            //    //Managers.Spawn.WeaponSpawn(selectItem.GetType)
-            //    PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-            //myPlayer.ViewID(),
-            //false
-            //   }); ;
-            //}
-            //else
-            //{
+            print("생성");
+            if (selectItem.GetType() == typeof(Define.ThrowItem))
+            {
+                //Managers.Spawn.WeaponSpawn(selectItem.GetType)
+                PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
+            myPlayer.ViewID(),
+               }); ;
+            }
+            else
+            {
+                Managers.Spawn.ItemSpawn(selectItem, myPlayer);
+            }
 
-            //}
-
-            Managers.Spawn.ItemSpawn(selectItem, myPlayer);
 
         }
 

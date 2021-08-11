@@ -384,7 +384,6 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 
 		// Then call ProcessInput with the info with the current input information.
 		ProcessInput( inputPosition );
-
 		// Notify any subscribers that the OnDrag function has been called.
 		if( OnDragCallback != null )
 			OnDragCallback();

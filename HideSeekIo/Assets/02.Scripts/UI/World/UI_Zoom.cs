@@ -4,48 +4,54 @@ using UnityEngine;
 
 public class UI_Zoom : MonoBehaviour
 {
-    [SerializeField] Transform uiZoom;
-    AttackBase _attackBase;
-    InputBase _inputBase;
-    private void Awake()
-    {
-        _attackBase =  this.transform.parent.GetComponentInParent<AttackBase>();
-        _inputBase = this.transform.parent.GetComponentInParent<InputBase>();
-        //_attackBase.weaponChangeEvent += ChangeWeapon;
-    }
+    [SerializeField] Transform _meleeZoom;
+    [SerializeField] Transform _throwZoom;
+    [SerializeField] Transform _gunZoom;
 
-    void ChangeWeapon(Weapon newWeapon)
+    public Transform currentZoom { get; set; }
+    Define.ZoomType _zoomType;
+    Transform _taget;
+
+    public void Setup(Define.ZoomType zoomType, Transform target)
     {
-        print(newWeapon.weaponType + "체인지");
-        switch (newWeapon.weaponType)
+        _zoomType = zoomType;
+        _taget = target;
+        _meleeZoom.gameObject.SetActive(false);
+        _throwZoom.gameObject.SetActive(false);
+        _gunZoom.gameObject.SetActive(false);
+        switch (_zoomType)
         {
-            case Weapon.WeaponType.Throw:
-                var throwWeapon = newWeapon as Weapon_Throw;
-                var size = throwWeapon.attackRange;
-                print(newWeapon.weaponType + "레인지"+size);
-
-                uiZoom.transform.localScale = new Vector3( size,size,size);
+            case Define.ZoomType.Gun:
+                _gunZoom.gameObject.SetActive(true);
+                currentZoom = _gunZoom;
+                break;
+            case Define.ZoomType.Melee:
+                _meleeZoom.gameObject.SetActive(true);
+                currentZoom = _meleeZoom;
+                break;
+            case Define.ZoomType.Throw:
+                _throwZoom.gameObject.SetActive(true);
+                currentZoom = _throwZoom;
                 break;
         }
-        
+        this.gameObject.SetActive(false);
     }
 
-    private void Update()
+
+    private void LateUpdate()
     {
-        UpdateZoom();
+        FixedUI();
     }
 
-    void UpdateZoom()
+    public void FixedUI()
     {
-        switch (_attackBase.baseWeapon.weaponType)
+        if (_taget)
         {
-            case Weapon.WeaponType.Melee:
-                break;
-            case Weapon.WeaponType.Throw:
-                break;
-            case Weapon.WeaponType.Gun:
-                break;
+            this.transform.position = _taget.transform.position;
+            this.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+
         }
-        //UtillGame.ThrowZoom(_inputBase.AttackVector, _attackBase.currentWeapon.AttackDistance, this.transform, uiZoom);
     }
+
+
 }

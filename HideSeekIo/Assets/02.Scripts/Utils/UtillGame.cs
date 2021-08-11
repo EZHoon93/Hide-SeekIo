@@ -23,9 +23,9 @@ public static class UtillGame
     public static Quaternion WorldRotationByInput(Vector2 vector2)
     {
         var origanlAngle = GetAngleY(vector2);
-        var camerAngle = Camera.main.transform.eulerAngles.y;
+        //var camerAngle = Camera.main.transform.eulerAngles.y;
 
-        return Quaternion.Euler(0, -( 90  + origanlAngle - camerAngle) , 0);
+        return Quaternion.Euler(0, -( 90  + origanlAngle ) , 0);
         //return Quaternion.Euler(0, 90 - origanlAngle + camerAngle, 0);
     }
 
@@ -37,11 +37,28 @@ public static class UtillGame
     public static Quaternion GetWorldRotation_ByInputVector(Vector2 inputVector2)
     {
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-        var converVector3 = ConventToVector3(inputVector2);
+        var converVector3 = ConventToVector3(inputVector2.normalized);
         var newDirection = quaternion * converVector3;
         Quaternion newRotation = Quaternion.LookRotation(newDirection);
 
         return newRotation;
+    }
+
+    public static Vector2 GetInputVector2_ByCamera(Vector2 vector2)
+    {
+        Vector3 vector3 = new Vector3(vector2.x, 0, vector2.y);
+        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+        var changeVector3 = quaternion * vector3;
+
+        return new Vector2(changeVector3.x,changeVector3.z);
+    }
+    public static Vector2 GetInputVector3_ByCamera(Vector2 vector2)
+    {
+        Vector3 vector3 = new Vector3(vector2.x, 0, vector2.y);
+        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+        var changeVector3 = quaternion * vector3;
+
+        return new Vector3(changeVector3.x, 0,changeVector3.z);
     }
 
     //public static Quaternion GetSmoothRotation_ByInputVector(Vector2 inputVector2)
@@ -53,12 +70,17 @@ public static class UtillGame
 
     //}
 
-    public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform)
+    public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform , bool isAI = false)
     {
 
         //_attackRangeUI.position = _attackPlayer.CenterPivot.position;
         //Vector3 pos = pivotTransform.transform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance;
-        var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+        float anlge = 0;
+        if(isAI == false)
+        {
+            //anlge = Camera.main.transform.eulerAngles.y;
+        }
+        var quaternion = Quaternion.Euler(0, anlge, 0);
         var converVector3 = ConventToVector3(inputVector2);
         var newDirection = quaternion * converVector3;
         Vector3 pos = pivotTransform.transform.position + newDirection * distance;

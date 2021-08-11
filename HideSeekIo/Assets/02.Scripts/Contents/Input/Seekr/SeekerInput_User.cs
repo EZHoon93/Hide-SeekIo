@@ -9,7 +9,8 @@ public class SeekerInput_User : SeekerInput
         base.OnPhotonInstantiate();
         if (this.photonView.IsMine)
         {
-            InputManager.Instance.SetActiveSeekerController(true);
+            print("");
+            InputManager.Instance.SetActiveController(true);
             //InputManager.Instance.baseAttackJoystick.onAttackEventCallBack = Call_AttackCallBackEvent;
             //InputManager.Instance.itemControllerJoysticks[0].onAttackEventCallBack = CallBackItem1;
             //InputManager.Instance.itemControllerJoysticks[1].onAttackEventCallBack = CallBackItem2;

@@ -60,6 +60,7 @@ public class GameSetting : ScriptableObject
 
     [SerializeField] RuntimeAnimatorController _hiderAnimatiorController;
     [SerializeField] RuntimeAnimatorController _seekrAnimatorController;
+    //[SerializeField] ExternalBehaviorTree
 
     public ExternalBehaviorTree externalBehavior;
 

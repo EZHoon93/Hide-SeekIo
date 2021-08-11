@@ -7,7 +7,6 @@ using FoW;
 
 public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate, IOnPhotonViewPreNetDestroy
 {
-    [SerializeField] GameObject go;
     event Action<PhotonView> _onPhotonInstantiateEvent;
     public event Action<PhotonView> OnPhotonDestroyEvent;
     public event Action<PhotonView> OnPhotonInstantiateEvent
@@ -58,38 +57,44 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
 
     void AddInputComponent(bool isAI )
     {
-        var inputBase = GetComponent<InputBase>();
-        if (inputBase)
-        {
-            Destroy(inputBase);
-        }
-
+       
+        InputBase inputBase = null;
         if (isAI)
         {
-
+            this.gameObject.tag = "AI";
+            inputBase = this.gameObject.AddComponent<AIInput>();
         }
         else
         {
-            inputBase=this.gameObject.GetOrAddComponent<UserInput>();
+            this.gameObject.tag = "Player";
+            inputBase = this.gameObject.GetOrAddComponent<UserInput>();
         }
         inputBase.OnPhotonInstantiate();
     }
 
-    void CreateCharacter(Define.CharacterType characterType, PlayerController playerController, FogOfWarController fogOfWarController)
+    GameObject CreateCharacter(Define.CharacterType characterType, PlayerController playerController, FogOfWarController fogOfWarController)
     {
-        var go = Managers.Spawn.CharacterSpawn(characterType, playerController);
+        var go = Managers.Spawn.CharacterSpawn(characterType, playerController).GetComponent<Character_Base>();
         go.transform.ResetTransform(this.transform);
-        go.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
+        go.OnPhoninstiate(playerController);
+        playerController.GetAttackBase().character_Base = go;
+        go.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
         fogOfWarController._hideInFog.ClearRenders();
         fogOfWarController.AddHideRender(go.GetComponentInChildren<SkinnedMeshRenderer>());
+
+        return go.gameObject;
     }
+
+    //void SetupSkill(Character_Base character_Base , PlayerController playerController)
+    //{
+    //    playerController.inputBase.mainInput
+    //}
 
     void CreaterAvater(string avaterID, PlayerController playerController, FogOfWarController fogOfWarController )
     {
         var avater = Managers.Resource.Instantiate($"Avater/{avaterID}", this.transform);
         avater.transform.ResetTransform();
         avater.GetOrAddComponent<Animator>().runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-        go = avater;
         fogOfWarController._hideInFog.ClearRenders();
         fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
     }
@@ -107,7 +112,22 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         if (Managers.Resource == null) return;
         Managers.Game.UnRegisterLivingEntity(this.ViewID());
         Managers.Resource.Destroy(GetComponentInChildren<Animator>().gameObject);
-        if(CameraManager.Instance.Target.ViewID() == this.ViewID())
+        var inputBase = GetComponent<InputBase>();
+        if (inputBase)
+        {
+            Destroy(inputBase);
+        }
+        var behavorTree = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+        if (behavorTree)
+        {
+            Destroy(behavorTree);
+        }
+        var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent)
+        {
+            Destroy(agent);
+        }
+        if (CameraManager.Instance.Target.ViewID() == this.ViewID())
         {
             CameraManager.Instance.FindNextPlayer();
         }

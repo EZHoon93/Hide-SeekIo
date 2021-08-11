@@ -8,7 +8,6 @@ public class HiderInput_User : HiderInput
         base.OnPhotonInstantiate();
         if (this.photonView.IsMine)
         {
-            InputManager.Instance.SetActiveHiderController(true);
 
             IsRun = true;
 

@@ -5,18 +5,14 @@ using UnityEngine;
 public class HiderMove : MoveBase , IMakeRunEffect
 {
     public Define.MoveHearState HearState { get; set; }
-    HiderInput _hiderInput;
-
     public float MaxEnergy { get; private set; } = 16;
     public float CurrentEnergy { get; set; }
-
+    public bool Run { get; set; }
     float lastTime;
     [SerializeField] float timeBiet = 1.5f;
     protected override void Awake()
     {
         base.Awake();
-        _hiderInput = GetComponent<HiderInput>();
-
     }
     public override void OnPhotonInstantiate()
     {
@@ -24,20 +20,47 @@ public class HiderMove : MoveBase , IMakeRunEffect
         HearState = Define.MoveHearState.NoEffect;
         CurrentEnergy = MaxEnergy;
         lastTime = 0;
+
+        _inputBase = GetComponent<InputBase>();
+
+        _inputBase.AddInputEvent(InputType.Main, ControllerInputType.Down, (v) => { Run = true; });
+
     }
     public bool IsLocal()
     {
         return photonView.IsMine;
     }
+    private void LateUpdate()
+    {
+        if (photonView.IsMine == false) return;
+        UpdateEnergy();
+        Run = false;
+    }
+    //protected void FixedUpdate()
+    //{
+    //    if (photonView.IsMine == false) return;
+    //    //OnUpdate(_hiderInput.MoveVector, _hiderInput.IsRun);
+    //    UpdateMoveEffect();
+    //    UpdateEnergy();
+    //}
 
     protected void FixedUpdate()
     {
         if (photonView.IsMine == false) return;
-        OnUpdate(_hiderInput.MoveVector, _hiderInput.IsRun);
-        UpdateMoveEffect();
-        UpdateEnergy();
-    }
+        OnUpdate(_inputBase.controllerInputDic[InputType.Move].inputVector2, Run);
+        //UpdateStepSound();
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        var move = new Vector2(h, v);
+#if UNITY_EDITOR
+        //if (this.IsMyCharacter())
+        //{
+        //    OnUpdate(move, Run);
+        //}
 
+#endif
+
+    }
 
     void UpdateEnergy()
     {
@@ -80,20 +103,21 @@ public class HiderMove : MoveBase , IMakeRunEffect
             case AttackBase.state.Idle:
                 if (CurrentEnergy > 0)
                 {
+                    print(inputVector2);
                     UpdateSmoothRotate(inputVector2);
                     UpdateMove(inputVector2, isRun);
                 }
                 else
                 {
-                    _hiderInput.EnegyZero();
+                    //_inputBase.EnegyZero();
                     UpdateSmoothRotate(Vector2.zero);
                     UpdateMove(Vector2.zero, isRun);
                 }
                 UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.AttackDirection);
-                UpdateMoveAnimation(MoveState.Idle);
+                //UpdateImmediateRotate(_attackBase.AttackDirection);
+                //UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
 

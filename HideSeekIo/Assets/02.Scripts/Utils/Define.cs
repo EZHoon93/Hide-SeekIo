@@ -8,6 +8,12 @@ public class Define
 
     public static readonly int MaxItemInventory = 3;
 
+    public enum ZoomType
+    {
+        Throw,
+        Melee,
+        Gun
+    }
     public enum ControllerType
     {
         Button,
@@ -70,6 +76,7 @@ public class Define
         Dynamite,
         Glue,
         PoisonBomb,
+        Null
     }
 
     public enum UseType
@@ -194,7 +201,7 @@ public class Define
         PoisonBomb,
         Speed2,
         SightUp,
-        Immune
+        Immune,
     }
     public enum HiderStoreList
     {
@@ -253,7 +260,8 @@ public class Define
         AcidExp,
         DarkExp,
         FlashEffect,
-        FogSight
+        FogSight,
+        Null
             
     }
 
@@ -300,14 +308,18 @@ public class Define
         Jump,       //점프
         Banana,      //바나나
         Flash,      //섬광탄
-        Food        //식
+        Food,        //식
+            Null
     }
 
     public enum CharacterType
     {
         Bear,
         Bunny,
-        Cat
+        Cat,
+        Frog,
+        Dog,
+        Monkey
     }
     //public enum AttackSta
 }

@@ -12,11 +12,22 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
     public class UseWeaponItem : Action
     {
         public SharedGameObject targetObject;
-        public SharedThrowItemEnum checkItemEnum;
+        public SharedThrowItemEnum checkThrowItem;
+        public SharedImmdiateItemEnum ChecksharedImmdiateItemEnum;
+
+        public SharedInputType sharedInputType;
+        public SharedControllerInputType sharedControllerInputType;
+
         PlayerController _playerController;
+        InputType inputType;
+        SharedFloat startTime;
+        public SharedFloat waitTime;
+        public SharedFloat attackDistance;
+        Weapon_Throw _weapon_Throw;
+        //float attackDistance;
         public override void OnAwake()
         {
-            _playerController = GetComponent<PlayerController>();
+            _playerController = this.GetComponent<PlayerController>();
         }
         public override TaskStatus OnUpdate()
         {
@@ -25,56 +36,80 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 return TaskStatus.Failure;
             }
 
-            int index = CheckItem(checkItemEnum.Value);
-            if(index == -1)
+            bool isWeapon = CheckWeapon();
+            if (isWeapon)
             {
-                return TaskStatus.Failure;
-            }
-            else
-            {
-                var direction =  GetInputVector2(targetObject.Value.transform.position);
-                float itemDistance = 0;
-                if (index == 0)
-                {
-                    //_playerController.GetAttackBase().itemInventory[0].getc;
-                }
-                else
-                {
-
-                }
-
+                return TaskStatus.Success;
             }
 
 
+           
             //var direction = targetObject.Value.transform.position - _playerController.transform.position;
             //var inputVector = direction / _playerController.GetAttackBase().baseWeapon.AttackDistance;
             //Debug.Log(inputVector);
             //_playerController.GetInputBase().Call_AttackCallBackEvent(inputVector);
-
-            return TaskStatus.Success;
+            return TaskStatus.Failure;
         }
 
-        int CheckItem(Define.ThrowItem checkThrowItem )
+        bool CheckWeapon()
+        {
+            if (checkThrowItem.Value != Define.ThrowItem.Null)
+            {
+                return false;
+            }
+            var throwWeapon = CheckThrowItem(checkThrowItem.Value);
+            if (throwWeapon == null)
+            {
+                return false;
+            }
+            else
+            {
+                //var direction = GetInputVector2(targetObject.Value.transform.position);
+                //var distance = Vector3.Distance(targetObject.Value.transform.position, _playerController.transform.position);
+                //var inputVector = direction.normalized / throwWeapon.AttackDistance;
+
+                _playerController.inputBase.controllerInputDic[throwWeapon.inputType].Call(ControllerInputType.Drag, Vector3.zero);
+                sharedControllerInputType.Value = ControllerInputType.Up;
+                sharedInputType.Value = throwWeapon.inputType;
+                attackDistance = throwWeapon.AttackDistance;
+                //_playerController.GetAttackBase().itemInventory[0].getc;
+                return true;
+            }
+        }
+
+
+        Weapon_Throw CheckThrowItem(Define.ThrowItem checkThrowItem)
         {
             int i = 0;
-            foreach(var item in _playerController.GetAttackBase().itemInventory)
+            foreach (var item in _playerController.GetAttackBase().ItemIntentory)
             {
-                if(item.GetType() == typeof(Define.ThrowItem))
+                if (item == null)
                 {
-                    //if((Define.ThrowItem) item.GetEnum() == checkThrowItem)
-                    //{
-                    //    return i;
-                    //}
+                    i++;
+                    continue;
+                }
+
+                var weapon = item.GetComponent<Weapon_Throw>();
+                if (weapon)
+                {
+
+                    if (weapon.throwType == checkThrowItem)
+                    {
+                        attackDistance = weapon.AttackDistance;
+                        return weapon;
+                    }
                 }
                 i++;
             }
-            return -1;
+            return null;
         }
 
         Vector2 GetInputVector2(Vector3 targetPos)
         {
             var direction = (targetPos - _playerController.transform.position).normalized;
 
+            Quaternion quaternion = Quaternion.Euler(0, 0, 0);
+            var result = quaternion * direction;
 
             return new Vector2(direction.x, direction.z);
         }

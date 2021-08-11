@@ -171,33 +171,44 @@ public class GameState_Count : GameState_Base
         {
             var pos = _gameMainScene.GetSeekerPosition(0);
             Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos , false);
-
         }
         else
         {
             var pos = _gameMainScene.GetHiderPosition(0);
             Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, false);
-
         }
     }
 
     void Master_Creat_AIPlayer(int index)
     {
-        object[] userData = { "User1", PlayerInfo.CurrentSkin.avaterSeverKey };
+        //object[] userData = { "User1", PlayerInfo.CurrentSkin.avaterSeverKey };
 
-        //술래
-        if (index <= 1)
+        ////술래
+        //if (index <= 1)
+        //{
+        //    var pos = _gameMainScene.GetSeekerPosition(index);
+        //    Managers.Spawn.AISpawn(Define.Team.Seek, pos);
+        //}
+        ////숨는팀 생성
+        //else
+        //{
+        //    var pos = _gameMainScene.GetHiderPosition(index);
+        //    Managers.Spawn.AISpawn(Define.Team.Hide, pos);
+        //}
+        if (index > 0) return;
+        //index = 0,1은 좀비 
+        if (PhotonNetwork.IsMasterClient)
         {
             var pos = _gameMainScene.GetSeekerPosition(index);
-            //Managers.Spawn.AISpawn(Define.Team.Seek, pos);
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
+
         }
-        //숨는팀 생성
         else
         {
             var pos = _gameMainScene.GetHiderPosition(index);
-            Managers.Spawn.AISpawn(Define.Team.Hide, pos);
-        }
+            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
 
+        }
     }
 
 

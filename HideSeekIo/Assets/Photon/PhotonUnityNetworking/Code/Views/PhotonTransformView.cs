@@ -71,7 +71,7 @@ namespace Photon.Pun
                 else
                 {
                     tr.position = Vector3.MoveTowards(tr.position, this.m_NetworkPosition, this.m_Distance * (1.0f / PhotonNetwork.SerializationRate));
-                    tr.rotation = Quaternion.RotateTowards(tr.rotation, this.m_NetworkRotation, this.m_Angle * (10.0f / PhotonNetwork.SerializationRate));
+                    tr.rotation = Quaternion.RotateTowards(tr.rotation, this.m_NetworkRotation, this.m_Angle * (2.0f / PhotonNetwork.SerializationRate));
                 }
             }
         }

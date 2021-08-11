@@ -17,6 +17,7 @@ public class Weapon_Gun : Weapon
     LineRenderer _lineRenderer;
     int _zoomLayer = 1 << (int)Define.Layer.Wall;
 
+    public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Gun;
 
 
     //protected virtual void Awake()
@@ -48,7 +49,7 @@ public class Weapon_Gun : Weapon
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
     [PunRPC]
-    public void AttackOnServer(Vector2 inputVector , Vector3 endPoint)
+    public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
         state = State.Delay;
         LastAttackInput = inputVector;
@@ -82,7 +83,7 @@ public class Weapon_Gun : Weapon
 
     Vector3 GetHitPoint(Transform rayTransform, Vector2 inputVector)
     {
-        UICanvas.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(inputVector);
+        //UICanvas.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(inputVector);
         RaycastHit hit;
         Vector3 hitPosition;
         if (Physics.Raycast(rayTransform.transform.position, rayTransform.transform.forward, out hit, _maxDistance, _zoomLayer))

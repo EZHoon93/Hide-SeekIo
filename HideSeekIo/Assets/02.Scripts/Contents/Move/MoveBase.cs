@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
+using ExitGames.Client.Photon.StructWrapping;
+using System.Collections;
 
 public class MoveBase : MonoBehaviourPun, IPunObservable
 {
@@ -9,7 +11,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         Idle,
         Walk,
         Run,
-        Stun
+        Stun,
     }
 
     public MoveState State { get; set; }
@@ -26,6 +28,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
 
     protected float _totRatio;    //버퍼리스트 합계산한 최종 이속 증/감소율
+    public Vector2 moveInputVector2 { get; set; }
     public float MoveSpeed { get; protected set; }
     public int RotationSpeed { get; protected set; } = 15;
     public float ResultSpeed { get; protected set; }
@@ -56,6 +59,8 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         _TransformView = GetComponent<PhotonTransformView>();
         _stepClip = Managers.Resource.Load<AudioClip>("Sounds/Step1");
 
+
+
     }
     private void OnEnable()
     {
@@ -79,7 +84,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         switch (_attackBase.State)
         {
             case AttackBase.state.Idle:
-                    //UpdateMoveAnimation(State);
+                    UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
                 UpdateImmediateRotate(_attackBase.AttackDirection);
@@ -100,6 +105,10 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
             case AttackBase.state.Attack:
                 UpdateImmediateRotate(_attackBase.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
+                break;
+            case AttackBase.state.Dash:
+                UpdateMove(_attackBase.AttackDirection, isRun);
+                UpdateMoveAnimation(MoveState.Run);
                 break;
         }
         UpdateStepSound();
@@ -127,12 +136,17 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
     protected void UpdateSmoothRotate(Vector2 inputVector2)
     {
         if (inputVector2.normalized.sqrMagnitude == 0) return;
-        var newRotation = UtillGame.GetWorldRotation_ByInputVector(inputVector2);
+        Quaternion quaternion = Quaternion.Euler(0, 0, 0);
+        var converVector3 = UtillGame.ConventToVector3(inputVector2.normalized);
+        var newDirection = quaternion * converVector3;
+        Quaternion newRotation = Quaternion.LookRotation(newDirection);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRotation, RotationSpeed * Time.deltaTime);
     }
     protected void UpdateImmediateRotate(Vector2 inputVector2)
     {
-        this.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(inputVector2);
+        var converVector3 = UtillGame.ConventToVector3(inputVector2.normalized);
+        Quaternion newRotation = Quaternion.LookRotation(converVector3);
+        this.transform.rotation = newRotation;
     }
 
     protected void UpdateMoveAnimation(MoveState moveState)
@@ -177,7 +191,11 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         }
 
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
-        Vector3 moveDistance = this.transform.forward * ResultSpeed * Time.deltaTime;
+        if(_attackBase.State == AttackBase.state.Dash)
+        {
+            ResultSpeed *= 1.5f;
+        }
+        Vector3 moveDistance = UtillGame.ConventToVector3(inputMoveVector2.normalized)* ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
             moveDistance.y -= 9.8f * Time.deltaTime;
@@ -207,5 +225,17 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
 
     }
 
+
+    public void Dash()
+    {
+
+    }
+
+    protected  IEnumerator DashProcess()
+    {
+        var inputVector = _inputBase.controllerInputDic[InputType.Move].inputVector2;
+
+        yield return new WaitForSeconds(1.0f);
+    }
 
 }

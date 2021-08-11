@@ -16,13 +16,16 @@ public class Weapon_Flash : Weapon_Throw
         base.Awake();
         type = Type.Disposable;
         throwType = Define.ThrowItem.Flash;
+        inputType = InputType.Sub;
 
     }
 
 
     private void Start()
     {
+        inputType = InputType.Sub;
         Setup("Throw", .2f, .2f, 7.0f, 2);
+        InitCoolTime = 5;
     }
 
 

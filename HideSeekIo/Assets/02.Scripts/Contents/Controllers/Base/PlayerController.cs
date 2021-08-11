@@ -11,13 +11,14 @@ public abstract class PlayerController : MonoBehaviourPun
     public Define.Team Team => GetLivingEntity().Team;
     public abstract LivingEntity GetLivingEntity();
     public abstract AttackBase GetAttackBase();
-    //public InputBase inputBase;
+    public InputBase inputBase;
     
     public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
 
     public virtual void OnPhotonInstantiate(PhotonView photonView)
     {
+        inputBase = GetComponentInChildren<InputBase>();
         if (this.IsMyCharacter())    //?????? ??????
         {
             var mainSceneUI = Managers.UI.SceneUI as UI_Main;

@@ -15,7 +15,7 @@ public abstract class Item_Base : MonoBehaviourPun ,IPunInstantiateMagicCallback
     public PlayerController hasPlayerController { get; set; }
     public Action useSuceessCallBack { get; set; }
     public event Action DestroyEvent;
-    public ObtainableItem obtainableItem;
+    public ObtainableItem obtainableItem { get; set; }
     public Define.InGameItem InGameItemType { get; set; }
 
 

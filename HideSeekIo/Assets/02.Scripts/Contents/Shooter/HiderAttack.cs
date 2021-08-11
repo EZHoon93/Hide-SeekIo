@@ -17,11 +17,13 @@ public class HiderAttack : AttackBase
         base.OnPhotonInstantiate();
         if (this.photonView.IsMine)
         {
-            Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, this, true);
+            //Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, this);
         }
-    }
-    
+        Managers.Spawn.WeaponSpawn(Define.Weapon.Grenade, this.GetComponent<AttackBase>());
 
-    
+    }
+
+
+
 
 }

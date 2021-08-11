@@ -7,32 +7,37 @@ public abstract class Character_Base : MonoBehaviour
     [SerializeField] GameObject avaterObject;
     [SerializeField] Transform _rightHandTransform;
 
+    public Animator animator { get; set; }
     public Transform RightHandAmount => _rightHandTransform;//무기 위치할 곳 
 
 
-    protected Skill_Base _mainSkill;
+    public IAttack mainSkill { get; set; }
+    public PlayerController playerController { get; set; }
 
 
     private void Awake()
     {
-        //GetComponent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += IOnPhotonInstantiate;
-        SetupSkill();
+        animator = GetComponent<Animator>();
     }
 
     protected abstract void SetupSkill();
 
-
-    void IOnPhotonInstantiate(PhotonView photonView)
+    public void OnPhoninstiate(PlayerController newPlayerController)
     {
-        SetupUI();
+        playerController = newPlayerController;
+        SetupSkill();
     }
 
-    protected virtual void SetupUI()
+    public void UseSkill(Vector2 inputVector2)
     {
+        if(mainSkill.playerController == null)
+        {
+            mainSkill.playerController = playerController;
+        }
 
+        mainSkill.AttackCheck(inputVector2);
     }
  
-
     [ContextMenu("Setup")]
     public void Setup()
     {

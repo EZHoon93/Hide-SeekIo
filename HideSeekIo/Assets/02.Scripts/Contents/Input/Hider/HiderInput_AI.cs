@@ -56,14 +56,14 @@ public class HiderInput_AI : HiderInput
         //    UpdateStopState();
         //    return;
         //}
-        if(_agent.remainingDistance <= 0.2f)
-        {
-            MoveVector = Vector2.zero;
-        }
-        else
-        {
-            MoveVector = new Vector2(_agent.velocity.x, _agent.velocity.z);
-        }
+        //if(_agent.remainingDistance <= 0.2f)
+        //{
+        //    MoveVector = Vector2.zero;
+        //}
+        //else
+        //{
+        //    MoveVector = new Vector2(_agent.velocity.x, _agent.velocity.z);
+        //}
     }
 
 }

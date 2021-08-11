@@ -1,61 +1,45 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InputManager : GenricSingleton<InputManager>
 {
-    [SerializeField] UI_Input_Run _runButton;
-    [SerializeField] UltimateJoystick _moveJoystick;
-    [SerializeField] UI_ControllerJoystick _mainJoystick;
-    [SerializeField] UI_ControllerJoystick _subJoystick;
-    [SerializeField] UI_ControllerJoystick _skillJoystick;
-    [SerializeField] UI_ControllerJoystick[] _itemControllerJoysticks;
-    public Vector2 MoveVector { get; private set; }
-    //public Vector2 AttackVector => _mainJoystick.InputVector2;
+    //[SerializeField] UltimateJoystick _moveJoystick;
+    //public Vector2 MoveVector { get; private set; }
 
-    public UltimateJoystick moveJoystick => _moveJoystick;
-    public UI_ControllerJoystick subJoystick => _subJoystick;
-    public UI_ControllerJoystick mainJoystick => _mainJoystick;
-    public UI_ControllerJoystick skillJoystick => _skillJoystick;
-    public UI_ControllerJoystick[] itemControllerJoysticks => _itemControllerJoysticks;
+    [SerializeField] UI_ControllerJoystick[] _controllerJoysticks;
 
-    public bool IsRun
+
+    //public UltimateJoystick moveJoystick => _moveJoystick;
+
+
+
+    public UI_ControllerJoystick GetControllerJoystick(InputType inputType)
     {
-        get => _runButton.IsRun;
-        set
+        foreach(var joystick in _controllerJoysticks)
         {
-            _runButton.IsRun = value;
+            if(joystick.inputType == inputType)
+            {
+                return joystick;
+            }
         }
+
+        return null;
+       //return _controllerJoysticks.Single(s => s.inputType == inputType);
     }
-
-
-    [SerializeField] UI_Slider_CoolTime _attackCoolTimeUI;
-
 
     public void Clear()
     {
-        _moveJoystick.gameObject.SetActive(false);
-        _subJoystick.gameObject.SetActive(false);
-        _mainJoystick.gameObject.SetActive(false);
-        _skillJoystick.gameObject.SetActive(false);
-        _runButton.gameObject.SetActive(false);
-        foreach (var itemButton in _itemControllerJoysticks)
-        {
-            itemButton.gameObject.SetActive(false);
-        }
+        SetActiveController(false);
     }
     protected override  void Awake()
     {
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
-        _moveJoystick.gameObject.SetActive(false);
-        _mainJoystick.gameObject.SetActive(false);
-        _runButton.gameObject.SetActive(false);
-        _moveJoystick.gameObject.SetActive(false);
-        _skillJoystick.gameObject.SetActive(false);
-
+        Clear();
     }
 
 
@@ -67,68 +51,32 @@ public class InputManager : GenricSingleton<InputManager>
     }
     public void InitSetup()
     {
-        _moveJoystick.gameObject.SetActive(false);
-        _mainJoystick.gameObject.SetActive(false);
-        _runButton.gameObject.SetActive(false);
-        foreach (var itemButton in _itemControllerJoysticks)
-        {
-            itemButton.gameObject.SetActive(false);
-        }
         PlayerInfo.LoadOptionData();
         GetComponent<UI_InputSetting>().Init();
-
-
     }
 
     private void Update()
     {
 
 #if UNITY_ANDROID
-        MoveVector = new Vector2(_moveJoystick.GetHorizontalAxis(), _moveJoystick.GetVerticalAxis());
+        //MoveVector = new Vector2(_moveJoystick.GetHorizontalAxis(), _moveJoystick.GetVerticalAxis());
 #endif
 
 #if UNITY_EDITOR
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        MoveVector = new Vector2(h, v);
+        //MoveVector = new Vector2(h, v);
 #endif
     }
+    public void SetActiveController(bool active)
+    {
+        foreach (var joystick in _controllerJoysticks)
+            joystick.gameObject.SetActive(active);
 
-    public void SetActiveSeekerController(bool isAcitve)
-    {
-        _moveJoystick.gameObject.SetActive(isAcitve);
-        _mainJoystick.gameObject.SetActive(isAcitve);
-        _runButton.gameObject.SetActive(false);
-        foreach (var itemButton in _itemControllerJoysticks)
-        {
-            itemButton.gameObject.SetActive(false);
-        }
-    }
-    public void SetActiveHiderController(bool isAcitve)
-    {
-        _moveJoystick.gameObject.SetActive(isAcitve);
-        _mainJoystick.gameObject.SetActive(isAcitve);
-        _runButton.gameObject.SetActive(isAcitve);
-        foreach (var itemButton in _itemControllerJoysticks)
-        {
-            itemButton.gameObject.SetActive(false);
-        }
-    }
-    public void OffAllController()
-    {
-        _moveJoystick.gameObject.SetActive(false);
-        _mainJoystick.gameObject.SetActive(false);
-        _runButton.gameObject.SetActive(false);
-        foreach (var itemButton in _itemControllerJoysticks)
-        {
-            itemButton.gameObject.SetActive(false);
-        }
+        GetControllerJoystick(InputType.Item1).gameObject.SetActive(false); //아이템조이스틱은 Off로시작
     }
 
-    public void AttackCoolTime(float maxCoolTime, float currentCoolTime)
-    {
-        _attackCoolTimeUI.UpdateCoolTime(maxCoolTime, currentCoolTime);
-    }
+  
 
     //public void AddItemByButton(int index, InGameItemController newItem)
     //{

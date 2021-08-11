@@ -3,7 +3,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagicCallback , IOnPhotonViewPreNetDestroy, IPunObservable
+public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy, IPunObservable
 {
 
     public enum WeaponType
@@ -19,17 +19,19 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     }
     public enum Type
     {
-        Permanent   ,//영구적
+        Permanent,//영구적
         Disposable  //일회용
     }
 
     public enum UseState
     {
-        Use,    
+        Use,
         NoUse
     }
+    public InputType inputType { get; protected set; } 
     public WeaponType weaponType { get; protected set; }
     public State state { get; set; }
+    public abstract Define.ZoomType zoomType { get; set; }
     UseState _useState;
     public Type type { get; set; }
 
@@ -38,17 +40,15 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
     public float AfaterAttackDelay { get; set; }
     public float AttackDistance { get; set; }
     public float InitCoolTime { get; set; }
-    public float ReaminCoolTime { get; set; }
+    public float RemainCoolTime { get; set; }
+    public Vector2 LastAttackInput { get; protected set; }     //공격 박향. 캐릭터 바라보는방향으로맞추기위해 
 
-    public Vector2  LastAttackInput { get; protected set; }     //공격 박향. 캐릭터 바라보는방향으로맞추기위해 
 
     [SerializeField] protected Transform _weaponModel;
-    [SerializeField] protected Transform _zoomUI;
-    public GameObject UICanvas { get; set; }
-    public PlayerController hasPlayerController { get; set; }
-
-    public Action<Weapon> AttackSucessEvent;
-    public Action AttackEndEvent;
+    protected UI_Zoom _zoomUI;
+    public PlayerController playerController { get; set; }
+    public Action<IAttack> AttackSucessEvent { get; set; }
+    public Action AttackEndEvent { get; set; }
 
     public UseState useState
     {
@@ -58,9 +58,9 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
             var newState = value;
             if (_useState == newState) return;
             _useState = newState;
-            if(_useState == UseState.Use)
+            if (_useState == UseState.Use)
             {
-                hasPlayerController.GetAttackBase().ChangeWeapon(this);
+                playerController.GetAttackBase().ChangeWeapon(this);
                 _weaponModel.gameObject.SetActive(true);
             }
             else
@@ -70,7 +70,7 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         }
     }
 
-    public abstract void Zoom(Vector2 inputVector);
+    public Define.ControllerType controllerType  { get; set;} =  Define.ControllerType.Joystick; 
     public abstract void Attack(Vector2 inputVector);
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -83,50 +83,68 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
         {
             var n_state = (UseState)stream.ReceiveNext();
             if (useState == n_state) return;
-            if (hasPlayerController == null) return;
+            if (playerController == null) return;
             useState = n_state;
         }
     }
     protected virtual void Awake()
     {
-        UICanvas = GetComponentInChildren<Canvas>().gameObject;
     }
     
    
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
-        UICanvas.SetActive(true);
-        _zoomUI.gameObject.SetActive(false);
         _useState = UseState.NoUse;
         _weaponModel.gameObject.SetActive(false);
         AttackSucessEvent = null;
         AttackEndEvent = null;
         var playerViewID = (int)info.photonView.InstantiationData[0];
-        var isBaseWeapon = (bool)info.photonView.InstantiationData[1];  //영구적무기 여부 false면 일회용아이템
-        hasPlayerController = Managers.Game.GetPlayerController(playerViewID);
-        hasPlayerController.GetLivingEntity().fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
-        hasPlayerController.GetAttackBase().SetupWeapon(this, isBaseWeapon);
+        playerController = Managers.Game.GetPlayerController(playerViewID);
+        playerController.GetLivingEntity().fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
+        playerController.GetAttackBase().SetupWeapon(this);
+        CreateZoomUI(playerController);  //줌 UI생성
         useState = UseState.NoUse;  //사용하지않음으로설정
-        ReaminCoolTime = 0;
+        RemainCoolTime = 0;
     }
     public virtual void OnPreNetDestroy(PhotonView rootView)
     {
         if (Managers.Resource == null) return;
-        UICanvas.transform.SetParent(this.transform);
-        if (hasPlayerController)
+        if (playerController)
         {
-           hasPlayerController.GetLivingEntity().fogController.RemoveRenderer(_weaponModel.GetComponentInChildren<Renderer>());
+           playerController.GetLivingEntity().fogController.RemoveRenderer(_weaponModel.GetComponentInChildren<Renderer>());
         }
     }
 
+    protected void CreateZoomUI(PlayerController hasMyController)
+    {
+        if (playerController.IsMyCharacter() == false) return;
+        _zoomUI = Managers.Resource.Instantiate("Contents/ZoomUI", this.transform).GetComponent<UI_Zoom>();
+        _zoomUI.Setup(zoomType, hasMyController.transform);
+            
+    }
+
+    public virtual void Zoom(Vector2 inputVector)
+    {
+        //if (inputVector.sqrMagnitude == 0)
+        //{
+        //    _zoomUI.gameObject.SetActive(false);
+        //    return;
+        //}
+        //_zoomUI.gameObject.SetActive(true);
+        //_zoomUI.rotation = UtillGame.WorldRotationByInput(inputVector);
+        //_zoomUI.gameObject.SetActive(true);
+        //useState = UseState.Use;
+    }
+
+
     public bool AttackCheck(Vector2 inputVector)
     {
-        if(ReaminCoolTime > 0)
+        if(RemainCoolTime > 0)
         {
             return false;
         }
-        ReaminCoolTime = InitCoolTime;
+        RemainCoolTime = InitCoolTime;
         Attack(inputVector);
         return true;
     }
@@ -145,9 +163,14 @@ public abstract class Weapon : MonoBehaviourPun , IAttack , IPunInstantiateMagic
 
     private void Update()
     {
-        if (ReaminCoolTime >= 0)
+        if (playerController == null) return;
+        if (RemainCoolTime >= 0)
         {
-            ReaminCoolTime -= Time.deltaTime;
+            RemainCoolTime -= Time.deltaTime;
+            if (playerController.IsMyCharacter())
+            {
+                InputManager.Instance.GetControllerJoystick(inputType)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
+            }
         }
     }
 

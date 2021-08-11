@@ -15,7 +15,8 @@ public class SeekerAttack : AttackBase
         base.OnPhotonInstantiate();
         if (this.IsMyCharacter())
         {
-            Managers.Spawn.WeaponSpawn(Define.Weapon.Melee2, this , true);
+            Managers.Spawn.WeaponSpawn(Define.Weapon.Melee2, this );
+            Managers.Spawn.WeaponSpawn(Define.Weapon.Flash, this);
         }
     }
 

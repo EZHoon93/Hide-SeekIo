@@ -38,10 +38,12 @@ public class SpawnManager
 
     public GameObject CharacterSpawn(Define.CharacterType characterType, PlayerController playerController)
     {
-        string prefabID = $"Character/{characterType.ToString()}";
+        //string prefabID = $"Character/{characterType.ToString()}";
+        string prefabID = $"Character/{Define.CharacterType.Dog}";
+
         //List<object> datas = new List<object>() {PlayerInfo.CurrentSkin.avaterSeverKey };
 
-        return  Managers.Resource.Instantiate(prefabID);
+        return Managers.Resource.Instantiate(prefabID);
 
     }
 
@@ -49,30 +51,37 @@ public class SpawnManager
     {
         var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
         List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey ,isAI, selectCharacterType };
-
+        PlayerController createPlayer = null;
         switch (team)
         {
             case Define.Team.Hide:
-                Managers.Game.myPlayer = PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                createPlayer= PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
             case Define.Team.Seek:
                 datas.Add(PlayerInfo.CurrentSkin.avaterSeverKey);
-                Managers.Game.myPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                createPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
+        }
+
+        if(isAI == false)
+        {
+            Managers.Game.myPlayer = createPlayer;
         }
     }
     public void AISpawn(Define.Team team, Vector3 pos)
     {
-        //List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey };
+        //var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
+
+        //List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey , selectCharacterType };
 
         //switch (team)
         //{
         //    case Define.Team.Seek:
-        //        PhotonNetwork.InstantiateRoomObject("AISeeker", pos, Quaternion.identity, 0, datas.ToArray());
+        //        PhotonNetwork.InstantiateRoomObject("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray());
         //        break;
         //    case Define.Team.Hide:
         //        datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
-        //        PhotonNetwork.InstantiateRoomObject("AIHider", pos, Quaternion.identity, 0, datas.ToArray());
+        //        PhotonNetwork.InstantiateRoomObject("UserHider", pos, Quaternion.identity, 0, datas.ToArray());
         //        break;
         //}
 
@@ -95,9 +104,9 @@ public class SpawnManager
             return PhotonNetwork.Instantiate(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
         }
     }
-    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer, bool isBaseWeapon)
+    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer)
     {
-        List<object> datas = new List<object>() { attackPlayer.photonView.ViewID  , isBaseWeapon};
+        List<object> datas = new List<object>() { attackPlayer.photonView.ViewID };
         string weaponID = null;
         switch (weapon)
         {

@@ -6,15 +6,12 @@ using System;
 public class HiderController : PlayerController
 {
     public HiderMove hiderMove { get; private set; }
-    public HiderInput hiderInput{ get; private set; }
     public HiderHealth hiderHealth;
-
     public HiderAttack hiderAttack { get; private set; }
 
     protected void Awake()
     {
         hiderMove = GetComponent<HiderMove>();
-        hiderInput = GetComponent<HiderInput>();
         hiderAttack = GetComponent<HiderAttack>();
         hiderHealth = GetComponent<HiderHealth>();
         hiderHealth.onDeath += HandleDeath;
@@ -27,7 +24,6 @@ public class HiderController : PlayerController
         base.OnPhotonInstantiate(photonView);
         hiderHealth.OnPhotonInstantiate();
         hiderMove.OnPhotonInstantiate();
-        hiderInput.OnPhotonInstantiate();
         hiderAttack.OnPhotonInstantiate();
 
         SetActiveComponent(true);
@@ -35,12 +31,6 @@ public class HiderController : PlayerController
         if (photonView.IsMine)
         {
             BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Revive, this.GetLivingEntity());
-            if (this.gameObject.IsValidAI())
-            {
-                Managers.Spawn.ItemSpawn(Define.ThrowItem.Grenade, this);
-                Managers.Spawn.ItemSpawn(Define.ThrowItem.Glue, this);
-
-            }
         }
 
        
@@ -50,7 +40,6 @@ public class HiderController : PlayerController
     {
         hiderHealth.enabled = active;
         hiderMove.enabled = active;
-        hiderInput.enabled = active;
         hiderAttack.enabled = active;
         GetComponent<CharacterController>().enabled = active;
     }

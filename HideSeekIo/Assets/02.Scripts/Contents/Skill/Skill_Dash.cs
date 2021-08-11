@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Skill_Dash : Skill_Base
 {
+    public override Define.ControllerType controllerType { get; set; } = Define.ControllerType.Button;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        InitCoolTime = 5;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Use(PlayerController usePlayerController)
     {
-        
+        usePlayerController.GetAttackBase().Dash();
     }
 }

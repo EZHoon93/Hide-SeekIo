@@ -9,13 +9,17 @@ public class UserInput : InputBase
         base.OnPhotonInstantiate();
         if (this.photonView.IsMine)
         {
-            InputManager.Instance.SetActiveSeekerController(true);
+            foreach(var input in controllerInputDic)
+            {
+                InputManager.Instance.GetControllerJoystick(input.Key).myInput = input.Value;
+            }
+            InputManager.Instance.SetActiveController(true);
         }
     }
 
     private void Update()
     {
         if (photonView.IsMine == false) return;
-        MoveVector = InputManager.Instance.MoveVector;
+        //MoveVector = InputManager.Instance.MoveVector;
     }
 }
