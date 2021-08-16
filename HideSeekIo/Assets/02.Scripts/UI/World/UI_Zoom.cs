@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class UI_Zoom : MonoBehaviour
 {
@@ -8,10 +10,12 @@ public class UI_Zoom : MonoBehaviour
     [SerializeField] Transform _throwZoom;
     [SerializeField] Transform _gunZoom;
 
+    [SerializeField] Image image;
     public Transform currentZoom { get; set; }
     Define.ZoomType _zoomType;
     Transform _taget;
 
+   
     public void Setup(Define.ZoomType zoomType, Transform target)
     {
         _zoomType = zoomType;
@@ -49,7 +53,20 @@ public class UI_Zoom : MonoBehaviour
         {
             this.transform.position = _taget.transform.position;
             this.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+            var s = _throwZoom.transform.position;
+            s.y = _taget.transform.position.y;
+            var isx = UtillGame.IsPointOnNavMesh(s);
+            if (isx)
+            {
+                image.color = Color.red;
+            }
+            else
+            {
+                image.color = Color.white;
 
+            }
+
+            //_throwZoom.
         }
     }
 

@@ -74,7 +74,7 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
 
     GameObject CreateCharacter(Define.CharacterType characterType, PlayerController playerController, FogOfWarController fogOfWarController)
     {
-        var go = Managers.Spawn.CharacterSpawn(characterType, playerController).GetComponent<Character_Base>();
+        var go = Managers.Spawn.CharacterSpawn(characterType).GetComponent<Character_Base>();
         go.transform.ResetTransform(this.transform);
         go.OnPhoninstiate(playerController);
         playerController.GetAttackBase().character_Base = go;

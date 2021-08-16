@@ -119,7 +119,10 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
     protected void CreateZoomUI(PlayerController hasMyController)
     {
         if (playerController.IsMyCharacter() == false) return;
-        _zoomUI = Managers.Resource.Instantiate("Contents/ZoomUI", this.transform).GetComponent<UI_Zoom>();
+        if (_zoomUI == null)
+        {
+            _zoomUI = Managers.Resource.Instantiate("Contents/ZoomUI", this.transform).GetComponent<UI_Zoom>();
+        }
         _zoomUI.Setup(zoomType, hasMyController.transform);
             
     }
@@ -172,6 +175,7 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
                 InputManager.Instance.GetControllerJoystick(inputType)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
             }
         }
+
     }
 
    

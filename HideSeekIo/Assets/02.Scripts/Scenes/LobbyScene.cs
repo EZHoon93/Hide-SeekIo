@@ -8,9 +8,19 @@ public class LobbyScene : BaseScene
 
     }
 
-    private IEnumerator Start()
+    protected override void Init()
     {
-        yield return new WaitForSeconds(3.0f);
-        PhotonManager.Instance.JoinRoom();
+        base.Init();
+        SceneType = Define.Scene.Lobby;
+        print("Lobby Scene Init");
+        if(Managers.UI.SceneUI== null)
+        {
+            Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
+        }
+        else
+        {
+        }
+
     }
+
 }

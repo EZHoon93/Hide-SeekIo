@@ -70,20 +70,16 @@ public static class UtillGame
 
     //}
 
-    public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform , bool isAI = false)
+    public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform )
     {
 
         //_attackRangeUI.position = _attackPlayer.CenterPivot.position;
         //Vector3 pos = pivotTransform.transform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance;
-        float anlge = 0;
-        if(isAI == false)
-        {
-            //anlge = Camera.main.transform.eulerAngles.y;
-        }
-        var quaternion = Quaternion.Euler(0, anlge, 0);
+        //float anlge = 0;
+        //var quaternion = Quaternion.Euler(0, anlge, 0);
         var converVector3 = ConventToVector3(inputVector2);
-        var newDirection = quaternion * converVector3;
-        Vector3 pos = pivotTransform.transform.position + newDirection * distance;
+        //var newDirection = quaternion * converVector3;
+        Vector3 pos = pivotTransform.transform.position + converVector3 * distance;
         pos.y = 0;
 
         return pos;
@@ -217,6 +213,22 @@ public static class UtillGame
             return center;
         }
         // 찾은 점 반환
+    }
+
+    public static bool IsPointOnNavMesh(Vector3 point)
+    {
+        NavMeshHit hit;
+
+        // randomPos를 기준으로 maxDistance 반경 안에서, randomPos에 가장 가까운 네브 메시 위의 한 점을 찾음
+        if (NavMesh.SamplePosition( point, out hit, 0.1f, NavMesh.AllAreas))
+        {
+            return true;
+
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public static void DamageInRange(Transform center , float radius ,int damage,int damagerViewID,

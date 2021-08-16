@@ -36,21 +36,32 @@ public class SpawnManager
     //    PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() ,sendEnumValue, @enum }); //사용한 플레이어 ViewID
     //}
 
-    public GameObject CharacterSpawn(Define.CharacterType characterType, PlayerController playerController)
+    public GameObject CharacterSpawn(Define.CharacterType characterType)
     {
         //string prefabID = $"Character/{characterType.ToString()}";
         string prefabID = $"Character/{Define.CharacterType.Dog}";
-
         //List<object> datas = new List<object>() {PlayerInfo.CurrentSkin.avaterSeverKey };
-
         return Managers.Resource.Instantiate(prefabID);
 
     }
+    public CharacterAvater CharacterAvaterSpawn(Define.CharacterType characterType, string key)
+    {
+        string prefabID = $"Character/{characterType.ToString()}/{key}";
+        var characterAvaterGo = Managers.Resource.Instantiate(prefabID).GetComponent<CharacterAvater>();
+        
+        return characterAvaterGo ?? null;
+    }
+    public GameObject WeaponSkinSpawn(string meleeKey)
+    {
+        string prefabID = $"Melee2/{meleeKey}";
+        return Managers.Resource.Instantiate(prefabID);
+    }
+
 
     public void PlayerSpawn(Define.Team team, Vector3 pos, bool isAI)
     {
         var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey ,isAI, selectCharacterType };
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, "Bear",isAI, selectCharacterType };
         PlayerController createPlayer = null;
         switch (team)
         {
@@ -58,7 +69,7 @@ public class SpawnManager
                 createPlayer= PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
             case Define.Team.Seek:
-                datas.Add(PlayerInfo.CurrentSkin.avaterSeverKey);
+                datas.Add("Bear");
                 createPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
         }

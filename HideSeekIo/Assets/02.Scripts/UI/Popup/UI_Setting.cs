@@ -34,11 +34,10 @@ public class UI_Setting : UI_Popup
         GetButton((int)Buttons.Joystick).gameObject.BindEvent(Click_EditJoysitck);
         GetButton((int)Buttons.SaveEdit).gameObject.BindEvent(Click_SaveEdit);
         GetButton((int)Buttons.CancelEdit).gameObject.BindEvent(Click_CancelEdit);
-
-        GetButton((int)Buttons.BgmOn).gameObject.BindEvent(Click_OnBgm);
-        GetButton((int)Buttons.BgmOff).gameObject.BindEvent(Click_OffBgm);
-        GetButton((int)Buttons.SfxOn).gameObject.BindEvent(Click_OnSfx);
-        GetButton((int)Buttons.SfxOff).gameObject.BindEvent(Click_OffSfx);
+        //GetButton((int)Buttons.BgmOn).gameObject.BindEvent(Click_OnBgm);
+        //GetButton((int)Buttons.BgmOff).gameObject.BindEvent(Click_OffBgm);
+        //GetButton((int)Buttons.SfxOn).gameObject.BindEvent(Click_OnSfx);
+        //GetButton((int)Buttons.SfxOff).gameObject.BindEvent(Click_OffSfx);
 
 
 
@@ -47,10 +46,10 @@ public class UI_Setting : UI_Popup
     private void OnEnable()
     {
    
-        GetButton((int)Buttons.BgmOn).gameObject.SetActive(PlayerInfo.optionData.bgmValue);
-        GetButton((int)Buttons.BgmOff).gameObject.SetActive(!PlayerInfo.optionData.bgmValue);
-        GetButton((int)Buttons.SfxOn).gameObject.SetActive(PlayerInfo.optionData.soundValue);
-        GetButton((int)Buttons.SfxOff).gameObject.SetActive(!PlayerInfo.optionData.soundValue);
+        //GetButton((int)Buttons.BgmOn).gameObject.SetActive(PlayerInfo.optionData.bgmValue);
+        //GetButton((int)Buttons.BgmOff).gameObject.SetActive(!PlayerInfo.optionData.bgmValue);
+        //GetButton((int)Buttons.SfxOn).gameObject.SetActive(PlayerInfo.optionData.soundValue);
+        //GetButton((int)Buttons.SfxOff).gameObject.SetActive(!PlayerInfo.optionData.soundValue);
 
      }
    
@@ -65,7 +64,11 @@ public class UI_Setting : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
-        Managers.UI.SceneUI.GetComponent<UI_Main>().ChangePanel(Define.GameScene.Lobby);
+        var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
+        if (uiMain)
+        {
+            uiMain.ChangePanel(Define.GameScene.Lobby);
+        }
     }
 
     void Cancel(PointerEventData pointerEventData)

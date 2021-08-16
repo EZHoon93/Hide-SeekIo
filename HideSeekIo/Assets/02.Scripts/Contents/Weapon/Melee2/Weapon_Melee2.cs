@@ -44,17 +44,21 @@ public class Weapon_Melee2 : Weapon
     }
     public override void Zoom(Vector2 inputVector)
     {
-        if (inputVector.sqrMagnitude == 0)
+        if(playerController.gameObject.IsValidAI()== false)
         {
-            _zoomUI.gameObject.SetActive(false);
-            return;
+            if (inputVector.sqrMagnitude == 0)
+            {
+                _zoomUI.gameObject.SetActive(false);
+                return;
+            }
+            if (_zoomUI == null)
+            {
+                CreateZoomUI(playerController);
+            }
+            _zoomUI.currentZoom.transform.rotation = UtillGame.WorldRotationByInput(inputVector);
+            _zoomUI.gameObject.SetActive(true);
         }
-        if(_zoomUI == null)
-        {
-            CreateZoomUI(playerController);
-        }
-        _zoomUI.currentZoom.transform.rotation = UtillGame.WorldRotationByInput(inputVector);
-        _zoomUI.gameObject.SetActive(true);
+     
         useState = UseState.Use;
     }
 

@@ -15,18 +15,19 @@ public abstract class AttackBase : MonoBehaviourPun
     public state State { get; protected set; }
 
     [SerializeField] Transform _centerPivot;
+    protected InputBase _inputBase;
     protected Animator _animator => character_Base.animator;
-    public Character_Base character_Base { get; set; }
-    protected IEnumerator _attackEnumerator;
+    public Character_Base character_Base { get; set; }  //현재 캐릭터
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-    [SerializeField] GameObject[] itemInventory = new GameObject[1];
 
-    protected InputBase _inputBase;
+    [SerializeField] GameObject[] itemInventory = new GameObject[1];
     public Vector2 AttackDirection { get; set; }
     public GameObject[] ItemIntentory => itemInventory;
 
     Action<int> weaponChangeCallBack;
+
+    public IAttack currentAttack { get; protected set; }
 
     private void OnEnable()
     {
@@ -63,6 +64,7 @@ public abstract class AttackBase : MonoBehaviourPun
     {
         newWeapon.transform.ResetTransform(_animator.GetComponent<Character_Base>().RightHandAmount);  //무기오브젝트
         newWeapon.AttackSucessEvent += AttackBaseSucess;
+
         newWeapon.AttackEndEvent += AttackBaseEnd;
         weaponChangeCallBack += newWeapon.WeaponChange;
         ObtainableItem obtainableItem = null;
@@ -75,6 +77,7 @@ public abstract class AttackBase : MonoBehaviourPun
             case InputType.Item1:
                 var inventroyIndex = GetItemInventoryIndex();
                 obtainableItem = newWeapon.GetComponent<ObtainableItem>();
+                newWeapon.AttackSucessEvent += (v) => { _inputBase.RemoveInputEveent(InputType.Item1); };
                 AddItemInventory(obtainableItem, inventroyIndex);  //아이템 인벤토리추가
                 newWeapon.useState = Weapon.UseState.NoUse;
                 break;
@@ -189,9 +192,16 @@ public abstract class AttackBase : MonoBehaviourPun
 
     public void UpdateZoom(IAttack attack , Vector2 inputVector2)
     {
-        if (attack != null)
+        //이전것이 있다면 꺼줌
+        if (currentAttack != null)
         {
-            attack.Zoom(inputVector2);
+            currentAttack.Zoom(Vector2.zero);
+        }
+        //현재것을 새로운것으로
+        currentAttack = attack;
+        if (currentAttack != null)
+        {
+            currentAttack.Zoom(inputVector2);
         }
     }
 
@@ -234,12 +244,4 @@ public abstract class AttackBase : MonoBehaviourPun
 
     }
 
-    private void Update()
-    {
-        if(itemInventory[0] != null)
-        {
-            print(itemInventory[0].gameObject.name + "   / ");
-
-        }
-    }
 }

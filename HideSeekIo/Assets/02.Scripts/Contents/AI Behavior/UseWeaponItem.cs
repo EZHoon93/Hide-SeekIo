@@ -19,12 +19,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
         public SharedControllerInputType sharedControllerInputType;
 
         PlayerController _playerController;
-        InputType inputType;
-        SharedFloat startTime;
-        public SharedFloat waitTime;
         public SharedFloat attackDistance;
-        Weapon_Throw _weapon_Throw;
-        //float attackDistance;
         public override void OnAwake()
         {
             _playerController = this.GetComponent<PlayerController>();
@@ -53,7 +48,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
 
         bool CheckWeapon()
         {
-            if (checkThrowItem.Value != Define.ThrowItem.Null)
+            if (checkThrowItem.Value == Define.ThrowItem.Null)
             {
                 return false;
             }
@@ -71,8 +66,6 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 _playerController.inputBase.controllerInputDic[throwWeapon.inputType].Call(ControllerInputType.Drag, Vector3.zero);
                 sharedControllerInputType.Value = ControllerInputType.Up;
                 sharedInputType.Value = throwWeapon.inputType;
-                attackDistance = throwWeapon.AttackDistance;
-                //_playerController.GetAttackBase().itemInventory[0].getc;
                 return true;
             }
         }
@@ -90,6 +83,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 }
 
                 var weapon = item.GetComponent<Weapon_Throw>();
+
                 if (weapon)
                 {
 

@@ -46,7 +46,8 @@ public class LoginScene : BaseScene
             }
             yield return new WaitForSeconds(1.0f);
         }
-        Managers.Scene.LoadScene(Define.Scene.Lobby);
+        Managers.Scene.LoadScene(Define.Scene.Loading);
+
     }
 
 

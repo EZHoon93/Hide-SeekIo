@@ -20,6 +20,8 @@ public class UserInput : InputBase
     private void Update()
     {
         if (photonView.IsMine == false) return;
-        //MoveVector = InputManager.Instance.MoveVector;
+
+
+        print(UtillGame.IsPointOnNavMesh(this.transform.position));
     }
 }

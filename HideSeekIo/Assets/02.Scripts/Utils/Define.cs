@@ -8,6 +8,22 @@ public class Define
 
     public static readonly int MaxItemInventory = 3;
 
+    public enum SkinType
+    {
+        Skin,
+        Weapon,
+        Head,
+        Bag
+    }
+    public enum ProductType
+    {
+        Bear,
+        Bunny,
+        Cat,
+        Weapon,
+        Hat,
+        Bag,
+    }
     public enum ZoomType
     {
         Throw,
@@ -132,6 +148,7 @@ public class Define
         Unknown,
         Login,
         Lobby = 10,
+        Loading,
         Main1 = 21,
         Main2 ,
         Main3 ,

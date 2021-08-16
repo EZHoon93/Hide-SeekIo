@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Data;
+using System.Linq;
+
 public static class PlayerInfo 
 {
     private static readonly string jsonDataName = "userData.json";
@@ -16,7 +18,7 @@ public static class PlayerInfo
 
     public static Define.UserDataState State { get;  set; }  //로그인 여부 
 
-    public static ServerKey CurrentSkin=> userData.skinList.Find(s => s.isUsing == true);
+    public static ServerKey CurrentSkin => null;
     //public static ServerKey CurrentWeapon => userData.weaponList.Find(s => s.isUsing == true);
     public static string nickName => userData.nickName;
     public static int level => userData.level;
@@ -63,18 +65,7 @@ public static class PlayerInfo
     }
     public static void CreateFirstID(string nickName)
     {
-        userData = new UserData();//초기 데이터 생성
-        userData.nickName = nickName;
-        userData.level = 1;
-        userData.coin = 1;
-        userData.exp = 0;
-        userData.maxExp = 10;
-        userData.key = "222";
-        userData.skinList = new List<ServerKey>()
-        {
-            new ServerKey("Ch01","Wm01", true)
-        };
-
+        userData = new UserData("test", nickName);//초기 데이터 생성
         SaveUserData();
         Login();
     }
@@ -114,22 +105,68 @@ public static class PlayerInfo
 
     public static int CurrentAvaterUsingIndex()
     {
-        return  userData.skinList.FindIndex(s => s.isUsing == true);
+        //return  userData.skinList.FindIndex(s => s.isUsing == true);
+        return -1;
     }
 
 
     public static void ChangeCurrentSkin(int useSelectIndex)
     {
-        foreach(var skin in userData.skinList)
-        {
-            skin.isUsing = false;
-        }
+        //foreach(var skin in userData.skinList)
+        //{
+        //    skin.isUsing = false;
+        //}
 
-        userData.skinList[useSelectIndex].isUsing = true;
-        SaveUserData();
+        //userData.skinList[useSelectIndex].isUsing = true;
+        //SaveUserData();
     }
    
+    public static CharacterUserHasData GetCharacterData(Define.CharacterType characterType)
+    {
+        foreach(var ch in userData.characterList)
+        {
+            if(ch.characterType == characterType)
+            {
+                return ch;
+            }
+        }
+        return null;
+    }
 
-    
+    public static bool CheckUserHasCharacterAvarer(Define.CharacterType characterType , string avaterSkinKey)
+    {
+        foreach (var ch in userData.characterList)
+        {
+            if (ch.characterType == characterType)
+            {
+                return ch.characterSkinList.Any(s => s.avaterKey == avaterSkinKey);
+            }
+        }
+        return false;
+    }
 
+    public static bool CheckUserHasWeaponSkin(string checkWeaponKey)
+    {
+        foreach (var weapon in userData.weaponList)
+        {
+            if(string.Equals(weapon , checkWeaponKey))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static SkinHasData GetCurrentUsingCharacter(Define.CharacterType characterType)
+    {
+
+        foreach (var ch in userData.characterList)
+        {
+            if (ch.characterType == characterType)
+            {
+                return ch.characterSkinList.Find(s => s.isUsing == true);
+            }
+        }
+        return null;
+    }
 }

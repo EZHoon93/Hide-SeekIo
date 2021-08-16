@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class HeadSizeEdttor : MonoBehaviour
 {
-    private void Reset()
+    public float size = .8f;
+
+    [ContextMenu("Change")]
+    public void Change()
     {
         var headTr = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Head);
-        headTr.transform.localScale = new Vector3(0.8f, .8f, .8f);
+        headTr.transform.localScale = new Vector3(size,size,size);
     }
 }

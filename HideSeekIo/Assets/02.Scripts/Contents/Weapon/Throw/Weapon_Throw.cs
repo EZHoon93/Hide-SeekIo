@@ -48,17 +48,21 @@ public abstract class Weapon_Throw : Weapon
         //{
         //    useState = UseState.Use;
         //}
-
-
-        if (inputVector.sqrMagnitude == 0)
+        if(playerController.gameObject.IsValidAI() == false) 
         {
-            _zoomUI.gameObject.SetActive(false);
-            useState = UseState.NoUse;
-            return;
+            if (inputVector.sqrMagnitude == 0)
+            {
+                print(this.gameObject.name);
+                _zoomUI.gameObject.SetActive(false);
+                useState = UseState.NoUse;
+                return;
+            }
+            _zoomUI.FixedUI();
+            _zoomUI.currentZoom.transform.position = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.GetAttackBase().CenterPivot);
+            _zoomUI.gameObject.SetActive(true);
         }
-        _zoomUI.FixedUI();
-        _zoomUI.currentZoom.transform.position = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.GetAttackBase().CenterPivot);
-        _zoomUI.gameObject.SetActive(true);
+
+    
         useState = UseState.Use;
     }
 
@@ -68,7 +72,7 @@ public abstract class Weapon_Throw : Weapon
     }
 
 
-    #region Attack
+ #region Attack
     public override void Attack(Vector2 inputVector)
     {
         if (playerController.IsMyCharacter())
@@ -76,7 +80,7 @@ public abstract class Weapon_Throw : Weapon
             _zoomUI.gameObject.SetActive(false);
         }
         state = State.Delay;
-        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform, playerController.gameObject.IsValidAI());
+        Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform);
         LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
@@ -92,6 +96,7 @@ public abstract class Weapon_Throw : Weapon
 
     IEnumerator AttackProcessOnAllClinets(Vector3 startPoint, Vector3 endPoint)
     {
+        print(startPoint + " / " + endPoint);
         state = State.Delay;
         AttackSucessEvent?.Invoke(this);
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간

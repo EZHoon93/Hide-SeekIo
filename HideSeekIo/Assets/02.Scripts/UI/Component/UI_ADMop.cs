@@ -10,10 +10,10 @@ public class UI_ADMop : MonoBehaviour
     }
     void Start()
     {
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, () => SetActive(true));
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.CountDown, () => SetActive(false));
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, Check);
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.End, () => SetActive(false));
+        //PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, () => SetActive(true));
+        //PhotonGameManager.Instacne.AddListenr(Define.GameState.CountDown, () => SetActive(false));
+        //PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, Check);
+        //PhotonGameManager.Instacne.AddListenr(Define.GameState.End, () => SetActive(false));
     }
 
 

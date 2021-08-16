@@ -116,8 +116,8 @@ public class HiderMove : MoveBase , IMakeRunEffect
                 UpdateMoveAnimation(State);
                 break;
             case AttackBase.state.Attack:
-                //UpdateImmediateRotate(_attackBase.AttackDirection);
-                //UpdateMoveAnimation(MoveState.Idle);
+                UpdateImmediateRotate(_attackBase.AttackDirection);
+                UpdateMoveAnimation(MoveState.Idle);
                 break;
         }
 

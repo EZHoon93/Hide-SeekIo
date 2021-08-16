@@ -27,22 +27,23 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
             {
                 return TaskStatus.Failure;
             }
-
             var direction = GetInputVector2(targetObject.Value.transform.position);
             var distance = Vector3.Distance(targetObject.Value.transform.position, _playerController.transform.position);
-            var inputVector = direction.normalized / attackDistance.Value;
+            var inputVector = direction / _playerController.GetAttackBase().currentAttack.AttackDistance;
+            Debug.Log(_playerController.GetAttackBase().currentAttack.AttackDistance + "어택디스턴스");
+            //Debug.Log(attackDistance.Value +"/"+direction + "/ " + inputVector + "/" + inputVector * distance +"/"+ distance);
 
             _playerController.inputBase.controllerInputDic[sharedInputType.Value].Call(sharedControllerInputType.Value, inputVector * distance);
 
-            return TaskStatus.Failure;
+            return TaskStatus.Success;
         }
 
         Vector2 GetInputVector2(Vector3 targetPos)
         {
             var direction = (targetPos - _playerController.transform.position).normalized;
 
-            Quaternion quaternion = Quaternion.Euler(0, 0, 0);
-            var result = quaternion * direction;
+            //Quaternion quaternion = Quaternion.Euler(0, 0, 0);
+            //var result = quaternion * direction;
 
             return new Vector2(direction.x, direction.z);
         }
