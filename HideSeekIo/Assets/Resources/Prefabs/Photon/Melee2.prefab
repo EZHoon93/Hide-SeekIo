@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 982069549174000869}
   - component: {fileID: 1239830544429895430}
-  - component: {fileID: 7091710363743083446}
+  - component: {fileID: 252441234692914102}
   m_Layer: 0
   m_Name: Melee2
   m_TagString: Untagged
@@ -52,11 +52,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 7091710363743083446}
+  - {fileID: 0}
+  - {fileID: 252441234692914102}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7091710363743083446
+--- !u!114 &252441234692914102
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,10 +66,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1951267332459730509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 578a2783006a70a42a1dec3d3665d34c, type: 3}
+  m_Script: {fileID: 11500000, guid: b0c263fb9eef84b819ffae253f4f9898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 5576906626062825140}
+  lineRenderer: {fileID: 0}
 --- !u!1 &8250184970367258720
 GameObject:
   m_ObjectHideFlags: 0

@@ -130,6 +130,7 @@ namespace Data
         public string weaponKey;
         public string accesoryKey;
         public string etc;
+        public bool isSelect;
         public List<SkinHasData> characterSkinList;
 
         public CharacterUserHasData(Define.CharacterType _characterType, SkinHasData _skinData, string _weaponKey)
@@ -137,6 +138,7 @@ namespace Data
             characterType = _characterType;
             characterSkinList = new List<SkinHasData>() { _skinData };
             weaponKey = _weaponKey;
+            isSelect = false;
         }
 
         public string GetIsUsingAvater()

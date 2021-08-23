@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 95268419321676100}
   - component: {fileID: -2295067831340092428}
   - component: {fileID: -1018777751742604160}
+  - component: {fileID: -2137909366948095416}
   m_Layer: 0
   m_Name: Bear09
   m_TagString: Untagged
@@ -283,6 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e709b5e9bbd34585ba2392f70762223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: 0.8
 --- !u!114 &-1018777751742604160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,6 +301,19 @@ MonoBehaviour:
   _accessoriesTransform: {fileID: 4014041785960354}
   _headTransform: {fileID: 4385854323632612}
   _weaponTransform: {fileID: 4618312552292110}
+--- !u!114 &-2137909366948095416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062234692903416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7bcefbd57204a3c956a341ea315480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skinType: 0
 --- !u!1 &1063763078976178
 GameObject:
   m_ObjectHideFlags: 0

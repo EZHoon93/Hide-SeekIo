@@ -3,7 +3,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy, IPunObservable
+public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy, IPunObservable
 {
 
     public enum WeaponType
@@ -28,12 +28,16 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
         Use,
         NoUse
     }
+
+    [SerializeField] protected Transform _weaponModel;
+
     public InputType inputType { get; protected set; } 
     public WeaponType weaponType { get; protected set; }
     public State state { get; set; }
-    public abstract Define.ZoomType zoomType { get; set; }
-    UseState _useState;
     public Type type { get; set; }
+    UseState _useState;
+    //public abstract Define.ZoomType zoomType { get; set; }
+    //public virtual Define.AttackType uIEventEnum { get; protected set; } = Define.AttackType.Drag;
 
     public string AttackAnim { get; set; }
     public float AttackDelay { get; set; }
@@ -41,14 +45,14 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
     public float AttackDistance { get; set; }
     public float InitCoolTime { get; set; }
     public float RemainCoolTime { get; set; }
+    public Vector3 AttackPoint { get; set; }
     public Vector2 LastAttackInput { get; protected set; }     //공격 박향. 캐릭터 바라보는방향으로맞추기위해 
-
-
-    [SerializeField] protected Transform _weaponModel;
-    protected UI_Zoom _zoomUI;
     public PlayerController playerController { get; set; }
+    public InputControllerObject inputControllerObject { get; set; }
+    public Equipmentable equipmentable { get; set; }
     public Action<IAttack> AttackSucessEvent { get; set; }
     public Action AttackEndEvent { get; set; }
+    public Action destroyEventCallBack;
 
     public UseState useState
     {
@@ -89,9 +93,18 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
     }
     protected virtual void Awake()
     {
+        equipmentable = this.gameObject.GetOrAddComponent<Equipmentable>();
+        equipmentable.Setup(Define.SkinType.Weapon);
+        SetupCallBack();
     }
-    
-   
+
+    protected virtual void SetupCallBack()
+    {
+        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+        inputControllerObject.AddEvent(ControllerInputType.Up, AttackCheck);
+    }
+
+
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
@@ -103,9 +116,10 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
         playerController = Managers.Game.GetPlayerController(playerViewID);
         playerController.GetLivingEntity().fogController.AddHideRender(_weaponModel.GetComponentInChildren<Renderer>());
         playerController.GetAttackBase().SetupWeapon(this);
-        CreateZoomUI(playerController);  //줌 UI생성
         useState = UseState.NoUse;  //사용하지않음으로설정
         RemainCoolTime = 0;
+        CreateZoomUI(playerController);  //줌 UI생성
+
     }
     public virtual void OnPreNetDestroy(PhotonView rootView)
     {
@@ -113,19 +127,25 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
         if (playerController)
         {
            playerController.GetLivingEntity().fogController.RemoveRenderer(_weaponModel.GetComponentInChildren<Renderer>());
+           destroyEventCallBack?.Invoke();
         }
     }
 
-    protected void CreateZoomUI(PlayerController hasMyController)
+    protected virtual void CreateZoomUI(PlayerController hasMyController)
     {
-        if (playerController.IsMyCharacter() == false) return;
-        if (_zoomUI == null)
+        if (playerController.IsMyCharacter() == false)
         {
-            _zoomUI = Managers.Resource.Instantiate("Contents/ZoomUI", this.transform).GetComponent<UI_Zoom>();
+            return;
         }
-        _zoomUI.Setup(zoomType, hasMyController.transform);
-            
+
+        var _zoomUI = Managers.Resource.Instantiate("Contents/ZoomUI", this.transform).GetComponent<UI_Zoom>();
+        inputControllerObject.AddEvent(ControllerInputType.Down, _zoomUI.Zoom);
+        _zoomUI.Setup(Define.ZoomType.Melee,this, hasMyController.transform);
+        destroyEventCallBack += () => Managers.Resource.Destroy(_zoomUI.gameObject);
+        destroyEventCallBack += () => inputControllerObject.RemoveEvent(ControllerInputType.Down, _zoomUI.Zoom);
     }
+
+
 
     public virtual void Zoom(Vector2 inputVector)
     {
@@ -140,16 +160,23 @@ public abstract class Weapon : MonoBehaviourPun, IAttack, IPunInstantiateMagicCa
         //useState = UseState.Use;
     }
 
+    public virtual void Down()
+    {
 
-    public bool AttackCheck(Vector2 inputVector)
+    }
+
+    
+
+
+    public void AttackCheck(Vector2 inputVector)
     {
         if(RemainCoolTime > 0)
         {
-            return false;
+            return ;
         }
         RemainCoolTime = InitCoolTime;
         Attack(inputVector);
-        return true;
+        return ;
     }
 
     public void WeaponChange(int instanceID)

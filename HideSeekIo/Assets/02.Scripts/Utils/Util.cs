@@ -178,14 +178,14 @@ public class Util
     /// <typeparam name="T"></typeparam>
     /// <param name="enum"></param>
     /// <returns></returns>
-    public static System.Enum RandomEnum<T>(System.Enum @enum = null)
+    public static T RandomEnum<T>(System.Enum @enum = null) where T : System.Enum
     {
         System.Array values = System.Enum.GetValues(typeof(T));
-        System.Enum result = null;
+        T result = default;
         do
         {
             int ran = Random.Range(0, values.Length);
-            result = (System.Enum)values.GetValue(ran);
+            result = (T)values.GetValue(ran);
             if(@enum == null)
             {
                 return result;

@@ -10,19 +10,20 @@ public abstract class AttackBase : MonoBehaviourPun
     {
         Idle,
         Attack,
-        Dash
+        Dash,
+        Jump
     }
     public state State { get; protected set; }
 
     [SerializeField] Transform _centerPivot;
     protected InputBase _inputBase;
-    protected Animator _animator => character_Base.animator;
-    public Character_Base character_Base { get; set; }  //현재 캐릭터
+    public Animator _animator { get; set; }
     public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
 
     [SerializeField] GameObject[] itemInventory = new GameObject[1];
     public Vector2 AttackDirection { get; set; }
+    public Vector3 AttackPoint { get; set; }
     public GameObject[] ItemIntentory => itemInventory;
 
     Action<int> weaponChangeCallBack;
@@ -45,11 +46,12 @@ public abstract class AttackBase : MonoBehaviourPun
     public virtual void OnPhotonInstantiate()
     {
         _inputBase = GetComponent<InputBase>();
-        if(character_Base == null)
-        {
-            character_Base = GetComponentInChildren<Character_Base>();
-        }
-        SetupSkill(character_Base.mainSkill);  //스킬 셋
+        _animator = GetComponentInChildren<Animator>();
+        //if(character_Base == null)
+        //{
+        //    character_Base = GetComponentInChildren<Character_Base>();
+        //}
+        //SetupSkill(character_Base.mainSkill);  //스킬 셋
         weaponChangeCallBack = null;
         if (baseWeapon)
         {
@@ -60,11 +62,11 @@ public abstract class AttackBase : MonoBehaviourPun
         }
     }
 
+   
+
     public virtual void SetupWeapon(Weapon newWeapon )
     {
-        newWeapon.transform.ResetTransform(_animator.GetComponent<Character_Base>().RightHandAmount);  //무기오브젝트
         newWeapon.AttackSucessEvent += AttackBaseSucess;
-
         newWeapon.AttackEndEvent += AttackBaseEnd;
         weaponChangeCallBack += newWeapon.WeaponChange;
         ObtainableItem obtainableItem = null;
@@ -86,11 +88,29 @@ public abstract class AttackBase : MonoBehaviourPun
             case InputType.Sub:
                 break;
         }
-
-        _inputBase.AddInputEvent(newWeapon.inputType, ControllerInputType.Drag, (input) => UpdateZoom(newWeapon, input), obtainableItem);
-        _inputBase.AddInputEvent(newWeapon.inputType, ControllerInputType.Up, (input) => UpdateAttackCheck(newWeapon, input), obtainableItem);
+        _inputBase.AddInputEvent(newWeapon.inputControllerObject);
+        //if(newWeapon.uIEventEnum == Define.AttackType.Down)
+        //{
+            //_inputBase.AddInputEvent(newWeapon.inputType, ControllerInputType.Down, (input) => UpdateAttackCheck(newWeapon, input), obtainableItem);
+        //}
+        //else
+        //{
+        //    _inputBase.AddInputEvent(newWeapon.inputType, ControllerInputType.Drag, (input) => UpdateZoom(newWeapon, input), obtainableItem);
+        //    _inputBase.AddInputEvent(newWeapon.inputType, ControllerInputType.Up, (input) => UpdateAttackCheck(newWeapon, input), obtainableItem);
+        //}
     }
 
+    public void SetupControllerObject(InputControllerObject inputControllerObject)
+    {
+
+    }
+
+    public void SetupEquipmentable(Equipmentable equipmentable)
+    {
+        var avater = GetComponent<CharacterAvater>();
+        var adaptTransform =  avater.GetSkilParentTransform(equipmentable.equipSkiType);
+        equipmentable.transform.ResetTransform(adaptTransform);
+    }
     public virtual void SetupSkill(IAttack newSKill)
     {
         if(newSKill.controllerType == Define.ControllerType.Button)
@@ -105,7 +125,7 @@ public abstract class AttackBase : MonoBehaviourPun
 
     public void UseSkill(Vector2 inputVector2)
     {
-        character_Base.UseSkill(inputVector2);
+        //character_Base.UseSkill(inputVector2);
     }
 
     public virtual void SetupImmdediateItem(Item_Base newItem)
@@ -209,8 +229,9 @@ public abstract class AttackBase : MonoBehaviourPun
     
     protected virtual void AttackBaseSucess(IAttack currentAttack)
     {
-        State = state.Attack;
-        _animator.SetTrigger(currentAttack.AttackAnim);
+        State = state.Jump;
+        //_animator.speed = 1;
+        //_animator.SetTrigger(currentAttack.AttackAnim);
     }
     protected virtual void AttackBaseEnd()
     {

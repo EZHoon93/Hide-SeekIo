@@ -17,7 +17,7 @@ public class UI_CharacterStat : UI_Base
     public override void Init()
     {
         Bind<TextMeshProUGUI>(typeof(Texts));
-        GetComponent<UI_CharacterView>().changeViewCallBack += UpdateInfo;
+        //GetComponent<UI_CharacterView>().changeViewCallBack += UpdateInfo;
     }
 
     public void UpdateInfo(Define.CharacterType characterType)

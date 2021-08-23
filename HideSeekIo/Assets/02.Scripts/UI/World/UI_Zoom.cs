@@ -15,8 +15,10 @@ public class UI_Zoom : MonoBehaviour
     Define.ZoomType _zoomType;
     Transform _taget;
 
+    [SerializeField] LineRenderer lineRenderer;
+
    
-    public void Setup(Define.ZoomType zoomType, Transform target)
+    public void Setup(Define.ZoomType zoomType,Weapon weapon, Transform target)
     {
         _zoomType = zoomType;
         _taget = target;
@@ -39,8 +41,19 @@ public class UI_Zoom : MonoBehaviour
                 break;
         }
         this.gameObject.SetActive(false);
+        weapon.destroyEventCallBack += () => weapon.inputControllerObject.RemoveEvent(ControllerInputType.Down, Zoom);
+        weapon.inputControllerObject.AddEvent(ControllerInputType.Drag, Zoom);
     }
 
+    public void ZoomLine(float distance)
+    {
+
+    }
+
+    public void Zoom(Vector2 vector2)
+    {
+
+    }
 
     private void LateUpdate()
     {
@@ -56,15 +69,15 @@ public class UI_Zoom : MonoBehaviour
             var s = _throwZoom.transform.position;
             s.y = _taget.transform.position.y;
             var isx = UtillGame.IsPointOnNavMesh(s);
-            if (isx)
-            {
-                image.color = Color.red;
-            }
-            else
-            {
-                image.color = Color.white;
+            //if (isx)
+            //{
+            //    image.color = Color.red;
+            //}
+            //else
+            //{
+            //    image.color = Color.white;
 
-            }
+            //}
 
             //_throwZoom.
         }

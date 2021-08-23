@@ -170,7 +170,7 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             var pos = _gameMainScene.GetSeekerPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos , false);
+            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos , false);
         }
         else
         {
@@ -197,18 +197,18 @@ public class GameState_Count : GameState_Base
         //}
         if (index > 0) return;
         //index = 0,1은 좀비 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            var pos = _gameMainScene.GetSeekerPosition(index);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    var pos = _gameMainScene.GetSeekerPosition(index);
+        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
 
-        }
-        else
-        {
-            var pos = _gameMainScene.GetHiderPosition(index);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
+        //}
+        //else
+        //{
+        //    var pos = _gameMainScene.GetHiderPosition(index);
+        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
 
-        }
+        //}
     }
 
 

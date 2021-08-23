@@ -3628,6 +3628,7 @@ GameObject:
   - component: {fileID: 95169093654324718}
   - component: {fileID: 9209663436263025624}
   - component: {fileID: 2362034282400555022}
+  - component: {fileID: -408876914062993518}
   m_Layer: 0
   m_Name: Bear01
   m_TagString: Untagged
@@ -3644,7 +3645,7 @@ Transform:
   m_GameObject: {fileID: 1954781504214606}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4746148458629626}
   - {fileID: 4316987109030960}
@@ -3683,6 +3684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e709b5e9bbd34585ba2392f70762223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: 0.8
 --- !u!114 &2362034282400555022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3695,10 +3697,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1737253541e4604e90b4506bf6698ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rightHandTransform: {fileID: 0}
   _accessoriesTransform: {fileID: 4984983237027426}
   _headTransform: {fileID: 4252549203098434}
   _weaponTransform: {fileID: 4994657394106784}
+--- !u!114 &-408876914062993518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954781504214606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7bcefbd57204a3c956a341ea315480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skinType: 0
 --- !u!1 &1974793544215702
 GameObject:
   m_ObjectHideFlags: 0

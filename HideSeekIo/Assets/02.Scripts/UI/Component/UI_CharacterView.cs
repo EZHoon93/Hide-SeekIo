@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Data;
 using System;
+using System.Linq;
 
 public class UI_CharacterView : UI_Base
 {
@@ -19,31 +20,57 @@ public class UI_CharacterView : UI_Base
         Right
     }
 
-    public Define.CharacterType currentCharacterType { get; private set; }
-    Dictionary<Define.CharacterType, CharacterAvater> _characterDic = new Dictionary<Define.CharacterType, CharacterAvater>();
-    Dictionary<string, GameObject> _showWeaponDic = new Dictionary<string, GameObject>();
-    CharacterAvater _currentCharacterAvater;
-    GameObject _currentWeapon;
 
-    public event Action<Define.CharacterType> changeViewCallBack;
+
+    public Define.CharacterType currentCharacterType { get; private set; }
+    Dictionary<string, SkinObject> _skinDic = new Dictionary<string, SkinObject>();
+    Dictionary<Define.CharacterType, CharacterAvater> _characterDic = new Dictionary<Define.CharacterType, CharacterAvater>();
+    CharacterAvater _currentCharacterAvater;
+    public event Action changeViewCallBack;
+    public bool isCanBuy;
 
     public override void Init()
     {
         Bind<GameObject>(typeof(GameObjects));
-        Bind<Button>(typeof(Buttons));
+        Bind<Toggle>(typeof(Define.CharacterType));
+    }
 
-        GetButton((int)Buttons.Left).gameObject.BindEvent(OnButtonClick_Left);
-        GetButton((int)Buttons.Right).gameObject.BindEvent(OnButtonClick_Right);
+ 
+  
+
+    void BuyCharacter(Define.CharacterType characterType)
+    {
 
     }
 
 
     public void InitSetupUserSkin()
     {
-        foreach(var chadaterHasData in PlayerInfo.userData.characterList)
+        foreach (var chType in Enum.GetValues(typeof(Define.CharacterType)))
         {
-            var avater =  CreateAvater(chadaterHasData.characterType, chadaterHasData.GetIsUsingAvater());
-            CreateWeapon(avater, chadaterHasData.weaponKey);
+            var characterType = (Define.CharacterType)chType;
+            var characterUserHasData = PlayerInfo.GetCharacterData(characterType);
+            Toggle chToggle = Get<Toggle>((int)chType);
+            if (characterUserHasData == null)
+            {
+                chToggle.interactable = false;
+                chToggle.gameObject.BindEvent((point)=> BuyCharacter(characterType));
+                continue;
+            }
+            else
+            {
+                chToggle.interactable = true;
+                chToggle.gameObject.BindEvent((point) => ShowCharacter(characterType));
+            }
+        }
+
+        foreach (var characterUserHasData in PlayerInfo.userData.characterList)
+        {
+            var skinObject = GetSkinObject($"Character/{characterUserHasData.characterType.ToString()}/{characterUserHasData.GetIsUsingAvater()}");
+            _characterDic.Add(characterUserHasData.characterType, skinObject.GetComponent<CharacterAvater>());
+            skinObject.transform.ResetTransform(GetObject((int)GameObjects.ShowPanel).transform);
+
+            //CreateWeapon(avater, chadaterHasData.weaponKey);
         }
 
     }
@@ -56,6 +83,8 @@ public class UI_CharacterView : UI_Base
 
     public void ShowCharacter(Define.CharacterType characterType)
     {
+
+
         foreach(var ch in _characterDic)
         {
             bool isView = (ch.Key == characterType) ? true : false;
@@ -67,81 +96,70 @@ public class UI_CharacterView : UI_Base
             }
         }
         currentCharacterType = characterType;
-        changeViewCallBack?.Invoke(characterType);
+        changeViewCallBack?.Invoke();
         //CreateAvater(characterUserHasData.characterType, characterUserHasData.GetIsUsingAvater());
         //CreateWeapon(_currentCharacterAvater, characterUserHasData.weaponKey);
         //changeViewCallBack?.Invoke(characterUserHasData.characterType);
     }
-    CharacterAvater CreateAvater(Define.CharacterType characterType, string avaterKey)
+
+    public SkinObject GetSkinObject(string skinKey)
     {
-        //_currentCharacterAvater?.gameObject.SetActive(false);
-
-        CharacterAvater characterAvater = null;
-        if (_characterDic.TryGetValue(characterType, out characterAvater) == false)
+        if (string.IsNullOrEmpty(skinKey)) return null;
+        SkinObject skinObject = null;
+        bool isExist = _skinDic.TryGetValue(skinKey, out skinObject);
+        if(isExist == false)
         {
-
-            characterAvater = Managers.Spawn.CharacterAvaterSpawn(characterType, avaterKey);
-            characterAvater.transform.ResetTransform(GetObject((int)GameObjects.ShowPanel).transform);
-            _characterDic.Add(characterType, characterAvater);
+           skinObject = Managers.Resource.Instantiate($"{skinKey}").GetComponent<SkinObject>();
+           
+            _skinDic.Add(skinKey, skinObject);
         }
 
-        return characterAvater;
-        //_currentCharacterAvater = characterAvater;
-        //_currentCharacterAvater.gameObject.SetActive(true);
+        return skinObject;
     }
 
-    GameObject CreateWeapon(CharacterAvater characterAvater, string key)
+    public void ShowSkinObject(Define.SkinType skinType, string skinKey)
     {
-        GameObject weaponObject = null;
-        if (_showWeaponDic.TryGetValue(key, out weaponObject) == false)
+        var skinObject = GetSkinObject(skinKey);
+        if(skinType == Define.SkinType.Skin)
         {
-            weaponObject = Managers.Resource.Instantiate($"Melee2/{key}");
-            _showWeaponDic.Add(key, weaponObject);
-        }
-        characterAvater.AddSkinObject(Define.SkinType.Weapon, weaponObject);
-
-        return weaponObject;
-    }
-
-    GameObject CreateAccesories(string key)
-    {
-
-        return null;
-    }
-
-    public void ShowCharacterSkin(Define.CharacterType characterType, string key)
-    {
-
-    }
-
-    public void ShowProduct(Define.ProductType productType)
-    {
-
-    }
-
-    void OnButtonClick_Left(PointerEventData data)
-    {
-        if (currentCharacterType <= Define.CharacterType.Bear)
-        {
-            currentCharacterType = Define.CharacterType.Cat;
+            _currentCharacterAvater?.gameObject.SetActive(false);
+            skinObject.transform.ResetTransform(GetObject((int)GameObjects.ShowPanel).transform);
+            var newCurrentCharacterAvater = skinObject.GetComponent<CharacterAvater>();
+            newCurrentCharacterAvater.CloneSkin(_currentCharacterAvater.skinDic);
+            _currentCharacterAvater = newCurrentCharacterAvater;
+            _characterDic[currentCharacterType] = _currentCharacterAvater;
         }
         else
         {
-            currentCharacterType--;
+            _currentCharacterAvater.AddSkinObject(skinType, skinObject.gameObject);
         }
-        ShowCharacter(currentCharacterType);
     }
 
-    void OnButtonClick_Right(PointerEventData data)
-    {
-        if (currentCharacterType >= Define.CharacterType.Cat)
-        {
-            currentCharacterType = Define.CharacterType.Bear;
-        }
-        else
-        {
-            currentCharacterType++;
-        }
-        ShowCharacter(currentCharacterType);
-    }
+
+
+    //void OnButtonClick_Left(PointerEventData data)
+    //{
+    //    if (currentCharacterType <= Define.CharacterType.Bear)
+    //    {
+    //        currentCharacterType = Define.CharacterType.Cat;
+    //    }
+    //    else
+    //    {
+    //        currentCharacterType--;
+    //    }
+    //    ShowCharacter(currentCharacterType);
+    //}
+
+    //void OnButtonClick_Right(PointerEventData data)
+    //{
+    //    if (currentCharacterType >= Define.CharacterType.Cat)
+    //    {
+    //        currentCharacterType = Define.CharacterType.Bear;
+    //    }
+    //    else
+    //    {
+    //        currentCharacterType++;
+    //    }
+    //    ShowCharacter(currentCharacterType);
+    //}
 }

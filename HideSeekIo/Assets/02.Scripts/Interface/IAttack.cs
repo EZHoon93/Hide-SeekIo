@@ -14,4 +14,5 @@ public interface IAttack
     string AttackAnim { get; set; }
     void Zoom(Vector2 inputVector);
     bool AttackCheck(Vector2 inputVector);
+    Vector3 AttackPoint { get; set; }
 }

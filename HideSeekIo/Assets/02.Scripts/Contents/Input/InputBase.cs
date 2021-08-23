@@ -104,6 +104,15 @@ public abstract class InputBase : MonoBehaviourPun
         }
     }
 
+    public virtual void AddInputEvent(InputControllerObject inputControllerObject)
+    {
+        MyInput myInput = controllerInputDic[inputControllerObject.inputType];
+        foreach(var c in inputControllerObject.controllerInputTypeDic)
+        {
+            myInput.controllerDic[c.Key] = c.Value;
+        }
+    }
+
     public virtual void RemoveInputEveent(InputType inputType)
     {
         if (controllerInputDic.ContainsKey(inputType))

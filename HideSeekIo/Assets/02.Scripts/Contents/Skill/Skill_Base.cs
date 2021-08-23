@@ -16,6 +16,8 @@ public abstract class Skill_Base : MonoBehaviourPun , IAttack
     public float InitCoolTime { get; set; }
     public float RemainCoolTime { get; set; }
     public float AttackDistance { get; set; }
+    public Vector3 AttackPoint { get; set; }
+
     public virtual void Zoom(Vector2 inputVector2)
     {
         

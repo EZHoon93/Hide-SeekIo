@@ -39,7 +39,7 @@ public class SpawnManager
     public GameObject CharacterSpawn(Define.CharacterType characterType)
     {
         //string prefabID = $"Character/{characterType.ToString()}";
-        string prefabID = $"Character/{Define.CharacterType.Dog}";
+        string prefabID = $"Character/{Define.CharacterType.Cat}";
         //List<object> datas = new List<object>() {PlayerInfo.CurrentSkin.avaterSeverKey };
         return Managers.Resource.Instantiate(prefabID);
 
@@ -60,8 +60,20 @@ public class SpawnManager
 
     public void PlayerSpawn(Define.Team team, Vector3 pos, bool isAI)
     {
-        var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, "Bear",isAI, selectCharacterType };
+        //var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
+        Define.CharacterType characterType;
+        string avaterId = null;
+        if (isAI)
+        {
+            characterType = Util.RandomEnum<Define.CharacterType>();    //랜덤으로 가져옴
+        }
+        else
+        {
+            characterType = PlayerInfo.GetCurrentUsingCharacter();
+            avaterId = PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
+        }
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName,$"{characterType.ToString()}/{avaterId}" ,isAI };
+
         PlayerController createPlayer = null;
         switch (team)
         {
@@ -69,7 +81,7 @@ public class SpawnManager
                 createPlayer= PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
             case Define.Team.Seek:
-                datas.Add("Bear");
+                //datas.Add("Bear");
                 createPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
         }
@@ -123,7 +135,7 @@ public class SpawnManager
         {
             case Define.Weapon.Melee2:
                 weaponID = "Melee2";
-                datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
+                datas.Add("Wm01");
                 break;
             case Define.Weapon.Sniper:
 

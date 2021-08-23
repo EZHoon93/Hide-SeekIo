@@ -11,7 +11,7 @@ public abstract class Weapon_Throw : Weapon
     public float attackRange { get; protected set; }
     public Action destroyCallBackEvent { get; set; }
     public Define.ThrowItem throwType { get; set; }
-    public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Throw;
+    //public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Throw;
 
 
     protected override void Awake()
@@ -48,22 +48,22 @@ public abstract class Weapon_Throw : Weapon
         //{
         //    useState = UseState.Use;
         //}
-        if(playerController.gameObject.IsValidAI() == false) 
-        {
-            if (inputVector.sqrMagnitude == 0)
-            {
-                print(this.gameObject.name);
-                _zoomUI.gameObject.SetActive(false);
-                useState = UseState.NoUse;
-                return;
-            }
-            _zoomUI.FixedUI();
-            _zoomUI.currentZoom.transform.position = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.GetAttackBase().CenterPivot);
-            _zoomUI.gameObject.SetActive(true);
-        }
+        //if(playerController.gameObject.IsValidAI() == false) 
+        //{
+        //    if (inputVector.sqrMagnitude == 0)
+        //    {
+        //        print(this.gameObject.name);
+        //        _zoomUI.gameObject.SetActive(false);
+        //        useState = UseState.NoUse;
+        //        return;
+        //    }
+        //    _zoomUI.FixedUI();
+        //    _zoomUI.currentZoom.transform.position = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.GetAttackBase().CenterPivot);
+        //    _zoomUI.gameObject.SetActive(true);
+        //}
 
     
-        useState = UseState.Use;
+        //useState = UseState.Use;
     }
 
     private void LateUpdate()
@@ -77,7 +77,7 @@ public abstract class Weapon_Throw : Weapon
     {
         if (playerController.IsMyCharacter())
         {
-            _zoomUI.gameObject.SetActive(false);
+            //_zoomUI.gameObject.SetActive(false);
         }
         state = State.Delay;
         Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform);
@@ -96,9 +96,8 @@ public abstract class Weapon_Throw : Weapon
 
     IEnumerator AttackProcessOnAllClinets(Vector3 startPoint, Vector3 endPoint)
     {
-        print(startPoint + " / " + endPoint);
         state = State.Delay;
-        AttackSucessEvent?.Invoke(this);
+        //AttackSucessEvent?.Invoke(this);
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
         projectile.Play(playerController.GetAttackBase(),  startPoint, endPoint);

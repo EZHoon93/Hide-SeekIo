@@ -3,6 +3,7 @@ using Photon.Pun;
 using System.Collections.Generic;
 using ExitGames.Client.Photon.StructWrapping;
 using System.Collections;
+using DG.Tweening;
 
 public class MoveBase : MonoBehaviourPun, IPunObservable
 {
@@ -102,13 +103,15 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
                 UpdateMove(inputVector2, isRun);
                 UpdateMoveAnimation(State);
                 break;
-            case AttackBase.state.Attack:
-                UpdateImmediateRotate(_attackBase.AttackDirection);
-                UpdateMoveAnimation(MoveState.Idle);
-                break;
-            case AttackBase.state.Dash:
-                UpdateMove(_attackBase.AttackDirection, isRun);
-                UpdateMoveAnimation(MoveState.Run);
+            //case AttackBase.state.Attack:
+            //    UpdateImmediateRotate(_attackBase.AttackDirection);
+            //    UpdateMoveAnimation(MoveState.Idle);
+            //    break;
+            //case AttackBase.state.Dash:
+            //    UpdateMove(_attackBase.AttackDirection, isRun);
+            //    UpdateMoveAnimation(MoveState.Run);
+                //break;
+            case AttackBase.state.Jump:
                 break;
         }
         UpdateStepSound();
@@ -122,7 +125,7 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         {
             if(State == MoveState.Run)
             {
-                Managers.Sound.Play(_stepClip, Define.Sound.Effect, 0.5f);
+                Managers.Sound.Play(_stepClip, Define.Sound.Effect, 0.3f);
                 _lastTime = _stepTimeBet;
             }
             
@@ -130,6 +133,17 @@ public class MoveBase : MonoBehaviourPun, IPunObservable
         _lastTime -= Time.deltaTime;
     }
 
+    //해당지점까지 점프.
+    public void Jump(Vector3 targetPoint, float durationTime)
+    {
+        //this.transform.DOMoveX(targetPoint.x, durationTime);
+        //this.transform.DOMoveZ(targetPoint.z, durationTime);
+        //this.transform.DOMoveY(0.5f, durationTime);
+        //_animator.SetFloat("Jump", durationTime);
+        //this.transform.DOJump(targetPoint, 0.5f,1, durationTime);
+
+        //_attackBase.state
+    }
 
 
 

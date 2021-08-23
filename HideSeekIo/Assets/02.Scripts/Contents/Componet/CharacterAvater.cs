@@ -1,39 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
 public class CharacterAvater : MonoBehaviour
 {
-    [SerializeField] Transform _rightHandTransform;
     [SerializeField] Transform _accessoriesTransform;
     [SerializeField] Transform _headTransform;
     [SerializeField] Transform _weaponTransform;
 
-    public Transform RightHandAmount => _rightHandTransform;//무기 위치할 곳 
-
+    public Animator animator { get; set; }
     public Transform accessoriesTransform => _accessoriesTransform;
     public Transform headTransform => _headTransform;
     public Transform weaponTransform => _weaponTransform;
+    public Dictionary<Define.SkinType, GameObject> skinDic { get; set; } = new Dictionary<Define.SkinType, GameObject>();
 
-    Dictionary<Define.SkinType, GameObject> skinDic { get; set; } = new Dictionary<Define.SkinType, GameObject>();
 
     [ContextMenu("Setup")]
     public void Setup()
     {
-        //var prefab=  Resources.Load<GameObject>("Prefabs/AvaterRightHand").transform;
-        //var rightHandTransformPanel = Instantiate(prefab).transform;
-        //rightHandTransformPanel.gameObject.SetActive(true);
-        //var righthand = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightHand);
-        //rightHandTransformPanel.ResetTransform(righthand);
-
-        //_rightHandTransform = rightHandTransformPanel.GetComponent<RightHand>().RightHandTransform;
-
          _accessoriesTransform = transform.MyFindChild("Accessories_locator");
         _headTransform = transform.MyFindChild("Head_Accessories_locator");
         _weaponTransform = transform.MyFindChild("WeaponR_locator");
+    }
 
-
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
     }
 
     public void AddSkinObject(Define.SkinType skinType, GameObject newSkinObject)
@@ -46,6 +40,8 @@ public class CharacterAvater : MonoBehaviour
         }
         skinObject?.gameObject.SetActive(false);
         skinObject = newSkinObject;
+        skinObject.transform.ResetTransform(GetSkilParentTransform(skinType));
+        skinObject.gameObject.SetActive(true);
     }
 
     public void AllSkinSetup()
@@ -57,18 +53,31 @@ public class CharacterAvater : MonoBehaviour
         }
     }
 
-    Transform GetSkilParentTransform(Define.SkinType skinType)
+    public Transform GetSkilParentTransform(Define.SkinType skinType)
     {
         switch (skinType)
         {
             case Define.SkinType.Weapon:
                 return _weaponTransform;
-            case Define.SkinType.Head:
+            case Define.SkinType.Hat:
                 return _headTransform;
             case Define.SkinType.Bag:
                 return _accessoriesTransform;
+            case Define.SkinType.Skin:
+                return this.transform;
         }
 
         return null;
+    }
+
+    public void CloneSkin(Dictionary<Define.SkinType , GameObject> cloneData)
+    {
+        foreach (var c in skinDic)
+            c.Value.gameObject.SetActive(false);
+
+        skinDic.Clear();
+        skinDic = cloneData.ToDictionary(x => x.Key, y => y.Value);
+
+        AllSkinSetup();
     }
 }

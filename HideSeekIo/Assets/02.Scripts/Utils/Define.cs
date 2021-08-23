@@ -12,7 +12,7 @@ public class Define
     {
         Skin,
         Weapon,
-        Head,
+        Hat,
         Bag
     }
     public enum ProductType
@@ -338,5 +338,11 @@ public class Define
         Dog,
         Monkey
     }
-    //public enum AttackSta
+
+    public enum AttackType
+    {
+        Down,
+        Drag
+    }
+  
 }

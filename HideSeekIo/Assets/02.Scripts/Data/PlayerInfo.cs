@@ -110,16 +110,7 @@ public static class PlayerInfo
     }
 
 
-    public static void ChangeCurrentSkin(int useSelectIndex)
-    {
-        //foreach(var skin in userData.skinList)
-        //{
-        //    skin.isUsing = false;
-        //}
-
-        //userData.skinList[useSelectIndex].isUsing = true;
-        //SaveUserData();
-    }
+ 
    
     public static CharacterUserHasData GetCharacterData(Define.CharacterType characterType)
     {
@@ -157,16 +148,39 @@ public static class PlayerInfo
         return false;
     }
 
-    public static SkinHasData GetCurrentUsingCharacter(Define.CharacterType characterType)
+    public static SkinHasData GetCurrentUsingCharacterAvaterSkin(Define.CharacterType characterType)
     {
+        if (userData.characterList.Count == 0)
+        {
+            return null;
+        }
 
+        List<SkinHasData> skinHasDatas = null;
+        SkinHasData result = null;
         foreach (var ch in userData.characterList)
         {
             if (ch.characterType == characterType)
             {
-                return ch.characterSkinList.Find(s => s.isUsing == true);
+                skinHasDatas = ch.characterSkinList;
+                result = skinHasDatas.Find(s => s.isUsing == true);
             }
         }
-        return null;
+        if (result != null)
+        {
+           return result;
+        }
+
+        return skinHasDatas[0] ?? null;
     }
+
+    public static Define.CharacterType GetCurrentUsingCharacter()
+    {
+        return Define.CharacterType.Bear;
+    }
+
+    //public static string ChangeCurrentSkin(int useSelectIndex)
+    //{
+    //    var currentCh = GetCurrentUsingCharacter();
+    //    return GetCurrentUsingCharacterAvaterSkin(currentCh);
+    //}
 }

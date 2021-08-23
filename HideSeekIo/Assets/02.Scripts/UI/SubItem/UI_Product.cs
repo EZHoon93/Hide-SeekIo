@@ -16,7 +16,6 @@ class UI_Product: MonoBehaviour
     int _price;
     Button _button;
     event Action _clickCallBackEvent;
-    EventHandler ss;
     private void Awake()
     {
         _button = GetComponent<Button>();
@@ -34,6 +33,6 @@ class UI_Product: MonoBehaviour
 
     void ClickButton()
     {
-        _clickCallBackEvent?.Invoke( );
+        _clickCallBackEvent?.Invoke();
     }
 }
