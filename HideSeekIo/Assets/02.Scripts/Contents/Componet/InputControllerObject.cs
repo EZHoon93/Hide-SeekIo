@@ -8,6 +8,7 @@ public class InputControllerObject : MonoBehaviour
 {
     public Dictionary<ControllerInputType,Action<Vector2>> controllerInputTypeDic = new Dictionary<ControllerInputType, Action<Vector2>>();
     public InputType inputType { get; protected set; }
+    public Define.AttackType attackType;
 
 
 

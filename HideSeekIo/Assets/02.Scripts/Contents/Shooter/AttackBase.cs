@@ -76,17 +76,17 @@ public abstract class AttackBase : MonoBehaviourPun
                 baseWeapon = newWeapon;
                 ChangeWeapon(baseWeapon);
                 break;
-            case InputType.Item1:
-                var inventroyIndex = GetItemInventoryIndex();
-                obtainableItem = newWeapon.GetComponent<ObtainableItem>();
-                newWeapon.AttackSucessEvent += (v) => { _inputBase.RemoveInputEveent(InputType.Item1); };
-                AddItemInventory(obtainableItem, inventroyIndex);  //아이템 인벤토리추가
-                newWeapon.useState = Weapon.UseState.NoUse;
-                break;
-            case InputType.Skill:
-                break;
-            case InputType.Sub:
-                break;
+            //case InputType.Item1:
+            //    var inventroyIndex = GetItemInventoryIndex();
+            //    obtainableItem = newWeapon.GetComponent<ObtainableItem>();
+            //    newWeapon.AttackSucessEvent += (v) => { _inputBase.RemoveInputEveent(InputType.Item1); };
+            //    AddItemInventory(obtainableItem, inventroyIndex);  //아이템 인벤토리추가
+            //    newWeapon.useState = Weapon.UseState.NoUse;
+            //    break;
+            //case InputType.Skill:
+            //    break;
+            //case InputType.Sub:
+            //    break;
         }
         _inputBase.AddInputEvent(newWeapon.inputControllerObject);
         //if(newWeapon.uIEventEnum == Define.AttackType.Down)
@@ -115,7 +115,7 @@ public abstract class AttackBase : MonoBehaviourPun
     {
         if(newSKill.controllerType == Define.ControllerType.Button)
         {
-            _inputBase.AddInputEvent(InputType.Skill,  ControllerInputType.Tap , UseSkill);
+            //_inputBase.AddInputEvent(InputType.Skill,  ControllerInputType.Tap , UseSkill);
         }
         else
         {
@@ -131,7 +131,7 @@ public abstract class AttackBase : MonoBehaviourPun
     public virtual void SetupImmdediateItem(Item_Base newItem)
     {
         int inventroyIndex = GetItemInventoryIndex();
-        _inputBase.AddInputEvent(InputType.Item1, ControllerInputType.Tap, (vector2) => newItem.Use(GetComponent<PlayerController>() ) , newItem.obtainableItem);
+        //_inputBase.AddInputEvent(InputType.Item1, ControllerInputType.Tap, (vector2) => newItem.Use(GetComponent<PlayerController>() ) , newItem.obtainableItem);
         AddItemInventory(newItem.obtainableItem,inventroyIndex);
     }
 
@@ -194,7 +194,7 @@ public abstract class AttackBase : MonoBehaviourPun
     {
         print("RemoveInventort");
         itemInventory[useIndex] = null;
-        _inputBase.RemoveInputEveent(InputType.Item1);
+        //_inputBase.RemoveInputEveent(InputType.Item1);
     }
 
     #endregion

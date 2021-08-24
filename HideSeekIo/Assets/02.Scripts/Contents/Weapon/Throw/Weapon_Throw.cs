@@ -18,7 +18,7 @@ public abstract class Weapon_Throw : Weapon
     {
         base.Awake();
         weaponType = WeaponType.Throw;
-        inputType = InputType.Item1;
+        //inputType = InputType.Item1;
         obtainableItem = GetComponent<ObtainableItem>();
     }
 
@@ -113,13 +113,13 @@ public abstract class Weapon_Throw : Weapon
 
     public virtual void Use(PlayerController usePlayerController)
     {
-        if(inputType ==  InputType.Item1)
-        {
-            if (photonView.IsMine)
-            {
-                PhotonNetwork.Destroy(this.gameObject);
-            }
-        }
+        //if(inputType ==  InputType.Item1)
+        //{
+        //    if (photonView.IsMine)
+        //    {
+        //        PhotonNetwork.Destroy(this.gameObject);
+        //    }
+        //}
     }
 
     public abstract Enum GetEnum();

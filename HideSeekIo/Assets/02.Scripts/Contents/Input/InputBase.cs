@@ -16,9 +16,9 @@ public enum InputType
 {
     Move,
     Main,
-    Sub,
-    Skill,
-    Item1
+    Skill1,
+    Skill2,
+    Skill3
 }
 
 public class MyInput
@@ -56,9 +56,9 @@ public abstract class InputBase : MonoBehaviourPun
     {
         {InputType.Move ,  new MyInput() },
         {InputType.Main ,  new MyInput() },
-        {InputType.Sub ,   new MyInput() },
-        {InputType.Skill , new MyInput() },
-        {InputType.Item1 , new MyInput() },
+        {InputType.Skill1 ,   new MyInput() },
+        {InputType.Skill2 , new MyInput() },
+        {InputType.Skill3 , new MyInput() },
     };
 
 
@@ -124,7 +124,7 @@ public abstract class InputBase : MonoBehaviourPun
         }
         if (this.IsMyCharacter())
         {
-            if(inputType == InputType.Item1)
+            if(inputType == InputType.Skill1)
             {
                 InputManager.Instance.GetControllerJoystick(inputType).gameObject.SetActive(false);
             }

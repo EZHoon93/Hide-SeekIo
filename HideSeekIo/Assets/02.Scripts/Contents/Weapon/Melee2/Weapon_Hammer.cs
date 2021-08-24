@@ -24,6 +24,11 @@ public class Weapon_Hammer : Weapon
         type = Type.Permanent;
 
     }
+
+    protected override void SetupCallBack()
+    {
+        //inputControllerObject.AddEvent(ControllerInputType.Down , Attack)
+    }
     private void Start()
     {
         AttackAnim = "Jump";

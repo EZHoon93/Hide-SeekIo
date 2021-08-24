@@ -43,7 +43,7 @@ public abstract class Skill_Base : MonoBehaviourPun , IAttack
             RemainCoolTime -= Time.deltaTime;
             if (playerController.IsMyCharacter())
             {
-                InputManager.Instance.GetControllerJoystick(InputType.Skill)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
+                //InputManager.Instance.GetControllerJoystick(InputType.Skill)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
             }
         }
     }
