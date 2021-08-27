@@ -14,12 +14,12 @@ public class SeekerRandomBox : MonoBehaviour, IGetWorldItem
         //Managers.Spawn.InGameItemSpawn(GetRandomItemEnum(), playerController);
     }
 
-    Define.SeekrStoreList GetRandomItemEnum()
-    {
-        var result = Util.RandomEnum<Define.SeekrStoreList>();
+    //Define.SeekrStoreList GetRandomItemEnum()
+    //{
+    //    var result = Util.RandomEnum<Define.SeekrStoreList>();
 
-        return (Define.SeekrStoreList)result;
-    }
+    //    return (Define.SeekrStoreList)result;
+    //}
 
 
 }

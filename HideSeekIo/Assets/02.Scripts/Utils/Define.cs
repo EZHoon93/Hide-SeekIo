@@ -8,6 +8,14 @@ public class Define
 
     public static readonly int MaxItemInventory = 3;
 
+    public enum StatType
+    {
+        Speed,
+        EnergyMax,
+        EnergyRegen,
+        CoolTime,
+        Sight
+    }
     public enum SkinType
     {
         Skin,
@@ -23,12 +31,6 @@ public class Define
         Weapon,
         Hat,
         Bag,
-    }
-    public enum ZoomType
-    {
-        Throw,
-        Melee,
-        Gun
     }
     public enum ControllerType
     {
@@ -101,11 +103,6 @@ public class Define
         Weapon
     }
 
-    public enum AIType
-    {
-        AISeeker ,
-        AIHider
-    }
     public enum WorldItem
     {
         ItemCoin ,       //중립 아이템
@@ -220,40 +217,6 @@ public class Define
         SightUp,
         Immune,
     }
-    public enum HiderStoreList
-    {
-        Trap,
-        TNT,
-        Flash,
-        Grenade,
-        Vaccine,
-        Speed,
-        Shoes,
-        Shield,
-        Stealth,
-        Glue
-    }
-
-    public enum SeekrStoreList
-    {
-        Dynamite,
-        Flash,
-        PosionBomb,
-        Speed2,
-        SightUp,//시야증가
-        Immune,
-        Fire,   //시야공유용 파이어 던지기가능.
-        Soil,   //끈끈이
-        Mask,   //마스크, 방해효과 무시
-        Rader,
-        PowerUp,    //대미지증가
-        Curse1,    //저주1    시야감소
-        Curse2,    //저주2    방향전환
-
-        //AI추가,팀끼리 시야공유 등
-
-    }
-
     public enum InGameItemUIState
     {
         Failed,
@@ -341,8 +304,8 @@ public class Define
 
     public enum AttackType
     {
-        Down,
-        Drag
+        Button,
+        Joystick
     }
   
 }

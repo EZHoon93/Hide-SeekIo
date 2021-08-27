@@ -4,9 +4,9 @@ public class FlashProjectile : ThrowProjectileObject
 {
     [SerializeField] float _range;
 
-    public override void Play(AttackBase attackPlayer, Vector3 startPoint, Vector3 endPoint)
+    public override void Play(PlayerShooter newPlayerShooter, Vector3 startPoint, Vector3 endPoint)
     {
-        base.Play(attackPlayer, startPoint, endPoint);
+        base.Play(newPlayerShooter, startPoint, endPoint);
         _modelObject.SetActive(true);
     }
     protected override void Explosion()
@@ -14,7 +14,7 @@ public class FlashProjectile : ThrowProjectileObject
         _modelObject.SetActive(false);
         EffectManager.Instance.EffectOnLocal(Define.EffectType.FlashEffect, this.transform.position, 0);
         _fogOfWarUnit.enabled = true;
-        UtillGame.BuffInRange(this.transform, _range, Define.BuffType.B_Stun, attackPlayer.ViewID(), UtillLayer.seekerToHiderAttack);
+        UtillGame.BuffInRange(this.transform, _range, Define.BuffType.B_Stun, playerShooter.ViewID(), UtillLayer.seekerToHiderAttack);
 
         Invoke("Push", 1.0f);
     }

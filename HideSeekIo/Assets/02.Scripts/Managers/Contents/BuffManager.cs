@@ -91,7 +91,7 @@ public class BuffManager : GenricSingleton<BuffManager>
         if (myPlayer)
         {
             if (myPlayer.Team == Define.Team.Seek) return;   //술래팀은 적용X
-            BuffControllerCheckOnLocal(buffType, myPlayer.GetLivingEntity() );
+            //BuffControllerCheckOnLocal(buffType, myPlayer.GetLivingEntity() );
             EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, myPlayer.transform.position, 1);
 
         }

@@ -23,7 +23,7 @@ public class HiderMove : MoveBase , IMakeRunEffect
 
         _inputBase = GetComponent<InputBase>();
 
-        _inputBase.AddInputEvent(InputType.Main, ControllerInputType.Down, (v) => { Run = true; });
+        //_inputBase.AddInputEvent(InputType.Main, ControllerInputType.Down, (v) => { Run = true; });
 
     }
     public bool IsLocal()

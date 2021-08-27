@@ -179,40 +179,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    public void OnEvent(EventData photonEvent)
-    {
-        byte eventCode = photonEvent.Code;
-
-        switch (eventCode)
-        {
-            case (byte)Define.PhotonOnEventCode.AbilityCode:
-                ReciveAbility_GlobalCachedEvent(photonEvent.CustomData);
-                break;
-        }
-    }
-
-    public void SendEvent(int photonViewID, byte keyCode, Hashtable hashtable)
-    {
-        byte evCode = keyCode;
-        object content = hashtable;
-
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-        {
-            CachingOption = EventCaching.AddToRoomCache,
-            Receivers = ReceiverGroup.All,
-            InterestGroup = 0,
-            //TargetActors = new int[] { 1 }
-        };
-        //AI플레이어가 한것이라면 글로벌룸으로 업데이트.
-
-        raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
-
-
-        SendOptions sendOptions = new SendOptions { Reliability = true };
-        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
-    }
-
-
+  
 
     public void ChangeRoomStateToServer(Define.GameState gameState)
     {
@@ -288,6 +255,49 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     #region Ability Caching Event
 
+    public void OnEvent(EventData photonEvent)
+    {
+        byte eventCode = photonEvent.Code;
+        print("OnEvent" + eventCode);
+        switch (eventCode)
+        {
+            case (byte)Define.PhotonOnEventCode.AbilityCode:
+                ReciveAbility_GlobalCachedEvent(photonEvent.CustomData);
+                break;
+        }
+    }
+
+    //public void SendEvent(Define.PhotonOnEventCode photonOnEventCode, Hashtable hashtable)
+    //{
+    //    byte evCode = keyCode;
+    //    object content = hashtable;
+
+    //    RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+    //    {
+    //        CachingOption = EventCaching.AddToRoomCacheGlobal,
+    //        Receivers = ReceiverGroup.All,
+    //        InterestGroup = 0,
+    //    };
+    //    SendOptions sendOptions = new SendOptions { Reliability = true };
+    //    PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    //}
+
+    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode ,EventCaching eventCachingCode,  Hashtable hashtable)
+    {
+        byte evCode = (byte)photonOnEventCode;
+        object[] content = { 1, hashtable };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            CachingOption = eventCachingCode,
+            Receivers = ReceiverGroup.All,
+            //InterestGroup = 0,
+        };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        print("이벤트보냄");
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+
     public void SendAbility_GlobalCachedEvent(PlayerController playerController)
     {
         //int viewId = playerController.photonView.ViewID;
@@ -308,9 +318,13 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     //영구적 능력치 이벤트 받았을때 (캐싱 이벤트)
     public void ReciveAbility_GlobalCachedEvent(object photonCustomData)
     {
-        //var HT = (Hashtable)photonCustomData;
+        var datas = (object[])photonCustomData;
+        var HT = (Hashtable)datas[1];
         //int viewID = (int)HT["Pv"];
-        //int[] datas = (int[])HT["Ab"];
+
+        int[] hastData = (int[]) HT["st"];
+        print(datas[0] + " z");
+        print(hastData.Length + "이벤트 수 ");
         //var playerController = GameManager.instance.GetLivingEntity(viewID).GetComponent<PlayerController>();
         ////해당 플레이어에게 적용
         //AbilityManager.FindAddAbilityType(playerController, datas);
@@ -334,13 +348,19 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
        
         if (Input.GetKeyDown(KeyCode.O))
         {
-            Camera.main.orthographic = true;
+            Managers.Game.myPlayer.ChangeTeam(Define.Team.Seek);
         }
+
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Camera.main.orthographic = false;
-
+            Managers.Spawn.WeaponSpawn(Define.Weapon.Flash, Managers.Game.myPlayer.playerShooter);
         }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            var mainUI = Managers.UI.SceneUI as UI_Main;
+            mainUI.StatController.SetActive(true);
+        }
+     
         if (Input.GetKeyDown(KeyCode.I))
         {
             var myPlayer = Managers.Game.myPlayer;
@@ -358,9 +378,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             {
                 Managers.Spawn.ItemSpawn(selectItem, myPlayer);
             }
-
-
         }
+
 
         //PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
         //myPlayer.ViewID(),

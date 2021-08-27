@@ -19,13 +19,13 @@ public class Item_Trap : Item_Base
 
     protected override void UsePorecess(PlayerController usePlayer)
     {
-        if (photonView.IsMine)
-        {
-            EffectManager.Instance.EffectToServer(Define.EffectType.CloudBurst, usePlayer.transform.position, 0);
-            Managers.Spawn.WorldItemSpawn(Define.WorldItem.Trap, usePlayer.transform.position);
-            Destroy();
+        //if (photonView.IsMine)
+        //{
+        //    EffectManager.Instance.EffectToServer(Define.EffectType.CloudBurst, usePlayer.transform.position, 0);
+        //    Managers.Spawn.WorldItemSpawn(Define.WorldItem.Trap, usePlayer.transform.position);
+        //    Destroy();
 
-        }
+        //}
     }
 
 }

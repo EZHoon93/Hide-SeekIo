@@ -6,7 +6,7 @@ public class Character_Frog : Character_Base
 {
     protected override void SetupSkill()
     {
-        mainSkill = this.gameObject.GetOrAddComponent<Skill_Stealth>();
+        //mainSkill = this.gameObject.GetOrAddComponent<Skill_Stealth>();
     }
 
 }

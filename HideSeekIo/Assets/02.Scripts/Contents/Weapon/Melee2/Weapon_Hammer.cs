@@ -8,34 +8,29 @@ public class Weapon_Hammer : Weapon
 
 
     AudioClip _attackClip;
-    float time;
-    float maxTime = 4;
-    //[SerializeField] float _angle = 120;
-
-    int _attackLayer = 1 << (int)Define.Layer.Hider;
-
-    //public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Melee;
-    //public override Define.AttackType uIEventEnum { get; protected set; } = Define.AttackType.Down;
 
     protected override void Awake()
     {
         base.Awake();
-        weaponType = WeaponType.Melee;
-        type = Type.Permanent;
-
+        weaponType = WeaponType.Hammer;
+        type = UseType.Permanent;
     }
 
     protected override void SetupCallBack()
     {
-        //inputControllerObject.AddEvent(ControllerInputType.Down , Attack)
+        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+        //inputControllerObject = inputControllerObject ?? new InputControllerObject();
+        inputControllerObject.inputType = InputType.Sub1;
+        inputControllerObject.attackType =  Define.AttackType.Button;
+        inputControllerObject.AddUseEvent(Attack);
     }
     private void Start()
     {
-        AttackAnim = "Jump";
+        AttackAnim = "HammerAttack";
         AttackDelay = 1.5f;
         AfaterAttackDelay = 0.5f;
         AttackDistance = 2;
-        InitCoolTime = 3;
+        inputControllerObject.InitCoolTime = 3;
         _attackClip = Resources.Load<AudioClip>("Sounds/SMelee2");
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -46,29 +41,9 @@ public class Weapon_Hammer : Weapon
         weaponObject.transform.ResetTransform(_weaponModel);   //아바타 생성된것 자식오브젝트로 이동
         base.OnPhotonInstantiate(info);
         //_zoomUI.gameObject.SetActive(false);     // 공격 UI
-        playerController.GetAttackBase().SetupWeapon(this);
+        //playerController.GetAttackBase().SetupWeapon(this);
         //attackPlayer.UseWeapon(this);    //무기 사용상태로 전환
 
-    }
-
-    public override void Zoom(Vector2 inputVector)
-    {
-        //if (playerController.gameObject.IsValidAI() == false)
-        //{
-        //    if (inputVector.sqrMagnitude == 0)
-        //    {
-        //        _zoomUI.gameObject.SetActive(false);
-        //        return;
-        //    }
-        //    if (_zoomUI == null)
-        //    {
-        //        CreateZoomUI(playerController);
-        //    }
-        //    _zoomUI.currentZoom.transform.rotation = UtillGame.WorldRotationByInput(inputVector);
-        //    _zoomUI.gameObject.SetActive(true);
-        //}
-
-        //useState = UseState.Use;
     }
 
 
@@ -76,10 +51,10 @@ public class Weapon_Hammer : Weapon
 
     public override void Attack(Vector2 inputVector)
     {
-        StopAllCoroutines();
-        //_zoomUI.gameObject.SetActive(false);
-        state = State.Delay;
-        LastAttackInput = inputVector;
+        //StopAllCoroutines();
+        ////_zoomUI.gameObject.SetActive(false);
+        //state = State.Delay;
+        //LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, LastAttackInput);
     }
 
@@ -89,35 +64,30 @@ public class Weapon_Hammer : Weapon
         StartCoroutine(AttackProcessOnAllClinets(inputVector));
     }
 
-    Vector3 GetJumpPont()
-    {
-        var hitPoint = Vector3.zero;
-        RaycastHit hit;
-        print(time);
-        if (Physics.Raycast(playerController.transform.position, playerController.transform.forward, out hit, 1, (int)Define.Layer.Wall))
-        {
-            hitPoint = hit.point;
-        }
-        else
-        {
-            hitPoint = playerController.transform.position + playerController.transform.forward * 1;
-        }
-        return hitPoint;
-    }
+    //Vector3 GetJumpPont()
+    //{
+    //    var hitPoint = Vector3.zero;
+    //    RaycastHit hit;
+    //    print(time);
+    //    if (Physics.Raycast(playerController.transform.position, playerController.transform.forward, out hit, 1, (int)Define.Layer.Wall))
+    //    {
+    //        hitPoint = hit.point;
+    //    }
+    //    else
+    //    {
+    //        hitPoint = playerController.transform.position + playerController.transform.forward * 1;
+    //    }
+    //    return hitPoint;
+    //}
     IEnumerator AttackProcessOnAllClinets(Vector2 inputVector)
     {
         state = State.Delay;
-        //AttackPoint =
-
         LastAttackInput = inputVector;
-        //AttackSucessEvent?.Invoke(this);
-        yield return null;
-        playerController.GetComponent<MoveBase>().Jump(GetJumpPont(), 0.5f);
-
+        inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(0.5f);   //대미지 주기전까지 시간
         AttackEffect();
-        //yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
-        AttackEndEvent?.Invoke();
+        yield return new WaitForSeconds(AfaterAttackDelay);   //움직이기 . 애니메이션의 끝나면
+        inputControllerObject.Call_UseSucessEnd();
         state = State.End;
     }
 

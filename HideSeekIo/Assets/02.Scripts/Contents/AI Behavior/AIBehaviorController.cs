@@ -29,11 +29,11 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
             }
             var direction = GetInputVector2(targetObject.Value.transform.position);
             var distance = Vector3.Distance(targetObject.Value.transform.position, _playerController.transform.position);
-            var inputVector = direction / _playerController.GetAttackBase().currentAttack.AttackDistance;
-            Debug.Log(_playerController.GetAttackBase().currentAttack.AttackDistance + "어택디스턴스");
+            //var inputVector = direction / _playerController.GetAttackBase().currentAttack.AttackDistance;
+            //Debug.Log(_playerController.GetAttackBase().currentAttack.AttackDistance + "어택디스턴스");
             //Debug.Log(attackDistance.Value +"/"+direction + "/ " + inputVector + "/" + inputVector * distance +"/"+ distance);
 
-            _playerController.inputBase.controllerInputDic[sharedInputType.Value].Call(sharedControllerInputType.Value, inputVector * distance);
+            //_playerController.inputBase.controllerInputDic[sharedInputType.Value].Call(sharedControllerInputType.Value, inputVector * distance);
 
             return TaskStatus.Success;
         }

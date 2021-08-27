@@ -9,15 +9,17 @@ public class Weapon_Flash : Weapon_Throw
     //{
     //    Setup("Throw", .2f, .3f, 5f , 4);
     //}
-    public override System.Enum GetEnum() => Define.ThrowItem.Flash;
+    //public override System.Enum GetEnum() => Define.ThrowItem.Flash;
 
     protected override void Awake()
     {
         base.Awake();
-        type = Type.Disposable;
-        throwType = Define.ThrowItem.Flash;
-        //inputType = InputType.Sub;
-
+        //type = Type.Disposable;
+        //throwType = Define.ThrowItem.Flash;
+    }
+    protected override void SetupCallBack()
+    {
+        base.SetupCallBack();
     }
 
 
@@ -25,7 +27,7 @@ public class Weapon_Flash : Weapon_Throw
     {
         //inputType = InputType.Sub;
         Setup("Throw", .2f, .2f, 7.0f, 2);
-        InitCoolTime = 5;
+        inputControllerObject.InitCoolTime = 5;
     }
 
 

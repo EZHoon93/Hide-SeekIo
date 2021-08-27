@@ -61,9 +61,10 @@ public class GameSetting : ScriptableObject
     [SerializeField] RuntimeAnimatorController _hiderAnimatiorController;
     [SerializeField] RuntimeAnimatorController _seekrAnimatorController;
     //[SerializeField] ExternalBehaviorTree
+    [SerializeField] RuntimeAnimatorController _playerAnimator;
 
     public ExternalBehaviorTree externalBehavior;
-
+    public RuntimeAnimatorController playerAnimator => _playerAnimator;
     public RuntimeAnimatorController GetRuntimeAnimatorController(Define.Team team)
     {
         switch (team)

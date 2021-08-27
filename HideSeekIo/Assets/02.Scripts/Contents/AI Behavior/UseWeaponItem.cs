@@ -63,7 +63,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 //var distance = Vector3.Distance(targetObject.Value.transform.position, _playerController.transform.position);
                 //var inputVector = direction.normalized / throwWeapon.AttackDistance;
 
-                _playerController.inputBase.controllerInputDic[throwWeapon.inputType].Call(ControllerInputType.Drag, Vector3.zero);
+                //_playerController.inputBase.controllerInputDic[throwWeapon.inputType].Call(ControllerInputType.Drag, Vector3.zero);
                 sharedControllerInputType.Value = ControllerInputType.Up;
                 sharedInputType.Value = throwWeapon.inputType;
                 return true;
@@ -73,28 +73,28 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
 
         Weapon_Throw CheckThrowItem(Define.ThrowItem checkThrowItem)
         {
-            int i = 0;
-            foreach (var item in _playerController.GetAttackBase().ItemIntentory)
-            {
-                if (item == null)
-                {
-                    i++;
-                    continue;
-                }
+            //int i = 0;
+            //foreach (var item in _playerController.GetAttackBase().ItemIntentory)
+            //{
+            //    if (item == null)
+            //    {
+            //        i++;
+            //        continue;
+            //    }
 
-                var weapon = item.GetComponent<Weapon_Throw>();
+            //    var weapon = item.GetComponent<Weapon_Throw>();
 
-                if (weapon)
-                {
+            //    if (weapon)
+            //    {
 
-                    if (weapon.throwType == checkThrowItem)
-                    {
-                        attackDistance = weapon.AttackDistance;
-                        return weapon;
-                    }
-                }
-                i++;
-            }
+            //        if (weapon.throwType == checkThrowItem)
+            //        {
+            //            attackDistance = weapon.AttackDistance;
+            //            return weapon;
+            //        }
+            //    }
+            //    i++;
+            //}
             return null;
         }
 

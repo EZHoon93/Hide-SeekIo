@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Weapon_Fire : Weapon_Throw
 {
-    public override System.Enum GetEnum() => Define.ThrowItem.Dynamite;
+    //public override System.Enum GetEnum() => Define.ThrowItem.Dynamite;
 
 
-    protected override void Awake()
-    {
-        base.Awake();
-        type = Type.Disposable;
-    }
+    //protected override void Awake()
+    //{
+    //    base.Awake();
+    //    type = Type.Disposable;
+    //}
 
-    private void Start()
-    {
-        Setup("Throw", .2f, .2f, 4.0f, 1);
-    }
+    //private void Start()
+    //{
+    //    Setup("Throw", .2f, .2f, 4.0f, 1);
+    //}
 }

@@ -27,7 +27,7 @@ public abstract class Item_Base : MonoBehaviourPun ,IPunInstantiateMagicCallback
     {
         var playerViewID = (int)info.photonView.InstantiationData[0];
         hasPlayerController = Managers.Game.GetLivingEntity(playerViewID).GetComponent<PlayerController>();
-        hasPlayerController.GetAttackBase().SetupImmdediateItem(this);
+        //hasPlayerController.GetAttackBase().SetupImmdediateItem(this);
 
     }
 

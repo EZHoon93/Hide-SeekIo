@@ -22,6 +22,5 @@ public class UserInput : InputBase
         if (photonView.IsMine == false) return;
 
 
-        print(UtillGame.IsPointOnNavMesh(this.transform.position));
     }
 }

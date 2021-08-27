@@ -4,47 +4,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public abstract class Skill_Base : MonoBehaviourPun , IAttack
+public abstract class Skill_Base : MonoBehaviourPun 
 {
     public Define.Skill skillType;
-    public virtual Define.ControllerType controllerType { get; set; }
-    public Action<IAttack> AttackSucessEvent { get; set; }
-    public Action AttackEndEvent { get; set; }
-    public string AttackAnim { get; set; }
+    public virtual Define.AttackType attakType { get; set; }
     public PlayerController playerController { get; set; }
+    public InputControllerObject inputControllerObject { get; protected set; }
 
-    public float InitCoolTime { get; set; }
-    public float RemainCoolTime { get; set; }
-    public float AttackDistance { get; set; }
-    public Vector3 AttackPoint { get; set; }
+
+    private void Awake()
+    {
+        playerController = GetComponent<PlayerController>();
+        SetupCallBack();
+    }
+    protected virtual void SetupCallBack()
+    {
+        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+        inputControllerObject.inputType = InputType.Sub2;
+        inputControllerObject.attackType = Define.AttackType.Button;
+        inputControllerObject.AddUseEvent(Use);
+        inputControllerObject.AddZoomEvent(Zoom);
+    }
+
+    private void Start()
+    {
+        playerController.playerShooter.SetupControllerObject(inputControllerObject);
+        Setup();
+    }
+
+    protected virtual void Setup()
+    {
+
+    }
+
+    //public void OnPho
+
 
     public virtual void Zoom(Vector2 inputVector2)
     {
         
     }
 
-    public virtual void Use(PlayerController usePlayerController)
+    public virtual void Use(Vector2 inputVector)
     {
-        
-    }
-
-    public bool AttackCheck(Vector2 inputVector)
-    {
-        Use(playerController);
-        RemainCoolTime = InitCoolTime;
-        return true;
-    }
-
-    private void Update()
-    {
-        if (playerController == null) return;
-        if (RemainCoolTime >= 0)
-        {
-            RemainCoolTime -= Time.deltaTime;
-            if (playerController.IsMyCharacter())
-            {
-                //InputManager.Instance.GetControllerJoystick(InputType.Skill)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
-            }
-        }
+        print("Skii Use ");
     }
 }

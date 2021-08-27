@@ -6,7 +6,7 @@ public class Character_Bunny : Character_Base
 {
     protected override void SetupSkill()
     {
-        mainSkill = this.gameObject.GetOrAddComponent<Skill_Dash>();
+        //mainSkill = this.gameObject.GetOrAddComponent<Skill_Dash>();
     }
 
    

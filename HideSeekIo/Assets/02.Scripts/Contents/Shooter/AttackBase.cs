@@ -66,10 +66,12 @@ public abstract class AttackBase : MonoBehaviourPun
 
     public virtual void SetupWeapon(Weapon newWeapon )
     {
-        newWeapon.AttackSucessEvent += AttackBaseSucess;
-        newWeapon.AttackEndEvent += AttackBaseEnd;
+        print(newWeapon.gameObject.name + "셋업중");
+        //newWeapon.AttackSucessEvent += () => { _animator.SetTrigger(newWeapon.AttackAnim); State = state.Attack; print(newWeapon.AttackAnim +"애니이름"); } ;
+        //newWeapon.AttackEndEvent += AttackBaseEnd;
         weaponChangeCallBack += newWeapon.WeaponChange;
-        ObtainableItem obtainableItem = null;
+        SetupEquipmentable(newWeapon.equipmentable);
+        SetupControllerObject(newWeapon.inputControllerObject);
         switch (newWeapon.inputType)
         {
             case InputType.Main:
@@ -88,7 +90,6 @@ public abstract class AttackBase : MonoBehaviourPun
             //case InputType.Sub:
             //    break;
         }
-        _inputBase.AddInputEvent(newWeapon.inputControllerObject);
         //if(newWeapon.uIEventEnum == Define.AttackType.Down)
         //{
             //_inputBase.AddInputEvent(newWeapon.inputType, ControllerInputType.Down, (input) => UpdateAttackCheck(newWeapon, input), obtainableItem);
@@ -100,14 +101,23 @@ public abstract class AttackBase : MonoBehaviourPun
         //}
     }
 
-    public void SetupControllerObject(InputControllerObject inputControllerObject)
+    public void SetupControllerObject(InputControllerObject newInputControllerObject)
     {
+        if(newInputControllerObject.attackType == Define.AttackType.Button)
+        {
+            _inputBase.AddInputEvent(ControllerInputType.Down,newInputControllerObject , (input) => UseInputControllerObject(input, newInputControllerObject));
+        }
+        else
+        {
+            _inputBase.AddInputEvent(ControllerInputType.Up, newInputControllerObject, (input) => UseInputControllerObject(input, newInputControllerObject));
+            _inputBase.AddInputEvent(ControllerInputType.Drag, newInputControllerObject, (input) => ZoomInputConrollerObject(input, newInputControllerObject));
 
+        }
     }
 
     public void SetupEquipmentable(Equipmentable equipmentable)
     {
-        var avater = GetComponent<CharacterAvater>();
+        var avater = _animator.GetComponent<CharacterAvater>();
         var adaptTransform =  avater.GetSkilParentTransform(equipmentable.equipSkiType);
         equipmentable.transform.ResetTransform(adaptTransform);
     }
@@ -128,12 +138,12 @@ public abstract class AttackBase : MonoBehaviourPun
         //character_Base.UseSkill(inputVector2);
     }
 
-    public virtual void SetupImmdediateItem(Item_Base newItem)
-    {
-        int inventroyIndex = GetItemInventoryIndex();
-        //_inputBase.AddInputEvent(InputType.Item1, ControllerInputType.Tap, (vector2) => newItem.Use(GetComponent<PlayerController>() ) , newItem.obtainableItem);
-        AddItemInventory(newItem.obtainableItem,inventroyIndex);
-    }
+    //public virtual void SetupImmdediateItem(Item_Base newItem)
+    //{
+    //    int inventroyIndex = GetItemInventoryIndex();
+    //    //_inputBase.AddInputEvent(InputType.Item1, ControllerInputType.Tap, (vector2) => newItem.Use(GetComponent<PlayerController>() ) , newItem.obtainableItem);
+    //    AddItemInventory(newItem.obtainableItem,inventroyIndex);
+    //}
 
     public void ChangeWeapon(Weapon useNewWeapon)
     {
@@ -167,49 +177,53 @@ public abstract class AttackBase : MonoBehaviourPun
     }
 
     #region Item Invenvtory
-    public void AddItemInventory(ObtainableItem newItem, int inventroyIndex)
-    {
-        if (newItem == null) return;
-        itemInventory[inventroyIndex] = newItem.gameObject;
-        newItem.removeCallBack = () => RemoveItemInventory(inventroyIndex);
-    }
+    //public void AddItemInventory(ObtainableItem newItem, int inventroyIndex)
+    //{
+    //    if (newItem == null) return;
+    //    itemInventory[inventroyIndex] = newItem.gameObject;
+    //    newItem.removeCallBack = () => RemoveItemInventory(inventroyIndex);
+    //}
 
-    int GetItemInventoryIndex()
-    {
-        for (int i = 0; i < itemInventory.Length; i++)
-        {
-            if (itemInventory[i] == null)
-            {
-                return i;
-            }
-        }
-        if(itemInventory[0] != null)
-        {
-            PhotonNetwork.Destroy(itemInventory[0]);
-        }
-        return 0;
-    }
+    //int GetItemInventoryIndex()
+    //{
+    //    for (int i = 0; i < itemInventory.Length; i++)
+    //    {
+    //        if (itemInventory[i] == null)
+    //        {
+    //            return i;
+    //        }
+    //    }
+    //    if(itemInventory[0] != null)
+    //    {
+    //        PhotonNetwork.Destroy(itemInventory[0]);
+    //    }
+    //    return 0;
+    //}
 
-    public void RemoveItemInventory(int useIndex)
-    {
-        print("RemoveInventort");
-        itemInventory[useIndex] = null;
-        //_inputBase.RemoveInputEveent(InputType.Item1);
-    }
+    //public void RemoveItemInventory(int useIndex)
+    //{
+    //    print("RemoveInventort");
+    //    itemInventory[useIndex] = null;
+    //    //_inputBase.RemoveInputEveent(InputType.Item1);
+    //}
 
     #endregion
 
-    public void UpdateAttackCheck(IAttack attack, Vector2 inputVector2)
+    public void UseInputControllerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
-        if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
+        print("어택");
+        //if (inputVector2.sqrMagnitude == 0 || State != state.Idle) return;
         if (this.IsMyCharacter())
         {
-            attack.Zoom(Vector2.zero);
+            //attack.Zoom(Vector2.zero);
         }
-        attack.AttackCheck(inputVector2);
+        inputControllerObject.Use(inputVector2);
         AttackDirection = inputVector2;
     }
-
+    public void ZoomInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
+    {
+        inputControllerObject.Zoom(inputVector2);
+    }
     public void UpdateZoom(IAttack attack , Vector2 inputVector2)
     {
         //이전것이 있다면 꺼줌
@@ -227,9 +241,9 @@ public abstract class AttackBase : MonoBehaviourPun
 
 
     
-    protected virtual void AttackBaseSucess(IAttack currentAttack)
+    protected virtual void WeaponAttackSucess(IAttack currentAttack)
     {
-        State = state.Jump;
+        //State = state.Jump;
         //_animator.speed = 1;
         //_animator.SetTrigger(currentAttack.AttackAnim);
     }
@@ -241,7 +255,7 @@ public abstract class AttackBase : MonoBehaviourPun
         if (baseWeapon)
         {
             baseWeapon.useState = Weapon.UseState.Use;
-            if (baseWeapon.type == Weapon.Type.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
+            if (baseWeapon.type == Weapon.UseType.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
             {
                 PhotonNetwork.Destroy(baseWeapon.gameObject);
             }

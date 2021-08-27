@@ -14,7 +14,7 @@ public class ThrowProjectileObject : Poolable
     protected HideInFog _hideInFog;
     protected FogOfWarUnit _fogOfWarUnit;
 
-    public AttackBase attackPlayer { get; set; }
+    public PlayerShooter playerShooter { get; set; }
 
     protected virtual void Awake()
     {
@@ -28,13 +28,13 @@ public class ThrowProjectileObject : Poolable
     /// <param name="newAttackPlayer"></param>
     /// <param name="startPoint"></param>
     /// <param name="endPoint"></param>
-    public virtual void Play(AttackBase newAttackPlayer, Vector3 startPoint, Vector3 endPoint)
+    public virtual void Play(PlayerShooter newPlayerShooter, Vector3 startPoint, Vector3 endPoint)
     {
-        attackPlayer = newAttackPlayer;
+        playerShooter = newPlayerShooter;
         _modelObject.SetActive(true);
-        _fogOfWarUnit.team = attackPlayer.ViewID();
+        _fogOfWarUnit.team = playerShooter.ViewID();
         _fogOfWarUnit.enabled = false;
-        if (attackPlayer.IsMyCharacter())
+        if (playerShooter.IsMyCharacter())
         {
             _hideInFog.SetActiveRender(true);
             _hideInFog.enabled = false;

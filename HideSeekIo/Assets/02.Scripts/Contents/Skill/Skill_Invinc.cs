@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Skill_Invinc : Skill_Base
 {
-    public override Define.ControllerType controllerType { get; set; } = Define.ControllerType.Button;
+    //public override Define.ControllerType controllerType { get; set; } = Define.ControllerType.Button;
 
-    private void Start()
+
+    protected override void Setup()
     {
-        InitCoolTime = 5;
+        inputControllerObject.InitCoolTime = 5;
     }
 
-    public override void Use(PlayerController usePlayerController)
+    public override void Use(Vector2 inputVector2)
     {
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shield, usePlayerController.GetLivingEntity());
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shield, playerController.playerHealth);
     }
 }

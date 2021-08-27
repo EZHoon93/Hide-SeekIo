@@ -5,7 +5,7 @@ using TMPro;
 
 public class UI_InGameStore : MonoBehaviour
 {
-    [SerializeField] Transform _content;    //UI아이템이 위치할곳
+    [SerializeField] Transform _content;    //UI???????? ????????
     [SerializeField] TextMeshProUGUI _coinText;
     [SerializeField] ScrollRect _scrollRect;
     [SerializeField] Scrollbar _scrollbar;
@@ -45,15 +45,15 @@ public class UI_InGameStore : MonoBehaviour
         Clear();
         var itemPrefab = Managers.Resource.Load<UI_InGame_Item>("Prefabs/UI/SubItem/UI_InGame_Item");
         Type type = null;
-        switch (team)
-        {
-            case Define.Team.Hide:
-                type = typeof(Define.HiderStoreList);
-                break;
-            case Define.Team.Seek:
-                type = typeof(Define.SeekrStoreList);
-                break;
-        }
+        //switch (team)
+        //{
+        //    case Define.Team.Hide:
+        //        type = typeof(Define.HiderStoreList);
+        //        break;
+        //    case Define.Team.Seek:
+        //        type = typeof(Define.SeekrStoreList);
+        //        break;
+        //}
         MakeSeekrItemList(itemPrefab, type);
         this.gameObject.SetActive(true);
     }
@@ -70,11 +70,11 @@ public class UI_InGameStore : MonoBehaviour
             var go = Instantiate(prefab, _content);
             var price = Managers.Data.InGameItemDic[itemName].price;
             var sprite = Managers.Resource.Load<Sprite>($"Sprites/InGameItem/{itemName}");
-            Define.GameItemStateCallBack itemEvent = () => InGameStoreManager.Instance.BuyItem_OnLocal(itemEnum, Managers.Game.myPlayer);   //버튼클릭시 성공여부
+            //Define.GameItemStateCallBack itemEvent = () => InGameStoreManager.Instance.BuyItem_OnLocal(itemEnum, Managers.Game.myPlayer);   //?????????? ????????
             var info = Lean.Localization.LeanLocalization.GetTranslationText(itemName);
             go.transform.localPosition = Vector3.zero;
 
-            go.Setup(sprite, price,info, itemEvent); //셋업,이미지,가격,콜백함수
+            //go.Setup(sprite, price,info, itemEvent); //????,??????,????,????????
         }
     }
 
@@ -89,9 +89,9 @@ public class UI_InGameStore : MonoBehaviour
     //        var go = Instantiate(prefab, _content);
     //        var price = Managers.Data.InGameItemDic[type][itemName].price;
     //        var sprite = Managers.Resource.Load<Sprite>($"Sprites/InGameItem/{itemName}");
-    //        Define.GameItemStateCallBack itemEvent = () => InGameStoreManager.Instance.BuyItem_OnLocal(itemEnum, Managers.Game.myPlayer);   //버튼클릭시 성공여부
+    //        Define.GameItemStateCallBack itemEvent = () => InGameStoreManager.Instance.BuyItem_OnLocal(itemEnum, Managers.Game.myPlayer);   //?????????? ????????
     //        go.transform.localPosition = Vector3.zero;
-    //        go.Setup(sprite, price, itemEvent); //셋업,이미지,가격,콜백함수
+    //        go.Setup(sprite, price, itemEvent); //????,??????,????,????????
     //    }
     //}
 

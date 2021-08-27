@@ -72,17 +72,17 @@ public class SpawnManager
             characterType = PlayerInfo.GetCurrentUsingCharacter();
             avaterId = PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
         }
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName,$"{characterType.ToString()}/{avaterId}" ,isAI };
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, avaterId , characterType , isAI };
 
         PlayerController createPlayer = null;
         switch (team)
         {
             case Define.Team.Hide:
-                createPlayer= PhotonNetwork.Instantiate("UserHider", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                createPlayer= PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
             case Define.Team.Seek:
                 //datas.Add("Bear");
-                createPlayer = PhotonNetwork.Instantiate("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
+                createPlayer = PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
                 break;
         }
 
@@ -127,9 +127,9 @@ public class SpawnManager
             return PhotonNetwork.Instantiate(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
         }
     }
-    public GameObject WeaponSpawn(Define.Weapon weapon , AttackBase attackPlayer)
+    public GameObject WeaponSpawn(Define.Weapon weapon , PlayerShooter playerShooter)
     {
-        List<object> datas = new List<object>() { attackPlayer.photonView.ViewID };
+        List<object> datas = new List<object>() { playerShooter.photonView.ViewID };
         string weaponID = null;
         switch (weapon)
         {
@@ -146,7 +146,7 @@ public class SpawnManager
                 break;
         }
 
-        if (attackPlayer.gameObject.IsValidAI())
+        if (playerShooter.gameObject.IsValidAI())
         {
             return PhotonNetwork.InstantiateRoomObject(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
         }

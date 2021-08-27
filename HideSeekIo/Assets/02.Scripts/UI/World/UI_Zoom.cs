@@ -12,37 +12,37 @@ public class UI_Zoom : MonoBehaviour
 
     [SerializeField] Image image;
     public Transform currentZoom { get; set; }
-    Define.ZoomType _zoomType;
+    Weapon.WeaponType _weaponType;
     Transform _taget;
 
     [SerializeField] LineRenderer lineRenderer;
 
    
-    public void Setup(Define.ZoomType zoomType,Weapon weapon, Transform target)
+    public void Setup(Weapon.WeaponType weaponType, Weapon weapon, Transform target)
     {
-        _zoomType = zoomType;
+        _weaponType = weaponType;
         _taget = target;
         _meleeZoom.gameObject.SetActive(false);
         _throwZoom.gameObject.SetActive(false);
         _gunZoom.gameObject.SetActive(false);
-        switch (_zoomType)
+        switch (_weaponType)
         {
-            case Define.ZoomType.Gun:
+            case Weapon.WeaponType.Gun:
                 _gunZoom.gameObject.SetActive(true);
                 currentZoom = _gunZoom;
                 break;
-            case Define.ZoomType.Melee:
+            case Weapon.WeaponType.Melee:
                 _meleeZoom.gameObject.SetActive(true);
                 currentZoom = _meleeZoom;
                 break;
-            case Define.ZoomType.Throw:
+            case Weapon.WeaponType.Throw:
                 _throwZoom.gameObject.SetActive(true);
                 currentZoom = _throwZoom;
                 break;
         }
         this.gameObject.SetActive(false);
-        weapon.destroyEventCallBack += () => weapon.inputControllerObject.RemoveEvent(ControllerInputType.Down, Zoom);
-        weapon.inputControllerObject.AddEvent(ControllerInputType.Drag, Zoom);
+        //weapon.destroyEventCallBack += () => weapon.inputControllerObject.RemoveEvent(ControllerInputType.Down, Zoom);
+        //weapon.inputControllerObject.AddEvent(ControllerInputType.Drag, Zoom);
     }
 
     public void ZoomLine(float distance)
@@ -66,9 +66,9 @@ public class UI_Zoom : MonoBehaviour
         {
             this.transform.position = _taget.transform.position;
             this.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-            var s = _throwZoom.transform.position;
-            s.y = _taget.transform.position.y;
-            var isx = UtillGame.IsPointOnNavMesh(s);
+            //var s = _throwZoom.transform.position;
+            //s.y = _taget.transform.position.y;
+            //var isx = UtillGame.IsPointOnNavMesh(s);
             //if (isx)
             //{
             //    image.color = Color.red;

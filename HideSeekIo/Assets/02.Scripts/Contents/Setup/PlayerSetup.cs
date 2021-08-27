@@ -5,6 +5,12 @@ using Photon.Pun;
 using System;
 using FoW;
 
+
+
+[RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PhotonView))]
+[RequireComponent(typeof(CharacterController))]
+
 public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate, IOnPhotonViewPreNetDestroy
 {
     event Action<PhotonView> _onPhotonInstantiateEvent;
@@ -30,13 +36,22 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         //-데이터받아옴//
         var nickName = (string)info.photonView.InstantiationData[0]; //닉네임
         var avaterId = (string)info.photonView.InstantiationData[1]; //캐릭터 스킨
-        var isAI = (bool)info.photonView.InstantiationData[2];  //AI 여부
-        //var characterType = (Define.CharacterType)info.photonView.InstantiationData[3]; //캐릭터 타
+        var characterType = (Define.CharacterType)info.photonView.InstantiationData[2]; //캐릭터 타
+        var isAI = (bool)info.photonView.InstantiationData[3];  //AI 여부
         var fogController = this.GetComponentInChildren<FogOfWarController>();
         var playerController = this.GetComponent<PlayerController>();
-        AddInputComponent(isAI);
+
+        this.gameObject.tag = isAI ? "AI" : "Player";
         playerController.NickName = nickName;       //닉네임 설정
-        CreaterAvater(avaterId, playerController, fogController);
+
+        Component c = GetComponent<Character_Base>();
+        if (c)
+        {
+            Destroy(c);
+        }
+
+        playerController.character_Base = GetOrAddCharacterComponent(characterType);
+        CreateCharacterAvater(characterType, avaterId,playerController, fogController);
         playerController.OnPhotonInstantiate(this.photonView);
         _onPhotonInstantiateEvent?.Invoke(this.photonView);
         //유저자신의 캐릭이라면.
@@ -52,50 +67,37 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
 
     }
 
-    void AddInputComponent(bool isAI )
+
+
+    CharacterAvater CreateCharacterAvater(Define.CharacterType characterType, string avaterID, PlayerController playerController, FogOfWarController fogOfWarController)
     {
-       
-        InputBase inputBase = null;
-        if (isAI)
-        {
-            this.gameObject.tag = "AI";
-            inputBase = this.gameObject.AddComponent<AIInput>();
-        }
-        else
-        {
-            this.gameObject.tag = "Player";
-            inputBase = this.gameObject.GetOrAddComponent<UserInput>();
-        }
-        inputBase.OnPhotonInstantiate();
+        var characterAvater = Managers.Spawn.CharacterAvaterSpawn(characterType,avaterID).GetComponent<CharacterAvater>();
+        characterAvater.transform.ResetTransform(this.transform);
+        playerController.character_Base.characterAvater = characterAvater;
+        //playerController.character_Base = character_Base;
+        //character_Base.playerController = playerController;
+        //character_Base.CreateAvater(avaterID);
+        //go.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
+        fogOfWarController._hideInFog.ClearRenders();
+        //fogOfWarController.AddHideRender(character_Base.renderers);
+
+        return characterAvater;
     }
-
-    //GameObject CreateCharacter(Define.CharacterType characterType, PlayerController playerController, FogOfWarController fogOfWarController)
-    //{
-    //    var go = Managers.Spawn.CharacterSpawn(characterType).GetComponent<Character_Base>();
-    //    go.transform.ResetTransform(this.transform);
-    //    go.OnPhoninstiate(playerController);
-    //    playerController.GetAttackBase().character_Base = go;
-    //    go.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-    //    fogOfWarController._hideInFog.ClearRenders();
-    //    fogOfWarController.AddHideRender(go.GetComponentInChildren<SkinnedMeshRenderer>());
-
-    //    return go.gameObject;
-    //}
 
     //void SetupSkill(Character_Base character_Base , PlayerController playerController)
     //{
     //    playerController.inputBase.mainInput
     //}
 
-    void CreaterAvater(string avaterID, PlayerController playerController, FogOfWarController fogOfWarController )
-    {
-        var avater = Managers.Resource.Instantiate($"Character/{avaterID}", this.transform).GetComponent<CharacterAvater>();
-        avater.transform.ResetTransform();
-        print(avater + "아바타");
-        avater.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-        fogOfWarController._hideInFog.ClearRenders();
-        fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
-    }
+    //void CreaterAvater(string avaterID, PlayerController playerController, FogOfWarController fogOfWarController )
+    //{
+    //    var avater = Managers.Resource.Instantiate($"Character/{avaterID}", this.transform).GetComponent<CharacterAvater>();
+    //    avater.transform.ResetTransform();
+    //    print(avater + "아바타");
+    //    avater.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
+    //    fogOfWarController._hideInFog.ClearRenders();
+    //    fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
+    //}
 
     void SetActiveADNCamera(bool active)
     {
@@ -138,5 +140,41 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         {
             SetActiveADNCamera(true);
         }
+    }
+
+    Character_Base GetOrAddCharacterComponent(Define.CharacterType characterType)
+    {
+        Character_Base character_Base ;
+        switch (characterType)
+        {
+            case Define.CharacterType.Bear:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
+                break;
+            case Define.CharacterType.Bunny:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Bunny>();
+
+                break;
+            case Define.CharacterType.Cat:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Cat>();
+
+                break;
+            case Define.CharacterType.Dog:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Dog>();
+
+                break;
+            case Define.CharacterType.Frog:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Frog>();
+
+                break;
+            case Define.CharacterType.Monkey:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Monkey>();
+
+                break;
+            default:
+                character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
+                break;
+        }
+
+        return character_Base;
     }
 }

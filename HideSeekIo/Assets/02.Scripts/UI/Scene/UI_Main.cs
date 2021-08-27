@@ -14,7 +14,8 @@ public class UI_Main : UI_Scene
         UserList_Lobby,
         UserList_Game,
         GameInfo,
-        KillNotice
+        KillNotice,
+        StatController
     }
 
     enum Panels
@@ -55,6 +56,7 @@ public class UI_Main : UI_Scene
 
 
     public UI_InGameInfo InGameInfo => GetObject((int)GameObjects.GameInfo).GetComponent<UI_InGameInfo>();
+    public UI_StatController StatController => GetObject((int)GameObjects.StatController).GetComponent<UI_StatController>();
     public Button FindButton => GetButton((int)Buttons.FindPlayer);
     public Button ADButton => GetButton((int)Buttons.ADMop);
     public TextMeshProUGUI titleText => GetText(TextMeshProUGUIs.Title);

@@ -77,38 +77,47 @@ public class UI_ControllerJoystick : MonoBehaviour
         return result;
     }
 
-    public void SetActiveControllerType(Define.ControllerType controllerType, ObtainableItem newObtainableItem)
+    public void SetActiveControllerType(Define.AttackType attackType ,Sprite sprite = null)
     {
-        if (controllerType == Define.ControllerType.Button)
+        print("SEtaCtivoe " + this.gameObject.name);
+        //if (controllerType == Define.ControllerType.Button)
+        //{
+        //    if (newObtainableItem)
+        //    {
+        //         _itemImage.sprite = newObtainableItem.itemSprite;
+        //        _itemImage.transform.localPosition = Vector3.zero;
+        //        _itemImage.enabled = true;
+        //    }
+        //    else
+        //    {
+        //        _itemImage.enabled = false;
+        //    }
+        //    _itemImage.transform.SetParent(_ultimateJoystick.joystickBase);
+        //    _ultimateJoystick.joystick.gameObject.SetActive(false);
+        //}
+        //else
+        //{
+        //    if (newObtainableItem)
+        //    {
+        //        _itemImage.sprite = newObtainableItem.itemSprite;
+        //        _ultimateJoystick.joystick.transform.localPosition = Vector3.zero;
+        //        _itemImage.transform.localPosition = Vector3.zero;
+        //        _itemImage.enabled = true;
+        //    }
+        //    else
+        //    {
+        //        _itemImage.enabled = false;
+        //    }
+        //    _ultimateJoystick.joystick.gameObject.SetActive(true);
+        //    _itemImage.transform.SetParent(_ultimateJoystick.joystick);
+        //}
+        if(attackType == Define.AttackType.Button)
         {
-            if (newObtainableItem)
-            {
-                 _itemImage.sprite = newObtainableItem.itemSprite;
-                _itemImage.transform.localPosition = Vector3.zero;
-                _itemImage.enabled = true;
-            }
-            else
-            {
-                _itemImage.enabled = false;
-            }
-            _itemImage.transform.SetParent(_ultimateJoystick.joystickBase);
             _ultimateJoystick.joystick.gameObject.SetActive(false);
         }
         else
         {
-            if (newObtainableItem)
-            {
-                _itemImage.sprite = newObtainableItem.itemSprite;
-                _ultimateJoystick.joystick.transform.localPosition = Vector3.zero;
-                _itemImage.transform.localPosition = Vector3.zero;
-                _itemImage.enabled = true;
-            }
-            else
-            {
-                _itemImage.enabled = false;
-            }
             _ultimateJoystick.joystick.gameObject.SetActive(true);
-            _itemImage.transform.SetParent(_ultimateJoystick.joystick);
         }
      
         this.gameObject.SetActive(true);

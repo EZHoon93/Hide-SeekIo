@@ -5,42 +5,42 @@ using Photon.Pun;
 
 using UnityEngine;
 
-public enum ControllerInputType
-{
-    Down,
-    Drag,
-    Up,
-    Tap
-}
-public enum InputType
-{
-    Move,
-    Main,
-    Skill1,
-    Skill2,
-    Skill3
-}
+//public enum ControllerInputType
+//{
+//    Down,
+//    Drag,
+//    Up,
+//    Tap
+//}
+//public enum InputType
+//{
+//    Move,
+//    Main,
+//    Sub1,
+//    Sub2,
+//    Sub3
+//}
 
-public class MyInput
-{
-    public Dictionary<ControllerInputType, Action<Vector2>> controllerDic { get; set; }
-    = new Dictionary<ControllerInputType, Action<Vector2>>()
-    {
-        {ControllerInputType.Down,null },
-        {ControllerInputType.Drag,null },
-        {ControllerInputType.Up,null },
-        {ControllerInputType.Tap,null },
-    };
+//public class MyInput
+//{
+//    public Dictionary<ControllerInputType, Action<Vector2>> controllerDic { get; set; }
+//    = new Dictionary<ControllerInputType, Action<Vector2>>()
+//    {
+//        {ControllerInputType.Down,null },
+//        {ControllerInputType.Drag,null },
+//        {ControllerInputType.Up,null },
+//        {ControllerInputType.Tap,null },
+//    };
 
-    public void Call(ControllerInputType controllerInputType, Vector2 vector2)
-    {
-        controllerDic[controllerInputType]?.Invoke(vector2);
-        inputVector2 = vector2;
-    }
+//    public void Call(ControllerInputType controllerInputType, Vector2 vector2)
+//    {
+//        controllerDic[controllerInputType]?.Invoke(vector2);
+//        inputVector2 = vector2;
+//    }
 
-    public Vector2 inputVector2 { get; private set; }
-    public float coolTime { get; set; }
-}
+//    public Vector2 inputVector2 { get; private set; }
+//    public float coolTime { get; set; }
+//}
 
 public abstract class InputBase : MonoBehaviourPun
 {
@@ -56,9 +56,9 @@ public abstract class InputBase : MonoBehaviourPun
     {
         {InputType.Move ,  new MyInput() },
         {InputType.Main ,  new MyInput() },
-        {InputType.Skill1 ,   new MyInput() },
-        {InputType.Skill2 , new MyInput() },
-        {InputType.Skill3 , new MyInput() },
+        {InputType.Sub1 ,   new MyInput() },
+        {InputType.Sub2 , new MyInput() },
+        {InputType.Sub3 , new MyInput() },
     };
 
 
@@ -79,41 +79,46 @@ public abstract class InputBase : MonoBehaviourPun
         RandomVector2 = Vector2.one;
     }
 
-    public virtual void AddInputEvent(InputType inputType,ControllerInputType controllerInputType , System.Action<Vector2> action, ObtainableItem newItemObject = null)
+    public virtual void AddInputEvent(ControllerInputType controllerInputType,InputControllerObject inputControllerObject , System.Action<Vector2> action, ObtainableItem newItemObject = null)
     {
         MyInput addInput = null;
-        bool isCache =  controllerInputDic.TryGetValue(inputType, out addInput);
+        bool isCache =  controllerInputDic.TryGetValue(inputControllerObject.inputType, out addInput);
         if (isCache == false)
         {
-            controllerInputDic.Add(inputType, addInput);
+            controllerInputDic.Add(inputControllerObject.inputType, addInput);
         }
         addInput.controllerDic[controllerInputType] = action;
         if (this.IsMyCharacter())
         {
-            var contollreUI = InputManager.Instance.GetControllerJoystick(inputType);
-            if (controllerInputType == ControllerInputType.Tap || controllerInputType == ControllerInputType.Down)
-            {
-                contollreUI.SetActiveControllerType(Define.ControllerType.Button, newItemObject);
-            }
-            if (controllerInputType == ControllerInputType.Drag)
-            {
-                contollreUI.SetActiveControllerType(Define.ControllerType.Joystick, newItemObject);
-            }
+            //var contollreUI = InputManager.Instance.GetControllerJoystick(inputType);
+            //if (controllerInputType == ControllerInputType.Tap || controllerInputType == ControllerInputType.Down)
+            //{
+            //    contollreUI.SetActiveControllerType(Define.ControllerType.Button, newItemObject);
+            //}
+            //if (controllerInputType == ControllerInputType.Drag)
+            //{
+            //    contollreUI.SetActiveControllerType(Define.ControllerType.Joystick, newItemObject);
+            //}
 
-
+            //InputManager.Instance.GetControllerJoystick(inputControllerObject.inputType).SetActiveControllerType(inputControllerObject);
         }
     }
 
-    public virtual void AddInputEvent(InputControllerObject inputControllerObject)
-    {
-        MyInput myInput = controllerInputDic[inputControllerObject.inputType];
-        foreach(var c in inputControllerObject.controllerInputTypeDic)
-        {
-            myInput.controllerDic[c.Key] = c.Value;
-        }
-    }
 
-    public virtual void RemoveInputEveent(InputType inputType)
+    //public virtual void AddInputEvent(InputControllerObject inputControllerObject, Action <Vector2> actionEventCallBack)
+    //{
+    //    //MyInput myInput = controllerInputDic[inputControllerObject.inputType];
+    //    //foreach(var c in inputControllerObject.controllerInputTypeDic)
+    //    //{
+    //    //    myInput.controllerDic[c.Key] = c.Value;
+    //    //}
+    //    //if (this.IsMyCharacter())
+    //    //{
+    //    //    InputManager.Instance.GetControllerJoystick(inputControllerObject.inputType).SetActiveControllerType(inputControllerObject);
+    //    //}
+    //}
+
+    public virtual void RemoveInputEvent(InputType inputType)
     {
         if (controllerInputDic.ContainsKey(inputType))
         {
@@ -124,10 +129,10 @@ public abstract class InputBase : MonoBehaviourPun
         }
         if (this.IsMyCharacter())
         {
-            if(inputType == InputType.Skill1)
-            {
-                InputManager.Instance.GetControllerJoystick(inputType).gameObject.SetActive(false);
-            }
+            //if(inputType == InputType.Skill1)
+            //{
+            //    InputManager.Instance.GetControllerJoystick(inputType).gameObject.SetActive(false);
+            //}
         }
     }
   

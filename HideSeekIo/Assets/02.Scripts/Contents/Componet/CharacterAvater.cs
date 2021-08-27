@@ -28,6 +28,8 @@ public class CharacterAvater : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        animator.runtimeAnimatorController = GameSetting.Instance.playerAnimator;
+        animator.applyRootMotion = false;
     }
 
     public void AddSkinObject(Define.SkinType skinType, GameObject newSkinObject)

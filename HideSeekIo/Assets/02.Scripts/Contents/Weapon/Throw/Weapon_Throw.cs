@@ -7,7 +7,7 @@ using System;
 public abstract class Weapon_Throw : Weapon 
 {
     [SerializeField] GameObject _projectilePrefab;
-    public ObtainableItem obtainableItem { get; private set; }
+    //public ObtainableItem obtainableItem { get; private set; }
     public float attackRange { get; protected set; }
     public Action destroyCallBackEvent { get; set; }
     public Define.ThrowItem throwType { get; set; }
@@ -18,16 +18,17 @@ public abstract class Weapon_Throw : Weapon
     {
         base.Awake();
         weaponType = WeaponType.Throw;
-        //inputType = InputType.Item1;
-        obtainableItem = GetComponent<ObtainableItem>();
     }
-
-    public override void OnPreNetDestroy(PhotonView rootView)
+    protected override void SetupCallBack()
     {
-        base.OnPreNetDestroy(rootView);
-        //playerController.GetAttackBase().RemoveItem(this);
-    }
+        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+        //inputControllerObject = inputControllerObject ?? new InputControllerObject();
+        inputControllerObject.inputType = InputType.Sub3;
+        inputControllerObject.attackType = Define.AttackType.Joystick;
+        inputControllerObject.AddUseEvent(Attack);
+        inputControllerObject.AddZoomEvent(Zoom);
 
+    }
     
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
     {
@@ -36,49 +37,35 @@ public abstract class Weapon_Throw : Weapon
         AfaterAttackDelay = afaterDelayTime;
         AttackDistance = distance;
         attackRange = newAttackRange;
-
         //UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange); //범위에 따른 ui변경
     }
 
     public override void Zoom(Vector2 inputVector)
     {
-        //var state = UtillGame.ThrowZoom(inputVector, AttackDistance, playerController.GetAttackBase().CenterPivot, _zoomUI.currentZoom);
-        ////UICanvas.transform.position = playerController.transform.position;
-        //if (state)
-        //{
-        //    useState = UseState.Use;
-        //}
-        //if(playerController.gameObject.IsValidAI() == false) 
-        //{
-        //    if (inputVector.sqrMagnitude == 0)
-        //    {
-        //        print(this.gameObject.name);
-        //        _zoomUI.gameObject.SetActive(false);
-        //        useState = UseState.NoUse;
-        //        return;
-        //    }
-        //    _zoomUI.FixedUI();
-        //    _zoomUI.currentZoom.transform.position = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.GetAttackBase().CenterPivot);
-        //    _zoomUI.gameObject.SetActive(true);
-        //}
-
-    
-        //useState = UseState.Use;
+        var state = UtillGame.ThrowZoom(inputVector, AttackDistance, playerController.transform, uiZoom.currentZoom);
+        if (state)
+        {
+            useState = UseState.Use;
+        }
+        if (playerController.gameObject.IsValidAI() == false)
+        {
+            if (inputVector.sqrMagnitude == 0)
+            {
+                uiZoom.gameObject.SetActive(false);
+                useState = UseState.NoUse;
+                return;
+            }
+            uiZoom.FixedUI();
+            uiZoom.gameObject.SetActive(true);
+        }
+        useState = UseState.Use;
     }
 
-    private void LateUpdate()
-    {
-        //UICanvas.transform.position = playerController.transform.position;
-    }
-
+   
 
  #region Attack
     public override void Attack(Vector2 inputVector)
     {
-        if (playerController.IsMyCharacter())
-        {
-            //_zoomUI.gameObject.SetActive(false);
-        }
         state = State.Delay;
         Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform);
         LastAttackInput = inputVector;
@@ -88,22 +75,23 @@ public abstract class Weapon_Throw : Weapon
     [PunRPC]
     public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
-        obtainableItem.removeCallBack?.Invoke();
         LastAttackInput = inputVector;
-        Vector3 startPoint = playerController.GetAttackBase().CenterPivot.position;
-        StartCoroutine(AttackProcessOnAllClinets(startPoint, endPoint));
+        StartCoroutine(AttackProcessOnAllClinets(endPoint));
     }
 
-    IEnumerator AttackProcessOnAllClinets(Vector3 startPoint, Vector3 endPoint)
+    IEnumerator AttackProcessOnAllClinets(Vector3 endPoint)
     {
         state = State.Delay;
-        //AttackSucessEvent?.Invoke(this);
+        //AttackSucessEvent?.Invoke();
+        inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        projectile.Play(playerController.GetAttackBase(),  startPoint, endPoint);
-        yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
-        AttackEndEvent?.Invoke();
+        Vector3 startPoint = playerController.character_Base.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
 
+        projectile.Play(playerController.playerShooter, startPoint, endPoint);
+        yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
+        inputControllerObject.Call_UseSucessEnd();
+        //AttackEndEvent?.Invoke();
         state = State.End;
         Use(playerController);
     }
@@ -122,6 +110,6 @@ public abstract class Weapon_Throw : Weapon
         //}
     }
 
-    public abstract Enum GetEnum();
+    //public abstract Enum GetEnum();
 
 }
