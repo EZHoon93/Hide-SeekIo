@@ -27,6 +27,10 @@ public abstract class Character_Base : MonoBehaviour
     {
         SetupSkill();
     }
+
+    public void ChangeOnwerShip()
+    {
+    }
     public CharacterAvater CreateAvater(string avaterID)
     {
         characterAvater = Managers.Spawn.CharacterAvaterSpawn(characterType, avaterID);

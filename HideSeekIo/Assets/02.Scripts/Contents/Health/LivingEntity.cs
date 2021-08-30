@@ -50,7 +50,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     {
         fogController = Managers.Resource.Instantiate("Contents/FogOfWar",this.transform).GetComponent<FogOfWarController>();
         fogController.transform.localPosition = new Vector3(0, 0.5f, 0);
-        
+        this.photonView.ObservedComponents.Add(this);
     }
     
     private void OnEnable()

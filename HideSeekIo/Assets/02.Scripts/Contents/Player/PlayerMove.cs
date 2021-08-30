@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-public class PlayerMove : MonoBehaviourPun
+using Smooth;
+
+public class PlayerMove : MonoBehaviourPun , IPunObservable
 {
     public enum MoveState
     {
@@ -20,32 +22,37 @@ public class PlayerMove : MonoBehaviourPun
     Character_Base _character_Base;
     Animator _animator => _character_Base.animator;
 
-
     float _animationValue;
     List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
-
     protected float _totRatio;    //버퍼리스트 합계산한 최종 이속 증/감소율
-    public Vector2 moveInputVector2 { get; set; }
-
-    public int RotationSpeed { get; protected set; } = 15;
+    public int RotationSpeed { get; protected set; } = 5;
     public float ResultSpeed { get; set; }
     public bool Run { get; set; }
-
-
-    float _lastTime;
-    float _stepTimeBet = 0.5f;
-
+    Vector2 n_inputVecotr2;
+    MoveState n_moveState;
+    Vector3 n_pos;
+    Vector3 n_movePosInterval;
+    Vector3 n_cPos;
+    float lag;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(_animationValue);
+            stream.SendNext(_playerInput.controllerInputDic[InputType.Move].inputVector2);
+            stream.SendNext(State);
+            stream.SendNext(n_pos);
+            stream.Serialize(ref n_movePosInterval);
+
         }
         else
         {
-            _animationValue = (float)stream.ReceiveNext();
-            _animator.SetFloat("Speed", _animationValue);
+            n_inputVecotr2 = (Vector2)stream.ReceiveNext();
+            n_moveState = (MoveState)stream.ReceiveNext();
+            stream.Serialize(ref n_cPos);
+            stream.Serialize(ref n_movePosInterval);
+
+            lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime)) * 50;
 
         }
     }
@@ -54,55 +61,79 @@ public class PlayerMove : MonoBehaviourPun
         _characterController = GetComponent<CharacterController>();
         _playerShooter = GetComponent<PlayerShooter>();
         _playerInput = GetComponent<PlayerInput>();
+        this.photonView.ObservedComponents.Add(this);
         //_stepClip = Managers.Resource.Load<AudioClip>("Sounds/Step1");ㅌ
 
-      
+
 
     }
     private void OnEnable()
     {
         State = MoveState.Idle;
-        _lastTime = 0;
+        _animationValue = 0;
         Run = false;
     }
     public virtual void OnPhotonInstantiate()
     {
         _character_Base = GetComponent<Character_Base>();
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = true; print("ㄹㅓㄴ온"); });
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => { Run = false; print("ㄹㅓㄴ오프"); });
+        
     }
-    private void Update()
+    public void ChangeOwnerShip()
     {
-        OnUpdateOtherClients();
+        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = true;  });
+        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => { Run = false; });
     }
+    //private void Update()
+    //{
+
+    //    //OnUpdateOtherClients();
+    //}
 
 
 
-    protected void FixedUpdate()
+    protected void Update()
     {
-        if (photonView.IsMine == false) return;
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        var move = new Vector2(h, v);
-        move = UtillGame.GetInputVector2_ByCamera(move);
-#if UNITY_EDITOR
-        OnUpdate(move, Run);
-#endif
+        //로컬 X
+        if (photonView.IsMine == false)
+        {
+            OnUpdateOtherClients();
+            return;
+        }
+        //로컬
+        else
+        {
+            Vector3 tempPos = transform.position;   //변경전 
+            var move = _playerInput.controllerInputDic[InputType.Move].inputVector2;
+            move = UtillGame.GetInputVector2_ByCamera(move);
+            OnUpdate(move, Run);
+
+            n_pos = this.transform.position;
+            n_movePosInterval = n_pos - tempPos;
+        }
+
+
     }
 
 
 
     protected void OnUpdateOtherClients()
     {
-        if (photonView.IsMine) return;
+        this.transform.position = Vector3.Lerp(this.transform.position,
+            n_cPos + n_movePosInterval * lag, Time.deltaTime * 10);
+
         switch (_playerShooter.State)
         {
             case PlayerShooter.state.Idle:
-                UpdateMoveAnimation(State);
+                UpdateSmoothRotate(n_inputVecotr2);
+                UpdateMoveAnimation(n_moveState);
                 break;
-            case PlayerShooter.state.Attack:
+            case PlayerShooter.state.NoMove:
                 UpdateImmediateRotate(_playerShooter.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
+                break;
+            case PlayerShooter.state.Jump:
+                UpdateImmediateRotate(_playerShooter.AttackDirection);
+                UpdateMoveFoward(_playerShooter.AttackDirection);
                 break;
         }
     }
@@ -150,28 +181,39 @@ public class PlayerMove : MonoBehaviourPun
                 }
                 else
                 {
+                    Run = false;
                     UpdateSmoothRotate(Vector2.zero);
                     UpdateMove(Vector2.zero, isRun);
                 }
                 UpdateMoveAnimation(State);
                 break;
-            case PlayerShooter.state.Attack:
+            case PlayerShooter.state.NoMove:
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
-            case PlayerShooter.state.Throw:
+            case PlayerShooter.state.MoveAttack:
                 UpdateMove(inputVector2, isRun);
                 UpdateImmediateRotate(_playerShooter.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
                 break;
+            case PlayerShooter.state.Jump:
+                UpdateImmediateRotate(_playerShooter.AttackDirection);
+                UpdateMoveFoward(_playerShooter.AttackDirection);
+                break;
+            //case PlayerShooter.state.Dash:
+            //    UpdateMoveFoward(_playerShooter.AttackDirection);
+                //UpdateMove(inputVector2, isRun);
+                //UpdateImmediateRotate(_playerShooter.AttackDirection);
+                //UpdateMoveAnimation(MoveState.Idle);
+                //break;
         }
         UpdateEnergy();
     }
 
 
-    protected virtual void UpdateMove(Vector2 inputMoveVector2, bool isRun)
+    protected virtual void UpdateMove(Vector2 inputVector2, bool isRun)
     {
         //조이스틱 입력안할시
-        if (inputMoveVector2.sqrMagnitude == 0)
+        if (inputVector2.sqrMagnitude == 0)
         {
             State = MoveState.Idle;
             ResultSpeed = 0;
@@ -188,13 +230,21 @@ public class PlayerMove : MonoBehaviourPun
             State = MoveState.Walk;
             ResultSpeed = _character_Base.MoveSpeed * 0.7f;
         }
-
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
-        if (_playerShooter.State == PlayerShooter.state.Dash)
+        Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) * ResultSpeed * Time.deltaTime;
+        if (!_characterController.isGrounded)
         {
-            ResultSpeed *= 1.5f;
+            moveDistance.y -= 9.8f * Time.deltaTime;
         }
-        Vector3 moveDistance = UtillGame.ConventToVector3(inputMoveVector2.normalized) * ResultSpeed * Time.deltaTime;
+        _characterController.Move(moveDistance);
+    }
+
+    //대쉬
+    void UpdateMoveFoward(Vector2 inputVector2)
+    {
+        var  c = 5;
+        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
+        Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) *  10 * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
             moveDistance.y -= 9.8f * Time.deltaTime;
@@ -239,13 +289,13 @@ public class PlayerMove : MonoBehaviourPun
         var converVector3 = UtillGame.ConventToVector3(inputVector2.normalized);
         var newDirection = quaternion * converVector3;
         Quaternion newRotation = Quaternion.LookRotation(newDirection);
-        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRotation, RotationSpeed * Time.deltaTime);
+        this._character_Base.characterAvater.transform.rotation = Quaternion.Slerp(this._character_Base.characterAvater.transform.rotation, newRotation, RotationSpeed * Time.deltaTime);
     }
     protected void UpdateImmediateRotate(Vector2 inputVector2)
     {
         var converVector3 = UtillGame.ConventToVector3(inputVector2.normalized);
         Quaternion newRotation = Quaternion.LookRotation(converVector3);
-        this.transform.rotation = newRotation;
+        this._character_Base.characterAvater.transform.rotation = newRotation;
     }
 
     protected void UpdateMoveAnimation(MoveState moveState)
@@ -253,13 +303,13 @@ public class PlayerMove : MonoBehaviourPun
         switch (moveState)
         {
             case MoveState.Idle:
-                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3), 0, _character_Base.MoveSpeed);
+                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3), 0.2f, 2.5f);
                 break;
             case MoveState.Walk:
-                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _character_Base.MoveSpeed * 0.7f, Time.deltaTime * 3), 0, _character_Base.MoveSpeed);
+                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _character_Base.MoveSpeed * 0.7f, Time.deltaTime * 3), 0, 2.5f);
                 break;
             case MoveState.Run:
-                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _character_Base.MoveSpeed * 1, Time.deltaTime * 3), 0, _character_Base.MoveSpeed);
+                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _character_Base.MoveSpeed * 1, Time.deltaTime * 3), 0, 2.5f);
                 break;
             case MoveState.Stun:
                 _animationValue = -0.1f;

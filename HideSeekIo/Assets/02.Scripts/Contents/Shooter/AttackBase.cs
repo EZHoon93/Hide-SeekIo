@@ -66,13 +66,12 @@ public abstract class AttackBase : MonoBehaviourPun
 
     public virtual void SetupWeapon(Weapon newWeapon )
     {
-        print(newWeapon.gameObject.name + "셋업중");
         //newWeapon.AttackSucessEvent += () => { _animator.SetTrigger(newWeapon.AttackAnim); State = state.Attack; print(newWeapon.AttackAnim +"애니이름"); } ;
         //newWeapon.AttackEndEvent += AttackBaseEnd;
         weaponChangeCallBack += newWeapon.WeaponChange;
         SetupEquipmentable(newWeapon.equipmentable);
         SetupControllerObject(newWeapon.inputControllerObject);
-        switch (newWeapon.inputType)
+        switch (newWeapon.inputControllerObject.inputType)
         {
             case InputType.Main:
                 baseWeapon = newWeapon;

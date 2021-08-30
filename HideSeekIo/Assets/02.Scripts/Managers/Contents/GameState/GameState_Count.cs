@@ -1,8 +1,11 @@
 ﻿
 using System.Collections.Generic;
 using System.Linq;
+
+
 using Photon.Pun;
 using UnityEngine;
+using Data;
 
 public class GameState_Count : GameState_Base
 {
@@ -33,90 +36,101 @@ public class GameState_Count : GameState_Base
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            List<int> playerList = GetJoinUserList();   //참가한 유저수 채워넣음.
-            int aiNumber = -1;
-            for (int i = playerList.Count; i < 8; i++)
+            List<SendAllSkinInfo> playerDataInfoList = GetJoinUserList();   //참가한 유저수 채워넣음.
+            //for (int i = playerDataInfoList.Count; i < 8; i++)
+            //{
+            //    SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAllSkin();
+            //    playerDataInfoList.Add(sendAllSkinInfo); // -1은 AI수 
+            //}
+            //var playerSelectedDataDic = Select(playerList); //좀비 및 휴먼 선택및 위치 
+            //photonView.RPC("CreatePlayer", RpcTarget.AllViaServer, playerSelectedDataDic);
+            //photonView.RPC("CreatePlayer", RpcTarget.AllViaServer);
+            foreach(var p in playerDataInfoList)
             {
-                playerList.Add(aiNumber); // -1은 AI수 
-                aiNumber--;
+                Managers.Spawn.PlayerSpawn(p, Vector3.zero, false);
             }
-            var playerSelectedDataDic = Select(playerList); //좀비 및 휴먼 선택및 위치 
-            photonView.RPC("CreatePlayer", RpcTarget.AllViaServer, playerSelectedDataDic);
         }
     }
 
-    List<int> GetJoinUserList()
+    /// <summary>
+    /// 참여한 유저 리스트를 받아옴.
+    /// </summary>
+    /// <returns></returns>
+    List<SendAllSkinInfo> GetJoinUserList()
     {
         var playerList = PhotonNetwork.CurrentRoom.Players.Values.Where(s => (bool)s.CustomProperties["jn"] == true).ToList();
-        List<int> result = new List<int>();
+        List<SendAllSkinInfo> result = new List<SendAllSkinInfo>();
         foreach (var p in playerList)
         {
-            result.Add(p.ActorNumber);
+            SendAllSkinInfo sendAllSkinInfo;
+            sendAllSkinInfo.autoNumber = p.ActorNumber;
+            sendAllSkinInfo.chacterType = (Define.CharacterType)p.CustomProperties["ch"];
+            sendAllSkinInfo.avaterSkinID = p.CustomProperties["as"].ToString();
+            result.Add(sendAllSkinInfo);
         }
 
         return result;
     }
 
+    ////Value => 0, 1 은 좀비.
+    //Dictionary<int, int> Select(List<int> playerNumberList)
+    //{
+    //    Dictionary<int, int> result = new Dictionary<int, int>();
+    //    int userSeekerCount = GeeSeekerUserCount();
+    //    int AISeekerCount = _totSeekerCount - userSeekerCount; //선택될 AI 좀비 수 
 
-    //Value => 0, 1 은 좀비.
-    Dictionary<int, int> Select(List<int> playerNumberList)
-    {
-        Dictionary<int, int> result = new Dictionary<int, int>();
-        int userSeekerCount = GeeSeekerUserCount();
-        int AISeekerCount = _totSeekerCount - userSeekerCount; //선택될 AI 좀비 수 
+    //    List<int> seekerSpawnIndexList = UserPlayerSpawnSetup(Define.Team.Seek);
+    //    List<int> hiderSpawnIndexList = UserPlayerSpawnSetup(Define.Team.Hide);
+    //    foreach (var p in playerNumberList)
+    //    {
+    //        int selectSpawnIndex; //선택된 위치
+    //        //p <0은 AI
+    //        if (p < 0)
+    //        {
 
-        List<int> seekerSpawnIndexList = UserPlayerSpawnSetup(Define.Team.Seek);
-        List<int> hiderSpawnIndexList = UserPlayerSpawnSetup(Define.Team.Hide);
-        foreach (var p in playerNumberList)
-        {
-            int selectSpawnIndex; //선택된 위치
-            //p <0은 AI
-            if (p < 0)
-            {
+    //            //술래팀 뽑아야한다면 술래팀 선정
+    //            if (AISeekerCount > 0)
+    //            {
+    //                AISeekerCount--;
+    //                var ranIndex = Random.Range(0, seekerSpawnIndexList.Count);
+    //                selectSpawnIndex = seekerSpawnIndexList[ranIndex];
+    //                seekerSpawnIndexList.RemoveAt(ranIndex);
+    //            }
+    //            //뽑아야할 술래팀없다면 나머진 숨는팀
+    //            else
+    //            {
+    //                var ranIndex = Random.Range(0, hiderSpawnIndexList.Count);
+    //                selectSpawnIndex = hiderSpawnIndexList[ranIndex];
+    //                hiderSpawnIndexList.RemoveAt(ranIndex);
+    //            }
+    //        }
 
-                //술래팀 뽑아야한다면 술래팀 선정
-                if (AISeekerCount > 0)
-                {
-                    AISeekerCount--;
-                    var ranIndex = Random.Range(0, seekerSpawnIndexList.Count);
-                    selectSpawnIndex = seekerSpawnIndexList[ranIndex];
-                    seekerSpawnIndexList.RemoveAt(ranIndex);
-                }
-                //뽑아야할 술래팀없다면 나머진 숨는팀
-                else
-                {
-                    var ranIndex = Random.Range(0, hiderSpawnIndexList.Count);
-                    selectSpawnIndex = hiderSpawnIndexList[ranIndex];
-                    hiderSpawnIndexList.RemoveAt(ranIndex);
-                }
-            }
+    //        //p >0 , photonView Controller Number, 즉 0보다크면 플레이어
+    //        else
+    //        {
+    //            //AI
+    //            if (userSeekerCount > 0)
+    //            {
+    //                userSeekerCount--;
+    //                var ranIndex = Random.Range(0, seekerSpawnIndexList.Count);
+    //                selectSpawnIndex = seekerSpawnIndexList[ranIndex];
+    //                seekerSpawnIndexList.RemoveAt(ranIndex);
+    //            }
+    //            else
+    //            {
+    //                var ranIndex = Random.Range(0, hiderSpawnIndexList.Count);
+    //                selectSpawnIndex = hiderSpawnIndexList[ranIndex];
+    //                hiderSpawnIndexList.RemoveAt(ranIndex);
+    //            }
 
-            //p >0 , photonView Controller Number, 즉 0보다크면 플레이어
-            else
-            {
-                //AI
-                if (userSeekerCount > 0)
-                {
-                    userSeekerCount--;
-                    var ranIndex = Random.Range(0, seekerSpawnIndexList.Count);
-                    selectSpawnIndex = seekerSpawnIndexList[ranIndex];
-                    seekerSpawnIndexList.RemoveAt(ranIndex);
-                }
-                else
-                {
-                    var ranIndex = Random.Range(0, hiderSpawnIndexList.Count);
-                    selectSpawnIndex = hiderSpawnIndexList[ranIndex];
-                    hiderSpawnIndexList.RemoveAt(ranIndex);
-                }
-
-            }
+    //        }
 
 
-            result.Add(p, selectSpawnIndex);
-        }
+    //        result.Add(p, selectSpawnIndex);
+    //    }
 
-        return result;
-    }
+    //    return result;
+    //}
 
     List<int> UserPlayerSpawnSetup(Define.Team team)
     {
@@ -143,75 +157,38 @@ public class GameState_Count : GameState_Base
 
 
 
-    //캐릭생성
-    [PunRPC]
-    void CreatePlayer(Dictionary<int, int> spawnPosDic)
-    {
-        foreach (var s in spawnPosDic)
-        {
-            if (s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
-            {
-                Local_MyPlayerCharacter(s.Value);
-            }
-            //방장만 AI생성
-            if (PhotonNetwork.IsMasterClient == false) continue;
-            if (s.Key < 0)
-            {
-                Master_Creat_AIPlayer(s.Value);
-            }
-        }
+    ////캐릭생성
+    //[PunRPC]
+    //void CreatePlayer(Dictionary<int, int> spawnPosDic)
+    //{
+    //    foreach (var s in spawnPosDic)
+    //    {
+    //        if (s.Key == PhotonNetwork.LocalPlayer.ActorNumber)
+    //        {
+    //            Local_MyPlayerCharacter(s.Value);
+    //        }
+    //        //방장만 AI생성
+    //        if (PhotonNetwork.IsMasterClient == false) continue;
+    //        if (s.Key < 0)
+    //        {
+    //        }
+    //    }
 
-        Master_ChangeState(Define.GameState.GameReady);
+    //    Master_ChangeState(Define.GameState.GameReady);
+    //}
+
+    [PunRPC]
+    public void CreatePlayer()
+    {
+        //Managers.Spawn.PlayerSpawn( Vector3.zero, false);
     }
 
     void Local_MyPlayerCharacter(int index)
     {
-        //index = 0,1은 좀비 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            var pos = _gameMainScene.GetSeekerPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Seek, pos , false);
-        }
-        else
-        {
-            var pos = _gameMainScene.GetHiderPosition(0);
-            Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, false);
-        }
+       
     }
 
-    void Master_Creat_AIPlayer(int index)
-    {
-        //object[] userData = { "User1", PlayerInfo.CurrentSkin.avaterSeverKey };
-
-        ////술래
-        //if (index <= 1)
-        //{
-        //    var pos = _gameMainScene.GetSeekerPosition(index);
-        //    Managers.Spawn.AISpawn(Define.Team.Seek, pos);
-        //}
-        ////숨는팀 생성
-        //else
-        //{
-        //    var pos = _gameMainScene.GetHiderPosition(index);
-        //    Managers.Spawn.AISpawn(Define.Team.Hide, pos);
-        //}
-        if (index > 0) return;
-        //index = 0,1은 좀비 
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    var pos = _gameMainScene.GetSeekerPosition(index);
-        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
-
-        //}
-        //else
-        //{
-        //    var pos = _gameMainScene.GetHiderPosition(index);
-        //    Managers.Spawn.PlayerSpawn(Define.Team.Hide, pos, true);
-
-        //}
-    }
-
-
+  
 
 
 

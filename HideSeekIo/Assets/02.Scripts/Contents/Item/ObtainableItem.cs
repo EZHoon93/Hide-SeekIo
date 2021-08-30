@@ -17,7 +17,7 @@ public class ObtainableItem : MonoBehaviour
         if(throwItem != null)
         {
             useType = Define.UseType.Weapon;
-            itemIndex = (int)throwItem.throwType;
+            //itemIndex = (int)throwItem.throwType;
         }
         else
         {

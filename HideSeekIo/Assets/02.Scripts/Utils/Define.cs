@@ -82,7 +82,8 @@ public class Define
         Dynamite,
         Glue,
         PoisonBomb,
-        Sniper = 201
+        Sniper = 201,
+        Gun    
     }
 
     public enum ThrowItem
@@ -297,9 +298,9 @@ public class Define
         Bear,
         Bunny,
         Cat,
-        Frog,
-        Dog,
-        Monkey
+        //Frog,
+        //Dog,
+        //Monkey
     }
 
     public enum AttackType

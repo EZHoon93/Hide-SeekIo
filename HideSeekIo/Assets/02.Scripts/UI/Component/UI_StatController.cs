@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_StatController : UI_Base
 {
@@ -36,6 +37,10 @@ public class UI_StatController : UI_Base
 
         foreach (var ui in uI_StatList)
             ui.transform.ResetTransform(_waitPanel);
+
+        _selectpanel.GetComponent<HorizontalLayoutGroup>().enabled = false;
+        _selectpanel.GetComponent<HorizontalLayoutGroup>().enabled = true;
+
     }
 
     public void SetActive(bool active)

@@ -15,6 +15,7 @@ public abstract class Skill_Base : MonoBehaviourPun
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
+        playerController.changeOnwerShip += ChangeOnwerShip;
         SetupCallBack();
     }
     protected virtual void SetupCallBack()
@@ -28,11 +29,15 @@ public abstract class Skill_Base : MonoBehaviourPun
 
     private void Start()
     {
-        playerController.playerShooter.SetupControllerObject(inputControllerObject);
-        Setup();
+        SetupData();
     }
 
-    protected virtual void Setup()
+    void ChangeOnwerShip(PhotonView photonView)
+    {
+        playerController.playerShooter.SetupControllerObject(inputControllerObject);
+    }
+
+    protected virtual void SetupData()
     {
 
     }

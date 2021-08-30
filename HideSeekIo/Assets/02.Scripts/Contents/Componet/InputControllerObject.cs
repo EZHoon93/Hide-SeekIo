@@ -9,6 +9,7 @@ public class InputControllerObject : MonoBehaviour
     //Dictionary<ControllerInputType, Action<Vector2>> controllerInputTypeDic { get; set; } = new Dictionary<ControllerInputType, Action<Vector2>>();
     public InputType inputType { get; set; }
     public Define.AttackType attackType;
+    public PlayerShooter.state shooterState{ get; set; }
     public float InitCoolTime { get; set; }
     public float RemainCoolTime { get; set; }
     public event Action<Vector2> useEventCallBack;

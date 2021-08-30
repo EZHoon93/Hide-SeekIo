@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
+using ExitGames.Client.Photon;
+
 using UnityEngine;
+
 
 public class Managers : MonoBehaviour
 {
@@ -67,7 +71,6 @@ public class Managers : MonoBehaviour
             s_instance._data.Init();
             s_instance._pool.Init();
             s_instance._sound.Init();
-            
         }		
         
 	}

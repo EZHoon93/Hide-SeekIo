@@ -2409,7 +2409,6 @@ namespace Photon.Pun
 
             return null;
         }
-
         private static GameObject NetworkInstantiate(Hashtable networkEvent, Player creator)
         {
 

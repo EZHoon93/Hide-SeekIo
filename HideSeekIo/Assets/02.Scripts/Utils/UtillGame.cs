@@ -1,6 +1,8 @@
 ﻿
 using UnityEngine;
 using UnityEngine.AI;
+using Data;
+
 public static class UtillGame
 {
 
@@ -321,5 +323,18 @@ public static class UtillGame
         }
 
         return false;
+    }
+
+    public static Data.SendAllSkinInfo MakeRandomAllSkin()
+    {
+        Data.SendAllSkinInfo sendAllSkinInfo;
+        var ranCharacterType = Util.RandomEnum<Define.CharacterType>();
+        var avaterAll = Resources.LoadAll<GameObject>($"Prefabs/Character/{ranCharacterType.ToString()}");
+        Debug.LogError(avaterAll.Length);
+        var selectAvater = avaterAll[Random.Range(0, avaterAll.Length-1)].ToString();
+        sendAllSkinInfo.autoNumber = -1;
+        sendAllSkinInfo.chacterType = ranCharacterType;
+        sendAllSkinInfo.avaterSkinID = selectAvater;
+        return sendAllSkinInfo;
     }
 }

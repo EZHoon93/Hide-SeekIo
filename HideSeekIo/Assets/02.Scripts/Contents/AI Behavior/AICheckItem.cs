@@ -11,7 +11,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
     [TaskCategory("EZ")]
     public class AICheckItem : Action
     {
-        public SharedThrowItemEnum checkThrowItemEnum;
+        //public SharedThrowItemEnum checkThrowItemEnum;
         public SharedImmdiateItemEnum checkImmdiateItemEnum;
         public SharedInt itemIndex;
 

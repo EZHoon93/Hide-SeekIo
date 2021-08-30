@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using Data;
 using System.Linq;
+using Photon.Pun;
 
 public static class PlayerInfo 
 {
@@ -178,6 +179,15 @@ public static class PlayerInfo
         return Define.CharacterType.Bear;
     }
 
+    public static SendAllSkinInfo MakeAllSkinInfo()
+    {
+        SendAllSkinInfo sendAllSkinInfo;
+        var characterType = GetCurrentUsingCharacter();
+        sendAllSkinInfo.autoNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+        sendAllSkinInfo.chacterType = characterType;
+        sendAllSkinInfo.avaterSkinID = GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
+        return sendAllSkinInfo;
+    }
     //public static string ChangeCurrentSkin(int useSelectIndex)
     //{
     //    var currentCh = GetCurrentUsingCharacter();

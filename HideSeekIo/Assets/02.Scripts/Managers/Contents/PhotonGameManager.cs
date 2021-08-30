@@ -37,7 +37,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #region GameState
     GameState_Base _gameState;
     Define.GameState _state; //게임 상태, 최초상태 wait
-
+    int test =0 ;
     public GameState_Base GameState => _gameState;
     public Define.GameState State
     {
@@ -130,7 +130,12 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
     public void GameJoin()
     {
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", true } });
+        var characterType = PlayerInfo.GetCurrentUsingCharacter();
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
+            { "jn", true },
+            { "ch", (int)characterType},
+            { "as" ,PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey }
+        }); ;
         gameJoin?.Invoke();
     }
 
@@ -208,6 +213,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #endregion
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        print("OnPlayerEnter Room");
         enterUserList?.Invoke(newPlayer);
     }
 
@@ -215,6 +221,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        print("OnPlayerLetr Room");
         leftUserList?.Invoke(otherPlayer);
     }
 
@@ -258,34 +265,24 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
-        print("OnEvent" + eventCode);
         switch (eventCode)
         {
             case (byte)Define.PhotonOnEventCode.AbilityCode:
-                ReciveAbility_GlobalCachedEvent(photonEvent.CustomData);
+                var HT = (Hashtable)photonEvent.CustomData;
+                int viewID = (int)HT["vID"];
+                var playerController = Managers.Game.GetLivingEntity(viewID).GetComponent<PlayerController>();
+                if (playerController)
+                    playerController.playerStat.UpdateStatDatasByServer((int[])HT["st"]);
                 break;
         }
     }
 
-    //public void SendEvent(Define.PhotonOnEventCode photonOnEventCode, Hashtable hashtable)
-    //{
-    //    byte evCode = keyCode;
-    //    object content = hashtable;
-
-    //    RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-    //    {
-    //        CachingOption = EventCaching.AddToRoomCacheGlobal,
-    //        Receivers = ReceiverGroup.All,
-    //        InterestGroup = 0,
-    //    };
-    //    SendOptions sendOptions = new SendOptions { Reliability = true };
-    //    PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
-    //}
+  
 
     public void SendEvent(Define.PhotonOnEventCode photonOnEventCode ,EventCaching eventCachingCode,  Hashtable hashtable)
     {
         byte evCode = (byte)photonOnEventCode;
-        object[] content = { 1, hashtable };
+        object content = hashtable;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions
         {
             CachingOption = eventCachingCode,
@@ -293,43 +290,10 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             //InterestGroup = 0,
         };
         SendOptions sendOptions = new SendOptions { Reliability = true };
-        print("이벤트보냄");
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
 
-    public void SendAbility_GlobalCachedEvent(PlayerController playerController)
-    {
-        //int viewId = playerController.photonView.ViewID;
-        //byte keyCode = (byte)Define.EventCode.AbilityCode;
-        //bool isAI = false;
-        //List<int> sendData = new List<int>();   //보낼데이터
-        //foreach (var v in playerController._buyAbilityList)
-        //    sendData.Add((int)v);   //현재 데이터들을 갖고옴
-        //sendData.Add((int)abilityType);  //새로 추가 데이터
-        ////포톤으로 보낼 데이터 만든다
-        //Hashtable HT = new Hashtable();
-        //HT.Add("Pv", viewId);   //적용할 캐릭 뷰 아이디
-        //RemoveEvent(keyCode, HT);   //현재까지의 키코드로 데이터제거 보냄
-        //HT.Add("Ab", sendData.ToArray());       //int[] 형식
-        //SendEvent(viewId, keyCode, isAI, HT);   //데이터 보내기
-    }
-
-    //영구적 능력치 이벤트 받았을때 (캐싱 이벤트)
-    public void ReciveAbility_GlobalCachedEvent(object photonCustomData)
-    {
-        var datas = (object[])photonCustomData;
-        var HT = (Hashtable)datas[1];
-        //int viewID = (int)HT["Pv"];
-
-        int[] hastData = (int[]) HT["st"];
-        print(datas[0] + " z");
-        print(hastData.Length + "이벤트 수 ");
-        //var playerController = GameManager.instance.GetLivingEntity(viewID).GetComponent<PlayerController>();
-        ////해당 플레이어에게 적용
-        //AbilityManager.FindAddAbilityType(playerController, datas);
-
-    }
 
     #endregion
     public void Update()
@@ -357,8 +321,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
-            var mainUI = Managers.UI.SceneUI as UI_Main;
-            mainUI.StatController.SetActive(true);
+            Managers.Game.myPlayer.playerStat.StatPoint++;
         }
      
         if (Input.GetKeyDown(KeyCode.I))
@@ -381,10 +344,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
 
 
-        //PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-        //myPlayer.ViewID(),
-        // }); ;
-
 
     }
 
@@ -402,5 +361,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         return Define.InGameItem.Null;
     }
+
+
 
 }

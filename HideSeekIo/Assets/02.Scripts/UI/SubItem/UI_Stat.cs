@@ -30,6 +30,6 @@ public class UI_Stat : UI_Base
     void Click()
     {
         clickEvenetCallBack?.Invoke();  //UI 꺼줌,
-        Managers.Game.myPlayer.UPStatPointToServer(statType);
+        Managers.Game.myPlayer.playerStat.UPStatPointToServer(statType);
     }
 }

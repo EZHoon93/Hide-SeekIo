@@ -15,9 +15,9 @@ public class UI_Zoom : MonoBehaviour
     Weapon.WeaponType _weaponType;
     Transform _taget;
 
-    [SerializeField] LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
 
-   
+
     public void Setup(Weapon.WeaponType weaponType, Weapon weapon, Transform target)
     {
         _weaponType = weaponType;

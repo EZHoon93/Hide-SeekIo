@@ -1,9 +1,7 @@
-﻿using System.Collections;
-
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
-using System.Linq.Expressions;
 using System.Collections.Generic;
+using Data;
 
 public class SpawnManager 
 {
@@ -18,23 +16,6 @@ public class SpawnManager
         }
         PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
     }
-
-
-    //public void InGameItemSpawn( System.Enum @enum , PlayerController buyPlayer)
-    //{
-    //    int sendEnumValue = -1;
-    //    if( @enum.GetType() == typeof( Define.HiderStoreList))
-    //    {
-    //        sendEnumValue = 0;
-    //    }
-    //    else
-    //    {
-    //        sendEnumValue = 1;
-    //    }
-
-
-    //    PhotonNetwork.Instantiate("InGameItem", Vector3.up*50, Quaternion.identity, 0, new object[] { buyPlayer.ViewID() ,sendEnumValue, @enum }); //사용한 플레이어 ViewID
-    //}
 
     public GameObject CharacterSpawn(Define.CharacterType characterType)
     {
@@ -58,56 +39,25 @@ public class SpawnManager
     }
 
 
-    public void PlayerSpawn(Define.Team team, Vector3 pos, bool isAI)
+    public void PlayerSpawn(SendAllSkinInfo sendAllSkinInfo, Vector3 pos, bool isAI)
     {
         //var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
         Define.CharacterType characterType;
         string avaterId = null;
-        if (isAI)
-        {
-            characterType = Util.RandomEnum<Define.CharacterType>();    //랜덤으로 가져옴
-        }
-        else
-        {
-            characterType = PlayerInfo.GetCurrentUsingCharacter();
-            avaterId = PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
-        }
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, avaterId , characterType , isAI };
-
-        PlayerController createPlayer = null;
-        switch (team)
-        {
-            case Define.Team.Hide:
-                createPlayer= PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
-                break;
-            case Define.Team.Seek:
-                //datas.Add("Bear");
-                createPlayer = PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
-                break;
-        }
-
-        if(isAI == false)
-        {
-            Managers.Game.myPlayer = createPlayer;
-        }
-    }
-    public void AISpawn(Define.Team team, Vector3 pos)
-    {
-        //var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
-
-        //List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName, PlayerInfo.CurrentSkin.avaterSeverKey , selectCharacterType };
-
-        //switch (team)
+        //SendAllSkinInfo sendAllSkinInfo;
+        //if (isAI)
         //{
-        //    case Define.Team.Seek:
-        //        PhotonNetwork.InstantiateRoomObject("UserSeeker", pos, Quaternion.identity, 0, datas.ToArray());
-        //        break;
-        //    case Define.Team.Hide:
-        //        datas.Add(PlayerInfo.CurrentSkin.weaponSeverKey);
-        //        PhotonNetwork.InstantiateRoomObject("UserHider", pos, Quaternion.identity, 0, datas.ToArray());
-        //        break;
+        //    characterType = Util.RandomEnum<Define.CharacterType>();    //랜덤으로 가져옴
+        //}
+        //else
+        //{
+        //    sendAllSkinInfo = PlayerInfo.MakeAllSkinInfo();
+        //    //characterType = PlayerInfo.GetCurrentUsingCharacter();
+        //    //avaterId = PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
         //}
 
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName,sendAllSkinInfo.autoNumber, sendAllSkinInfo.chacterType,sendAllSkinInfo.avaterSkinID  , isAI };
+        PhotonNetwork.InstantiateRoomObject("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
     }
 
     public GameObject ItemSpawn(System.Enum inGameItem, PlayerController playerController)
@@ -138,8 +88,8 @@ public class SpawnManager
                 datas.Add("Wm01");
                 break;
             case Define.Weapon.Sniper:
-
-                datas.Add($"Gun/{weapon.ToString()}");
+            case Define.Weapon.Gun:
+                weaponID = $"Gun/{weapon.ToString()}";
                 break;
             default:
                 weaponID = $"ThrowItem/{weapon.ToString()}";
@@ -157,20 +107,5 @@ public class SpawnManager
 
     }
 
-    //public void TimerItemSpawn(Define.TimerItem timerItem , int useViewID)
-    //{
-
-    //    //PhotonNetwork.InstantiateRoomObject("TimerItem/TNT", this.transform.position, Quaternion.identity)
-
-    //}
-
-    //public void MeleeWeaponSpawn(int viewID)
-    //{
-    //    PhotonNetwork.Instantiate("Melee2", Vector3.zero, Quaternion.identity);
-    //}
-
-    //public void ThrowWeaponSpawn(int viewID)
-    //{
-
-    //}
+   
 }

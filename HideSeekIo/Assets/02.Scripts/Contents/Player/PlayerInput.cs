@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Photon.Pun;
+using UnityEngine.AI;
+using BehaviorDesigner.Runtime;
+
 public enum ControllerInputType
 {
     Down,
@@ -36,13 +39,16 @@ public class MyInput
         inputVector2 = vector2;
     }
 
-    public Vector2 inputVector2 { get; private set; }
+    public Vector2 inputVector2 { get;  set; }
     public float coolTime { get; set; }
 }
 
 
 public class PlayerInput : MonoBehaviourPun
 {
+    NavMeshAgent navMeshAgent;
+    BehaviorTree behaviorTree;
+
     protected float _stopTime;
     protected bool _isAttack;
     public Vector2 RandomVector2 { get; set; }
@@ -58,6 +64,14 @@ public class PlayerInput : MonoBehaviourPun
         {InputType.Sub3 , new MyInput() },
     };
 
+    private void Awake()
+    {
+        navMeshAgent = this.gameObject.GetOrAddComponent<NavMeshAgent>();
+        behaviorTree = this.gameObject.GetOrAddComponent<BehaviorTree>();
+
+        navMeshAgent.enabled = false;
+        behaviorTree.enabled = false;
+    }
 
 
     public virtual void OnPhotonInstantiate()
@@ -66,6 +80,22 @@ public class PlayerInput : MonoBehaviourPun
         _isAttack = false;
         _stopTime = 0;
         RandomVector2 = Vector2.one;
+    }
+
+    private void Update()
+    {
+
+#if UNITY_EDITOR
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        Vector2 move = new Vector2(h, v);
+        controllerInputDic[InputType.Move].inputVector2 = move;
+#endif
+
+    }
+
+    public void ChangeOwnerShip()
+    {
         if (this.IsMyCharacter())
         {
             foreach (var input in controllerInputDic)
@@ -79,7 +109,6 @@ public class PlayerInput : MonoBehaviourPun
     public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType , System.Action<Vector2> action)
     {
         MyInput addInput = null;
-        print(inputType + " /" + controllerInputType + "/");
         bool isCache = controllerInputDic.TryGetValue(inputType, out addInput);
         if (isCache == false)
         {

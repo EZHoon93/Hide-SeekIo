@@ -2,20 +2,20 @@
 
 using UnityEngine;
 using Photon.Pun;
-public class Weapon_Gun : MonoBehaviour
+public class Weapon_Gun : Weapon
 {
     //[SerializeField] ParticleSystem _muzzleFalsh;
     //[SerializeField] protected GameObject _bulletPrefab;
     //[SerializeField] int _maxAmmo;
     //[SerializeField] int _currentAmmo;
-    //[SerializeField] float _maxDistance;
+    [SerializeField] float _maxDistance;
     //[SerializeField] float _attackTimeBet;
     //[SerializeField] protected Transform _fireTransform;
 
     //[SerializeField] protected Transform _lineTransform;
     //float _lastFireTime;
     //LineRenderer _lineRenderer;
-    //int _zoomLayer = 1 << (int)Define.Layer.Wall;
+    int _zoomLayer = 1 << (int)Define.Layer.Wall;
 
     ////public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Gun;
 
@@ -38,7 +38,48 @@ public class Weapon_Gun : MonoBehaviour
     //{
     //    _currentAmmo = _maxAmmo;
     //}
+    protected override void Awake()
+    {
+        base.Awake();
+        weaponType = WeaponType.Gun;
+    }
+    protected override void SetupCallBack()
+    {
+        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+        //inputControllerObject = inputControllerObject ?? new InputControllerObject();
+        inputControllerObject.inputType = InputType.Sub1;
+        inputControllerObject.attackType = Define.AttackType.Joystick;
+        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
+        inputControllerObject.AddUseEvent(Attack);
+        inputControllerObject.AddZoomEvent(Zoom);
 
+    }
+
+    public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
+    {
+        AttackAnim = animName;
+        AttackDelay = delayTime;
+        AfaterAttackDelay = afaterDelayTime;
+        AttackDistance = distance;
+        //UICanvas.transform.localScale = new Vector3(attackRange, attackRange, attackRange); //범위에 따른 ui변경
+    }
+
+    public override void Attack(Vector2 inputVector)
+    {
+
+    }
+
+    public override void Zoom(Vector2 inputVector)
+    {
+        var pos = UtillGame.ConventToVector3(inputVector);
+        if (pos.sqrMagnitude == 0)
+        {
+            uiZoom.lineRenderer.enabled = false;
+        }
+        uiZoom.lineRenderer.SetPosition(0, uiZoom.lineRenderer.transform.position);
+        uiZoom.lineRenderer.SetPosition(1, GetHitPoint(uiZoom.lineRenderer.transform, inputVector));
+        uiZoom.lineRenderer.enabled = true;
+    }
     //public override void Attack(Vector2 inputVector)
     //{
     //    state = State.Delay;
@@ -81,22 +122,21 @@ public class Weapon_Gun : MonoBehaviour
 
     //}
 
-    //Vector3 GetHitPoint(Transform rayTransform, Vector2 inputVector)
-    //{
-    //    //UICanvas.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(inputVector);
-    //    RaycastHit hit;
-    //    Vector3 hitPosition;
-    //    if (Physics.Raycast(rayTransform.transform.position, rayTransform.transform.forward, out hit, _maxDistance, _zoomLayer))
-    //    {
-    //        hitPosition = hit.point;
-    //        hitPosition.y = rayTransform.transform.position.y;
-    //    }
-    //    else
-    //    {
-    //        hitPosition = rayTransform.transform.position + rayTransform.transform.forward * _maxDistance;
-    //    }
-    //    return hitPosition;
-    //}
-
+    Vector3 GetHitPoint(Transform rayTransform, Vector2 inputVector)
+    {
+        //UICanvas.transform.rotation = UtillGame.GetWorldRotation_ByInputVector(inputVector);
+        RaycastHit hit;
+        Vector3 hitPosition;
+        if (Physics.Raycast(rayTransform.transform.position, rayTransform.transform.forward, out hit, _maxDistance, _zoomLayer))
+        {
+            hitPosition = hit.point;
+            hitPosition.y = rayTransform.transform.position.y;
+        }
+        else
+        {
+            hitPosition = rayTransform.transform.position + rayTransform.transform.forward * _maxDistance;
+        }
+        return hitPosition;
+    }
 
 }

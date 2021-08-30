@@ -79,7 +79,6 @@ public class UI_ControllerJoystick : MonoBehaviour
 
     public void SetActiveControllerType(Define.AttackType attackType ,Sprite sprite = null)
     {
-        print("SEtaCtivoe " + this.gameObject.name);
         //if (controllerType == Define.ControllerType.Button)
         //{
         //    if (newObtainableItem)

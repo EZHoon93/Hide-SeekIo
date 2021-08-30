@@ -32,7 +32,6 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
 
     [SerializeField] protected Transform _weaponModel;
 
-    public InputType inputType { get; protected set; } 
     public WeaponType weaponType { get; protected set; }
     public State state { get; set; }
     public UseType type { get; set; }

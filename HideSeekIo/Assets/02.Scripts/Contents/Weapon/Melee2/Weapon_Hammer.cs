@@ -22,6 +22,7 @@ public class Weapon_Hammer : Weapon
         //inputControllerObject = inputControllerObject ?? new InputControllerObject();
         inputControllerObject.inputType = InputType.Sub1;
         inputControllerObject.attackType =  Define.AttackType.Button;
+        inputControllerObject.shooterState = PlayerShooter.state.NoMove;
         inputControllerObject.AddUseEvent(Attack);
     }
     private void Start()
@@ -36,7 +37,6 @@ public class Weapon_Hammer : Weapon
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         var weaponId = (string)info.photonView.InstantiationData[1];
-        inputType = InputType.Main;
         var weaponObject = Managers.Resource.Instantiate($"Melee2/{weaponId}");   //유저 무기 아바타 생성
         weaponObject.transform.ResetTransform(_weaponModel);   //아바타 생성된것 자식오브젝트로 이동
         base.OnPhotonInstantiate(info);
@@ -93,7 +93,7 @@ public class Weapon_Hammer : Weapon
 
     void AttackEffect()
     {
-        var attackPos = playerController.transform.position + playerController.transform.forward * AttackDistance * 0.5f;
+        var attackPos = playerController.transform.position + playerController.character_Base.characterAvater.transform.forward * AttackDistance * 0.5f;
         EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
         UtillGame.DamageInRange(playerController.transform, AttackDistance, 10, playerController.ViewID(), UtillLayer.seekerToHiderAttack, 110);
         Managers.Sound.Play(_attackClip, Define.Sound.Effect);

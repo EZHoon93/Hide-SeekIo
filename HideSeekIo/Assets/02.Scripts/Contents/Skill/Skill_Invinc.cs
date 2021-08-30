@@ -7,7 +7,7 @@ public class Skill_Invinc : Skill_Base
     //public override Define.ControllerType controllerType { get; set; } = Define.ControllerType.Button;
 
 
-    protected override void Setup()
+    protected override void SetupData()
     {
         inputControllerObject.InitCoolTime = 5;
     }

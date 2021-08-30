@@ -60,6 +60,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     //포톤 서버 연결
     public void Connect()
     {
+        print("연결시도");
         PhotonNetwork.GameVersion = _gameVersion;
         State = Define.ServerState.Connecting;  //연결중
         PhotonNetwork.ConnectUsingSettings();
@@ -97,6 +98,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     /// 포톤 서버 접속시 자동 실행
     public override void OnConnectedToMaster()
     {
+        print("OnConnectedToMaster");
+
         //마스터 서버에 접속중이라면
         if (PhotonNetwork.IsConnected)
         {
@@ -132,6 +135,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // 룸에 참가 완료된 경우 자동 실행
     public override void OnJoinedRoom()
     {
+        print("OnJoinedRoom");
+
         if (PhotonNetwork.IsMasterClient)
         {
             Managers.Scene.MasterSelectNextMainScene(Define.Scene.Unknown);

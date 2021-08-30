@@ -8,26 +8,25 @@ public class PlayerShooter : MonoBehaviourPun
     public enum state
     {
         Idle,
-        Attack,
-        Throw,
-        Dash,
+        NoMove,
+        MoveAttack,
+        Wait,
         Jump
+        //Attack,
+        //Throw,
+        //Dash,
+        //Jump
     }
     public state State { get; protected set; }
+    [SerializeField] GameObject[] itemInventory = new GameObject[1];
 
-    //[SerializeField] Transform _centerPivot;
     Character_Base _character_Base;
     PlayerInput _playerInput;
     Animator _animator => _character_Base.animator;
-
-    //public Transform CenterPivot => _centerPivot;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-
-    [SerializeField] GameObject[] itemInventory = new GameObject[1];
     public Vector2 AttackDirection { get; set; }
     public Vector3 AttackPoint { get; set; }
     public GameObject[] ItemIntentory => itemInventory;
-
     Action<int> weaponChangeCallBack;
 
     public IAttack currentAttack { get; protected set; }
@@ -53,30 +52,43 @@ public class PlayerShooter : MonoBehaviourPun
         {
             PhotonNetwork.Destroy(baseWeapon.gameObject);
         }
+    }
+
+    public void ChangeOwnerShip()
+    {
+
         if (this.IsMyCharacter())
         {
+            Managers.Spawn.WeaponSpawn(Define.Weapon.Gun, this);
         }
     }
-   
-
 
 
     public virtual void SetupWeapon(Weapon newWeapon)
     {
+        print("Setup Weapon " + newWeapon.gameObject.name + "/"+newWeapon.inputControllerObject.inputType);
         var state = GetShooterState(newWeapon);
-        newWeapon.inputControllerObject.useSucessStartCallBack += () => { _animator.SetTrigger(newWeapon.AttackAnim); State = state; print(newWeapon.AttackAnim + "애니이름"); };
+        newWeapon.inputControllerObject.useSucessStartCallBack += () => { _animator.SetTrigger(newWeapon.AttackAnim); State = state; };
         newWeapon.inputControllerObject.useSucessEndCallBack += AttackBaseEnd;
         weaponChangeCallBack += newWeapon.WeaponChange;
         SetupEquipmentable(newWeapon.equipmentable);
         SetupControllerObject(newWeapon.inputControllerObject);
-        switch (newWeapon.inputType)
+        print("dddddddd Weapon " + newWeapon.gameObject.name + "/" + newWeapon.inputControllerObject.inputType);
+
+        switch (newWeapon.inputControllerObject.inputType)
         {
-            case InputType.Main:    //술래!!
+
+            case InputType.Sub1:    //술래!!
                 baseWeapon = newWeapon;
+                print("Setup sssssssss " + newWeapon.gameObject.name + "/" + newWeapon.inputControllerObject.inputType);
+
                 ChangeWeapon(baseWeapon);
                 break;
         }
-     
+
+        print("dkkkkn " + newWeapon.gameObject.name + "/" + newWeapon.inputControllerObject.inputType);
+
+
     }
 
     public void SetupControllerObject(InputControllerObject newInputControllerObject)
@@ -102,6 +114,7 @@ public class PlayerShooter : MonoBehaviourPun
 
     public void ChangeWeapon(Weapon useNewWeapon)
     {
+        print(useNewWeapon + "/ ssssss/ / ");
         weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
         SetupAnimation(useNewWeapon);
     }
@@ -139,8 +152,8 @@ public class PlayerShooter : MonoBehaviourPun
         {
             inputControllerObject.Zoom(Vector2.zero);
         }
-        inputControllerObject.Use(inputVector2);
         AttackDirection = inputVector2;
+        inputControllerObject.Use(inputVector2);
         if (baseWeapon)
         {
             baseWeapon.useState = Weapon.UseState.Use;
@@ -155,7 +168,7 @@ public class PlayerShooter : MonoBehaviourPun
     protected virtual void WeaponAttackSucess(Weapon attackWeapon)
     {
         _animator.SetTrigger(attackWeapon.AttackAnim);
-        State = state.Throw;
+        State = attackWeapon.inputControllerObject.shooterState;
     }
     protected virtual void AttackBaseEnd()
     {
@@ -177,28 +190,33 @@ public class PlayerShooter : MonoBehaviourPun
         switch (weapon.weaponType)
         {
             case Weapon.WeaponType.Hammer:
-                return state.Attack;
+                return state.NoMove;
             case Weapon.WeaponType.Throw:
-                return state.Throw;
+                return state.MoveAttack;
             default:
                 return state.Idle;
         }
     }
 
+    [PunRPC]
 
-    public void Dash()
+    public void Dash(Vector3 playerPos,  Vector2 inputVector2)
     {
-        StartCoroutine(DashProcess());
+        this.transform.position = playerPos;
+        StartCoroutine(DashProcess(inputVector2));
     }
 
-    IEnumerator DashProcess()
+    IEnumerator DashProcess( Vector2 inputVector2)
     {
         //AttackDirection =  _inputBase.controllerInputDic[InputType.Move].inputVector2;
-        AttackDirection = UtillGame.ConventToVector2(this.transform.forward);
-        State = state.Dash;
+        //AttackDirection = UtillGame.ConventToVector2(this._character_Base.characterAvater. transform.forward);
+        State = state.Jump;
+        AttackDirection = inputVector2;
+        _animator.SetTrigger("Dash");
         yield return new WaitForSeconds(0.3f);
         State = state.Idle;
-
+        //GetComponent<PhotonMove>().m_StoredPosition = this.transform.position;
+        //GetComponent<PhotonMove>().m_NetworkPosition = this.transform.position;
     }
 
 }

@@ -10,7 +10,7 @@ public abstract class Weapon_Throw : Weapon
     //public ObtainableItem obtainableItem { get; private set; }
     public float attackRange { get; protected set; }
     public Action destroyCallBackEvent { get; set; }
-    public Define.ThrowItem throwType { get; set; }
+    //public Define.ThrowItem throwType { get; set; }
     //public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Throw;
 
 
@@ -25,6 +25,7 @@ public abstract class Weapon_Throw : Weapon
         //inputControllerObject = inputControllerObject ?? new InputControllerObject();
         inputControllerObject.inputType = InputType.Sub3;
         inputControllerObject.attackType = Define.AttackType.Joystick;
+        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
         inputControllerObject.AddUseEvent(Attack);
         inputControllerObject.AddZoomEvent(Zoom);
 
