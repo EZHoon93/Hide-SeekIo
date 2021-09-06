@@ -2938,6 +2938,7 @@ GameObject:
   - component: {fileID: 3567453020346842957}
   - component: {fileID: 7262963215065873541}
   - component: {fileID: -8208644572266014558}
+  - component: {fileID: 3676308730777197243}
   m_Layer: 0
   m_Name: Bunny09
   m_TagString: Untagged
@@ -3006,10 +3007,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1737253541e4604e90b4506bf6698ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rightHandTransform: {fileID: 0}
   _accessoriesTransform: {fileID: 4838350250160510}
   _headTransform: {fileID: 4283456582636282}
   _weaponTransform: {fileID: 4807147975213988}
+  _renderController: {fileID: 3676308730777197243}
 --- !u!114 &-8208644572266014558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,6 +3024,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skinType: 0
+--- !u!114 &3676308730777197243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709336926508102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 137331872401768338}
+  - {fileID: 137262931009557754}
 --- !u!1 &1717304495341526
 GameObject:
   m_ObjectHideFlags: 0

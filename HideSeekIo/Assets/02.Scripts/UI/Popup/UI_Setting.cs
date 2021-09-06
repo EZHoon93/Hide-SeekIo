@@ -16,10 +16,10 @@ public class UI_Setting : UI_Popup
         SaveEdit,
         CancelEdit,
         Reset,
-        BgmOn,
-        BgmOff,
-        SfxOn,
-        SfxOff
+        //BgmOn,
+        //BgmOff,
+        //SfxOn,
+        //SfxOff
     }
 
 
@@ -125,36 +125,36 @@ public class UI_Setting : UI_Popup
     }
 
 
-    void Click_OnBgm(PointerEventData pointerEventData)
-    {
-        GetButton((int)Buttons.BgmOn).gameObject.SetActive(false);
-        GetButton((int)Buttons.BgmOff).gameObject.SetActive(true);
+    //void Click_OnBgm(PointerEventData pointerEventData)
+    //{
+    //    GetButton((int)Buttons.BgmOn).gameObject.SetActive(false);
+    //    GetButton((int)Buttons.BgmOff).gameObject.SetActive(true);
 
-        PlayerInfo.optionData.bgmValue = GetButton((int)Buttons.BgmOn).gameObject.activeSelf;
-        PlayerInfo.SaveOptionData();
-    }
+    //    PlayerInfo.optionData.bgmValue = GetButton((int)Buttons.BgmOn).gameObject.activeSelf;
+    //    PlayerInfo.SaveOptionData();
+    //}
 
-    void Click_OffBgm(PointerEventData pointerEventData)
-    {
-        GetButton((int)Buttons.BgmOn).gameObject.SetActive(true);
-        GetButton((int)Buttons.BgmOff).gameObject.SetActive(false);
-        PlayerInfo.optionData.bgmValue = GetButton((int)Buttons.BgmOn).gameObject.activeSelf;
-        PlayerInfo.SaveOptionData();
-    }
+    //void Click_OffBgm(PointerEventData pointerEventData)
+    //{
+    //    GetButton((int)Buttons.BgmOn).gameObject.SetActive(true);
+    //    GetButton((int)Buttons.BgmOff).gameObject.SetActive(false);
+    //    PlayerInfo.optionData.bgmValue = GetButton((int)Buttons.BgmOn).gameObject.activeSelf;
+    //    PlayerInfo.SaveOptionData();
+    //}
 
-    void Click_OnSfx(PointerEventData pointerEventData)
-    {
-        GetButton((int)Buttons.SfxOn).gameObject.SetActive(false);
-        GetButton((int)Buttons.SfxOff).gameObject.SetActive(true);
-        PlayerInfo.optionData.soundValue = GetButton((int)Buttons.SfxOn).gameObject.activeSelf;
-        PlayerInfo.SaveOptionData();
-    }
+    //void Click_OnSfx(PointerEventData pointerEventData)
+    //{
+    //    GetButton((int)Buttons.SfxOn).gameObject.SetActive(false);
+    //    GetButton((int)Buttons.SfxOff).gameObject.SetActive(true);
+    //    PlayerInfo.optionData.soundValue = GetButton((int)Buttons.SfxOn).gameObject.activeSelf;
+    //    PlayerInfo.SaveOptionData();
+    //}
 
-    void Click_OffSfx(PointerEventData pointerEventData)
-    {
-        GetButton((int)Buttons.SfxOn).gameObject.SetActive(true);
-        GetButton((int)Buttons.SfxOff).gameObject.SetActive(false);
-        PlayerInfo.optionData.soundValue = GetButton((int)Buttons.SfxOn).gameObject.activeSelf;
-        PlayerInfo.SaveOptionData();
-    }
+    //void Click_OffSfx(PointerEventData pointerEventData)
+    //{
+    //    GetButton((int)Buttons.SfxOn).gameObject.SetActive(true);
+    //    GetButton((int)Buttons.SfxOff).gameObject.SetActive(false);
+    //    PlayerInfo.optionData.soundValue = GetButton((int)Buttons.SfxOn).gameObject.activeSelf;
+    //    PlayerInfo.SaveOptionData();
+    //}
 }

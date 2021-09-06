@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4391353814654554308}
   - component: {fileID: 6863502390596484511}
+  - component: {fileID: -2453218090872596892}
   m_Layer: 0
   m_Name: B_Shoes
   m_TagString: Untagged
@@ -48,6 +49,22 @@ MonoBehaviour:
   _particle: {fileID: 0}
   _buffController: {fileID: 0}
   _durationTime: 5
+--- !u!114 &-2453218090872596892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2714230593599961216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 6506288390798051009}
+  - {fileID: 6506288390798068245}
+  - {fileID: 6506288390799560943}
 --- !u!1001 &6506288390784464899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,6 +149,24 @@ PrefabInstance:
 --- !u!4 &6506288390784296691 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 433904, guid: 3f97cdb2dde8d7f44a37ce3a93c2bf69,
+    type: 3}
+  m_PrefabInstance: {fileID: 6506288390784464899}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &6506288390798051009 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19971778, guid: 3f97cdb2dde8d7f44a37ce3a93c2bf69,
+    type: 3}
+  m_PrefabInstance: {fileID: 6506288390784464899}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &6506288390798068245 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19984918, guid: 3f97cdb2dde8d7f44a37ce3a93c2bf69,
+    type: 3}
+  m_PrefabInstance: {fileID: 6506288390784464899}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &6506288390799560943 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19900652, guid: 3f97cdb2dde8d7f44a37ce3a93c2bf69,
     type: 3}
   m_PrefabInstance: {fileID: 6506288390784464899}
   m_PrefabAsset: {fileID: 0}

@@ -68,7 +68,7 @@ public class GameState_Gameing : GameState_Base
         hiderCount = Managers.Game.GetHiderCount();
         seekerCount = Managers.Game.GetSeekerCount();
         //술래팀 승리.!! 
-        if (hiderCount <= 0)
+        if (hiderCount < 0)
         {
             photonView.RPC("GameEndOnServer", RpcTarget.All, Define.Team.Seek);
         }

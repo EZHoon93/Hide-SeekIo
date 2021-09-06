@@ -9,11 +9,12 @@ public class CharacterAvater : MonoBehaviour
     [SerializeField] Transform _accessoriesTransform;
     [SerializeField] Transform _headTransform;
     [SerializeField] Transform _weaponTransform;
-
+    [SerializeField] RenderController _renderController;
     public Animator animator { get; set; }
     public Transform accessoriesTransform => _accessoriesTransform;
     public Transform headTransform => _headTransform;
     public Transform weaponTransform => _weaponTransform;
+    public RenderController renderController => _renderController;
     public Dictionary<Define.SkinType, GameObject> skinDic { get; set; } = new Dictionary<Define.SkinType, GameObject>();
 
 
@@ -23,6 +24,9 @@ public class CharacterAvater : MonoBehaviour
          _accessoriesTransform = transform.MyFindChild("Accessories_locator");
         _headTransform = transform.MyFindChild("Head_Accessories_locator");
         _weaponTransform = transform.MyFindChild("WeaponR_locator");
+        _renderController = this.gameObject.GetOrAddComponent<RenderController>();
+        _renderController.Setup();
+
     }
 
     private void Awake()

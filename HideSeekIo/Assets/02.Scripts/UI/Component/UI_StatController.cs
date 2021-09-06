@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class UI_StatController : UI_Base
 {
-    [SerializeField] UI_Stat[] _uI_Stats;
+    [SerializeField] UI_Select_Base[] _uI_Stats;
     [SerializeField] Transform _selectpanel;
     [SerializeField] Transform _waitPanel;
  
@@ -26,7 +26,7 @@ public class UI_StatController : UI_Base
 
     void SelectStats()
     {
-        List<UI_Stat> uI_StatList = _uI_Stats.ToList();
+        List<UI_Select_Base> uI_StatList = _uI_Stats.ToList();
         for(int i = 0; i < selectCount; i ++)
         {
             int ran = Random.Range(0, uI_StatList.Count);

@@ -10,6 +10,38 @@ public class PlayerStat : MonoBehaviourPun
 {
     int _statPoint;
     List<int> _statDataList = new List<int>();
+    [SerializeField] float _currentEnergy;
+    [SerializeField] float _moveSpeed;
+    [SerializeField] float _maxEnergy;
+
+
+    #region 프로퍼티
+    public float moveSpeed
+    {
+        get => _moveSpeed;
+        set
+        {
+            _moveSpeed = value;
+        }
+    }
+
+    public float MaxEnergy
+    {
+        get => _maxEnergy;
+        set
+        {
+            _maxEnergy = value;
+        }
+    }
+    public float CurrentEnergy 
+    {
+        get => _currentEnergy;
+        set
+        {
+            _currentEnergy = value;
+        }
+    }
+
 
     public int StatPoint
     {
@@ -32,10 +64,25 @@ public class PlayerStat : MonoBehaviourPun
     }
 
 
+    #endregion
+    private void Start()
+    {
+
+    }
     private void OnEnable()
     {
         _statPoint = 0;
         _statDataList.Clear();
+    }
+
+    public void Recive_ChangeTeam()
+    {
+        var gameMainScene  = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>();
+        if (gameMainScene)
+        {
+            //var enumList = gameMainScene.GetSelectList(_playerHealth.Team);
+            StatPoint++;
+        }
     }
 
     public void UPStatPointToServer(Define.StatType newStat)

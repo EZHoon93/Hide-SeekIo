@@ -9488,6 +9488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1504633920245936571}
   - component: {fileID: -3764117085138059007}
+  - component: {fileID: 2867836903880470734}
   m_Layer: 0
   m_Name: B_Stun
   m_TagString: Untagged
@@ -9526,3 +9527,18 @@ MonoBehaviour:
   _particle: {fileID: 0}
   _buffController: {fileID: 0}
   _durationTime: 5
+--- !u!114 &2867836903880470734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8796365312396592876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 2204011958452939989}
+  - {fileID: 2202292930909208265}

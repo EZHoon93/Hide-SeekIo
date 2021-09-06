@@ -9,18 +9,17 @@ namespace FoW
     public class HideInFog : MonoBehaviour
     {
         public int team = 0;
-        bool _isTransParent;
         [Range(0.0f, 1.0f)]
         public float minFogStrength = 0.2f;
 
         Transform _transform;
         [SerializeField] Canvas _canvas1;
-        [SerializeField] Canvas _canvas2;
 
-        [SerializeField] List<Renderer> _renderers;
+        [SerializeField] List<Renderer> _renderers = new List<Renderer>();
 
-        Renderer characterRenderer;
-        Renderer WeaponRenderer;
+        public bool isGrass { get; set; }
+        public bool isGrassDetected { get; set; }
+        public bool istransSkill { get; set; }
 
         private void Reset()
         {
@@ -35,6 +34,9 @@ namespace FoW
             }
             CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
             SetActiveRender(false);
+            isGrass = false;
+            istransSkill = false;
+            isGrassDetected = false;
         }
 
         private void OnDisable()
@@ -61,11 +63,19 @@ namespace FoW
 
             bool visible = fow.GetFogValue(_transform.position) < minFogStrength * 255;
 
-            if (_isTransParent)
+            if (isGrassDetected)
+            {
+                visible = true;
+            }
+            else
+            {
+                visible = !isGrass;
+            }
+            
+            if (istransSkill)
             {
                 visible = false;
             }
-
             SetActiveRender(visible);
 
 
@@ -80,14 +90,26 @@ namespace FoW
         {
             _renderers.Clear();
         }
-        public void AddRenderer(Renderer renderer)
+        public void AddRenderer(RenderController renderController)
         {
-            _renderers.Add(renderer);
+            foreach(var r in renderController.renderers)
+            {
+                if(_renderers.Contains(r) == false)
+                {
+                    _renderers.Add(r);
+                }
+            }
         }
 
-        public void RemoveRenderer(Renderer renderer)
+        public void RemoveRenderer(RenderController renderController)
         {
-            _renderers.Remove(renderer);
+            foreach (var r in renderController.renderers)
+            {
+                if (_renderers.Contains(r) )
+                {
+                    _renderers.Remove(r);
+                }
+            }
         }
 
         public void SetActiveRender(bool visible)
@@ -95,8 +117,6 @@ namespace FoW
 
             if (_canvas1 != null)
                 _canvas1.enabled = visible;
-            if (_canvas2 != null)
-                _canvas2.enabled = visible;
 
             if (_renderers.Count > 0)
             {
@@ -109,15 +129,19 @@ namespace FoW
         }
         public void ChangeTransParent(bool isTransParent)
         {
-            _isTransParent = isTransParent;
+            istransSkill = isTransParent;
             if (isTransParent)
             {
                 if (this.enabled) return;
                 foreach (var r in _renderers)
                 {
                     Color color = r.material.color;
-                    color.a = 0.5f;
-                    r.material.color = color;
+                    if (color != null)
+                    {
+                        color.a = 0.5f;
+                        r.material.color = color;
+                    }
+                    
                 }
             }
             else
@@ -125,8 +149,11 @@ namespace FoW
                 foreach (var r in _renderers)
                 {
                     Color color = r.material.color;
-                    color.a = 1;
-                    r.material.color = color;
+                    if (color != null)
+                    {
+                        color.a = 1;
+                        r.material.color = color;
+                    }
                 }
             }
         }

@@ -60,7 +60,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     //포톤 서버 연결
     public void Connect()
     {
-        print("연결시도");
         PhotonNetwork.GameVersion = _gameVersion;
         State = Define.ServerState.Connecting;  //연결중
         PhotonNetwork.ConnectUsingSettings();
@@ -85,8 +84,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
                 {
                     IsVisible = _isScret,
                     MaxPlayers = 8,
-                    
-                }, TypedLobby.Default) ;
+                    EmptyRoomTtl = 1,
+                    PlayerTtl = 1,
+                }, TypedLobby.Default); ; ;
             }
         }
         else
@@ -158,7 +158,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     }
 
-  
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        print("마스터 바뀜!!");
+    }
+
+
 
     //UI에서 다른채널 찾기 및 미입력시 빠른채널찾기
     public void ChangeChannel(string newRoomName= null , bool newIsScret =false)

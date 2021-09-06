@@ -13,7 +13,7 @@ public class DamageRangeTest : MonoBehaviour
 
     private void OnEnable()
     {
-        UtillGame.DamageInRange(this.transform, distance, 1, viewID, attackLayer, angle);
+        //UtillGame.DamageInRange(this.transform, distance, 1, viewID, attackLayer, angle);
 
     }
 }

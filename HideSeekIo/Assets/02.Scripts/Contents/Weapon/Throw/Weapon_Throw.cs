@@ -7,12 +7,8 @@ using System;
 public abstract class Weapon_Throw : Weapon 
 {
     [SerializeField] GameObject _projectilePrefab;
-    //public ObtainableItem obtainableItem { get; private set; }
     public float attackRange { get; protected set; }
     public Action destroyCallBackEvent { get; set; }
-    //public Define.ThrowItem throwType { get; set; }
-    //public override Define.ZoomType zoomType { get; set; } = Define.ZoomType.Throw;
-
 
     protected override void Awake()
     {
@@ -22,7 +18,6 @@ public abstract class Weapon_Throw : Weapon
     protected override void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        //inputControllerObject = inputControllerObject ?? new InputControllerObject();
         inputControllerObject.inputType = InputType.Sub3;
         inputControllerObject.attackType = Define.AttackType.Joystick;
         inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
@@ -67,33 +62,28 @@ public abstract class Weapon_Throw : Weapon
  #region Attack
     public override void Attack(Vector2 inputVector)
     {
-        state = State.Delay;
         Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform);
-        LastAttackInput = inputVector;
+        //LastAttackInput = inputVector;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, inputVector, endPoint);
     }
 
     [PunRPC]
     public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
-        LastAttackInput = inputVector;
+        //LastAttackInput = inputVector;
+        inputControllerObject.attackPoint = endPoint;
         StartCoroutine(AttackProcessOnAllClinets(endPoint));
     }
 
     IEnumerator AttackProcessOnAllClinets(Vector3 endPoint)
     {
-        state = State.Delay;
-        //AttackSucessEvent?.Invoke();
         inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();
-        Vector3 startPoint = playerController.character_Base.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
-
+        Vector3 startPoint = playerController.playerCharacter.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
         projectile.Play(playerController.playerShooter, startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         inputControllerObject.Call_UseSucessEnd();
-        //AttackEndEvent?.Invoke();
-        state = State.End;
         Use(playerController);
     }
 

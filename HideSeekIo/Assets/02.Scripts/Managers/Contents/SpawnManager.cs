@@ -29,34 +29,18 @@ public class SpawnManager
     {
         string prefabID = $"Character/{characterType.ToString()}/{key}";
         var characterAvaterGo = Managers.Resource.Instantiate(prefabID).GetComponent<CharacterAvater>();
-        
         return characterAvaterGo ?? null;
     }
     public GameObject WeaponSkinSpawn(string meleeKey)
     {
-        string prefabID = $"Melee2/{meleeKey}";
+        string prefabID = $"Hammer/{meleeKey}";
         return Managers.Resource.Instantiate(prefabID);
     }
 
 
-    public void PlayerSpawn(SendAllSkinInfo sendAllSkinInfo, Vector3 pos, bool isAI)
+    public void PlayerSpawn(SendAllSkinInfo sendAllSkinInfo, Vector3 pos)
     {
-        //var selectCharacterType = (Define.CharacterType)Util.RandomEnum<Define.CharacterType>();
-        Define.CharacterType characterType;
-        string avaterId = null;
-        //SendAllSkinInfo sendAllSkinInfo;
-        //if (isAI)
-        //{
-        //    characterType = Util.RandomEnum<Define.CharacterType>();    //랜덤으로 가져옴
-        //}
-        //else
-        //{
-        //    sendAllSkinInfo = PlayerInfo.MakeAllSkinInfo();
-        //    //characterType = PlayerInfo.GetCurrentUsingCharacter();
-        //    //avaterId = PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
-        //}
-
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName,sendAllSkinInfo.autoNumber, sendAllSkinInfo.chacterType,sendAllSkinInfo.avaterSkinID  , isAI };
+        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName,sendAllSkinInfo.autoNumber, sendAllSkinInfo.chacterType,sendAllSkinInfo.avaterSkinID  };
         PhotonNetwork.InstantiateRoomObject("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
     }
 
@@ -83,12 +67,12 @@ public class SpawnManager
         string weaponID = null;
         switch (weapon)
         {
-            case Define.Weapon.Melee2:
-                weaponID = "Melee2";
+            case Define.Weapon.Hammer:
+                weaponID = "Hammer";
                 datas.Add("Wm01");
                 break;
             case Define.Weapon.Sniper:
-            case Define.Weapon.Gun:
+            case Define.Weapon.Stone:
                 weaponID = $"Gun/{weapon.ToString()}";
                 break;
             default:

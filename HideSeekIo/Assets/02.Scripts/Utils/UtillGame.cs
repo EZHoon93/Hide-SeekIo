@@ -54,12 +54,11 @@ public static class UtillGame
 
         return new Vector2(changeVector3.x,changeVector3.z);
     }
-    public static Vector2 GetInputVector3_ByCamera(Vector2 vector2)
+    public static Vector3 GetInputVector3_ByCamera(Vector2 vector2)
     {
         Vector3 vector3 = new Vector3(vector2.x, 0, vector2.y);
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         var changeVector3 = quaternion * vector3;
-
         return new Vector3(changeVector3.x, 0,changeVector3.z);
     }
 
@@ -233,8 +232,28 @@ public static class UtillGame
         }
     }
 
-    public static void DamageInRange(Transform center , float radius ,int damage,int damagerViewID,
-        LayerMask attackLayer , float angle = 360)
+    public static void DamageInRange(Vector3 center , float radius ,int damage,int damagerViewID,
+        LayerMask attackLayer )
+    {
+        Collider[] colliders = new Collider[10];
+
+        var hitCount = Physics.OverlapSphereNonAlloc(center, radius, colliders, attackLayer);
+        Debug.Log(hitCount);
+        if (hitCount > 0)
+        {
+            for (int i = 0; i < hitCount; i++)
+            {
+                var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
+                if (damageable != null)
+                {
+                    damageable.OnDamage(damagerViewID, damage, colliders[i].transform.position);
+                }
+            }
+        }
+    }
+
+    public static void DamageInCompareInSight(Transform center, float radius, int damage, int damagerViewID,
+        LayerMask attackLayer, float angle = 360)
     {
         Collider[] colliders = new Collider[10];
 
@@ -244,7 +263,7 @@ public static class UtillGame
         {
             for (int i = 0; i < hitCount; i++)
             {
-                if (IsTargetOnSight( center , colliders[i].transform , angle, attackLayer))
+                if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
                 {
                     Debug.Log(colliders[i].gameObject.name + "각도안..");
                     var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
@@ -262,7 +281,6 @@ public static class UtillGame
 
         }
     }
-
     public static void BuffInRange(Transform center, float radius, Define.BuffType buffType, int damagerViewID,
         LayerMask attackLayer, float angle = 360)
     {
@@ -330,8 +348,7 @@ public static class UtillGame
         Data.SendAllSkinInfo sendAllSkinInfo;
         var ranCharacterType = Util.RandomEnum<Define.CharacterType>();
         var avaterAll = Resources.LoadAll<GameObject>($"Prefabs/Character/{ranCharacterType.ToString()}");
-        Debug.LogError(avaterAll.Length);
-        var selectAvater = avaterAll[Random.Range(0, avaterAll.Length-1)].ToString();
+        var selectAvater = avaterAll[Random.Range(0, avaterAll.Length-1)].name;
         sendAllSkinInfo.autoNumber = -1;
         sendAllSkinInfo.chacterType = ranCharacterType;
         sendAllSkinInfo.avaterSkinID = selectAvater;

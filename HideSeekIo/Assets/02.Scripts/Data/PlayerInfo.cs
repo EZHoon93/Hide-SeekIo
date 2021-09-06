@@ -176,7 +176,7 @@ public static class PlayerInfo
 
     public static Define.CharacterType GetCurrentUsingCharacter()
     {
-        return Define.CharacterType.Bear;
+        return Define.CharacterType.Cat;
     }
 
     public static SendAllSkinInfo MakeAllSkinInfo()

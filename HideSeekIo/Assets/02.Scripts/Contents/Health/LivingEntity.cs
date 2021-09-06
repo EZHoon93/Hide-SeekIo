@@ -3,27 +3,18 @@ using Photon.Pun;
 using UnityEngine;
 using System.Collections.Generic;
 
-// ?????????? ?????? ???? ???????????? ???? ?????? ????
-// ????, ?????? ??????????, ???? ????, ???? ???????? ????
 public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 {
-    public int initHealth = 2; // ???? ????
-
+    [SerializeField] FogOfWarController _fogOfWarController;
+    public int initHealth = 2; 
     public virtual int Health { get; set; }
-
     public bool Dead { get; protected set; }
     public Define.Team Team;
-
-    public event Action onDeath; // ?????? ?????? ??????
-
-    int _lastAttackViewID;  //?????? ?????????????? ????????
-
+    public event Action onDeath; 
+    int _lastAttackViewID;  
 
     public List<BuffController> BuffControllerList { get; private set; } = new List<BuffController>();
-    public FogOfWarController fogController { get; private set; }
-    
-
-
+    public FogOfWarController fogController => _fogOfWarController;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -45,14 +36,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
 
         }
     }
-
-    protected virtual void Awake()
-    {
-        fogController = Managers.Resource.Instantiate("Contents/FogOfWar",this.transform).GetComponent<FogOfWarController>();
-        fogController.transform.localPosition = new Vector3(0, 0.5f, 0);
-        this.photonView.ObservedComponents.Add(this);
-    }
-    
+ 
     private void OnEnable()
     {
         InitSetup();
@@ -61,7 +45,6 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     public virtual void InitSetup()
     {
         Dead = false;
-        // ?????? ???? ???????? ??????
         Health = initHealth;
 
         switch (Team)
@@ -81,6 +64,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
             //    fogController._fogOfWarUnit.offset = new Vector2(0, 2.0f);
             //    break;
         }
+
     }
 
 
@@ -98,9 +82,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         if (photonView.IsMine)
         {
             Health -= damage;
-            _lastAttackViewID = damagerViewId;  //?????? ???? ???????? ???????? ????
-
-            // ?????? 0 ???? && ???? ???? ???????? ???? ???? ????
+            _lastAttackViewID = damagerViewId;  
             if (Health <= 0 && !Dead)
             {
                 //Die();
@@ -112,22 +94,16 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     [PunRPC]
     public virtual void Die()
     {
-        // onDeath ???????? ?????? ???????? ?????? ????
         if (photonView.IsMine)
         {
 
-            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID(), _lastAttackViewID);  //???? ???????? ???? =>viewGroup?? ???????????? ????
+            PhotonGameManager.Instacne.HiderDieOnLocal(this.ViewID(), _lastAttackViewID); 
         }
         if (onDeath != null)
         {
             onDeath();
         }
-        // ???? ?????? ?????? ????
         Dead = true;
-
-        //var uiMain = Managers.UI.SceneUI as UI_Main;
-        //uiMain.KillNotice
-
     }
 
     public void AddBuffController(BuffController newBuff)
@@ -143,4 +119,13 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         this.photonView.ObservedComponents.Remove(removeBuff);
     }
 
+
+    public void AddRenderer(RenderController renderController)
+    {
+        fogController.AddHideRender(renderController);
+    }
+    public void RemoveRenderer(RenderController renderController)
+    {
+        fogController.RemoveRenderer(renderController);
+    }
 }

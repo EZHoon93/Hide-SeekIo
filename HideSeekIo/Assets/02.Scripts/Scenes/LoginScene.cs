@@ -1,10 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-
-using Photon.Pun;
-
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LoginScene : BaseScene
 {
@@ -27,7 +22,7 @@ public class LoginScene : BaseScene
     }
     public override void Clear()
     {
-        Debug.Log("LoginScene Clear!");
+        
     }
     //모든 데이터를 받아올대까지 대기 
     IEnumerator LoadAllData()
@@ -57,7 +52,6 @@ public class LoginScene : BaseScene
         var userData = CheckPlayerInfo();
         bool gameData = CheckData();
         print(photonData + "/" + userData + "/" + gameData);
-
         return photonData && userData && gameData ;
     }
 

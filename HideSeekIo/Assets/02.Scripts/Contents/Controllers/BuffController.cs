@@ -58,10 +58,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             _buffBase.Setup(this);
             _durationTime = _buffBase.durationTime;
             SetupIsPostiveBuff(BuffType);
-            foreach(var render in _buffBase.renderers)
-            {
-                livingEntity.fogController.AddHideRender(render);
-            }
+            livingEntity.AddRenderer(_buffBase.renderController);
         }
        
         _buffBase.ProcessStart();
@@ -103,10 +100,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
         _buffBase.Push();
         _createServerTime = 0;
         BuffType = Define.BuffType.Null;
-        foreach (var render in _buffBase.renderers)
-        {
-            livingEntity.fogController.RemoveRenderer(render);
-        }
+        livingEntity.RemoveRenderer(_buffBase.renderController);
         livingEntity.RemoveBuffController(this);
         livingEntity = null;
         _buffBase = null;

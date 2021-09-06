@@ -33,16 +33,18 @@ public class AIManager : GenricSingleton<AIManager>
 
     IEnumerator CheckAI()
     {
-        while (true)
-        {
-            if(PhotonGameManager.Instacne.State == Define.GameState.CountDown ||
-                PhotonGameManager.Instacne.State == Define.GameState.Wait)
-            {
-                AI_Reset();
-            }
+        //while (true)
+        //{
+        //    if(PhotonGameManager.Instacne.State == Define.GameState.CountDown ||
+        //        PhotonGameManager.Instacne.State == Define.GameState.Wait)
+        //    {
+        //        AI_Reset();
+        //    }
+        //    yield return new WaitForSeconds(2.0f);
+
+        //}
             yield return new WaitForSeconds(2.0f);
 
-        }
     }
 
     void AI_Reset()

@@ -4,9 +4,8 @@ using System;
 using Photon.Pun;
 using System.Collections.Generic;
 
-public class InputControllerObject : MonoBehaviour
+public class InputControllerObject : MonoBehaviourPun
 {
-    //Dictionary<ControllerInputType, Action<Vector2>> controllerInputTypeDic { get; set; } = new Dictionary<ControllerInputType, Action<Vector2>>();
     public InputType inputType { get; set; }
     public Define.AttackType attackType;
     public PlayerShooter.state shooterState{ get; set; }
@@ -17,8 +16,11 @@ public class InputControllerObject : MonoBehaviour
     public event Action useSucessStartCallBack;
     public event Action useSucessEndCallBack;
 
+    public Vector2 lastInputSucessVector2 { get; set; }
 
-    
+    public Vector3 attackPoint { get; set; }
+
+
 
     //public void AddEvent(ControllerInputType controllerInputType , Action<Vector2> newAction)
     //{
@@ -34,7 +36,7 @@ public class InputControllerObject : MonoBehaviour
     public void AddUseEvent(Action<Vector2> action)
     {
         useEventCallBack = action;
-       
+        print("AddUseEnvet ");
     }
 
     public void AddZoomEvent(Action<Vector2> action)
@@ -59,13 +61,23 @@ public class InputControllerObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 아이템,스킬,무기등 사용시 
+    /// </summary>
+    /// <param name="inputVector2"></param>
 
-    public void Use(Vector2 inputVector2)
+    public bool Use(Vector2 inputVector2)
     {
-        if (RemainCoolTime > 0) return;
+        if (RemainCoolTime > 0) return false;
         RemainCoolTime = InitCoolTime;
-        
+        lastInputSucessVector2 = inputVector2;
+        if (this.IsMyCharacter())
+        {
+            InputManager.Instance.GetControllerJoystick(inputType).StartCoolTime(RemainCoolTime);
+        }
         useEventCallBack?.Invoke(inputVector2);
+        return true;
+        
     }
 
     public void Call_UseSucessStart()

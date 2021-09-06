@@ -9,11 +9,11 @@ public abstract class BuffBase : Poolable
     [SerializeField] float _durationTime;
 
     public float durationTime => _durationTime;
-    public Renderer[] renderers  { get; private set; }
+    public RenderController renderController { get; private set; }
 
     private void Awake()
     {
-        renderers = GetComponentsInChildren<Renderer>();
+        renderController = GetComponent<RenderController>();
     }
     public void Setup(BuffController buffController)
     {

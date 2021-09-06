@@ -3,15 +3,15 @@ using FoW;
 using Photon.Pun;
 public class FogOfWarController : MonoBehaviour
 {
-    public FogOfWarTeam _fogOfWarTeam { get; private set; }
-    public FogOfWarUnit _fogOfWarUnit { get; private set; }
-    public HideInFog _hideInFog { get; private set; }
+    public FogOfWarTeam fogOfWarTeam { get; private set; }
+    public FogOfWarUnit fogOfWarUnit { get; private set; }
+    public HideInFog hideInFog { get; private set; }
 
     private void Awake()
     {
-        _fogOfWarTeam = GetComponent<FogOfWarTeam>();
-        _fogOfWarUnit = GetComponent<FogOfWarUnit>();
-        _hideInFog = GetComponent<HideInFog>();
+        fogOfWarTeam = GetComponent<FogOfWarTeam>();
+        fogOfWarUnit = GetComponent<FogOfWarUnit>();
+        hideInFog = GetComponent<HideInFog>();
 
         this.transform.parent.GetComponent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
     }
@@ -19,7 +19,7 @@ public class FogOfWarController : MonoBehaviour
     {
         if (CameraManager.Instance.Target)
         {
-            _hideInFog.team = CameraManager.Instance.Target.ViewID();
+            hideInFog.team = CameraManager.Instance.Target.ViewID();
         }
         CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
     }
@@ -31,16 +31,16 @@ public class FogOfWarController : MonoBehaviour
     }
     public void OnPhotonInstantiate(PhotonView photonView)
     {
-        _fogOfWarTeam.team = photonView.ViewID;
-        _fogOfWarUnit.team = photonView.ViewID;
+        fogOfWarTeam.team = photonView.ViewID;
+        fogOfWarUnit.team = photonView.ViewID;
         CheckIsCamaeraTarget(false);
     }
 
     void ChangeCameraTarget(int cameraViewID)
     {
-        _hideInFog.team = cameraViewID;
+        hideInFog.team = cameraViewID;
 
-        if(cameraViewID == _fogOfWarTeam.team)
+        if(cameraViewID == fogOfWarTeam.team)
         {
             CheckIsCamaeraTarget(true);
         }
@@ -52,35 +52,35 @@ public class FogOfWarController : MonoBehaviour
 
     void CheckIsCamaeraTarget(bool isTargetInCamera)
     {
-        _fogOfWarTeam.enabled = isTargetInCamera;
-        _fogOfWarTeam.enabled = isTargetInCamera;
-        _hideInFog.enabled = !isTargetInCamera;
+        fogOfWarTeam.enabled = isTargetInCamera;
+        fogOfWarTeam.enabled = isTargetInCamera;
+        hideInFog.enabled = !isTargetInCamera;
         //카메라로 타겟팅되었을떄 투명부분 풀고 보여줌
         if (isTargetInCamera)
         {
-            _hideInFog.SetActiveRender(true);
+            hideInFog.SetActiveRender(true);
         }
     }
 
     public void ChangeTransParent(bool isTransParent)
     {
-        _hideInFog.ChangeTransParent(isTransParent);
+        hideInFog.ChangeTransParent(isTransParent);
     }
 
-    public void AddHideRender(Renderer renderer)
+    public void AddHideRender(RenderController renderController)
     {
-        if (renderer == null) return;
-        _hideInFog.AddRenderer(renderer);
+        if (renderController == null) return;
+        hideInFog.AddRenderer(renderController);
     }
 
-    public void RemoveRenderer(Renderer renderer)
+    public void RemoveRenderer(RenderController renderController)
     {
-        if (renderer == null) return;
-        _hideInFog.RemoveRenderer(renderer);
+        if (renderController == null) return;
+        hideInFog.RemoveRenderer(renderController);
     }
 
     public void ChangeSight(float value)
     {
-        _fogOfWarUnit.circleRadius = value;
+        fogOfWarUnit.circleRadius = value;
     }
 }

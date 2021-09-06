@@ -17,12 +17,13 @@ public class Skill_Dash : Skill_Base
     //}
     protected override void SetupData()
     {
-        inputControllerObject.InitCoolTime = 1;
+        inputControllerObject.InitCoolTime = 3;
     }
 
     public override void Use(Vector2 inputVector2)
     {
         //playerController.character_Base.characterAvater.animator.SetTrigger("Dash");
+        print("Dash");
         var AttackDirection =  playerController.playerInput.controllerInputDic[InputType.Move].inputVector2;
         playerController.playerShooter.photonView.RPC("Dash", Photon.Pun.RpcTarget.AllViaServer, playerController.transform.position, AttackDirection);
     }

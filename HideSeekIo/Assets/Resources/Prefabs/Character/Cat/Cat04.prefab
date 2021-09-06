@@ -2321,6 +2321,7 @@ GameObject:
   - component: {fileID: 7596224345025147528}
   - component: {fileID: -7774939203044208459}
   - component: {fileID: 6316397527555020967}
+  - component: {fileID: -8794424400509126919}
   m_Layer: 0
   m_Name: Cat04
   m_TagString: Untagged
@@ -2389,10 +2390,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1737253541e4604e90b4506bf6698ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rightHandTransform: {fileID: 0}
   _accessoriesTransform: {fileID: 4320460809556854}
   _headTransform: {fileID: 4950875116423750}
   _weaponTransform: {fileID: 4070455808613148}
+  _renderController: {fileID: -8794424400509126919}
 --- !u!114 &6316397527555020967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2406,6 +2407,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skinType: 0
+--- !u!114 &-8794424400509126919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500423066850034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 137286324975550174}
+  - {fileID: 137944849102171552}
 --- !u!1 &1501369758727218
 GameObject:
   m_ObjectHideFlags: 0

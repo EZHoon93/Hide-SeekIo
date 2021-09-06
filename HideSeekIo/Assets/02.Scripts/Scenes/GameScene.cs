@@ -14,6 +14,9 @@ public class GameScene : BaseScene
 
 
     public Transform test;
+    [SerializeField] MainSpawnPoints _mainSpawnPoints;
+    public MainSpawnPoints mainSpawnPoints => _mainSpawnPoints;
+
 
     protected override void Init()
     {

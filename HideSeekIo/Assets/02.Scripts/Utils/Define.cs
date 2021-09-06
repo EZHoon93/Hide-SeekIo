@@ -73,17 +73,17 @@ public class Define
     }
     public enum Weapon
     {
-        Melee2 = 1,
+        Hammer = 1,
 
-        Stone = 101,    //투척류
-        TNT,
+        TNT = 101,
         Grenade,
         Flash,
         Dynamite,
         Glue,
         PoisonBomb,
         Sniper = 201,
-        Gun    
+        Stone ,
+        Gun
     }
 
     public enum ThrowItem
@@ -309,4 +309,5 @@ public class Define
         Joystick
     }
   
+    //public enum
 }

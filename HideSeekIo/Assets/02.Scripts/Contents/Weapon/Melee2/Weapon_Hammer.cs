@@ -6,9 +6,10 @@ using Photon.Pun;
 public class Weapon_Hammer : Weapon
 {
 
-
+    float _damageRange = 1;
     AudioClip _attackClip;
-
+     
+    
     protected override void Awake()
     {
         base.Awake();
@@ -30,15 +31,16 @@ public class Weapon_Hammer : Weapon
         AttackAnim = "HammerAttack";
         AttackDelay = 1.5f;
         AfaterAttackDelay = 0.5f;
-        AttackDistance = 2;
+        AttackDistance = 1;
         inputControllerObject.InitCoolTime = 3;
         _attackClip = Resources.Load<AudioClip>("Sounds/SMelee2");
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         var weaponId = (string)info.photonView.InstantiationData[1];
-        var weaponObject = Managers.Resource.Instantiate($"Melee2/{weaponId}");   //유저 무기 아바타 생성
+        var weaponObject = Managers.Resource.Instantiate($"Hammer/{weaponId}");   //유저 무기 아바타 생성
         weaponObject.transform.ResetTransform(_weaponModel);   //아바타 생성된것 자식오브젝트로 이동
+        renderController = weaponObject.GetComponent<RenderController>();
         base.OnPhotonInstantiate(info);
         //_zoomUI.gameObject.SetActive(false);     // 공격 UI
         //playerController.GetAttackBase().SetupWeapon(this);
@@ -51,51 +53,32 @@ public class Weapon_Hammer : Weapon
 
     public override void Attack(Vector2 inputVector)
     {
-        //StopAllCoroutines();
-        ////_zoomUI.gameObject.SetActive(false);
-        //state = State.Delay;
-        //LastAttackInput = inputVector;
-        photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, LastAttackInput);
+        if (photonView.IsMine == false) return;
+        var direction = playerController.playerCharacter.character_Base.transform.forward;
+        var attackPoint = playerController.transform.position + direction * AttackDistance;
+        photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, attackPoint);
     }
 
     [PunRPC]
-    public void AttackOnServer(Vector2 inputVector)
+    public void AttackOnServer(Vector3 attackPoint)
     {
-        StartCoroutine(AttackProcessOnAllClinets(inputVector));
+        StartCoroutine(AttackProcessOnAllClinets(attackPoint));
     }
 
-    //Vector3 GetJumpPont()
-    //{
-    //    var hitPoint = Vector3.zero;
-    //    RaycastHit hit;
-    //    print(time);
-    //    if (Physics.Raycast(playerController.transform.position, playerController.transform.forward, out hit, 1, (int)Define.Layer.Wall))
-    //    {
-    //        hitPoint = hit.point;
-    //    }
-    //    else
-    //    {
-    //        hitPoint = playerController.transform.position + playerController.transform.forward * 1;
-    //    }
-    //    return hitPoint;
-    //}
-    IEnumerator AttackProcessOnAllClinets(Vector2 inputVector)
+    IEnumerator AttackProcessOnAllClinets(Vector3 attackPoint)
     {
-        state = State.Delay;
-        LastAttackInput = inputVector;
+        inputControllerObject.attackPoint = attackPoint;
         inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(0.5f);   //대미지 주기전까지 시간
-        AttackEffect();
+        AttackEffect(attackPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //움직이기 . 애니메이션의 끝나면
         inputControllerObject.Call_UseSucessEnd();
-        state = State.End;
     }
 
-    void AttackEffect()
+    void AttackEffect(Vector3 attackPoint )
     {
-        var attackPos = playerController.transform.position + playerController.character_Base.characterAvater.transform.forward * AttackDistance * 0.5f;
-        EffectManager.Instance.EffectToServer(Define.EffectType.BodySlam, attackPos, 0);
-        UtillGame.DamageInRange(playerController.transform, AttackDistance, 10, playerController.ViewID(), UtillLayer.seekerToHiderAttack, 110);
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0);
+        UtillGame.DamageInRange(attackPoint, _damageRange, 10, playerController.ViewID(), UtillLayer.seekerToHiderAttack);
         Managers.Sound.Play(_attackClip, Define.Sound.Effect);
     }
 

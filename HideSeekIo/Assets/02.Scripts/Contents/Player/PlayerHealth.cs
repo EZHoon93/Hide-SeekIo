@@ -5,14 +5,18 @@ using System;
 using Photon.Pun;
 public class PlayerHealth : LivingEntity
 {
-    public Character_Base character_Base { get; set; }
     public event Action onReviveEvent;
-   
+
+    PlayerCharacter _playerCharacter;
+
+    private void Awake()
+    {
+        _playerCharacter = GetComponent<PlayerCharacter>();
+    }
     public override void OnPhotonInstantiate()
     {
         base.OnPhotonInstantiate();
-        character_Base = GetComponent<Character_Base>();
-        //_animator = GetComponentInChildren<Animator>();
+        AddRenderer(_playerCharacter.GetRenderController());
     }
 
     [PunRPC]
@@ -20,7 +24,7 @@ public class PlayerHealth : LivingEntity
     {
         EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 0);
         base.Die();
-        //_animator.SetTrigger("Die");
+        _playerCharacter.animator.SetTrigger("Die");
     }
 
     public void Revive()

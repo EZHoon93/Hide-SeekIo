@@ -18,19 +18,20 @@ public class PlayerShooter : MonoBehaviourPun
         //Jump
     }
     public state State { get; protected set; }
-    [SerializeField] GameObject[] itemInventory = new GameObject[1];
-
-    Character_Base _character_Base;
+    PlayerCharacter _playerCharacter;
     PlayerInput _playerInput;
-    Animator _animator => _character_Base.animator;
+    Animator _animator => _playerCharacter.animator;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-    public Vector2 AttackDirection { get; set; }
-    public Vector3 AttackPoint { get; set; }
-    public GameObject[] ItemIntentory => itemInventory;
+    public Vector3 AttackDirection { get; private set; }
     Action<int> weaponChangeCallBack;
+    InputControllerObject currentInputController = null;
 
-    public IAttack currentAttack { get; protected set; }
 
+
+    [Header("Transform")]
+    Transform upperSpine;
+    protected Vector3 upperBodyDir;
+    protected bool rotate = false;
     private void OnEnable()
     {
         State = state.Idle;
@@ -39,14 +40,35 @@ public class PlayerShooter : MonoBehaviourPun
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
+        _playerCharacter = GetComponent<PlayerCharacter>();
     }
+    
+    private void LateUpdate()
+    {
+        if (rotate)
+        {
+            if (AttackDirection == Vector3.zero) return;
+            if (upperSpine == null)
+            {
+                upperSpine = _animator.GetBoneTransform(HumanBodyBones.Spine);
 
+            }
+            Vector3 spineRot = Quaternion.LookRotation(AttackDirection).eulerAngles;
+            spineRot -= _playerCharacter.character_Base.transform.eulerAngles;
+            upperSpine.transform.localRotation = Quaternion.Euler(
+                upperSpine.transform.localEulerAngles.x - spineRot.y,
+                upperSpine.transform.localEulerAngles.y,
+                upperSpine.transform.localEulerAngles.z
+             );
+        }
+        if (this.IsMyCharacter() == false || currentInputController == null) return;
+        currentInputController.Zoom(_playerInput.controllerInputDic[currentInputController.inputType].inputVector2 );
 
-
-
+        
+    }
+  
     public virtual void OnPhotonInstantiate()
     {
-        _character_Base = GetComponent<Character_Base>();
         weaponChangeCallBack = null;
         if (baseWeapon)
         {
@@ -56,52 +78,58 @@ public class PlayerShooter : MonoBehaviourPun
 
     public void ChangeOwnerShip()
     {
-
         if (this.IsMyCharacter())
         {
-            Managers.Spawn.WeaponSpawn(Define.Weapon.Gun, this);
+            Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, this);
         }
     }
 
 
     public virtual void SetupWeapon(Weapon newWeapon)
     {
-        print("Setup Weapon " + newWeapon.gameObject.name + "/"+newWeapon.inputControllerObject.inputType);
-        var state = GetShooterState(newWeapon);
-        newWeapon.inputControllerObject.useSucessStartCallBack += () => { _animator.SetTrigger(newWeapon.AttackAnim); State = state; };
+        newWeapon.inputControllerObject.useSucessStartCallBack += () => WeaponAttackSucess(newWeapon);
         newWeapon.inputControllerObject.useSucessEndCallBack += AttackBaseEnd;
         weaponChangeCallBack += newWeapon.WeaponChange;
+        
         SetupEquipmentable(newWeapon.equipmentable);
         SetupControllerObject(newWeapon.inputControllerObject);
-        print("dddddddd Weapon " + newWeapon.gameObject.name + "/" + newWeapon.inputControllerObject.inputType);
-
         switch (newWeapon.inputControllerObject.inputType)
         {
-
             case InputType.Sub1:    //술래!!
-                baseWeapon = newWeapon;
-                print("Setup sssssssss " + newWeapon.gameObject.name + "/" + newWeapon.inputControllerObject.inputType);
+                if (baseWeapon)
+                {
+                    if (baseWeapon.photonView.IsMine)
+                        PhotonNetwork.Destroy(baseWeapon.gameObject);
+                }
+                if(newWeapon.weaponType== Weapon.WeaponType.Hammer)
+                {
+                    GetComponent<PlayerController>().ChangeTeam(Define.Team.Seek);
+                }
+                if (newWeapon.weaponType == Weapon.WeaponType.Gun)
+                {
 
+                }
+                baseWeapon = newWeapon;
                 ChangeWeapon(baseWeapon);
                 break;
         }
 
-        print("dkkkkn " + newWeapon.gameObject.name + "/" + newWeapon.inputControllerObject.inputType);
-
-
+        GetComponent<PlayerHealth>().AddRenderer(newWeapon.renderController);
     }
 
     public void SetupControllerObject(InputControllerObject newInputControllerObject)
     {
         if (newInputControllerObject.attackType == Define.AttackType.Button)
         {
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType, (input) => UseInputControllerObject(input, newInputControllerObject));
+            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType, (input) => UseInputControllerObject(Vector2.zero, newInputControllerObject));
+            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, null);
         }
         else
         {
             _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, (input) => UseInputControllerObject(input, newInputControllerObject));
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Drag, newInputControllerObject.inputType, (input) => ZoomInputConrollerObject(input, newInputControllerObject));
-
+            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType, 
+                (input) => { currentInputController?.Zoom(Vector2.zero);  currentInputController = newInputControllerObject;  }  );
+            //_playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Drag, newInputControllerObject.inputType, (input) => ZoomInputConrollerObject(input, newInputControllerObject));
         }
     }
 
@@ -114,8 +142,8 @@ public class PlayerShooter : MonoBehaviourPun
 
     public void ChangeWeapon(Weapon useNewWeapon)
     {
-        print(useNewWeapon + "/ ssssss/ / ");
         weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
+        currentInputController = useNewWeapon.inputControllerObject;
         SetupAnimation(useNewWeapon);
     }
 
@@ -148,15 +176,18 @@ public class PlayerShooter : MonoBehaviourPun
 
     public void UseInputControllerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
+        if (this.State != state.Idle) return;
         if (this.IsMyCharacter())
         {
             inputControllerObject.Zoom(Vector2.zero);
         }
-        AttackDirection = inputVector2;
-        inputControllerObject.Use(inputVector2);
-        if (baseWeapon)
+        
+        if(inputControllerObject.Use(inputVector2))
         {
-            baseWeapon.useState = Weapon.UseState.Use;
+            if (baseWeapon)
+            {
+                baseWeapon.useState = Weapon.UseState.Use;
+            }
         }
     }
     public void ZoomInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
@@ -167,14 +198,20 @@ public class PlayerShooter : MonoBehaviourPun
 
     protected virtual void WeaponAttackSucess(Weapon attackWeapon)
     {
-        _animator.SetTrigger(attackWeapon.AttackAnim);
         State = attackWeapon.inputControllerObject.shooterState;
+        AttackDirection = attackWeapon.inputControllerObject.attackPoint;
+        if (attackWeapon.weaponType == Weapon.WeaponType.Hammer)
+        {
+        }
+        else
+        {
+            rotate = true;
+        }
+        _animator.SetTrigger(attackWeapon.AttackAnim);
     }
     protected virtual void AttackBaseEnd()
     {
-        State = state.Idle;
-
-
+        rotate = false;
         if (baseWeapon)
         {
             baseWeapon.useState = Weapon.UseState.Use;
@@ -183,6 +220,8 @@ public class PlayerShooter : MonoBehaviourPun
                 PhotonNetwork.Destroy(baseWeapon.gameObject);
             }
         }
+        State = state.Idle;
+
     }
 
     state GetShooterState(Weapon weapon)

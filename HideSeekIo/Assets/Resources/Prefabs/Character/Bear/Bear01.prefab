@@ -3629,6 +3629,7 @@ GameObject:
   - component: {fileID: 9209663436263025624}
   - component: {fileID: 2362034282400555022}
   - component: {fileID: -408876914062993518}
+  - component: {fileID: -5062704141910536868}
   m_Layer: 0
   m_Name: Bear01
   m_TagString: Untagged
@@ -3700,6 +3701,7 @@ MonoBehaviour:
   _accessoriesTransform: {fileID: 4984983237027426}
   _headTransform: {fileID: 4252549203098434}
   _weaponTransform: {fileID: 4994657394106784}
+  _renderController: {fileID: -5062704141910536868}
 --- !u!114 &-408876914062993518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3713,6 +3715,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skinType: 0
+--- !u!114 &-5062704141910536868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954781504214606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 137766238983304154}
+  - {fileID: 137823104094866092}
 --- !u!1 &1974793544215702
 GameObject:
   m_ObjectHideFlags: 0

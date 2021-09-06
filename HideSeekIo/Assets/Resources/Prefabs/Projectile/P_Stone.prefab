@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: -1810040540377865911}
   - component: {fileID: 2945932630899505850}
   - component: {fileID: 7997443674142070104}
-  m_Layer: 9
+  - component: {fileID: -3530790580862165940}
+  m_Layer: 14
   m_Name: P_Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsUsing: 0
-  _modelObject: {fileID: 6876316860478818290}
+  _explosionEffect: {fileID: 0}
+  _bulletObject: {fileID: 6876316860478818290}
 --- !u!114 &2945932630899505850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,6 +103,20 @@ MonoBehaviour:
   multithreading: 0
   cellBased: 0
   snapToPixelCenter: 0
+--- !u!136 &-3530790580862165940
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4117768412101275065}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6876316860478818290
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,7 +127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 976769754646118200}
   - component: {fileID: 3270805861105685570}
-  m_Layer: 9
+  m_Layer: 14
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1770571109050598, guid: 26ebce2f78526014da0d1b69d835b6e9, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4258828872886662, guid: 26ebce2f78526014da0d1b69d835b6e9, type: 3}
       propertyPath: m_RootOrder

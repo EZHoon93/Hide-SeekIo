@@ -4832,8 +4832,9 @@ GameObject:
   - component: {fileID: 4321896539439467974}
   - component: {fileID: 4119121241503393092}
   - component: {fileID: 4119012243999712076}
+  - component: {fileID: 8934393914899335027}
   m_Layer: 0
-  m_Name: TerrorDebuff
+  m_Name: TerrorDebuff 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9706,3 +9707,18 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &8934393914899335027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4318488197108944752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 4119012243999712076}
+  - {fileID: 3530213916625190842}

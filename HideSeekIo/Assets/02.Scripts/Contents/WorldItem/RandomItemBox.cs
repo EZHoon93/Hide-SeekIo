@@ -12,16 +12,23 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
     [SerializeField] GameObject _modelObject;
     [SerializeField] GameObject _aiColliderObject;
 
-    public static Enum[] hiderItemArray = {
-        Define.ThrowItem.TNT , Define.ThrowItem.Grenade , Define.ThrowItem.Glue,Define.InGameItem.Trap,
-        Define.InGameItem.Vaccine, Define.InGameItem.Speed, Define.InGameItem.SightUp,
-        Define.InGameItem.Stealth
-    };
+    //public static Enum[] hiderItemArray = {
+    //    Define.ThrowItem.TNT , Define.ThrowItem.Grenade , Define.ThrowItem.Glue,Define.InGameItem.Trap,
+    //    Define.InGameItem.Vaccine, Define.InGameItem.Speed, Define.InGameItem.SightUp,
+    //    Define.InGameItem.Stealth
+    //};
 
+    //public static Enum[] seekerItemArray =
+    //{
+    //    Define.ThrowItem.Dynamite , Define.ThrowItem.Flash , Define.ThrowItem.PoisonBomb , Define.InGameItem.Speed2,
+    //    Define.InGameItem.SightUp, Define.InGameItem.Immune
+    //};
+    public static Enum[] hiderItemArray = {
+          Define.ThrowItem.Flash
+    };
     public static Enum[] seekerItemArray =
-    {
-        Define.ThrowItem.Dynamite , Define.ThrowItem.Flash , Define.ThrowItem.PoisonBomb , Define.InGameItem.Speed2,
-        Define.InGameItem.SightUp, Define.InGameItem.Immune
+   {
+        Define.ThrowItem.Flash 
     };
 
 

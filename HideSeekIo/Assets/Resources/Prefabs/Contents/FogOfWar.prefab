@@ -533,7 +533,7 @@ MonoBehaviour:
   absoluteOffset: 0
   offset: {x: 0, y: -0.2}
   boxSize: {x: 5, y: 5}
-  circleRadius: 13.5
+  circleRadius: 4
   innerRadius: 0.5
   angle: 180
   texture: {fileID: 2800000, guid: aedb60bb6d3f6d14982de16ca694873e, type: 3}
@@ -542,13 +542,13 @@ MonoBehaviour:
   lineOfSightMask:
     serializedVersion: 2
     m_Bits: 1024
-  lineOfSightRaycastCount: 22
+  lineOfSightRaycastCount: 36
   lineOfSightPenetration: 0.1
   lineOfSightRaycastAngle: 360
   lineOfSightRaycastOffset: 0
   lineOfSightSeeOutsideRange: 0
-  multithreading: 0
-  cellBased: 1
+  multithreading: 1
+  cellBased: 0
   snapToPixelCenter: 0
 --- !u!114 &1992816148013798949
 MonoBehaviour:

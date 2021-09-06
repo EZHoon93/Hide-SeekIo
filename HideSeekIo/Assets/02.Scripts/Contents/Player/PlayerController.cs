@@ -10,43 +10,49 @@ using System.Collections.Generic;
 //[RequireComponent(typeof(PlayerShooter))]
 //[RequireComponent(typeof(PlayerMove))]
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun , IGrassDetected
 {
-    public string NickName { get;  set; }
-    public Define.Team Team => Define.Team.Hide;
-    public PlayerInput playerInput{ get; private set; }
-    public PlayerHealth playerHealth{ get; private set; }
-    public PlayerShooter playerShooter{ get; private set; }
-    public PlayerMove playerMove{ get; private set; }
+    bool _isGrass;
+    
+    [SerializeField] PlayerUI _playerUI;
+    [SerializeField] PlayerGrassDetect _playerGrassDetect;
+
+    public string NickName { get; set; }
+    public Define.Team Team => playerHealth.Team;
+    public PlayerInput playerInput { get; private set; }
+    public PlayerHealth playerHealth { get; private set; }
+    public PlayerShooter playerShooter { get; private set; }
+    public PlayerMove playerMove { get; private set; }
     public PlayerStat playerStat { get; set; }
-    public Character_Base character_Base{ get; set; }
+    public PlayerCharacter playerCharacter { get; set; }
+    public PlayerUI playerUI => _playerUI;
+
+    FogOfWarController _fogOfWarController => playerHealth.fogController;
+    public bool isGrass
+    {
+        get => _isGrass;
+        set
+        {
+            
+            if (_isGrass == value) return;
+            _fogOfWarController.hideInFog.isGrass = value;
+            _isGrass = value;
+            if (this.IsMyCharacter())
+            {
+
+            }
+            else
+            {
+            }
+        }
+    }
+
 
     public List<int> statTypeList = new List<int>();
     //public InGameItemController[] itemInventory { get; protected set; } = new InGameItemController[3];
 
     public event Action<PhotonView> changeOnwerShip;
 
-    public virtual void OnPhotonInstantiate(PhotonView photonView)
-    {
-
-        playerInput.OnPhotonInstantiate();
-        playerHealth.OnPhotonInstantiate();
-        playerMove.OnPhotonInstantiate();
-        playerShooter.OnPhotonInstantiate();
-        character_Base.OnPhotonInstantiate();
-        statTypeList.Clear();
-        ChangeTeam(Define.Team.Hide);
-    }
-    public void ChangeOwnerShip()
-    {
-        print("ChangeOwnerShip PlayerController    ");
-        Managers.Game.myPlayer = this;
-        playerInput.ChangeOwnerShip();
-        playerMove.ChangeOwnerShip();
-        playerShooter.ChangeOwnerShip();
-        changeOnwerShip?.Invoke(this.photonView);
-
-    }
 
     private void Awake()
     {
@@ -55,11 +61,47 @@ public class PlayerController : MonoBehaviourPun
         playerShooter = this.gameObject.GetOrAddComponent<PlayerShooter>();
         playerMove = this.gameObject.GetOrAddComponent<PlayerMove>();
         playerStat = this.gameObject.GetOrAddComponent<PlayerStat>();
+        playerCharacter = this.gameObject.GetOrAddComponent<PlayerCharacter>();
+        _playerGrassDetect.gameObject.SetActive(false);
+        _playerUI.SetupPlayer(this);
     }
 
     protected virtual void HandleDeath()
     {
+        playerHealth.enabled = false;
+        playerShooter.enabled = false;
+        playerMove.enabled = false;
+        playerStat.enabled = false;
+        playerCharacter.enabled = false;
+        playerInput.enabled = false;
     }
+
+    public virtual void OnPhotonInstantiate(PhotonView photonView)
+    {
+
+        playerInput.OnPhotonInstantiate();
+        playerHealth.OnPhotonInstantiate();
+        playerMove.OnPhotonInstantiate();
+        playerShooter.OnPhotonInstantiate();
+        _playerUI.OnPhotonInstantiate();
+        statTypeList.Clear();
+        isGrass = false;
+        //playerHealth.AddRenderer(playerCharacter.character_Base.characterAvater.renderController);
+        ChangeTeam(Define.Team.Hide);
+    }
+    public void ChangeOwnerShip()
+    {
+        playerInput.ChangeOwnerShip();
+        playerMove.ChangeOwnerShip();
+        playerShooter.ChangeOwnerShip();
+        changeOnwerShip?.Invoke(this.photonView);
+        if (this.IsMyCharacter())
+        {
+            _playerGrassDetect.gameObject.SetActive(true);
+            Managers.Game.myPlayer = this;
+        }
+    }
+
 
     public void ChangeTeam(Define.Team team)
     {
@@ -70,9 +112,10 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.Team.Seek:
                 this.gameObject.layer = (int)Define.Layer.Seeker;
-                Managers.Spawn.WeaponSpawn(Define.Weapon.Melee2, this.playerShooter);
                 break;
         }
+        playerHealth.Team = team;
+        //playerStat.Recive_ChangeTeam();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -92,6 +135,9 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    private void LateUpdate()
+    {
+    }
     //public void UPStatPointToServer(Define.StatType newStat)
     //{
     //    Hashtable prevHashtable = new Hashtable()
@@ -113,7 +159,12 @@ public class PlayerController : MonoBehaviourPun
 
     public void RecvieStatDataByServer(int[] dataArray)
     {
-        
+
+    }
+
+    public void ChangeTransParent(bool active)
+    {
+        _fogOfWarController.hideInFog.isGrassDetected = active;
     }
 }
 

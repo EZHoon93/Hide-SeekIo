@@ -110,6 +110,10 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
 
         PhotonNetwork.AddCallbackTarget(this);
+
+        var ptl = PhotonNetwork.CurrentRoom.PlayerTtl;
+        var ttl = PhotonNetwork.CurrentRoom.EmptyRoomTtl;
+        print($"PTL  {ptl}  TTL : {ttl}" + PhotonNetwork.CurrentRoom.PlayerCount);
     }
 
     public override void OnDisable()

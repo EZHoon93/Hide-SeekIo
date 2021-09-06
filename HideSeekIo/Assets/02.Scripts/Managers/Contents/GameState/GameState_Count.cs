@@ -21,8 +21,6 @@ public class GameState_Count : GameState_Base
         _initRemainTime = _initCountTime;
 
         _gameMainScene = Managers.Game.CurrentGameScene as GameMainScene;
-
-        _totSeekerCount = _gameMainScene.mainSpawnPoints.SeekerSpawnPoints.Length;
     }
 
 
@@ -37,18 +35,22 @@ public class GameState_Count : GameState_Base
         if (PhotonNetwork.IsMasterClient)
         {
             List<SendAllSkinInfo> playerDataInfoList = GetJoinUserList();   //참가한 유저수 채워넣음.
-            //for (int i = playerDataInfoList.Count; i < 8; i++)
-            //{
-            //    SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAllSkin();
-            //    playerDataInfoList.Add(sendAllSkinInfo); // -1은 AI수 
-            //}
-            //var playerSelectedDataDic = Select(playerList); //좀비 및 휴먼 선택및 위치 
-            //photonView.RPC("CreatePlayer", RpcTarget.AllViaServer, playerSelectedDataDic);
-            //photonView.RPC("CreatePlayer", RpcTarget.AllViaServer);
+            for (int i = playerDataInfoList.Count; i < 8; i++)
+            {
+                //SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAllSkin();
+                //playerDataInfoList.Add(sendAllSkinInfo);
+            }
+
+            var playerSpawnPointList = Managers.Game.CurrentGameScene.mainSpawnPoints.playerSpawnPoints.ToList();
             foreach(var p in playerDataInfoList)
             {
-                Managers.Spawn.PlayerSpawn(p, Vector3.zero, false);
+                int ran = Random.Range(0, playerSpawnPointList.Count);
+                Managers.Spawn.PlayerSpawn(p, playerSpawnPointList[ran].transform.position);
+                playerSpawnPointList.RemoveAt(ran);
             }
+
+            Master_ChangeState(Define.GameState.GameReady);
+
         }
     }
 
@@ -68,7 +70,6 @@ public class GameState_Count : GameState_Base
             sendAllSkinInfo.avaterSkinID = p.CustomProperties["as"].ToString();
             result.Add(sendAllSkinInfo);
         }
-
         return result;
     }
 
@@ -136,21 +137,21 @@ public class GameState_Count : GameState_Base
     {
         List<int> result = new List<int>();
 
-        switch (team)
-        {
-            case Define.Team.Hide:
-                for (int i = 0; i < _gameMainScene.mainSpawnPoints.HiderSpawnPoints.Length; i++)
-                {
-                    result.Add(i);
-                }
-                break;
-            case Define.Team.Seek:
-                for (int i = 0; i < _gameMainScene.mainSpawnPoints.SeekerSpawnPoints.Length; i++)
-                {
-                    result.Add(i);
-                }
-                break;
-        }
+        //switch (team)
+        //{
+        //    case Define.Team.Hide:
+        //        for (int i = 0; i < _gameMainScene.mainSpawnPoints.HiderSpawnPoints.Length; i++)
+        //        {
+        //            result.Add(i);
+        //        }
+        //        break;
+        //    case Define.Team.Seek:
+        //        for (int i = 0; i < _gameMainScene.mainSpawnPoints.SeekerSpawnPoints.Length; i++)
+        //        {
+        //            result.Add(i);
+        //        }
+        //        break;
+        //}
         return result;
     }
 

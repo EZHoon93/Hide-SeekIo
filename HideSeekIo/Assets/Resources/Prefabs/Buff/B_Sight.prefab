@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5061498785640349412}
   - component: {fileID: 3307721963517174281}
+  - component: {fileID: 7671865685619364322}
   m_Layer: 0
   m_Name: B_Sight
   m_TagString: Untagged
@@ -48,6 +49,20 @@ MonoBehaviour:
   _particle: {fileID: 0}
   _buffController: {fileID: 0}
   _durationTime: 5
+--- !u!114 &7671865685619364322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7926318179702442041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 5159951757743841863}
 --- !u!1001 &4998868546086514259
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,6 +144,12 @@ PrefabInstance:
 --- !u!4 &4994415595129878449 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4564006467475938, guid: df9e9f9e0ab716847be4c7cc44fe5af4,
+    type: 3}
+  m_PrefabInstance: {fileID: 4998868546086514259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &5159951757743841863 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 199381855943085076, guid: df9e9f9e0ab716847be4c7cc44fe5af4,
     type: 3}
   m_PrefabInstance: {fileID: 4998868546086514259}
   m_PrefabAsset: {fileID: 0}

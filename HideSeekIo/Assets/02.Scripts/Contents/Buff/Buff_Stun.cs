@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class Buff_Stun : BuffBase
 {
-    InputBase _inputBase;
+    PlayerInput _playerInput;
 
     public override void ProcessStart()
     {
-        _inputBase = _buffController.livingEntity.GetComponent<InputBase>();
-        _inputBase.Stop(5.0f);
+        _playerInput = _buffController.livingEntity.GetComponent<PlayerInput>();
+        if (_playerInput)
+        {
+            _playerInput.Stop(5.0f);
+        }
     }
     public override void ProcessEnd()
     {
-        _inputBase.RemoveStop();
+        if (_playerInput)
+        {
+            _playerInput.RemoveStop();
+        }
     }
 
 

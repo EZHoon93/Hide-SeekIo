@@ -22,8 +22,12 @@ public class UI_Player : MonoBehaviour
     void OnPhotonInstantiate(PhotonView photonView)
     {
         _playerController = this.transform.parent.GetComponentInParent<PlayerController>();
-        _character_Base = _playerController.character_Base;
+        _character_Base = _playerController.playerCharacter.character_Base;
         _playerNameText.text = _playerController.NickName;
+
+        bool active = _playerController.IsMyCharacter() ? true : false;
+        _energySlider.enabled = active;
+
         //switch (_playerController.Team)
         //{
         //    case Define.Team.Hide:

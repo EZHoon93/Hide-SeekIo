@@ -1,4 +1,9 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using Photon.Pun;
+
+using TMPro;
 
 using UnityEngine;
 
@@ -6,30 +11,17 @@ using UnityEngine;
 public class GameState_GameReady : GameState_Base
 {
     int _initGameTime = 5;
+    int _selectSeekerCount = 1;
     protected override void Setup()
     {
         _initRemainTime = _initGameTime;
         uI_Main.UpdateInGameTime(Managers.Game.CurrentGameScene.InitGameTime); //플레이타임 갖고옴
+        var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
+        uI_Main.noticeBg.enabled = true;
+        uI_Main.UpdateNoticeText(noticeContent);
+        uI_Main.titleText.text = "잠시 후 술래가 정해 집니다.";
 
-        if (Managers.Game.myPlayer)
-        {
-            if (Managers.Game.myPlayer.Team == Define.Team.Hide)
-            {
-                var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
-                uI_Main.UpdateNoticeText(noticeContent);
-                uI_Main.titleText.text = "끝까지 살아 남으세요!!";
-                uI_Main.noticeBg.enabled = true;
 
-            }
-            else
-            {
-                var noticeContent = Util.GetColorContent(Color.red, "술래 팀 ");
-                uI_Main.UpdateNoticeText(noticeContent);
-                uI_Main.titleText.text = "숨는팀을 모두 잡으세요!!";
-                uI_Main.noticeBg.enabled = true;
-            }
-        }
-        
     }
 
 
@@ -43,7 +35,43 @@ public class GameState_GameReady : GameState_Base
     //시간이 0초일 때
     protected override void EndRemainTime()
     {
-        Master_ChangeState(Define.GameState.Gameing);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            var allHiderList = Managers.Game.GetAllHiderList().ToList();
+            List<int> selectSeekerViewIDLIst = new List<int>();
+            for (int i = 0; i < _selectSeekerCount; i++)
+            {
+                int ran = Random.Range(0, allHiderList.Count);
+                selectSeekerViewIDLIst.Add(allHiderList[ran].ViewID()); //뷰아이디 등록
+                allHiderList.RemoveAt(ran);
+            }
+
+            //selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
+            //selectSeekerViewIDLIst.Add(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
+
+            photonView.RPC("SelectSeeker", RpcTarget.AllViaServer, selectSeekerViewIDLIst.ToArray());
+        }
+    }
+
+    [PunRPC]
+    public void SelectSeeker(int[] seekerViewList)
+    {
+        print(seekerViewList.Length + "  수 ");
+
+        foreach(var s in seekerViewList)
+        {
+            print(s + " 선택된 술래 뷰아이디");
+            var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController >();
+            if (selectplayer.photonView.IsMine)
+            {
+                Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, selectplayer.playerShooter);
+            }
+        }
+        
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Master_ChangeState(Define.GameState.Gameing);
+        }
     }
 
     public void UpdatePlayerCount()

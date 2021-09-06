@@ -6,9 +6,7 @@ public class Character_Bear : Character_Base
 {
     protected override void SetupSkill()
     {
-        //this.gameObject.GetOrAddComponent<Skill_Invinc>();
-        this.gameObject.GetOrAddComponent<Skill_Dash>();
-
+        this.gameObject.GetOrAddComponent<Skill_Invinc>();
     }
 
     private void Start()

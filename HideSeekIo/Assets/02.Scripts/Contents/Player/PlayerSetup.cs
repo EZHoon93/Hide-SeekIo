@@ -8,7 +8,7 @@ using Photon.Realtime;
 
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(PhotonView))]
-[RequireComponent(typeof(CharacterController))]
+//[RequireComponent(typeof(CharacterController))]
 
 public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnPhotonInstantiate, IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy,IOnPhotonViewControllerChange,IOnPhotonViewOwnerChange
 {
@@ -39,63 +39,48 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (photonView.InstantiationData == null) return;   //데이터가없으면 null
-
         //-데이터받아옴//
         var nickName = (string)info.photonView.InstantiationData[0]; //닉네임
         var autoNumber = (int)info.photonView.InstantiationData[1]; //로컬넘버
         var characterType = (Define.CharacterType)info.photonView.InstantiationData[2]; //캐릭터 타
         var avaterId = (string)info.photonView.InstantiationData[3]; //캐릭터 스킨
-        var isAI = (bool)info.photonView.InstantiationData[4];  //AI 여부
         var fogController = this.GetComponentInChildren<FogOfWarController>();
         var playerController = this.GetComponent<PlayerController>();
-
-
-        this.gameObject.tag = isAI ? "AI" : "Player";
+        this.gameObject.tag = autoNumber == -1 ? "AI" : "Player";
 
         playerController.NickName = nickName;       //닉네임 설정
-        Component c = GetComponent<Character_Base>();
-        if (c)
-        {
-            Destroy(c);
-        }
 
-        playerController.character_Base = GetOrAddCharacterComponent(characterType);
-        CreateCharacterAvater(characterType, avaterId,playerController, fogController);
+        playerController.playerCharacter.CreateCharacter(characterType, avaterId);  //캐릭터와 아바타 생성
+
         playerController.OnPhotonInstantiate(this.photonView);
         _onPhotonInstantiateEvent?.Invoke(this.photonView);
-
-        //유저자신의 캐릭이라면.
-        if (autoNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+        if (autoNumber == PhotonNetwork.LocalPlayer.ActorNumber && autoNumber != -1)
         {
-            //if (PhotonNetwork.IsMasterClient == false) return;
-            print("넘기기.." + autoNumber);
             this.photonView.TransferOwnership(autoNumber);
-            //this.photonView.contr
-         
         }
-        else
+        if(autoNumber == -1 && photonView.IsMine)
         {
-            print("안넘기");
+            playerController.ChangeOwnerShip();
         }
-
     }
 
 
 
-    CharacterAvater CreateCharacterAvater(Define.CharacterType characterType, string avaterID, PlayerController playerController, FogOfWarController fogOfWarController)
-    {
-        var characterAvater = Managers.Spawn.CharacterAvaterSpawn(characterType,avaterID).GetComponent<CharacterAvater>();
-        characterAvater.transform.ResetTransform(this.transform);
-        playerController.character_Base.characterAvater = characterAvater;
-        //playerController.character_Base = character_Base;
-        //character_Base.playerController = playerController;
-        //character_Base.CreateAvater(avaterID);
-        //go.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-        fogOfWarController._hideInFog.ClearRenders();
-        //fogOfWarController.AddHideRender(character_Base.renderers);
+    //CharacterAvater CreateCharacterAvater(Define.CharacterType characterType, string avaterID, PlayerController playerController, FogOfWarController fogOfWarController)
+    //{
+    //    var characterAvater = Managers.Spawn.CharacterAvaterSpawn(characterType,avaterID).GetComponent<CharacterAvater>();
+    //    characterAvater.transform.ResetTransform(this.transform);
+    //    characterAvater.transform.localScale = Vector3.one * 2;
+    //    playerController.character_Base.characterAvater = characterAvater;
+    //    //playerController.character_Base = character_Base;
+    //    //character_Base.playerController = playerController;
+    //    //character_Base.CreateAvater(avaterID);
+    //    //go.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
+    //    fogOfWarController._hideInFog.ClearRenders();
+    //    //fogOfWarController.AddHideRender(character_Base.renderers);
 
-        return characterAvater;
-    }
+    //    return characterAvater;
+    //}
 
     //void SetupSkill(Character_Base character_Base , PlayerController playerController)
     //{
@@ -155,41 +140,41 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         }
     }
 
-    Character_Base GetOrAddCharacterComponent(Define.CharacterType characterType)
-    {
-        Character_Base character_Base ;
-        switch (characterType)
-        {
-            case Define.CharacterType.Bear:
-                character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
-                break;
-            case Define.CharacterType.Bunny:
-                character_Base = this.gameObject.GetOrAddComponent<Character_Bunny>();
+    //Character_Base GetOrAddCharacterComponent(Define.CharacterType characterType)
+    //{
+    //    Character_Base character_Base ;
+    //    switch (characterType)
+    //    {
+    //        case Define.CharacterType.Bear:
+    //            character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
+    //            break;
+    //        case Define.CharacterType.Bunny:
+    //            character_Base = this.gameObject.GetOrAddComponent<Character_Bunny>();
 
-                break;
-            case Define.CharacterType.Cat:
-                character_Base = this.gameObject.GetOrAddComponent<Character_Cat>();
+    //            break;
+    //        case Define.CharacterType.Cat:
+    //            character_Base = this.gameObject.GetOrAddComponent<Character_Cat>();
 
-                break;
-            //case Define.CharacterType.Dog:
-            //    character_Base = this.gameObject.GetOrAddComponent<Character_Dog>();
+    //            break;
+    //        //case Define.CharacterType.Dog:
+    //        //    character_Base = this.gameObject.GetOrAddComponent<Character_Dog>();
 
-            //    break;
-            //case Define.CharacterType.Frog:
-            //    character_Base = this.gameObject.GetOrAddComponent<Character_Frog>();
+    //        //    break;
+    //        //case Define.CharacterType.Frog:
+    //        //    character_Base = this.gameObject.GetOrAddComponent<Character_Frog>();
 
-            //    break;
-            //case Define.CharacterType.Monkey:
-            //    character_Base = this.gameObject.GetOrAddComponent<Character_Monkey>();
+    //        //    break;
+    //        //case Define.CharacterType.Monkey:
+    //        //    character_Base = this.gameObject.GetOrAddComponent<Character_Monkey>();
 
-                //break;
-            default:
-                character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
-                break;
-        }
+    //            //break;
+    //        default:
+    //            character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
+    //            break;
+    //    }
 
-        return character_Base;
-    }
+    //    return character_Base;
+    //}
 
     public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
     {
@@ -200,19 +185,21 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
     public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
     {
         if (targetView.ViewID != this.ViewID()) return;
+        PlayerController playerController = GetComponent<PlayerController>();
+
         if (this.gameObject.IsValidAI())
         {
-
+            playerController.ChangeOwnerShip();
         }
         else
         {
-            if (this.photonView.IsMine)
+            playerController.ChangeOwnerShip();
+            if (photonView.IsMine)
             {
-                PlayerController playerController = GetComponent<PlayerController>();
-                playerController.ChangeOwnerShip();
                 CameraManager.Instance.SetupTarget(playerController.transform);
                 SetActiveADNCamera(false);
             }
+            
         }
     }
 

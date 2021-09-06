@@ -63,6 +63,8 @@ public class GameSetting : ScriptableObject
     //[SerializeField] ExternalBehaviorTree
     [SerializeField] RuntimeAnimatorController _playerAnimator;
 
+    public ExternalBehaviorTree _seekerTree;
+
     public ExternalBehaviorTree externalBehavior;
     public RuntimeAnimatorController playerAnimator => _playerAnimator;
     public RuntimeAnimatorController GetRuntimeAnimatorController(Define.Team team)

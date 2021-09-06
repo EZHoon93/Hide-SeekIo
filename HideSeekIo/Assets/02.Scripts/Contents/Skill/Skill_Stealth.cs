@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Skill_Stealth : Skill_Base
 {
-    //public override Define.ControllerType controllerType { get; set; } = Define.ControllerType.Button;
 
-    //private void Start()
-    //{
-    //    InitCoolTime = 5;
-    //}
+    protected override void SetupData()
+    {
+        inputControllerObject.InitCoolTime = 5;
+    }
 
-    //public override void Use(PlayerController usePlayerController)
-    //{
-    //    //BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stealth, usePlayerController.GetLivingEntity());
-    //}
+    public override void Use(Vector2 inputVector2)
+    {
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stealth, playerController.playerHealth);
+    }
 }

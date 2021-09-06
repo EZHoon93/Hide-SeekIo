@@ -2408,6 +2408,7 @@ GameObject:
   - component: {fileID: 6763892890032609907}
   - component: {fileID: 3390326018845409277}
   - component: {fileID: 8328847357206073226}
+  - component: {fileID: 7247711221013103476}
   m_Layer: 0
   m_Name: Bear11
   m_TagString: Untagged
@@ -2476,10 +2477,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1737253541e4604e90b4506bf6698ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rightHandTransform: {fileID: 0}
   _accessoriesTransform: {fileID: 4118111418894416}
   _headTransform: {fileID: 4266576703307294}
   _weaponTransform: {fileID: 4640755828359014}
+  _renderController: {fileID: 7247711221013103476}
 --- !u!114 &8328847357206073226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2493,6 +2494,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skinType: 0
+--- !u!114 &7247711221013103476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578728045050130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 137339293287357008}
+  - {fileID: 137503585787298114}
 --- !u!1 &1591220641706250
 GameObject:
   m_ObjectHideFlags: 0

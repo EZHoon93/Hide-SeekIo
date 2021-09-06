@@ -22,6 +22,7 @@ public class UI_Zoom : MonoBehaviour
     {
         _weaponType = weaponType;
         _taget = target;
+        this.transform.ResetTransform(_taget.transform);
         _meleeZoom.gameObject.SetActive(false);
         _throwZoom.gameObject.SetActive(false);
         _gunZoom.gameObject.SetActive(false);
@@ -55,6 +56,12 @@ public class UI_Zoom : MonoBehaviour
 
     }
 
+    public void Input(Vector2 vector2)
+    {
+
+
+    }
+
     private void LateUpdate()
     {
         FixedUI();
@@ -66,21 +73,8 @@ public class UI_Zoom : MonoBehaviour
         {
             this.transform.position = _taget.transform.position;
             this.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-            //var s = _throwZoom.transform.position;
-            //s.y = _taget.transform.position.y;
-            //var isx = UtillGame.IsPointOnNavMesh(s);
-            //if (isx)
-            //{
-            //    image.color = Color.red;
-            //}
-            //else
-            //{
-            //    image.color = Color.white;
-
-            //}
-
-            //_throwZoom.
         }
+   
     }
 
 

@@ -37,6 +37,10 @@ public class MyInput
     {
         controllerDic[controllerInputType]?.Invoke(vector2);
         inputVector2 = vector2;
+        if(controllerInputType == ControllerInputType.Up)
+        {
+            inputVector2 = Vector2.zero;
+        }
     }
 
     public Vector2 inputVector2 { get;  set; }
@@ -68,9 +72,10 @@ public class PlayerInput : MonoBehaviourPun
     {
         navMeshAgent = this.gameObject.GetOrAddComponent<NavMeshAgent>();
         behaviorTree = this.gameObject.GetOrAddComponent<BehaviorTree>();
-
+        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         navMeshAgent.enabled = false;
         behaviorTree.enabled = false;
+        GetComponent<PlayerHealth>().onDeath += HandleDeath;
     }
 
 
@@ -82,15 +87,36 @@ public class PlayerInput : MonoBehaviourPun
         RandomVector2 = Vector2.one;
     }
 
+    public void HandleDeath()
+    {
+        navMeshAgent.enabled = false;
+        behaviorTree.enabled = false;
+    }
+
     private void Update()
     {
-
+        if (photonView.IsMine)
+        {
+            if (this.gameObject.IsValidAI())
+            {
+                float h = navMeshAgent.velocity.x;
+                float v = navMeshAgent.velocity.z;
+                Vector2 move = new Vector2(h, v);
+                controllerInputDic[InputType.Move].inputVector2 = move.normalized;
+            }
+            else
+            {
 #if UNITY_EDITOR
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        Vector2 move = new Vector2(h, v);
-        controllerInputDic[InputType.Move].inputVector2 = move;
+                float h = Input.GetAxis("Horizontal");
+                float v = Input.GetAxis("Vertical");
+                Vector2 move = new Vector2(h, v);
+                controllerInputDic[InputType.Move].inputVector2 = move;
 #endif
+
+            }
+
+        }
+
 
     }
 
@@ -103,6 +129,12 @@ public class PlayerInput : MonoBehaviourPun
                 InputManager.Instance.GetControllerJoystick(input.Key).myInput = input.Value;
             }
             InputManager.Instance.SetActiveController(true);
+        }
+        if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
+        {
+            navMeshAgent.enabled = true;
+            behaviorTree.enabled = true;
+            behaviorTree.ExternalBehavior = GameSetting.Instance._seekerTree;
         }
     }
 
@@ -140,12 +172,6 @@ public class PlayerInput : MonoBehaviourPun
             //}
         }
     }
-
-    protected virtual void HandleDeath()
-    {
-
-    }
-
 
     public virtual void Stop(float newTime)
     {
