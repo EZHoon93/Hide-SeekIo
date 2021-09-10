@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Realtime;
 public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField] TextMeshProUGUI _chattingText;
@@ -27,13 +28,18 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _closeButton.onClick.AddListener(() => ChangeChattingActive(false));
         _inputField.text = null;
         PhotonGameManager.Instacne.reciveChattingEvent += UpdateChatting;
+        PhotonGameManager.Instacne.enterUserList += OnPlayerEnteredRoom;
+        PhotonGameManager.Instacne.leftUserList += OnPlayerLeftRoom;
+
 
     }
     private void Start()
     {
         Invoke("ChangeBarSize", 1.0f);
+        //UpdateChatting(Define.ChattingColor.System, content);
+
     }
-    
+
     void ChangeChattingActive(bool active)
     {
         _panel.gameObject.SetActive(active);
@@ -102,6 +108,19 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     //    ChangeBarSize();
     //}
 
+    public  void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        var content = newPlayer.NickName + "님이 참가 하였습니다.";
+        UpdateChatting(Define.ChattingColor.System, content);
+    }
+
+
+
+    public  void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        var content = otherPlayer.NickName + "님이 참가 하였습니다.";
+        UpdateChatting(Define.ChattingColor.System, content);
+    }
 
     public void ClickChattingButton()
     {

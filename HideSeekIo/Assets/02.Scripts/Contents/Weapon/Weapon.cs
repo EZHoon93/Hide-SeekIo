@@ -40,7 +40,7 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
             _useState = newState;
             if (_useState == UseState.Use)
             {
-                playerController.playerShooter.ChangeWeapon(this);
+                //playerController.playerShooter.ChangeWeapon(this);
                 _weaponModel.gameObject.SetActive(true);
             }
             else
@@ -54,7 +54,7 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
     public float AttackDelay { get; set; }
     public float AfaterAttackDelay { get; set; }
     public float AttackDistance { get; set; }
-    public PlayerController playerController { get; set; }
+    public PlayerController playerController => inputControllerObject.playerController;
     public InputControllerObject inputControllerObject { get; set; }
     public Equipmentable equipmentable { get; set; }
     public UI_Zoom uiZoom { get; set; }
@@ -105,7 +105,8 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         useState = UseState.NoUse;  //사용하지않음으로설정
         _weaponModel.gameObject.SetActive(false);
         var playerViewID = (int)info.photonView.InstantiationData[0];
-        playerController = Managers.Game.GetPlayerController(playerViewID);
+        var playerController = Managers.Game.GetPlayerController(playerViewID);
+        inputControllerObject.SetupPlayerController(playerController);
         playerController.playerShooter.SetupWeapon(this);
         CreateZoomUI(playerController);  //줌 UI생성
 

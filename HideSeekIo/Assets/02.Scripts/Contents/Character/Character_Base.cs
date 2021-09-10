@@ -6,28 +6,32 @@ using UnityEngine;
 
 public abstract class Character_Base : MonoBehaviour
 {
-    public Define.CharacterType characterType{ get; set; }
-    public PlayerController playerController { get; set; }
+    public virtual Define.CharacterType characterType{ get; set; }
     public List<Renderer> renderers { get; private set; } = new List<Renderer>();
 
     public float MaxEnergy { get; protected set; } = 10;
     public float CurrentEnergy { get; set; } = 10;
     public float MoveSpeed { get; protected set; } = 2;
 
-    protected abstract void SetupSkill();
+    public InputControllerObject inputControllerObject { get; set; }
+
   
     private void Awake()
     {
-        playerController = GetComponent<PlayerController>();
+        inputControllerObject = GetComponent<InputControllerObject>();
     }
 
-    public void OnPhotonInstantiate()
+    public void OnPhotonInstantiate(PlayerController _playerController)
     {
-        SetupSkill();
+        if (_playerController)
+        {
+            inputControllerObject.SetupPlayerController(_playerController);
+        }
     }
 
-    public void ChangeOnwerShip()
+    public void ChangeOnwerShip(PlayerController _playerController)
     {
+        _playerController.playerShooter.SetupControllerObject(inputControllerObject);
     }
-    
+
 }

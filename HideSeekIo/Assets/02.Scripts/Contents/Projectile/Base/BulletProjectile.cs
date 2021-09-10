@@ -4,7 +4,7 @@ using DG.Tweening;
 
 using UnityEngine;
 
-public class BulletProjectile : Poolable , IEnterTrigger
+public abstract class BulletProjectile : Poolable , ICanEnterTriggerPlayer
 {
     [SerializeField] GameObject _bulletObject;
     Collider _collider;
@@ -13,15 +13,15 @@ public class BulletProjectile : Poolable , IEnterTrigger
     {
         _collider = GetComponent<Collider>();
     }
-    public virtual void Enter(GameObject Gettingobject)
+    
+    public void Enter(PlayerController enterPlayer, Collider collider)
     {
         if (isPlay == false) return;
-        var damageable = Gettingobject.GetComponent<IDamageable>();
-        if (damageable != null)
-        {
-            Expolosion();
-        }
+        EnterPlayer(enterPlayer, collider);
+        End();
     }
+
+    protected abstract void EnterPlayer(PlayerController enterPlayer, Collider collider);
 
     public void Play(Vector3 endPoint)
     {
@@ -35,11 +35,11 @@ public class BulletProjectile : Poolable , IEnterTrigger
        {
            if (isPlay)
            {
-               Expolosion();
+               End();
            }
        });
     }
-    protected virtual void Expolosion()
+    protected virtual void End()
     {
         isPlay = false;
         _collider.enabled = false;
@@ -52,4 +52,6 @@ public class BulletProjectile : Poolable , IEnterTrigger
         if (isPlay) return;
         Managers.Pool.Push(this);
     }
+
+
 }

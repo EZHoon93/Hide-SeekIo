@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class Character_Bear : Character_Base
 {
-    protected override void SetupSkill()
-    {
-        this.gameObject.GetOrAddComponent<Skill_Invinc>();
-    }
+    public override Define.CharacterType characterType => Define.CharacterType.Bear;
 
     private void Start()
     {

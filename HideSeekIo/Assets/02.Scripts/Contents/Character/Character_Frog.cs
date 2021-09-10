@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Character_Frog : Character_Base
 {
-    protected override void SetupSkill()
+    private void Start()
     {
-        //mainSkill = this.gameObject.GetOrAddComponent<Skill_Stealth>();
+        MoveSpeed = 2.5f;
+        MaxEnergy = 10;
+        CurrentEnergy = MaxEnergy;
     }
-
 }

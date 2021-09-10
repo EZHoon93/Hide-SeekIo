@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using FoW;
 
-public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, IEnterTrigger, IExitTrigger ,
+public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, ICanEnterTriggerPlayer, IExitTrigger ,
      IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
 {
     //public LivingEntity gettingLivingEntity { get; set; } //얻고있는 생명체
@@ -25,7 +25,10 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     float n_getTime;    //얻었던 시간
     bool _isGet; //얻으면 
 
-    IGetWorldItem getWorldItem;
+    public int controllerIndex { get; private set; }
+    public int spawnIndex { get; private set; }
+    public bool isReset { get; set; }
+    ItemBox_Base  _itemBox_Base;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -47,7 +50,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     private void Awake()
     {
         _getSlider.maxValue = _maxGetTime;
-        getWorldItem = GetComponent<IGetWorldItem>();
+        _itemBox_Base = GetComponent<ItemBox_Base>();
         _hideInFog = GetComponent<HideInFog>();
     }
     private void OnEnable()
@@ -56,6 +59,13 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     }
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        if (info.photonView.InstantiationData == null) return;
+        controllerIndex =(int)info.photonView.InstantiationData[0];
+        spawnIndex = (int)info.photonView.InstantiationData[1];
+        _itemBox_Base.OnPhotonInstantiate(info);
+        isReset = false;
+        Managers.Game.CurrentGameScene.itemSpawnManager.CreateCallBack(this);
+
         this.transform.localScale = Vector3.one;
         n_eneterTime = 0;
         gettingLivingEntity = null;
@@ -64,14 +74,14 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         n_getTime = 0;
         PhotonNetwork.AddCallbackTarget(this);
         _getSlider.gameObject.SetActive(false);
-
     }
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
-        //EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, this.transform.position, 0);
         PhotonNetwork.RemoveCallbackTarget(this);
-
+        _itemBox_Base.OnPreNetDestroy(rootView);
+        if (isReset) return;
+        Managers.Game.CurrentGameScene.itemSpawnManager.RemoveCallBack(this);
     }
     private void Update()
     {
@@ -118,7 +128,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         if (photonView.IsMine == false || gettingLivingEntity == null) return;
         if (gettingLivingEntity.photonView.IsMine)
         {
-            getWorldItem.Get(gettingLivingEntity.gameObject);  //아이템 얻기 효과
+            _itemBox_Base.Get(gettingLivingEntity.gameObject);  //아이템 얻기 효과
             n_getTime = (float)PhotonNetwork.Time;
             if (gettingLivingEntity.IsMyCharacter())
             {
@@ -138,17 +148,17 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
 
     //누군가 얻으려고할때 => 얻으려는 로컬 오브젝트가 서버전송
-    public void Enter(GameObject Gettingobject)
+    public void Enter(PlayerController enterPlayer, Collider collider)
     {
         print("Enter Item!!");
-        this._modelTransform.DOShakeScale(_shakeScaleDuration*0.5f);
+        this._modelTransform.DOShakeScale(_shakeScaleDuration * 0.5f);
 
         if (gettingLivingEntity != null) return;   //이미 얻고있는 플레이어가 있다면 취소
-        var living =  Gettingobject.GetComponent<LivingEntity>();
+        var living = enterPlayer.playerHealth;
         if (living.photonView.IsMine == false) return;  //얻은캐릭이 자기자신캐릭이아니라면 x
         if (living)
         {
-            
+
             if (living.IsMyCharacter())
             {
                 _hideInFog.enabled = false;
@@ -158,7 +168,6 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
             photonView.RPC("Check_IsGetOnServer", RpcTarget.AllViaServer, living.ViewID());
         }
     }
-
     //동시에 얻는걸 막기위해 서버 전송후 체크 
     [PunRPC]
     public void Check_IsGetOnServer(int getViewID , PhotonMessageInfo photonMessageInfo)
@@ -226,5 +235,5 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     {
     }
 
-    
+ 
 }

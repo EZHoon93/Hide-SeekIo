@@ -6,8 +6,11 @@ using System.Collections.Generic;
 
 public class InputControllerObject : MonoBehaviourPun
 {
+    [SerializeField] Sprite _sprite;
+
+    public PlayerController playerController { get; private set; }
     public InputType inputType { get; set; }
-    public Define.AttackType attackType;
+    public Define.AttackType attackType { get; set; }
     public PlayerShooter.state shooterState{ get; set; }
     public float InitCoolTime { get; set; }
     public float RemainCoolTime { get; set; }
@@ -15,12 +18,16 @@ public class InputControllerObject : MonoBehaviourPun
     public event Action<Vector2> zoomEventCallBack;
     public event Action useSucessStartCallBack;
     public event Action useSucessEndCallBack;
-
+    public Sprite sprite => _sprite;
     public Vector2 lastInputSucessVector2 { get; set; }
 
-    public Vector3 attackPoint { get; set; }
+    public Vector3 attackDirection { get; set; }
 
 
+    public void SetupPlayerController(PlayerController _playerController)
+    {
+        playerController = _playerController;
+    }
 
     //public void AddEvent(ControllerInputType controllerInputType , Action<Vector2> newAction)
     //{
@@ -36,7 +43,6 @@ public class InputControllerObject : MonoBehaviourPun
     public void AddUseEvent(Action<Vector2> action)
     {
         useEventCallBack = action;
-        print("AddUseEnvet ");
     }
 
     public void AddZoomEvent(Action<Vector2> action)
@@ -71,7 +77,8 @@ public class InputControllerObject : MonoBehaviourPun
         if (RemainCoolTime > 0) return false;
         RemainCoolTime = InitCoolTime;
         lastInputSucessVector2 = inputVector2;
-        if (this.IsMyCharacter())
+
+        if (playerController.IsMyCharacter())
         {
             InputManager.Instance.GetControllerJoystick(inputType).StartCoolTime(RemainCoolTime);
         }

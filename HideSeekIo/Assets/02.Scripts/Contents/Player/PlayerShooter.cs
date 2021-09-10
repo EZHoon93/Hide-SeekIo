@@ -32,6 +32,8 @@ public class PlayerShooter : MonoBehaviourPun
     Transform upperSpine;
     protected Vector3 upperBodyDir;
     protected bool rotate = false;
+
+    public float baseWeaponReaminTime;
     private void OnEnable()
     {
         State = state.Idle;
@@ -54,7 +56,7 @@ public class PlayerShooter : MonoBehaviourPun
 
             }
             Vector3 spineRot = Quaternion.LookRotation(AttackDirection).eulerAngles;
-            spineRot -= _playerCharacter.character_Base.transform.eulerAngles;
+            spineRot -= _playerCharacter.characterAvater.transform.eulerAngles;
             upperSpine.transform.localRotation = Quaternion.Euler(
                 upperSpine.transform.localEulerAngles.x - spineRot.y,
                 upperSpine.transform.localEulerAngles.y,
@@ -121,14 +123,18 @@ public class PlayerShooter : MonoBehaviourPun
     {
         if (newInputControllerObject.attackType == Define.AttackType.Button)
         {
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType, (input) => UseInputControllerObject(Vector2.zero, newInputControllerObject));
+            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
+              (input) => { UseInputControllerObject(input, newInputControllerObject); }, newInputControllerObject.sprite);
             _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, null);
         }
         else
         {
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, (input) => UseInputControllerObject(input, newInputControllerObject));
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType, 
-                (input) => { currentInputController?.Zoom(Vector2.zero);  currentInputController = newInputControllerObject;  }  );
+            //_playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
+            //   (input) => { currentInputController?.Zoom(Vector2.zero); currentInputController = newInputControllerObject; });
+            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
+              (input) => { ZoomInputConrollerObject(input, newInputControllerObject);  });
+            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, (input) => UseInputControllerObject(input, newInputControllerObject) , newInputControllerObject.sprite);
+           
             //_playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Drag, newInputControllerObject.inputType, (input) => ZoomInputConrollerObject(input, newInputControllerObject));
         }
     }
@@ -143,7 +149,7 @@ public class PlayerShooter : MonoBehaviourPun
     public void ChangeWeapon(Weapon useNewWeapon)
     {
         weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
-        currentInputController = useNewWeapon.inputControllerObject;
+        //currentInputController = useNewWeapon.inputControllerObject;
         SetupAnimation(useNewWeapon);
     }
 
@@ -179,6 +185,7 @@ public class PlayerShooter : MonoBehaviourPun
         if (this.State != state.Idle) return;
         if (this.IsMyCharacter())
         {
+            //내캐릭이라면 줌을꺼줌
             inputControllerObject.Zoom(Vector2.zero);
         }
         
@@ -186,22 +193,31 @@ public class PlayerShooter : MonoBehaviourPun
         {
             if (baseWeapon)
             {
-                baseWeapon.useState = Weapon.UseState.Use;
+                ChangeWeapon(baseWeapon);
             }
         }
     }
     public void ZoomInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
-        inputControllerObject.Zoom(inputVector2);
+        if(currentInputController != null)
+        {
+            currentInputController.Zoom(Vector2.zero);
+        }
+        currentInputController = inputControllerObject;
     }
 
 
     protected virtual void WeaponAttackSucess(Weapon attackWeapon)
     {
         State = attackWeapon.inputControllerObject.shooterState;
-        AttackDirection = attackWeapon.inputControllerObject.attackPoint;
+        //var attackDirection = (attackWeapon.inputControllerObject.attackPoint - this.transform.position).normalized;
+        //attackDirection.y = this.transform.position.y;
+        AttackDirection = attackWeapon.inputControllerObject.attackDirection; ;
+        //AttackDirection = UtillGame.ConventToVector3( attackWeapon.inputControllerObject.lastInputSucessVector2);
         if (attackWeapon.weaponType == Weapon.WeaponType.Hammer)
         {
+            //AttackDirection = Vector3.zero;
+
         }
         else
         {
@@ -214,11 +230,14 @@ public class PlayerShooter : MonoBehaviourPun
         rotate = false;
         if (baseWeapon)
         {
-            baseWeapon.useState = Weapon.UseState.Use;
-            if (baseWeapon.type == Weapon.UseType.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
+            if(currentInputController == null)
             {
-                PhotonNetwork.Destroy(baseWeapon.gameObject);
+                ChangeWeapon(baseWeapon);
             }
+            //if (baseWeapon.type == Weapon.UseType.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
+            //{
+            //    PhotonNetwork.Destroy(baseWeapon.gameObject);
+            //}
         }
         State = state.Idle;
 
@@ -258,4 +277,16 @@ public class PlayerShooter : MonoBehaviourPun
         //GetComponent<PhotonMove>().m_NetworkPosition = this.transform.position;
     }
 
+    /// <summary>
+    /// 주 무기 남은 쿨타임 
+    /// </summary>
+    /// <returns></returns>
+    public float GetBaseWeaponRemainCoolTime()
+    {
+        if(baseWeapon == null)
+        {
+            return -1;
+        }
+        return baseWeapon.inputControllerObject.RemainCoolTime;
+    }
 }

@@ -54,7 +54,7 @@ public class Weapon_Hammer : Weapon
     public override void Attack(Vector2 inputVector)
     {
         if (photonView.IsMine == false) return;
-        var direction = playerController.playerCharacter.character_Base.transform.forward;
+        var direction = playerController.playerCharacter.characterAvater.transform.forward;//아바타가보는 정면
         var attackPoint = playerController.transform.position + direction * AttackDistance;
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, attackPoint);
     }
@@ -67,7 +67,10 @@ public class Weapon_Hammer : Weapon
 
     IEnumerator AttackProcessOnAllClinets(Vector3 attackPoint)
     {
-        inputControllerObject.attackPoint = attackPoint;
+        var direction = attackPoint - playerController.transform.position;
+        direction = direction.normalized;
+        direction.y = playerController.transform.position.y;
+        inputControllerObject.attackDirection = direction;
         inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(0.5f);   //대미지 주기전까지 시간
         AttackEffect(attackPoint);
@@ -79,7 +82,11 @@ public class Weapon_Hammer : Weapon
     {
         EffectManager.Instance.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0);
         UtillGame.DamageInRange(attackPoint, _damageRange, 10, playerController.ViewID(), UtillLayer.seekerToHiderAttack);
-        Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        if(CameraManager.Instance.IsView(attackPoint) && playerController.IsMyCharacter())
+        {
+
+            Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        }
     }
 
     #endregion

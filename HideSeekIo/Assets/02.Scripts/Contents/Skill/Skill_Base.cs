@@ -6,23 +6,24 @@ using Photon.Pun;
 
 public abstract class Skill_Base : MonoBehaviourPun 
 {
-    public Define.Skill skillType;
+    public virtual Define.Skill skillType { get; set; }
     public virtual Define.AttackType attakType { get; set; }
-    public PlayerController playerController { get; set; }
     public InputControllerObject inputControllerObject { get; protected set; }
 
-
+    public PlayerController playerController => inputControllerObject.playerController;
     private void Awake()
     {
-        playerController = GetComponent<PlayerController>();
-        playerController.changeOnwerShip += ChangeOnwerShip;
+        inputControllerObject = GetComponent<InputControllerObject>();
         SetupCallBack();
+    }
+    public void ChangeOnwerShip()
+    {
     }
     protected virtual void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
         inputControllerObject.inputType = InputType.Sub2;
-        inputControllerObject.attackType = Define.AttackType.Button;
+        inputControllerObject.attackType = attakType;
         inputControllerObject.AddUseEvent(Use);
         inputControllerObject.AddZoomEvent(Zoom);
     }
@@ -30,11 +31,6 @@ public abstract class Skill_Base : MonoBehaviourPun
     private void Start()
     {
         SetupData();
-    }
-
-    void ChangeOnwerShip(PhotonView photonView)
-    {
-        playerController.playerShooter.SetupControllerObject(inputControllerObject);
     }
 
     protected virtual void SetupData()

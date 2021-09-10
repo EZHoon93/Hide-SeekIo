@@ -28,8 +28,6 @@ public class GenricSingleton<T> : MonoBehaviourPun where T : MonoBehaviour
             // 자신을 파괴
             Destroy(gameObject);
         }
-
-        print("셋업싱글톤" + gameObject.name);
     }
 
 }

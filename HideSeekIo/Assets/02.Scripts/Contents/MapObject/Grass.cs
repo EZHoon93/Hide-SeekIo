@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-public class Grass : MonoBehaviour , IEnterTrigger , IExitTrigger, IGrassDetected
+public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, IExitTrigger, IGrassDetected
 {
     [SerializeField] Material _orignalMaterial;
     [SerializeField] Material _transMaterial;
@@ -19,14 +19,11 @@ public class Grass : MonoBehaviour , IEnterTrigger , IExitTrigger, IGrassDetecte
             _renderer.material = _orignalMaterial;
     }
 
-    public void Enter(GameObject Gettingobject)
+    public void Enter(PlayerController enterPlayer, Collider collider)
     {
-        var playerController = Gettingobject.GetComponent<PlayerController>();
-        if (playerController)
-        {
-            playerController.isGrass = true;
-        }
+         enterPlayer.isGrass = true;
     }
+
 
     public void Exit(GameObject exitGameObject)
     {
@@ -34,7 +31,8 @@ public class Grass : MonoBehaviour , IEnterTrigger , IExitTrigger, IGrassDetecte
         if (playerController)
         {
             playerController.isGrass = false;
-            print("skrka 나가!");
         }
     }
+
+    
 }

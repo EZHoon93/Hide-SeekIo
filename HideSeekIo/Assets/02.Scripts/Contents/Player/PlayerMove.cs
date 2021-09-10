@@ -17,7 +17,7 @@ public class PlayerMove : PhotonMove
 
     public MoveState State { get; set; }
 
-    protected override Transform target => _playerCharacter.character_Base.transform;
+    protected override Transform target => _playerCharacter.characterAvater.transform;
     CharacterController _characterController;
     PlayerShooter _playerShooter;
     PlayerStat _playerStat;
@@ -27,12 +27,30 @@ public class PlayerMove : PhotonMove
     Animator _animator => _playerCharacter.animator;
 
     float _animationValue;
+    bool _run;
     List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
     protected float _totRatio;    //버퍼리스트 합계산한 최종 이속 증/감소율
     
     public float ResultSpeed { get; set; }
-    public bool Run { get; set; }
+    public bool Run { 
+        get => _run; 
+        set
+        {
+            if (_run == value) return;
+            _run = value;
+            if (_run)
+            {
+                startRunTime = 0;
+            }
+            else
+            {
+                startRunTime = 0;
+            }
+        }
+    }
     float runCoolTime = 0.0f;
+    float startRunTime;
+    float maxAccelTime = 2;
  
     private void Awake()
     {
@@ -49,6 +67,7 @@ public class PlayerMove : PhotonMove
         State = MoveState.Idle;
         _animationValue = 0;
         Run = false;
+        startRunTime = 0;
     }
     public virtual void OnPhotonInstantiate()
     {
@@ -78,7 +97,13 @@ public class PlayerMove : PhotonMove
         var move = _playerInput.controllerInputDic[InputType.Move].inputVector2;
         //move = UtillGame.GetInputVector2_ByCamera(move);
         OnUpdate(move, Run);
-        
+        if (Run)
+        {
+            if( startRunTime < maxAccelTime)
+            {
+                startRunTime += Time.deltaTime;
+            }
+        }
     }
     protected override void UpdateRemote()
     {
@@ -91,7 +116,7 @@ public class PlayerMove : PhotonMove
         {
             case PlayerShooter.state.Idle:
                 Vector3 test = UtillGame.ConventToVector3(inputVector2);
-                if (_playerStat.CurrentEnergy > -900)
+                if (_playerStat.CurrentEnergy > 0)
                 {
                     UpdateSmoothRotate(test);
                     UpdateMove(inputVector2, isRun);
@@ -142,7 +167,7 @@ public class PlayerMove : PhotonMove
             State = MoveState.Walk;
             ResultSpeed = _playerStat.moveSpeed* 0.7f;
         }
-        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
+        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed) + (startRunTime* _playerStat.moveSpeed*0.3f)  ;
         Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
@@ -206,7 +231,7 @@ public class PlayerMove : PhotonMove
         switch (State)
         {
             case MoveState.Run:
-                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy - 1 * Time.deltaTime, 0, _playerStat.MaxEnergy);
+                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy - (1 + startRunTime*0.3f) * Time.deltaTime, 0, _playerStat.MaxEnergy);
                 break;
             case MoveState.Idle:
             case MoveState.Walk:

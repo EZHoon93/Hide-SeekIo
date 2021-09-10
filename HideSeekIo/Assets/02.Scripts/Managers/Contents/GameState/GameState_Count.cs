@@ -37,8 +37,8 @@ public class GameState_Count : GameState_Base
             List<SendAllSkinInfo> playerDataInfoList = GetJoinUserList();   //참가한 유저수 채워넣음.
             for (int i = playerDataInfoList.Count; i < 8; i++)
             {
-                //SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAllSkin();
-                //playerDataInfoList.Add(sendAllSkinInfo);
+                SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAllSkin();
+                playerDataInfoList.Add(sendAllSkinInfo);
             }
 
             var playerSpawnPointList = Managers.Game.CurrentGameScene.mainSpawnPoints.playerSpawnPoints.ToList();

@@ -16,10 +16,11 @@ public class GameState_GameReady : GameState_Base
     {
         _initRemainTime = _initGameTime;
         uI_Main.UpdateInGameTime(Managers.Game.CurrentGameScene.InitGameTime); //플레이타임 갖고옴
-        var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
-        uI_Main.noticeBg.enabled = true;
-        uI_Main.UpdateNoticeText(noticeContent);
-        uI_Main.titleText.text = "잠시 후 술래가 정해 집니다.";
+        //var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
+        //uI_Main.noticeBg.enabled = true;
+        //uI_Main.UpdateNoticeText(noticeContent);
+        //uI_Main.titleText.text = "잠시 후 술래가 정해 집니다.";
+        uI_Main.UpdateNoticeText("잠시 후 술래가 정해 집니다.");
 
 
     }
@@ -46,7 +47,7 @@ public class GameState_GameReady : GameState_Base
                 allHiderList.RemoveAt(ran);
             }
 
-            //selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
+            selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
             //selectSeekerViewIDLIst.Add(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
 
             photonView.RPC("SelectSeeker", RpcTarget.AllViaServer, selectSeekerViewIDLIst.ToArray());
@@ -56,11 +57,9 @@ public class GameState_GameReady : GameState_Base
     [PunRPC]
     public void SelectSeeker(int[] seekerViewList)
     {
-        print(seekerViewList.Length + "  수 ");
 
         foreach(var s in seekerViewList)
         {
-            print(s + " 선택된 술래 뷰아이디");
             var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController >();
             if (selectplayer.photonView.IsMine)
             {

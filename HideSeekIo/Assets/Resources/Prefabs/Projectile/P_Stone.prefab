@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -1810040540377865911}
   - component: {fileID: 2945932630899505850}
   - component: {fileID: 7997443674142070104}
-  - component: {fileID: -3530790580862165940}
+  - component: {fileID: 6596140826418949726}
   m_Layer: 14
   m_Name: P_Stone
   m_TagString: Untagged
@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsUsing: 0
-  _explosionEffect: {fileID: 0}
   _bulletObject: {fileID: 6876316860478818290}
 --- !u!114 &2945932630899505850
 MonoBehaviour:
@@ -65,7 +64,6 @@ MonoBehaviour:
   team: 0
   minFogStrength: 0.8
   _canvas1: {fileID: 0}
-  _canvas2: {fileID: 0}
   _renderers:
   - {fileID: 3250780014980337197}
 --- !u!114 &7997443674142070104
@@ -103,8 +101,8 @@ MonoBehaviour:
   multithreading: 0
   cellBased: 0
   snapToPixelCenter: 0
---- !u!136 &-3530790580862165940
-CapsuleCollider:
+--- !u!135 &6596140826418949726
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -113,9 +111,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
+  serializedVersion: 2
+  m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6876316860478818290
 GameObject:

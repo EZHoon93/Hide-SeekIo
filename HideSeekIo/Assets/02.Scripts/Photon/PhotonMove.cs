@@ -105,10 +105,12 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
         this.target.rotation = Quaternion.Slerp(this.target.rotation, newRotation, rotationSpeed * Time.deltaTime);
     }
 
-    protected void UpdateImmediateRotate(Vector3 inputVector3)
+    protected void UpdateImmediateRotate(Vector3 lookDirection)
     {
-        inputVector3.y = target.transform.position.y;
-        this.target.LookAt(inputVector3);
+        //inputVector3.y = target.transform.position.y;
+        Quaternion newRotation = Quaternion.LookRotation(lookDirection);
+        this.target.rotation = newRotation;
+        //this.target.LookAt(inputVector3);
         n_direction = this.target.forward;
 
     }

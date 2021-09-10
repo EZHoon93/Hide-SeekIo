@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PlayerUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _playerNameText;
+    [SerializeField] TextMeshProUGUI _levelText;
     [SerializeField] Slider _energySlider;
     [SerializeField] GameObject _hearRange;
 
@@ -17,11 +18,22 @@ public class PlayerUI : MonoBehaviour
     public void SetupPlayer(PlayerController playerController)
     {
         _playerController = playerController;
+        _energySlider.gameObject.SetActive(false);
     }
     public void OnPhotonInstantiate()
     {
         _playerStat = _playerController.playerStat;
         _playerNameText.text = _playerController.NickName;
+        _levelText.text = _playerStat.level.ToString();
+    }
+
+    public void ChangeStatEventCallBack(PlayerStat.StatChange statChange, object value )
+    {
+
+    }
+
+    public void ChangeOwnerShip()
+    {
         bool active = _playerController.IsMyCharacter() ? true : false;
         _energySlider.gameObject.SetActive(active);
     }

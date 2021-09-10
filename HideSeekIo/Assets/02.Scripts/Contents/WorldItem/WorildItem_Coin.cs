@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-public class WorildItem_Coin : MonoBehaviour , IEnterTrigger
+public class WorildItem_Coin : MonoBehaviour, ICanEnterTriggerPlayer
 {
     [SerializeField] private float _shakeScaleDuration = 1;
     [SerializeField] private float _hideScaleDuration = .25f;
@@ -25,11 +25,13 @@ public class WorildItem_Coin : MonoBehaviour , IEnterTrigger
         enabled = false;
         transform.DOShakeScale(_shakeScaleDuration);
         transform.DOScale(Vector3.zero, _hideScaleDuration).SetDelay(_shakeScaleDuration);
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Coin, this.transform.position, 0 );
+        EffectManager.Instance.EffectOnLocal(Define.EffectType.Coin, this.transform.position, 0);
 
 
     }
-
+    public void Enter(PlayerController enterPlayer, Collider collider)
+    {
+    }
     private void Update()
     {
         transform.Rotate(Vector3.one);
@@ -43,3 +45,4 @@ public class WorildItem_Coin : MonoBehaviour , IEnterTrigger
         CollectEffect();
     }
 }
+   

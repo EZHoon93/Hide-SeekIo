@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviourPun , IGrassDetected
     private void Awake()
     {
         playerHealth = this.gameObject.GetOrAddComponent<PlayerHealth>();
+        playerHealth.onDeath += HandleDeath;
         playerInput = this.gameObject.GetOrAddComponent<PlayerInput>();
         playerShooter = this.gameObject.GetOrAddComponent<PlayerShooter>();
         playerMove = this.gameObject.GetOrAddComponent<PlayerMove>();
@@ -68,6 +69,7 @@ public class PlayerController : MonoBehaviourPun , IGrassDetected
 
     protected virtual void HandleDeath()
     {
+        print("HangldeDeath");
         playerHealth.enabled = false;
         playerShooter.enabled = false;
         playerMove.enabled = false;
@@ -83,6 +85,7 @@ public class PlayerController : MonoBehaviourPun , IGrassDetected
         playerHealth.OnPhotonInstantiate();
         playerMove.OnPhotonInstantiate();
         playerShooter.OnPhotonInstantiate();
+        playerCharacter.OnPhotonInstantiate(this);
         _playerUI.OnPhotonInstantiate();
         statTypeList.Clear();
         isGrass = false;
@@ -94,6 +97,8 @@ public class PlayerController : MonoBehaviourPun , IGrassDetected
         playerInput.ChangeOwnerShip();
         playerMove.ChangeOwnerShip();
         playerShooter.ChangeOwnerShip();
+        playerCharacter.ChangeOnwerShip(this);
+        _playerUI.ChangeOwnerShip();
         changeOnwerShip?.Invoke(this.photonView);
         if (this.IsMyCharacter())
         {
@@ -115,15 +120,20 @@ public class PlayerController : MonoBehaviourPun , IGrassDetected
                 break;
         }
         playerHealth.Team = team;
+        playerInput.ChangeTeam(team);
+        if (this.IsMyCharacter())
+        {
+            CameraManager.Instance.ChangeTeam(team);
+        }
         //playerStat.Recive_ChangeTeam();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        var enterTrigger = other.gameObject.GetComponent<IEnterTrigger>();
+        var enterTrigger = other.gameObject.GetComponent<ICanEnterTriggerPlayer>();
         if (enterTrigger != null)
         {
-            enterTrigger.Enter(this.gameObject);
+            enterTrigger.Enter(this , other);
         }
     }
     private void OnTriggerExit(Collider other)

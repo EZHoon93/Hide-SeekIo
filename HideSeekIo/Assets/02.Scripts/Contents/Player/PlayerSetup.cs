@@ -110,11 +110,6 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         if (Managers.Resource == null) return;
         Managers.Game.UnRegisterLivingEntity(this.ViewID());
         Managers.Resource.Destroy(GetComponentInChildren<Animator>().gameObject);
-        var inputBase = GetComponent<InputBase>();
-        if (inputBase)
-        {
-            Destroy(inputBase);
-        }
         var behavorTree = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavorTree)
         {

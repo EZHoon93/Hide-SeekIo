@@ -5,17 +5,34 @@ using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Photon.Realtime;
 using System.Linq;
+using System;
 
 public class PlayerStat : MonoBehaviourPun
 {
+    public enum StatChange
+    {
+        level
+    }
+    StatChange _statChange;
+
+    int _level;
     int _statPoint;
     List<int> _statDataList = new List<int>();
     [SerializeField] float _currentEnergy;
     [SerializeField] float _moveSpeed;
     [SerializeField] float _maxEnergy;
 
-
+    //delegate void StantChangeDelegate(StatChange , int);
+    public event Action<StatChange, object> statChangeListenrers;
     #region 프로퍼티
+
+    public int level { get => _level;
+        set
+        {
+            _level = value;
+            statChangeListenrers?.Invoke(StatChange.level, _level);
+        }
+    }
     public float moveSpeed
     {
         get => _moveSpeed;
@@ -65,14 +82,18 @@ public class PlayerStat : MonoBehaviourPun
 
 
     #endregion
-    private void Start()
-    {
 
-    }
+   
+    
     private void OnEnable()
     {
         _statPoint = 0;
         _statDataList.Clear();
+    }
+
+    public void AddStatChangeEvent(Action<StatChange,object> notification)
+    {
+
     }
 
     public void Recive_ChangeTeam()

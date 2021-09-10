@@ -53,10 +53,13 @@ public class PlayerInput : MonoBehaviourPun
     NavMeshAgent navMeshAgent;
     BehaviorTree behaviorTree;
 
-    protected float _stopTime;
-    protected bool _isAttack;
+    //protected float _stopTime;
+    //protected bool _isAttack;
     public Vector2 RandomVector2 { get; set; }
-    public bool IsStop { get; protected set; }
+    //public bool IsStop { get; protected set; }
+    public float stopTime { get; set; }
+
+    public bool isAI { get; set; }
 
     public Dictionary<InputType, MyInput> controllerInputDic { get; set; } =
     new Dictionary<InputType, MyInput>()
@@ -70,22 +73,21 @@ public class PlayerInput : MonoBehaviourPun
 
     private void Awake()
     {
-        navMeshAgent = this.gameObject.GetOrAddComponent<NavMeshAgent>();
-        behaviorTree = this.gameObject.GetOrAddComponent<BehaviorTree>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        behaviorTree = GetComponent<BehaviorTree>();
         navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         navMeshAgent.enabled = false;
         behaviorTree.enabled = false;
         GetComponent<PlayerHealth>().onDeath += HandleDeath;
     }
 
-
+    
     public virtual void OnPhotonInstantiate()
     {
-        IsStop = false;
-        _isAttack = false;
-        _stopTime = 0;
+        stopTime = 0;
         RandomVector2 = Vector2.one;
     }
+
 
     public void HandleDeath()
     {
@@ -97,7 +99,14 @@ public class PlayerInput : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            if (this.gameObject.IsValidAI())
+            if(stopTime > 0)
+            {
+                stopTime -= Time.deltaTime;
+                controllerInputDic[InputType.Move].inputVector2 = Vector2.zero;
+                return;
+            }
+
+            if (isAI)
             {
                 float h = navMeshAgent.velocity.x;
                 float v = navMeshAgent.velocity.z;
@@ -132,13 +141,28 @@ public class PlayerInput : MonoBehaviourPun
         }
         if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
         {
+            behaviorTree.ExternalBehavior = GameSetting.Instance.hiderTree;
+            behaviorTree.enabled = true;
+            navMeshAgent.enabled = true;
+
+        }
+        isAI = this.gameObject.IsValidAI();
+
+    }
+
+    public void ChangeTeam(Define.Team team)
+    {
+        if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
+        {
+            behaviorTree.ExternalBehavior = GameSetting.Instance.seekerTree;
             navMeshAgent.enabled = true;
             behaviorTree.enabled = true;
-            behaviorTree.ExternalBehavior = GameSetting.Instance._seekerTree;
+            //var move = GetComponent<PlayerStat>();
+            //behaviorTree.SetVariable("CurrentEnergy", move.CurrentEnergy);
         }
     }
 
-    public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType , System.Action<Vector2> action)
+    public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType , System.Action<Vector2> action, Sprite sprite= null)
     {
         MyInput addInput = null;
         bool isCache = controllerInputDic.TryGetValue(inputType, out addInput);
@@ -149,7 +173,7 @@ public class PlayerInput : MonoBehaviourPun
         addInput.controllerDic[controllerInputType] = action;
         if (this.IsMyCharacter())
         {
-            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType);
+            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, sprite);
         }
     }
 
@@ -175,14 +199,13 @@ public class PlayerInput : MonoBehaviourPun
 
     public virtual void Stop(float newTime)
     {
-        _stopTime = newTime;
-        IsStop = true;
+        stopTime = newTime;
     }
 
     public void RemoveStop()
     {
-        IsStop = false;
-        _stopTime = 0;
+        stopTime = 0;
+
     }
 
 }

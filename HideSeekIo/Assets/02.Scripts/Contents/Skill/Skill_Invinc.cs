@@ -14,6 +14,6 @@ public class Skill_Invinc : Skill_Base
 
     public override void Use(Vector2 inputVector2)
     {
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shield, playerController.playerHealth);
+        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shield, inputControllerObject.playerController.playerHealth);
     }
 }

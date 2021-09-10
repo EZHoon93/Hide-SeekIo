@@ -31,19 +31,20 @@ public class SoundManager
     {
         foreach (AudioSource audioSource in _audioSources)
         {
+
             audioSource.clip = null;
             audioSource.Stop();
         }
         _audioClips.Clear();
     }
 
-    public void Play(string path, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+    public void Play(string path, Define.Sound type = Define.Sound.Effect, float volume = 1.0f)
     {
         AudioClip audioClip = GetOrAddAudioClip(path, type);
-        Play(audioClip, type, pitch);
+        Play(audioClip, type, volume);
     }
 
-	public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+	public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f)
 	{
         if (audioClip == null)
             return;
@@ -54,16 +55,19 @@ public class SoundManager
 			if (audioSource.isPlaying)
 				audioSource.Stop();
 
-			audioSource.pitch = pitch;
+			audioSource.volume = volume;
 			audioSource.clip = audioClip;
 			audioSource.Play();
-		}
-		else
+            audioSource.spatialBlend = 0;
+        }
+        else
 		{
 			AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
-			audioSource.pitch = pitch;
+			audioSource.volume = volume;
 			audioSource.PlayOneShot(audioClip);
+            audioSource.spatialBlend = 0;
 		}
+        
 	}
 
 	AudioClip GetOrAddAudioClip(string path, Define.Sound type = Define.Sound.Effect)

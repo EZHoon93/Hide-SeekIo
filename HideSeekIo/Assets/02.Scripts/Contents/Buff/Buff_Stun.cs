@@ -11,6 +11,7 @@ public class Buff_Stun : BuffBase
         _playerInput = _buffController.livingEntity.GetComponent<PlayerInput>();
         if (_playerInput)
         {
+            print("Stun!!!! ");
             _playerInput.Stop(5.0f);
         }
     }

@@ -71,7 +71,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             //이벤트 있으면 실행
             if (StateChangeEventDic.ContainsKey(State))
             {
-                print(State + "이벤트실행");
                 StateChangeEventDic[State]?.Invoke();
             }
             this.photonView.ObservedComponents.Add(_gameState);
@@ -179,11 +178,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
             if (joinUserCount <= 0)
             {
-                //게임에 참여중인 유저가 한명도없다면.
-                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
-                {
-                    {"gs" ,Define.GameState.Wait }
-                });
+                //게임에 참여중인 유저가 한명도없다면. => 리셋
+                ChangeRoomStateToServer(Define.GameState.Wait);
             }
         }
     }
@@ -193,7 +189,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void ChangeRoomStateToServer(Define.GameState gameState)
     {
         if (PhotonNetwork.IsMasterClient == false) return;
-        print("ChangeRoomStateToServer" + gameState);
         PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
         {
             {"gs" , gameState }
@@ -219,6 +214,8 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         print("OnPlayerEnter Room");
         enterUserList?.Invoke(newPlayer);
+        
+
     }
 
 
@@ -260,7 +257,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             uiMain.killText.DOFade(0.0f, 2.0f);
         }
 
-        Managers.Sound.Play("Die", Define.Sound.Effect);
+        //Managers.Sound.Play("Die", Define.Sound.Effect);
     }
 
 

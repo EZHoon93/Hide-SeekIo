@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Character_Dog : Character_Base
 {
-    protected override void SetupSkill()
-    {
-        //mainSkill = this.gameObject.GetOrAddComponent<Skill_Track>();
-    }
+    public override Define.CharacterType characterType => Define.CharacterType.Bear;
 
-  
+    private void Start()
+    {
+        MoveSpeed = 2.5f;
+        MaxEnergy = 10;
+        CurrentEnergy = MaxEnergy;
+    }
 }

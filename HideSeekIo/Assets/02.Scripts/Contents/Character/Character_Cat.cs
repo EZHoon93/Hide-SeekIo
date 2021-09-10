@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Character_Cat : Character_Base
 {
-    protected override void SetupSkill()
-    {
-        this.gameObject.GetOrAddComponent<Skill_Stealth>();
+    public override Define.CharacterType characterType => Define.CharacterType.Cat;
 
+    private void Start()
+    {
+        MoveSpeed = 2.5f;
+        MaxEnergy = 10;
+        CurrentEnergy = MaxEnergy;
     }
 
 

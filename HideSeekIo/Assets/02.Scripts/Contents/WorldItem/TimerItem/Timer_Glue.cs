@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class Timer_Glue : TimerItem
 {
-    List<MoveBase> _moveBase = new List<MoveBase>();
+    //List<MoveBase> _moveBase = new List<MoveBase>();
     [SerializeField] ParticleSystem _effectAcid;
 
     bool _isSizeChange;
@@ -16,7 +16,7 @@ public class Timer_Glue : TimerItem
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
-        _moveBase.Clear();
+        //_moveBase.Clear();
         _effectAcid.Play();
         _isSizeChange = false;
         this.transform.localScale = new Vector3(2.5f, 1, 2.5f);
@@ -25,10 +25,10 @@ public class Timer_Glue : TimerItem
 
     public override void EndTime()
     {
-       foreach(var m in _moveBase)
-        {
-            m.AddMoveBuffList(-0.5f, false);
-        }
+       //foreach(var m in _moveBase)
+       // {
+       //     m.AddMoveBuffList(-0.5f, false);
+       // }
     }
 
     private void Update()
@@ -41,12 +41,12 @@ public class Timer_Glue : TimerItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        var moveBase = other.GetComponent<MoveBase>();
-        if (moveBase != null)
-        {
-            _moveBase.Add(moveBase);
-            moveBase.AddMoveBuffList(-0.5f, true);
-        }
+        //var moveBase = other.GetComponent<MoveBase>();
+        //if (moveBase != null)
+        //{
+        //    _moveBase.Add(moveBase);
+        //    moveBase.AddMoveBuffList(-0.5f, true);
+        //}
     }
 
 
@@ -54,11 +54,11 @@ public class Timer_Glue : TimerItem
     {
         print(other.gameObject.name + "> 나감");
 
-        var moveBase = other.GetComponent<MoveBase>();
-        if (moveBase != null)
-        {
-            _moveBase.Add(moveBase);
-            moveBase.AddMoveBuffList(-0.5f, false);
-        }
+        //var moveBase = other.GetComponent<MoveBase>();
+        //if (moveBase != null)
+        //{
+        //    _moveBase.Add(moveBase);
+        //    moveBase.AddMoveBuffList(-0.5f, false);
+        //}
     }
 }

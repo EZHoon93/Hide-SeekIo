@@ -4,22 +4,19 @@ using UnityEngine;
 
 public class StoneProjectile : BulletProjectile
 {
-
-    public override void Enter(GameObject Gettingobject)
+    protected override void EnterPlayer(PlayerController enterPlayer, Collider collider)
     {
         if (isPlay == false) return;
-        var livingEntity = Gettingobject.GetComponent<LivingEntity>();
-        if (livingEntity != null)
+        var playerHealth = enterPlayer.playerHealth;
+        if (playerHealth != null)
         {
-            Expolosion();
-            if (livingEntity.photonView.IsMine == false) return;
-            BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stun, livingEntity);
+            EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, collider.transform.position, 0);
+            if (playerHealth.photonView.IsMine== false) return;
+            BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stun, playerHealth);
         }
     }
-    protected override void Expolosion()
-    {
-        base.Expolosion();
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, this.transform.position, 0);
-    }
+    
+  
 
+    
 }

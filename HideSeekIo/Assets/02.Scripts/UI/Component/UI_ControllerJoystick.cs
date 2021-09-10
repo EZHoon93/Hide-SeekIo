@@ -100,7 +100,10 @@ public class UI_ControllerJoystick : MonoBehaviour
             joystick.gameObject.SetActive(true);
             //joystick.GetComponent<Image>().enabled = true;
         }
-     
+        if (sprite)
+        {
+            _itemImage.sprite = sprite;
+        }
         this.gameObject.SetActive(true);
     }
 

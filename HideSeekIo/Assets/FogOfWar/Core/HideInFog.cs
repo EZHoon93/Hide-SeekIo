@@ -69,7 +69,7 @@ namespace FoW
             }
             else
             {
-                visible = !isGrass;
+                //visible = !isGrass;
             }
             
             if (istransSkill)

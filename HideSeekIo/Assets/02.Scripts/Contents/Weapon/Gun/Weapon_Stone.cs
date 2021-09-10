@@ -41,6 +41,10 @@ public class Weapon_Stone : Weapon, IZoom
     public void AttackOnServer(Vector2 inputVector, Vector3 endPoint)
     {
         //LastAttackInput = inputVector;
+        var direction = endPoint - playerController.transform.position;
+        direction = direction.normalized;
+        direction.y = playerController.transform.position.y;
+        inputControllerObject.attackDirection = direction;
         StartCoroutine(AttackProcessOnAllClinets(endPoint));
     }
 

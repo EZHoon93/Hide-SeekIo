@@ -52,6 +52,32 @@ public class GameState_Gameing : GameState_Base
 
         }
 
+        if (Managers.Game.myPlayer)
+        {
+            var team = Managers.Game.myPlayer.Team;
+            if (team == Define.Team.Hide)
+            {
+                //var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
+                //uI_Main.noticeBg.enabled = true;
+                //uI_Main.UpdateNoticeText(noticeContent);
+            }
+            else
+            {
+                var noticeContent = Util.GetColorContent(Color.red, "당신은 술래입니다. ");
+                uI_Main.noticeBg.enabled = true;
+                uI_Main.UpdateNoticeText(noticeContent);
+            }
+        }
+
+        uI_Main.titleText.text = "술래가 정해졌습니다.";
+        Invoke("OffText", 2.0f);
+    }
+
+    void OffText()
+    {
+        uI_Main.titleText.text = null;
+        uI_Main.noticeBg.enabled = false;
+        uI_Main.UpdateNoticeText(null);
     }
     protected override void ChangeRemainTime()
     {

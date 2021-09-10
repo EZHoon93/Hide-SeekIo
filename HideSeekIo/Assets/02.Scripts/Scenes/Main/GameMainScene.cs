@@ -8,9 +8,7 @@ using System;
 
 public class GameMainScene : GameScene
 {
-    [SerializeField] ItemSpawnManager _itemSpawnManager;
     [SerializeField] SeekerBlock[] _seekerBlock;
-    public ItemSpawnManager itemSpawnManager => _itemSpawnManager;
 
 
     public Enum[] hiderItemArray { get; private set; } =
@@ -23,9 +21,8 @@ public class GameMainScene : GameScene
     {
         base.Init();
         Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
-        Managers.Game.CurrentGameScene = this;
         
-        Managers.Sound.Play("BGM_Main1", Define.Sound.Bgm, 1.0f);
+        //Managers.Sound.Play("BGM_Main1", Define.Sound.Bgm, 1.0f);
     }
 
     protected override void Start()

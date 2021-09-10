@@ -15,16 +15,18 @@ public class GameScene : BaseScene
 
     public Transform test;
     [SerializeField] MainSpawnPoints _mainSpawnPoints;
+    [SerializeField] ItemSpawnManager _itemSpawnManager;
     public MainSpawnPoints mainSpawnPoints => _mainSpawnPoints;
+    public ItemSpawnManager itemSpawnManager => _itemSpawnManager;
 
 
     protected override void Init()
     {
         base.Init();
         _cameraView = this.transform.Find("cameraView");
-
+        Managers.Game.CurrentGameScene = this;
     }
-
+    
     protected virtual void Start()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -49,6 +51,7 @@ public class GameScene : BaseScene
 
         PhotonGameManager.Instacne.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name}{DynamicTextData.gamaSceneNotice}");
 
+        PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, () => Clear());
 
     }
     public override void Clear()

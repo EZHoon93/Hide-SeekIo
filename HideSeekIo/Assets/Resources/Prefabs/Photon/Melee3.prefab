@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 982069549174000869}
   - component: {fileID: 1239830544429895430}
   - component: {fileID: 7091710363743083446}
+  - component: {fileID: 2519366261370570176}
   m_Layer: 0
-  m_Name: Melee2
+  m_Name: Melee3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,8 +52,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7091710363743083446}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -68,7 +68,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a2783006a70a42a1dec3d3665d34c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponModel: {fileID: 5576906626062825140}
+--- !u!114 &2519366261370570176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951267332459730509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ab6d39b11384357a240e8403cc9eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 69e3398efe496f844885067e1e5b2f69, type: 3}
 --- !u!1 &8250184970367258720
 GameObject:
   m_ObjectHideFlags: 0

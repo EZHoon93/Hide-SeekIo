@@ -8,9 +8,21 @@ public class PlayerCharacter : MonoBehaviour
     public Animator animator => _characterAvater.animator;
     //public CharacterAvater characterAvater { get; set; }
     public Character_Base character_Base { get; private set; }
+    public CharacterAvater characterAvater => _characterAvater;
 
     CharacterAvater _characterAvater;
-    public void CreateCharacter(Define.CharacterType characterType, string avaterID)
+
+
+    public void OnPhotonInstantiate(PlayerController _playerController)
+    {
+        character_Base.OnPhotonInstantiate(_playerController);
+    }
+
+    public void ChangeOnwerShip(PlayerController _playerController)
+    {
+        character_Base.ChangeOnwerShip(_playerController);
+    }
+    public Character_Base CreateCharacter(Define.CharacterType characterType, string avaterID)
     {
         if (character_Base)
         {
@@ -20,6 +32,8 @@ public class PlayerCharacter : MonoBehaviour
         character_Base.transform.ResetTransform(this.transform);
 
         CreateAvater(characterType, avaterID);
+
+        return character_Base;
     }
 
     public void CreateAvater(Define.CharacterType characterType, string avaterID)

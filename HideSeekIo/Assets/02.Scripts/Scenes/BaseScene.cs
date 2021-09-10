@@ -17,6 +17,9 @@ public abstract class BaseScene : MonoBehaviour
         Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
+
+       Managers.Sound.Play("Bgm", Define.Sound.Bgm, 0.3f);
+
     }
 
     public abstract void Clear();

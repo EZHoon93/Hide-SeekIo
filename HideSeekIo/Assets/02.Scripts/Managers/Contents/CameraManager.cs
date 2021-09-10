@@ -84,7 +84,12 @@ public class CameraManager : GenricSingleton<CameraManager>
         _fogOfWarLegacy.team = targetPlayer.ViewID();
         fogChangeEvent?.Invoke(targetPlayer.ViewID());
 
-        if (targetPlayer.Team == Define.Team.Hide)
+        ChangeTeam(targetPlayer.Team);
+    }
+
+    public void ChangeTeam(Define.Team team)
+    {
+        if (team == Define.Team.Hide)
         {
             Camera.main.cullingMask = ~(1 << (int)Define.Layer.SeekerItem | 1 << (int)Define.Layer.UI);
 
@@ -93,10 +98,6 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             Camera.main.cullingMask = ~(1 << (int)Define.Layer.HiderItem | 1 << (int)Define.Layer.UI);
         }
-        //if (targetPlayer.IsMyCharacter() && targetPlayer.Team == Define.Team.Seek)
-        //{
-        //    StartCoroutine(CameraOffset());
-        //}
     }
 
     public void FindNextPlayer()
