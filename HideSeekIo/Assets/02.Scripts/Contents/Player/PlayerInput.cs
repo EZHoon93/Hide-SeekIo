@@ -43,8 +43,20 @@ public class MyInput
         }
     }
 
+    public void Reset()
+    {
+        inputVector2 = Vector2.zero; ;
+        remainCoolTime = 0;
+        controllerDic[ControllerInputType.Down] = null;
+        controllerDic[ControllerInputType.Drag] = null;
+        controllerDic[ControllerInputType.Up] = null;
+        controllerDic[ControllerInputType.Tap] = null;
+
+    }
+
     public Vector2 inputVector2 { get;  set; }
     public float coolTime { get; set; }
+    public float remainCoolTime { get; set; }
 }
 
 
@@ -79,6 +91,7 @@ public class PlayerInput : MonoBehaviourPun
         navMeshAgent.enabled = false;
         behaviorTree.enabled = false;
         GetComponent<PlayerHealth>().onDeath += HandleDeath;
+        //behaviorTree.GetVariable("")
     }
 
     
@@ -86,6 +99,8 @@ public class PlayerInput : MonoBehaviourPun
     {
         stopTime = 0;
         RandomVector2 = Vector2.one;
+
+      
     }
 
 
@@ -94,41 +109,6 @@ public class PlayerInput : MonoBehaviourPun
         navMeshAgent.enabled = false;
         behaviorTree.enabled = false;
     }
-
-    private void Update()
-    {
-        if (photonView.IsMine)
-        {
-            if(stopTime > 0)
-            {
-                stopTime -= Time.deltaTime;
-                controllerInputDic[InputType.Move].inputVector2 = Vector2.zero;
-                return;
-            }
-
-            if (isAI)
-            {
-                float h = navMeshAgent.velocity.x;
-                float v = navMeshAgent.velocity.z;
-                Vector2 move = new Vector2(h, v);
-                controllerInputDic[InputType.Move].inputVector2 = move.normalized;
-            }
-            else
-            {
-#if UNITY_EDITOR
-                float h = Input.GetAxis("Horizontal");
-                float v = Input.GetAxis("Vertical");
-                Vector2 move = new Vector2(h, v);
-                controllerInputDic[InputType.Move].inputVector2 = move;
-#endif
-
-            }
-
-        }
-
-
-    }
-
     public void ChangeOwnerShip()
     {
         if (this.IsMyCharacter())
@@ -150,6 +130,46 @@ public class PlayerInput : MonoBehaviourPun
 
     }
 
+    private void Update()
+    {
+        if (photonView.IsMine)
+        {
+            if(stopTime > 0)
+            {
+                stopTime -= Time.deltaTime;
+                controllerInputDic[InputType.Move].inputVector2 = Vector2.zero;
+                return;
+            }
+
+            if (isAI)
+            {
+                if(navMeshAgent.remainingDistance <= 0.2f)
+                {
+                    controllerInputDic[InputType.Move].inputVector2 = Vector2.zero;
+
+                }
+                float h = navMeshAgent.velocity.x;
+                float v = navMeshAgent.velocity.z;
+                Vector2 move = new Vector2(h, v);
+                controllerInputDic[InputType.Move].inputVector2 = move.normalized * RandomVector2;
+            }
+            else
+            {
+#if UNITY_EDITOR
+                float h = Input.GetAxis("Horizontal");
+                float v = Input.GetAxis("Vertical");
+                Vector2 move = new Vector2(h, v);
+                controllerInputDic[InputType.Move].inputVector2 = move * RandomVector2;
+#endif
+
+            }
+
+        }
+
+
+    }
+
+    
     public void ChangeTeam(Define.Team team)
     {
         if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
@@ -157,6 +177,8 @@ public class PlayerInput : MonoBehaviourPun
             behaviorTree.ExternalBehavior = GameSetting.Instance.seekerTree;
             navMeshAgent.enabled = true;
             behaviorTree.enabled = true;
+            //navMeshAgent.enabled = false;
+            //behaviorTree.enabled = false;
             //var move = GetComponent<PlayerStat>();
             //behaviorTree.SetVariable("CurrentEnergy", move.CurrentEnergy);
         }
@@ -174,6 +196,7 @@ public class PlayerInput : MonoBehaviourPun
         if (this.IsMyCharacter())
         {
             InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, sprite);
+            InputManager.Instance.GetControllerJoystick(inputType).ResetUIController();
         }
     }
 
@@ -183,17 +206,11 @@ public class PlayerInput : MonoBehaviourPun
     {
         if (controllerInputDic.ContainsKey(inputType))
         {
-            controllerInputDic[inputType].controllerDic[ControllerInputType.Down] = null;
-            controllerInputDic[inputType].controllerDic[ControllerInputType.Tap] = null;
-            controllerInputDic[inputType].controllerDic[ControllerInputType.Up] = null;
-            controllerInputDic[inputType].controllerDic[ControllerInputType.Drag] = null;
+            controllerInputDic[inputType].Reset();
         }
         if (this.IsMyCharacter())
         {
-            //if(inputType == InputType.Skill1)
-            //{
-            //    InputManager.Instance.GetControllerJoystick(inputType).gameObject.SetActive(false);
-            //}
+           InputManager.Instance.GetControllerJoystick(inputType).gameObject.SetActive(false);
         }
     }
 

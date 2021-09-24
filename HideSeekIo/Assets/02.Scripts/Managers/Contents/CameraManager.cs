@@ -42,8 +42,22 @@ public class CameraManager : GenricSingleton<CameraManager>
     }
 
 
+    void SetupFieldOfView()
+    {
+        var cam = Camera.main;
+        float width = Screen.width;
+        float height = Screen.height;
+
+        float designRatio = 16.0f / 9;
+        float targetRatio = height / width;
+        float fov = cam.fieldOfView;
+        float reusltFov = targetRatio * fov / designRatio;
+        cam.fieldOfView = reusltFov;
+    }
+
     private void Start()
     {
+        SetupFieldOfView();
         StartCoroutine(UpdateCameraIsViewTarget());
     }
 
@@ -53,7 +67,7 @@ public class CameraManager : GenricSingleton<CameraManager>
 
         while (true)
         {
-            if (PhotonGameManager.Instacne.State == Define.GameState.GameReady || PhotonGameManager.Instacne.State == Define.GameState.Gameing)
+            if (Managers.Game.gameStateController.gameStateType == Define.GameState.GameReady || Managers.Game.gameStateController.gameStateType == Define.GameState.Gameing)
             {
                 if (Target == null)
                 {
@@ -76,14 +90,11 @@ public class CameraManager : GenricSingleton<CameraManager>
     {
         VirtualCamera.Follow = target.transform;
         offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
-
         var targetPlayer = target.GetComponent<PlayerController>();
-
         if (targetPlayer == null) return;
         Target = targetPlayer;
         _fogOfWarLegacy.team = targetPlayer.ViewID();
         fogChangeEvent?.Invoke(targetPlayer.ViewID());
-
         ChangeTeam(targetPlayer.Team);
     }
 
@@ -91,15 +102,18 @@ public class CameraManager : GenricSingleton<CameraManager>
     {
         if (team == Define.Team.Hide)
         {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.SeekerItem | 1 << (int)Define.Layer.UI);
+            Camera.main.cullingMask = ~(1 << (int)Define.Layer.SeekerItem | 1 << (int)Define.Layer.UI | 1<<(int)Define.Layer.TransparentFX);
 
         }
         else
         {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.HiderItem | 1 << (int)Define.Layer.UI);
+            Camera.main.cullingMask = ~(1 << (int)Define.Layer.HiderItem | 1 << (int)Define.Layer.UI | 1 << (int)Define.Layer.TransparentFX);
         }
     }
 
+    /// <summary>
+    /// 다음 유저를 찾음.
+    /// </summary>
     public void FindNextPlayer()
     {
         PlayerController findTarget = null;
@@ -139,27 +153,6 @@ public class CameraManager : GenricSingleton<CameraManager>
 
 
         } while (findTarget == null);
-    }
-
-    //술래팀 카메라
-    IEnumerator CameraOffset()
-    {
-        var amount = new Vector3(0, 1, 10);
-        offsetCamera.m_Offset = amount;
-        yield return new WaitForSeconds(3.0f);
-
-        while (offsetCamera.m_Offset.z >= 0)
-        {
-            Vector3 offset = offsetCamera.m_Offset;
-            offset -= amount * Time.deltaTime * 5;
-
-            offsetCamera.m_Offset = offset;
-            yield return null;
-
-        }
-
-        offsetCamera.m_Offset = Vector3.zero;
-
     }
 
 
@@ -207,8 +200,6 @@ public class CameraManager : GenricSingleton<CameraManager>
             VirtualCamera.transform.rotation = Quaternion.Euler(60, 0, 0);
             offsetCamera.m_Offset = Vector3.zero;
         }
-
-
     }
 
 }

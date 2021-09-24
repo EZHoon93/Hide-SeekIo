@@ -26,8 +26,7 @@ public static class UtillGame
     {
         var origanlAngle = GetAngleY(vector2);
         //var camerAngle = Camera.main.transform.eulerAngles.y;
-
-        return Quaternion.Euler(0, -( 90  + origanlAngle ) , 0);
+        return Quaternion.Euler(0, -(90 + origanlAngle), 0);
         //return Quaternion.Euler(0, 90 - origanlAngle + camerAngle, 0);
     }
 
@@ -52,26 +51,18 @@ public static class UtillGame
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         var changeVector3 = quaternion * vector3;
 
-        return new Vector2(changeVector3.x,changeVector3.z);
+        return new Vector2(changeVector3.x, changeVector3.z);
     }
     public static Vector3 GetInputVector3_ByCamera(Vector2 vector2)
     {
         Vector3 vector3 = new Vector3(vector2.x, 0, vector2.y);
         var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         var changeVector3 = quaternion * vector3;
-        return new Vector3(changeVector3.x, 0,changeVector3.z);
+        return new Vector3(changeVector3.x, 0, changeVector3.z);
     }
 
-    //public static Quaternion GetSmoothRotation_ByInputVector(Vector2 inputVector2)
-    //{
-    //    var quaternion = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-    //    var converVector3 = ConventToVector3(inputVector2);
-    //    var newDirection = quaternion * converVector3;
-    //    Quaternion newRotation = Quaternion.LookRotation(newDirection);
 
-    //}
-
-    public static Vector3 GetThrowPosion(Vector2 inputVector2,float distance, Transform pivotTransform )
+    public static Vector3 GetThrowPosion(Vector2 inputVector2, float distance, Transform pivotTransform)
     {
 
         //_attackRangeUI.position = _attackPlayer.CenterPivot.position;
@@ -84,22 +75,53 @@ public static class UtillGame
         pos.y = 0;
 
         return pos;
-        
+
     }
 
-    public static bool ThrowZoom(Vector2 inputVector2, float distance , Transform pivorTransform, Transform zoomObject)
+    public static bool ThrowZoom(Vector2 inputVector2, float distance, Transform pivorTransform, Transform zoomObject,float speed)
     {
         if (inputVector2.sqrMagnitude == 0)
         {
             zoomObject.gameObject.SetActive(false);
             return false;
         }
+
         var pos = GetThrowPosion(inputVector2, distance, pivorTransform);
-        zoomObject.position = pos;
+        Debug.Log(inputVector2.magnitude);
+        //zoomObject.position = pivorTransform.position + (ConventToVector3( inputVector2).normalized * inputVector2.magnitude*distance);
+        //float dis = Vector3.Distance(pivorTransform.position, pos );
+        //zoomObject.position = Vector3.MoveTowards(zoomObject.position, pos, Time.deltaTime*speed*inputVector2.magnitude*speed);
+        zoomObject.position = Vector3.Lerp(zoomObject.position, pos, Time.deltaTime* speed * inputVector2.magnitude);
+
         zoomObject.gameObject.SetActive(true);
         return true;
     }
 
+    public static void GetHitZoom(Transform attackStart , Vector3 endPoint )
+    {
+        Plane playerPlane = new Plane(Vector3.up, 0);
+
+        var ray = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(endPoint));
+        Vector3 targetPoint = Vector3.zero;
+        float hitDist;
+        Vector3 center;
+        if(playerPlane.Raycast(ray, out hitDist))
+        {
+            targetPoint = ray.GetPoint(hitDist);
+            center = (attackStart.transform.position + targetPoint) * 0.5f;
+            center.y -= 2.0f;
+            RaycastHit hitInfo;
+            if (Physics.Linecast(attackStart.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Wall))
+            {
+                targetPoint = hitInfo.point;
+            }
+        }
+        else
+        {
+            targetPoint = attackStart.transform.position;
+        }
+
+    }
     public static void ZoomByLinerender()
     {
         //if (inputVector.sqrMagnitude == 0)
@@ -156,41 +178,7 @@ public static class UtillGame
         //zoomLineRenderer.enabled = true;
     }
 
-    //public static void ThrowObject(Vector3 startPoint, Vector3 endPoint, float arriveMinTime, float addTimeByDistance, float arriveMaxTime)
-    //{
-
-    //}
-
-    //public static void UpdateUserMoveInput(ref Vector2 moveVector)
-    //{
-    //    moveVector = InputManager.Instacne.MoveVector;
-    //}
-    public static void UpdateUserAttackInput(ref Vector2 attackVector,ref Vector2 lastattackVector , ref bool isAttack)
-    {
-        //if (InputManager.Instance.AttackTouch)
-        //{
-        //    attackVector = InputManager.Instance.AttackVector;
-        //    isAttack = true;
-        //    if (attackVector.sqrMagnitude == 0)
-        //    {
-        //        isAttack = false;
-        //    }
-        //}
-        //else
-        //{
-        //    if (isAttack)
-        //    {
-        //        lastattackVector = attackVector;
-        //        isAttack = false;
-        //    }
-        //    else
-        //    {
-        //        attackVector = Vector2.zero;
-        //        lastattackVector = Vector2.zero;
-        //    }
-        //}
-    }
-
+  
 
     // 네브 메시 위의 랜덤한 위치를 반환하는 메서드
     // center를 중심으로 distance 반경 안에서 랜덤한 위치를 찾는다.
@@ -204,7 +192,7 @@ public static class UtillGame
         NavMeshHit hit;
 
         // randomPos를 기준으로 maxDistance 반경 안에서, randomPos에 가장 가까운 네브 메시 위의 한 점을 찾음
-        if( NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas))
         {
             return hit.position;
 
@@ -221,7 +209,7 @@ public static class UtillGame
         NavMeshHit hit;
 
         // randomPos를 기준으로 maxDistance 반경 안에서, randomPos에 가장 가까운 네브 메시 위의 한 점을 찾음
-        if (NavMesh.SamplePosition( point, out hit, 0.1f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(point, out hit, 0.1f, NavMesh.AllAreas))
         {
             return true;
 
@@ -232,8 +220,8 @@ public static class UtillGame
         }
     }
 
-    public static void DamageInRange(Vector3 center , float radius ,int damage,int damagerViewID,
-        LayerMask attackLayer )
+    public static void DamageInRange(Vector3 center, float radius, int damage, int damagerViewID,
+        LayerMask attackLayer)
     {
         Collider[] colliders = new Collider[10];
 
@@ -306,9 +294,10 @@ public static class UtillGame
                 if (livingEntity != null)
                 {
                     //로컬캐릭이 실행
-                    if(livingEntity.photonView.IsMine )
+                    if (livingEntity.photonView.IsMine)
                     {
-                        BuffManager.Instance.BuffControllerCheckOnLocal(buffType, livingEntity);
+                        BuffManager.Instance.CheckBuffController(livingEntity, buffType);
+
                     }
                 }
             }
@@ -316,12 +305,12 @@ public static class UtillGame
         }
     }
 
-    public static bool IsTargetOnSight(Transform center , Transform target, float angle , LayerMask attackLayer)
+    public static bool IsTargetOnSight(Transform center, Transform target, float angle, LayerMask attackLayer)
     {
         RaycastHit hit;
         Vector3 startPoint = center.position;
         Vector3 endPoint = target.position;
-        LayerMask detectionLayer = (attackLayer | 1 << (int)Define.Layer.Wall );
+        LayerMask detectionLayer = (attackLayer | 1 << (int)Define.Layer.Wall);
         startPoint.y = 0.5f;
         endPoint.y = 0.5f;
 
@@ -329,7 +318,7 @@ public static class UtillGame
 
         Debug.LogError(Vector3.Angle(direction, center.forward) + "각도" + target.name);
 
-        if (Vector3.Angle(direction, center.forward) > angle* 0.5f)
+        if (Vector3.Angle(direction, center.forward) > angle * 0.5f)
         {
             return false;
         }
@@ -343,15 +332,30 @@ public static class UtillGame
         return false;
     }
 
-    public static Data.SendAllSkinInfo MakeRandomAllSkin()
+    public static SendAllSkinInfo MakeRandomAIInfo()
     {
-        Data.SendAllSkinInfo sendAllSkinInfo;
+        SendAllSkinInfo sendAllSkinInfo;
         var ranCharacterType = Util.RandomEnum<Define.CharacterType>();
         var avaterAll = Resources.LoadAll<GameObject>($"Prefabs/Character/{ranCharacterType.ToString()}");
-        var selectAvater = avaterAll[Random.Range(0, avaterAll.Length-1)].name;
+        var selectAvater = avaterAll[Random.Range(0, avaterAll.Length - 1)].name;
         sendAllSkinInfo.autoNumber = -1;
         sendAllSkinInfo.chacterType = ranCharacterType;
         sendAllSkinInfo.avaterSkinID = selectAvater;
+        sendAllSkinInfo.nickName = null;
         return sendAllSkinInfo;
+    }
+
+    /// <summary>
+    /// Y값을 같게하고 방향벡터만, 정규화X
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="endPoint"></param>
+    /// <returns></returns>
+    public static Vector3 GetDirVector3ByEndPoint(Transform target, Vector3 endPoint)
+    {
+        var direction = endPoint - target.position; //방향
+        direction.y = target.position.y;
+
+        return direction;
     }
 }

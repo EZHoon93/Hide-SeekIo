@@ -10,6 +10,7 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI _levelText;
     [SerializeField] Slider _energySlider;
     [SerializeField] GameObject _hearRange;
+    [SerializeField] Image _warningImage;
 
     PlayerController _playerController;
     PlayerStat _playerStat;
@@ -25,6 +26,7 @@ public class PlayerUI : MonoBehaviour
         _playerStat = _playerController.playerStat;
         _playerNameText.text = _playerController.NickName;
         _levelText.text = _playerStat.level.ToString();
+        _warningImage.enabled = false;
     }
 
     public void ChangeStatEventCallBack(PlayerStat.StatChange statChange, object value )
@@ -38,8 +40,20 @@ public class PlayerUI : MonoBehaviour
         _energySlider.gameObject.SetActive(active);
     }
 
+    public void ChangeWarining(bool active)
+    {
+        print(active + "!!Warinignimaga");
+        _warningImage.enabled = active;
+        Invoke("RestWarining", 3.0f);
+    }
+    void RestWarining()
+    {
+        _warningImage.enabled = false;
+
+    }
     private void Update()
     {
+        
         if (_playerController.playerMove != null)
         {
             _energySlider.value = _playerStat.CurrentEnergy;

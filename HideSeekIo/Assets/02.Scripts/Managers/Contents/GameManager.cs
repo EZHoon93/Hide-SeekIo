@@ -1,19 +1,42 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using UnityEngine;
 
 public class GameManager  
 {
-    //public Action GameResetEvent;   //게임 리셋, 유저 참여가 다없을시 발동,
+    GameStateController _gameStateController;
+
     public PlayerController myPlayer { get; set; }
 
     Dictionary<int, LivingEntity> _livingEntityDic = new Dictionary<int, LivingEntity>();
     public GameScene CurrentGameScene { get; set; }
 
-   
+    public GameStateController gameStateController
+    {
+        get => _gameStateController;
+        set
+        {
+            if (_gameStateController)
+            {
+                Managers.Resource.PunDestroy(_gameStateController);
+            }
+            _gameStateController = value;
+            _gameStateController.transform.ResetTransform(CurrentGameScene.transform);
+            PhotonGameManager.Instacne?.PostStateEvent(_gameStateController.gameStateType);
+        }
+    }
+ 
+
+
     public void Clear()
     {
-        
+        var livArray = _livingEntityDic.Values.ToArray();
+        foreach (var liv in livArray)
+        {
+            Managers.Resource.PunDestroy(liv);
+        }
+        _livingEntityDic.Clear();
     }
 
     #region LivingEntity Register&UnRegister, Get
@@ -24,7 +47,7 @@ public class GameManager
         _livingEntityDic.Add(viewID, livingEntity);
         if (livingEntity.gameObject.IsValidAI())
         {
-            AIManager.Instance.RegisterAI(livingEntity);
+            //AIManager.Instance.RegisterAI(livingEntity);
         }
     }
 
@@ -32,7 +55,7 @@ public class GameManager
     {
         if (!_livingEntityDic.ContainsKey(viewID)) return;
         _livingEntityDic.Remove(viewID);
-        AIManager.Instance.UnRegisterAI(viewID);
+        //AIManager.Instance.UnRegisterAI(viewID);
     }
 
     public PlayerController GetPlayerController(int viewID)

@@ -18,7 +18,6 @@ public class LoginScene : BaseScene
         base.Init();
         SceneType = Define.Scene.Login;
         StartCoroutine(LoadAllData());
-
     }
     public override void Clear()
     {
@@ -32,7 +31,7 @@ public class LoginScene : BaseScene
         //필요 데이터 갖고옴
         while (_state == State.UnLoad)
         {
-            print(_state);
+            //print(_state);
             if (GetIsAllOnLoad())
             {
                 _state = State.AllLoad;
@@ -51,7 +50,7 @@ public class LoginScene : BaseScene
         var photonData = CheckPhoton();
         var userData = CheckPlayerInfo();
         bool gameData = CheckData();
-        print(photonData + "/" + userData + "/" + gameData);
+        //print(photonData + "/" + userData + "/" + gameData);
         return photonData && userData && gameData ;
     }
 

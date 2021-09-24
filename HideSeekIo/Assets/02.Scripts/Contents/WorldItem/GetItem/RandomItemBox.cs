@@ -24,11 +24,11 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
     //    Define.InGameItem.SightUp, Define.InGameItem.Immune
     //};
     public static Enum[] hiderItemArray = {
-          Define.ThrowItem.Flash
+          //Define.ThrowItem.Flash
     };
     public static Enum[] seekerItemArray =
    {
-        Define.ThrowItem.Flash 
+        //Define.ThrowItem.Flash 
     };
 
 
@@ -75,7 +75,7 @@ public class RandomItemBox : MonoBehaviour, IGetWorldItem, IPunInstantiateMagicC
         var playerController = getObject.GetComponent<PlayerController>();
         if (playerController == null) return;
         var selectItemEnum = GetRandomItemEnum(playerController.Team);
-        Managers.Spawn.ItemSpawn(selectItemEnum, playerController);
+        //Managers.Spawn.ItemSpawn(selectItemEnum, playerController);
     }
 
     Enum GetRandomItemEnum(Define.Team team)

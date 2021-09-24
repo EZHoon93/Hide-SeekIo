@@ -50,8 +50,13 @@ public class PlayerMove : PhotonMove
     }
     float runCoolTime = 0.0f;
     float startRunTime;
-    float maxAccelTime = 2;
- 
+    float maxAccelTime = 2.5f;
+
+    float _stunTimeInit = 0.3f;
+    float _remainStunTime;
+
+    public bool isInvinc { get; set; }
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -60,6 +65,7 @@ public class PlayerMove : PhotonMove
         _playerInput = GetComponent<PlayerInput>();
         _playerStat = GetComponent<PlayerStat>();
         _playerCharacter = GetComponent<PlayerCharacter>();
+        GetComponent<PlayerHealth>().onDamageEventPoster += OnDamageListen;
     }
     protected override void OnEnable()
     {
@@ -68,16 +74,21 @@ public class PlayerMove : PhotonMove
         _animationValue = 0;
         Run = false;
         startRunTime = 0;
+        _remainStunTime = 0;
     }
     public virtual void OnPhotonInstantiate()
     {
-        
+        isInvinc = false;
     }
 
     public void ChangeOwnerShip()
     {
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = true;  } );
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => { Run = false; } );
+        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = !Run;  } );
+        //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => { Run = false; } );
+    }
+    void Change()
+    {
+        Run = !Run;
     }
 
 
@@ -94,6 +105,12 @@ public class PlayerMove : PhotonMove
     }
     protected override void UpdateLocal()
     {
+        if(_remainStunTime > 0)
+        {
+            _remainStunTime -= Time.deltaTime;
+            return;
+        }
+
         var move = _playerInput.controllerInputDic[InputType.Move].inputVector2;
         //move = UtillGame.GetInputVector2_ByCamera(move);
         OnUpdate(move, Run);
@@ -107,6 +124,18 @@ public class PlayerMove : PhotonMove
     }
     protected override void UpdateRemote()
     {
+        switch (_playerShooter.State)
+        {
+            case PlayerShooter.state.Jump:
+                UpdateImmediateRotate(_playerShooter.AttackDirection);
+                UpdateMoveFoward(UtillGame.ConventToVector2(_playerShooter.AttackDirection));
+                break;
+            case PlayerShooter.state.Idle:
+            case PlayerShooter.state.NoMove:
+            case PlayerShooter.state.MoveAttack:
+                UpdateMoveAnimation(State);
+                break;
+        }
         UpdateMoveAnimation(State);
 
     }
@@ -129,18 +158,25 @@ public class PlayerMove : PhotonMove
                     UpdateMove(Vector2.zero, isRun);
                 }
                 UpdateMoveAnimation(State);
+                dataState = DataState.SerializeView;
+
                 break;
             case PlayerShooter.state.NoMove:
                 UpdateImmediateRotate(_playerShooter.AttackDirection);
                 UpdateMoveAnimation(MoveState.Idle);
+                dataState = DataState.SerializeView;
+
                 break;
             case PlayerShooter.state.MoveAttack:
                 UpdateMove(inputVector2, isRun);
                 UpdateMoveAnimation(State);
+                dataState = DataState.SerializeView;
+
                 break;
             case PlayerShooter.state.Jump:
+                dataState = DataState.ServerView;
                 UpdateImmediateRotate(_playerShooter.AttackDirection);
-                UpdateMoveFoward(_playerShooter.AttackDirection);
+                UpdateMoveFoward(UtillGame.ConventToVector2( _playerShooter.AttackDirection));
                 break;
         }
         UpdateEnergy();
@@ -167,7 +203,7 @@ public class PlayerMove : PhotonMove
             State = MoveState.Walk;
             ResultSpeed = _playerStat.moveSpeed* 0.7f;
         }
-        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed) + (startRunTime* _playerStat.moveSpeed*0.3f)  ;
+        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed) + (startRunTime* _playerStat.moveSpeed*0.0f)  ;
         Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
@@ -179,9 +215,8 @@ public class PlayerMove : PhotonMove
     //대쉬
     void UpdateMoveFoward(Vector2 inputVector2)
     {
-        var  c = 5;
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
-        Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) *  10 * Time.deltaTime;
+        Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) *  6* Time.deltaTime;
         if (!_characterController.isGrounded)
         {
             moveDistance.y -= 9.8f * Time.deltaTime;
@@ -197,10 +232,10 @@ public class PlayerMove : PhotonMove
                 _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3), 0.2f, 2.5f);
                 break;
             case MoveState.Walk:
-                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _playerStat.moveSpeed * 0.7f, Time.deltaTime * 3), 0, 2.5f);
+                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _playerStat.moveSpeed * 0.7f, Time.deltaTime * 3), 0, _playerStat.moveSpeed * 0.5f);
                 break;
             case MoveState.Run:
-                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _playerStat.moveSpeed * 1, Time.deltaTime * 3), 0, 2.5f);
+                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _playerStat.moveSpeed * 1, Time.deltaTime * 3), 0, _playerStat.moveSpeed);
                 break;
             case MoveState.Stun:
                 _animationValue = -0.1f;
@@ -231,23 +266,22 @@ public class PlayerMove : PhotonMove
         switch (State)
         {
             case MoveState.Run:
-                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy - (1 + startRunTime*0.3f) * Time.deltaTime, 0, _playerStat.MaxEnergy);
+                if (isInvinc) return;
+                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy - (1 + startRunTime*0.0f) * Time.deltaTime, 0, _playerStat.MaxEnergy);
                 break;
             case MoveState.Idle:
             case MoveState.Walk:
-                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy + 0.5f * Time.deltaTime, 0, _playerStat.MaxEnergy);
+                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy + _playerStat.EnergyRegemAmount * Time.deltaTime, 0, _playerStat.MaxEnergy);
                 break;
         }
     }
-    public void Dash()
+
+    protected void OnDamageListen(int damage)
     {
-
+        _animator.SetTrigger("OnDamage");
+        _remainStunTime = _stunTimeInit;
+        _playerStat.CurrentEnergy -= 1;
+        _remainStunTime = 0.2f;
     }
-
-    protected IEnumerator DashProcess()
-    {
-        var inputVector = _playerInput.controllerInputDic[InputType.Move].inputVector2;
-
-        yield return new WaitForSeconds(1.0f);
-    }
+    
 }

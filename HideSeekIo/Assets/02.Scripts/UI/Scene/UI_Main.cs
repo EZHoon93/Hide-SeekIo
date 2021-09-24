@@ -7,6 +7,7 @@ using DG.Tweening;
 
 public class UI_Main : UI_Scene
 {
+    [SerializeField] TextMeshProUGUI _test;
     enum GameObjects
     {
         Chatting,
@@ -15,7 +16,8 @@ public class UI_Main : UI_Scene
         UserList_Game,
         GameInfo,
         KillNotice,
-        StatController
+        StatController,
+        Mission
     }
 
     enum Panels
@@ -57,6 +59,7 @@ public class UI_Main : UI_Scene
 
     public UI_InGameInfo InGameInfo => GetObject((int)GameObjects.GameInfo).GetComponent<UI_InGameInfo>();
     public UI_StatController StatController => GetObject((int)GameObjects.StatController).GetComponent<UI_StatController>();
+    public UI_Mission Mission => GetObject((int)GameObjects.Mission).GetComponent<UI_Mission>();
     public Button FindButton => GetButton((int)Buttons.FindPlayer);
     public Button ADButton => GetButton((int)Buttons.ADMop);
     public TextMeshProUGUI titleText => GetText(TextMeshProUGUIs.Title);
@@ -66,6 +69,7 @@ public class UI_Main : UI_Scene
 
     public UI_Store_Character storeAvater;
     public UI_Store_Etc storeEtc;
+
 
 
     public override void Init()
@@ -109,7 +113,7 @@ public class UI_Main : UI_Scene
         foreach (var p in Enum.GetValues(typeof(Panels)))
         {
             var go = Get<Transform>((int)p);
-            print(go.gameObject.name + "/" + p.ToString());
+            //print(go.gameObject.name + "/" + p.ToString());
             var active = string.Compare(selectGameType.ToString(), p.ToString()) == 0 ? true : false;
             go.gameObject.SetActive(active);
 
@@ -195,7 +199,6 @@ public class UI_Main : UI_Scene
     void OnGameJoin_ButtonClicked(PointerEventData data)
     {
         PhotonGameManager.Instacne.GameJoin();
-        ChangePanel(Define.GameScene.Game);
     }
 
     void OnChangeChannel_ButtonClicked(PointerEventData data)
@@ -318,5 +321,19 @@ public class UI_Main : UI_Scene
         killNoticeUI.Setup(killPlayer, deathPlayer);
     }
     #endregion
+
+    public void TestSeeker()
+    {
+        PhotonGameManager.Instacne.testSeeekr = !PhotonGameManager.Instacne.testSeeekr;
+        if (PhotonGameManager.Instacne.testSeeekr)
+        {
+            _test.text = "술래";
+        }
+        else
+        {
+            _test.text = "숨는";
+
+        }
+    }
 
 }

@@ -3,6 +3,10 @@
 using Photon.Pun;
 using UnityEngine;
 
+[RequireComponent(typeof(InputControllerObject))]
+[RequireComponent(typeof(Equipmentable))]
+[RequireComponent(typeof(RenderController))]
+
 public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy, IPunObservable
 {
     [SerializeField] protected Transform _weaponModel;
@@ -14,22 +18,14 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         Throw,
         Gun
     }
-    public enum UseType
-    {
-        Permanent,//영구적
-        Disposable  //일회용
-    }
-
     public enum UseState
     {
         Use,
         NoUse
     }
 
-
-    public WeaponType weaponType { get; protected set; }
-    public UseType type { get; set; }
-    UseState _useState;
+    public abstract WeaponType weaponType { get; }
+    private UseState _useState;
     public UseState useState
     {
         get => _useState;
@@ -54,36 +50,35 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
     public float AttackDelay { get; set; }
     public float AfaterAttackDelay { get; set; }
     public float AttackDistance { get; set; }
-    public PlayerController playerController => inputControllerObject.playerController;
+
+    public PlayerController playerController { get; private set; }
     public InputControllerObject inputControllerObject { get; set; }
     public Equipmentable equipmentable { get; set; }
-    public UI_Zoom uiZoom { get; set; }
     public RenderController renderController { get; protected set; }
+    public UI_Zoom uiZoom { get; set; }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(useState);
-        }
-        else
-        {
-            var n_state = (UseState)stream.ReceiveNext();
-            if (useState == n_state) return;
-            if (playerController == null) return;
-            useState = n_state;
-        }
-    }
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected virtual void Awake()
     {
         equipmentable = this.gameObject.GetOrAddComponent<Equipmentable>();
-        renderController = this.gameObject.GetOrAddComponent<RenderController>();
-        equipmentable.Setup(Define.SkinType.Weapon);
+        renderController = GetComponent<RenderController>();
         SetupCallBack();
+        equipmentable.Setup(_weaponModel, Define.SkinType.Weapon);
     }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="inputVector"></param>
     public abstract void Attack(Vector2 inputVector);
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected virtual void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
@@ -91,34 +86,43 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         inputControllerObject.AddZoomEvent(Zoom);
         inputControllerObject.InitCoolTime = 3;
     }
-    //public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
-    //{
-    //    AttackAnim = animName;
-    //    AttackDelay = delayTime;
-    //    AfaterAttackDelay = afaterDelayTime;
-    //    AttackDistance = distance;
-    //}
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
         useState = UseState.NoUse;  //사용하지않음으로설정
-        _weaponModel.gameObject.SetActive(false);
         var playerViewID = (int)info.photonView.InstantiationData[0];
-        var playerController = Managers.Game.GetPlayerController(playerViewID);
-        inputControllerObject.SetupPlayerController(playerController);
-        playerController.playerShooter.SetupWeapon(this);
+        playerController = Managers.Game.GetPlayerController(playerViewID);
+        Managers.InputItemManager.SetupWeapon(playerController, this);
+        inputControllerObject.OnPhotonInstantiate(playerController);
+        equipmentable.OnPhotonInstantiate(playerController);
+        renderController.OnPhotonInstantiate(playerController.playerHealth);
         CreateZoomUI(playerController);  //줌 UI생성
-
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="rootView"></param>
+
     public virtual void OnPreNetDestroy(PhotonView rootView)
     {
         if (Managers.Resource == null) return;
+        inputControllerObject.OnDestroyEvent();
+        renderController.OnDestroyEvent();
+        equipmentable.OnDestroyEvent();
         if (playerController)
         {
             playerController.playerHealth.RemoveRenderer(renderController);
-           Managers.Resource.Destroy(uiZoom.gameObject);
-           //destroyEventCallBack?.Invoke();
+          
+        }
+        if (uiZoom)
+        {
+            uiZoom.transform.SetParent(this.transform);
+            uiZoom.gameObject.SetActive(false);
         }
     }
 
@@ -147,6 +151,25 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         useState = instanceID == (GetInstanceID()) ? UseState.Use : UseState.NoUse;
     }
 
-  
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="info"></param>
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(useState);
+        }
+        else
+        {
+            var n_state = (UseState)stream.ReceiveNext();
+            if (useState == n_state) return;
+            if (playerController == null) return;
+            useState = n_state;
+        }
+    }
 
 }

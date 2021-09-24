@@ -8,122 +8,106 @@ using TMPro;
 /// </summary>
 public class BuffController : MonoBehaviourPun, IPunObservable
 {
-    [SerializeField] float _durationTime;
-    [SerializeField] float _createServerTime;
-    [SerializeField] BuffBase _buffBase;
+    float n_durationTime;   //지속시간
+    float n_createServerTime;   //서버에서의 생성시간
+    BuffBase _buffBase;
     Poolable _poolable;
 
     public Define.BuffType BuffType { get; private set; }
-    public float ReaminTime => ((_durationTime + _createServerTime) - (float)PhotonNetwork.Time);
+    public float ReaminTime => ((n_durationTime + n_createServerTime) - (float)PhotonNetwork.Time);
     public LivingEntity livingEntity { get; private set; }
-    public float DurationTime => _durationTime;
 
     public bool IsNuff { get; private set; }    //너프 인지
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(BuffType);
-            stream.SendNext(_createServerTime);
-            stream.SendNext(_durationTime);
-        }
-        else
-        {
-            var n_BuffType = (Define.BuffType)stream.ReceiveNext();
-            var n_createServerTime = (float)stream.ReceiveNext();
-            var n_durationTime = (float)stream.ReceiveNext();
-
-            if (n_createServerTime == _createServerTime) return;
-
-            var newLivingEntity = this.transform.parent.GetComponent<LivingEntity>();
-            Setup(n_BuffType, newLivingEntity, n_createServerTime );
-        }
-
-    }
+  
     private void Awake()
     {
         _poolable = GetComponent<Poolable>();
     }
-    //재갱신 및 최초
-    public void Setup(Define.BuffType buffType, LivingEntity newLivingEntity, float createServerTime )
+
+    private void Update()
+    {
+        if (BuffType == Define.BuffType.Null)
+            return;
+
+        var remainTime =  (n_createServerTime + n_durationTime)- (float)PhotonNetwork.Time;
+        if (remainTime <= 0)
+        {
+            End();
+        }
+    }
+
+    public void SetupLivingEntitiy(LivingEntity newLivingEntity)
     {
         livingEntity = newLivingEntity;
-        _createServerTime = createServerTime;
+    }
+
+    //재갱신 및 최초
+    public void SetupInfo(Define.BuffType buffType, float createServerTime )
+    {
+        n_createServerTime = createServerTime;
 
         if (_buffBase == null)
         {
             BuffType = buffType;
             _buffBase = BuffManager.Instance.MakeBuffObject(buffType, this.transform);
             _buffBase.Setup(this);
-            _durationTime = _buffBase.durationTime;
-            SetupIsPostiveBuff(BuffType);
+            n_durationTime = _buffBase.durationTime;
             livingEntity.AddRenderer(_buffBase.renderController);
         }
-       
-        _buffBase.ProcessStart();
-        //LocalEffect();
+        Play();
+    }
+    //재갱신 
+    public void Renew(float createServerTime)
+    {
+        n_createServerTime = createServerTime;
     }
 
-    //버퍼시 이펙트 로컬에서 발생 => 메시지수아끼기위해
-    //void LocalEffect()
-    //{
-    //    if (this.CheckCreateTime(_createServerTime) == false) return;
-    //    switch (BuffType)
-    //    {
-    //        case Define.BuffType.Shoes:
-    //        case Define.BuffType.Shield:
-    //        case Define.BuffType.Speed:
-    //            EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, this.transform.position, 1);
-    //            break;
-
-    //    }
-
-    //}
-
-
-    private void Update()
+    public void Play()
     {
-        if (_buffBase == null)
-            return;
-
-        var remainTime = (float)PhotonNetwork.Time - (_createServerTime + _durationTime);
-
-        if ((float)PhotonNetwork.Time > _createServerTime + _durationTime)
+        var createAfaterTime =   (float)PhotonNetwork.Time - n_createServerTime;
+        if(createAfaterTime < 0.3f)
         {
-            End();
+            PlayEffect();
         }
+
+        _buffBase.Play();
+    }
+    // 버프생성시 이펙트
+    void PlayEffect()
+    {
+        _buffBase.PlayEffect();
     }
 
     public void End()
     {
+        BuffManager.Instance.RemoveBuffController(livingEntity, this);
         _buffBase.Push();
-        _createServerTime = 0;
-        BuffType = Define.BuffType.Null;
         livingEntity.RemoveRenderer(_buffBase.renderController);
-        livingEntity.RemoveBuffController(this);
+        BuffType = Define.BuffType.Null;
+        n_createServerTime = 0;
         livingEntity = null;
         _buffBase = null;
-
         Managers.Pool.Push(_poolable);
     }
 
-
-    //긍정버프인지, 너프인지,
-    void SetupIsPostiveBuff(Define.BuffType buffType)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        switch (buffType)
+        if (stream.IsWriting)
         {
-            case Define.BuffType.B_Direction:
-            case Define.BuffType.B_Sight:
-            case Define.BuffType.B_Stun:
-                IsNuff = true;
-                break;
-            default:
-                IsNuff = false;
-                break;
-
+            stream.SendNext(BuffType);
+            stream.SendNext(n_createServerTime);
+            stream.SendNext(n_durationTime);
         }
-    }
+        else
+        {
+            var r_BuffType = (Define.BuffType)stream.ReceiveNext();
+            var r_createServerTime = (float)stream.ReceiveNext();
+            var r_durationTime = (float)stream.ReceiveNext();
 
+            if (BuffType == r_BuffType) return;
+            SetupInfo(r_BuffType, r_createServerTime);
+        }
+
+    }
 }

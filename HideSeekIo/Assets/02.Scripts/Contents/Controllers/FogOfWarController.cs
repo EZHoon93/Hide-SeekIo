@@ -6,15 +6,26 @@ public class FogOfWarController : MonoBehaviour
     public FogOfWarTeam fogOfWarTeam { get; private set; }
     public FogOfWarUnit fogOfWarUnit { get; private set; }
     public HideInFog hideInFog { get; private set; }
+    LivingEntity _livingEntity;
+    float _ratio;
+    float _initCircleRadius;
+    public float ratio
+    {
+        get => _ratio;
+        set
+        {
+            _ratio = value;
+            fogOfWarUnit.circleRadius = _initCircleRadius * _ratio;
+        }
+    }
 
     private void Awake()
     {
         fogOfWarTeam = GetComponent<FogOfWarTeam>();
         fogOfWarUnit = GetComponent<FogOfWarUnit>();
         hideInFog = GetComponent<HideInFog>();
-
-        this.transform.parent.GetComponent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
     }
+
     private void OnEnable()
     {
         if (CameraManager.Instance.Target)
@@ -29,11 +40,17 @@ public class FogOfWarController : MonoBehaviour
         if (CameraManager.Instance == null) return;
         CameraManager.Instance.fogChangeEvent -= ChangeCameraTarget;
     }
-    public void OnPhotonInstantiate(PhotonView photonView)
+    public void OnPhotonInstantiate(LivingEntity livingEntity)
     {
-        fogOfWarTeam.team = photonView.ViewID;
-        fogOfWarUnit.team = photonView.ViewID;
+        _livingEntity = livingEntity;
+        fogOfWarTeam.team = _livingEntity.photonView.ViewID;
+        fogOfWarUnit.team = _livingEntity.photonView.ViewID;
+        _initCircleRadius = fogOfWarUnit.circleRadius;
+        hideInFog.isGrass = false;
+        hideInFog.isGrassDetected= false;
+        hideInFog.istransSkill= false;
         CheckIsCamaeraTarget(false);
+        ratio = 1;
     }
 
     void ChangeCameraTarget(int cameraViewID)
@@ -62,9 +79,9 @@ public class FogOfWarController : MonoBehaviour
         }
     }
 
-    public void ChangeTransParent(bool isTransParent)
+    public void ChangeTransParentBySkill(bool isTransParent)
     {
-        hideInFog.ChangeTransParent(isTransParent);
+        hideInFog.ChangeTransParentBySkill(isTransParent, _livingEntity.Team);
     }
 
     public void AddHideRender(RenderController renderController)
@@ -83,4 +100,6 @@ public class FogOfWarController : MonoBehaviour
     {
         fogOfWarUnit.circleRadius = value;
     }
+
+  
 }

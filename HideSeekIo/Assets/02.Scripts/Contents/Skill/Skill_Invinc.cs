@@ -9,11 +9,12 @@ public class Skill_Invinc : Skill_Base
 
     protected override void SetupData()
     {
-        inputControllerObject.InitCoolTime = 5;
+        inputControllerObject.InitCoolTime = 15;
     }
 
     public override void Use(Vector2 inputVector2)
     {
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Shield, inputControllerObject.playerController.playerHealth);
+        playerController.playerStat.CurrentEnergy += 5;
+        BuffManager.Instance.CheckBuffController(inputControllerObject.playerController.playerHealth, Define.BuffType.B_Shield);
     }
 }

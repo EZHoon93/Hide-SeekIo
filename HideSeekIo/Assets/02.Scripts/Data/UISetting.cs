@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using BehaviorDesigner.Runtime;
-using System.Collections.Generic;
 using Data;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -49,7 +46,6 @@ public class UISetting : ScriptableObject
                     AssetDatabase.CreateAsset(_instacne, SettingFilePath); //생성 및 저장파일 경로
                 }
 #endif
-
 
             }
             return _instacne;

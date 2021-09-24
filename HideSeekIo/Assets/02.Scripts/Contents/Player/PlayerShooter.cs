@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System;
+
 public class PlayerShooter : MonoBehaviourPun
 {
     public enum state
@@ -22,18 +22,22 @@ public class PlayerShooter : MonoBehaviourPun
     PlayerInput _playerInput;
     Animator _animator => _playerCharacter.animator;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
-    public Vector3 AttackDirection { get; private set; }
-    Action<int> weaponChangeCallBack;
+    public Skill_Base currentSkill { get; set; }
     InputControllerObject currentInputController = null;
-
-
+    Skill_Base _currentSkill;
+    GameObject _inGameItem;
 
     [Header("Transform")]
+    public Action<int> weaponChangeCallBack;
     Transform upperSpine;
+    public Vector3 AttackDirection { get; private set; }
+    public GameObject inGameItem => _inGameItem;
     protected Vector3 upperBodyDir;
     protected bool rotate = false;
-
     public float baseWeaponReaminTime;
+
+    public ConsumItem consumItem { get; set; }
+
     private void OnEnable()
     {
         State = state.Idle;
@@ -64,7 +68,7 @@ public class PlayerShooter : MonoBehaviourPun
              );
         }
         if (this.IsMyCharacter() == false || currentInputController == null) return;
-        currentInputController.Zoom(_playerInput.controllerInputDic[currentInputController.inputType].inputVector2 );
+        //currentInputController.Zoom(_playerInput.controllerInputDic[currentInputController.inputType].inputVector2 );
 
         
     }
@@ -80,74 +84,16 @@ public class PlayerShooter : MonoBehaviourPun
 
     public void ChangeOwnerShip()
     {
-        if (this.IsMyCharacter())
-        {
-            Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, this);
-        }
-    }
-
-
-    public virtual void SetupWeapon(Weapon newWeapon)
-    {
-        newWeapon.inputControllerObject.useSucessStartCallBack += () => WeaponAttackSucess(newWeapon);
-        newWeapon.inputControllerObject.useSucessEndCallBack += AttackBaseEnd;
-        weaponChangeCallBack += newWeapon.WeaponChange;
         
-        SetupEquipmentable(newWeapon.equipmentable);
-        SetupControllerObject(newWeapon.inputControllerObject);
-        switch (newWeapon.inputControllerObject.inputType)
-        {
-            case InputType.Sub1:    //술래!!
-                if (baseWeapon)
-                {
-                    if (baseWeapon.photonView.IsMine)
-                        PhotonNetwork.Destroy(baseWeapon.gameObject);
-                }
-                if(newWeapon.weaponType== Weapon.WeaponType.Hammer)
-                {
-                    GetComponent<PlayerController>().ChangeTeam(Define.Team.Seek);
-                }
-                if (newWeapon.weaponType == Weapon.WeaponType.Gun)
-                {
-
-                }
-                baseWeapon = newWeapon;
-                ChangeWeapon(baseWeapon);
-                break;
-        }
-
-        GetComponent<PlayerHealth>().AddRenderer(newWeapon.renderController);
     }
 
-    public void SetupControllerObject(InputControllerObject newInputControllerObject)
-    {
-        if (newInputControllerObject.attackType == Define.AttackType.Button)
-        {
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
-              (input) => { UseInputControllerObject(input, newInputControllerObject); }, newInputControllerObject.sprite);
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, null);
-        }
-        else
-        {
-            //_playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
-            //   (input) => { currentInputController?.Zoom(Vector2.zero); currentInputController = newInputControllerObject; });
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
-              (input) => { ZoomInputConrollerObject(input, newInputControllerObject);  });
-            _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, (input) => UseInputControllerObject(input, newInputControllerObject) , newInputControllerObject.sprite);
-           
-            //_playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Drag, newInputControllerObject.inputType, (input) => ZoomInputConrollerObject(input, newInputControllerObject));
-        }
-    }
 
-    public void SetupEquipmentable(Equipmentable equipmentable)
-    {
-        var avater = _animator.GetComponent<CharacterAvater>();
-        var adaptTransform = avater.GetSkilParentTransform(equipmentable.equipSkiType);
-        equipmentable.transform.ResetTransform(adaptTransform);
-    }
 
-    public void ChangeWeapon(Weapon useNewWeapon)
+    public void ChangeWeapon(Weapon useNewWeapon, bool isBaseWeapon)
     {
+        if (isBaseWeapon)
+            baseWeapon = useNewWeapon;
+
         weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
         //currentInputController = useNewWeapon.inputControllerObject;
         SetupAnimation(useNewWeapon);
@@ -183,19 +129,24 @@ public class PlayerShooter : MonoBehaviourPun
     public void UseInputControllerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
         if (this.State != state.Idle) return;
+        currentInputController = inputControllerObject;
+        print("UseInputControllerObject");
         if (this.IsMyCharacter())
         {
             //내캐릭이라면 줌을꺼줌
             inputControllerObject.Zoom(Vector2.zero);
         }
-        
         if(inputControllerObject.Use(inputVector2))
         {
             if (baseWeapon)
             {
-                ChangeWeapon(baseWeapon);
+                ChangeWeapon(baseWeapon,true);
             }
         }
+        //if (currentInputController.consumItem)
+        //{
+        //    currentInputController = null;
+        //}
     }
     public void ZoomInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
@@ -204,19 +155,16 @@ public class PlayerShooter : MonoBehaviourPun
             currentInputController.Zoom(Vector2.zero);
         }
         currentInputController = inputControllerObject;
+        currentInputController.Zoom(inputVector2);
     }
 
 
-    protected virtual void WeaponAttackSucess(Weapon attackWeapon)
+    public virtual void WeaponAttackStart(Weapon attackWeapon)
     {
         State = attackWeapon.inputControllerObject.shooterState;
-        //var attackDirection = (attackWeapon.inputControllerObject.attackPoint - this.transform.position).normalized;
-        //attackDirection.y = this.transform.position.y;
         AttackDirection = attackWeapon.inputControllerObject.attackDirection; ;
-        //AttackDirection = UtillGame.ConventToVector3( attackWeapon.inputControllerObject.lastInputSucessVector2);
         if (attackWeapon.weaponType == Weapon.WeaponType.Hammer)
         {
-            //AttackDirection = Vector3.zero;
 
         }
         else
@@ -225,46 +173,29 @@ public class PlayerShooter : MonoBehaviourPun
         }
         _animator.SetTrigger(attackWeapon.AttackAnim);
     }
-    protected virtual void AttackBaseEnd()
+    public virtual void AttackBaseEnd()
     {
         rotate = false;
         if (baseWeapon)
         {
             if(currentInputController == null)
             {
-                ChangeWeapon(baseWeapon);
+                ChangeWeapon(baseWeapon,true);
             }
-            //if (baseWeapon.type == Weapon.UseType.Disposable && photonView.IsMine)    //사용한 무기가 일회용무기였다면(수류탄) 삭제
-            //{
-            //    PhotonNetwork.Destroy(baseWeapon.gameObject);
-            //}
         }
         State = state.Idle;
 
     }
 
-    state GetShooterState(Weapon weapon)
-    {
-        switch (weapon.weaponType)
-        {
-            case Weapon.WeaponType.Hammer:
-                return state.NoMove;
-            case Weapon.WeaponType.Throw:
-                return state.MoveAttack;
-            default:
-                return state.Idle;
-        }
-    }
-
     [PunRPC]
 
-    public void Dash(Vector3 playerPos,  Vector2 inputVector2)
+    public void Dash(Vector3 playerPos,  Vector3 inputVector2)
     {
         this.transform.position = playerPos;
         StartCoroutine(DashProcess(inputVector2));
     }
 
-    IEnumerator DashProcess( Vector2 inputVector2)
+    IEnumerator DashProcess( Vector3 inputVector2)
     {
         //AttackDirection =  _inputBase.controllerInputDic[InputType.Move].inputVector2;
         //AttackDirection = UtillGame.ConventToVector2(this._character_Base.characterAvater. transform.forward);
@@ -289,4 +220,102 @@ public class PlayerShooter : MonoBehaviourPun
         }
         return baseWeapon.inputControllerObject.RemainCoolTime;
     }
+
+
+
+
+
+
+
+    #region --
+    //public virtual void SetupWeapon(Weapon newWeapon)
+    //{
+    //    newWeapon.inputControllerObject.useSucessStartCallBack += () => WeaponAttackSucess(newWeapon);
+    //    newWeapon.inputControllerObject.useSucessEndCallBack += AttackBaseEnd;
+    //    weaponChangeCallBack += newWeapon.WeaponChange;
+
+    //    SetupEquipmentable(newWeapon.equipmentable);
+    //    SetupControllerObject(newWeapon.inputControllerObject);
+    //    switch (newWeapon.inputControllerObject.inputType)
+    //    {
+    //        case InputType.Sub1:    //술래!!
+    //            if (baseWeapon)
+    //            {
+    //                if (baseWeapon.photonView.IsMine)
+    //                    PhotonNetwork.Destroy(baseWeapon.gameObject);
+    //            }
+    //            if(newWeapon.weaponType== Weapon.WeaponType.Hammer)
+    //            {
+    //                GetComponent<PlayerController>().ChangeTeam(Define.Team.Seek);
+    //            }
+    //            if (newWeapon.weaponType == Weapon.WeaponType.Gun)
+    //            {
+
+    //            }
+    //            baseWeapon = newWeapon;
+    //            //ChangeWeapon(baseWeapon);
+    //            break;
+    //        case InputType.Sub3:
+    //            if (_inGameItem)
+    //            {
+    //                if (photonView.IsMine)
+    //                {
+    //                    PhotonNetwork.Destroy(_inGameItem.gameObject);
+    //                }
+    //            }
+    //            _inGameItem = newWeapon.gameObject;
+    //            break;
+    //    }
+
+    //    GetComponent<PlayerHealth>().AddRenderer(newWeapon.renderController);
+    //}
+
+    //public void SetupSkill(Skill_Base newSkill)
+    //{
+    //    if (currentSkill)
+    //    {
+    //        Destroy(currentSkill);
+    //    }
+
+    //    _currentSkill = newSkill;
+    //    SetupControllerObject(_currentSkill.inputControllerObject) ;
+    //}
+    //public void SetupImmediateGameItem(Item_Base item_Base)
+    //{
+    //    if (_inGameItem)
+    //    {
+    //        if (photonView.IsMine)
+    //        {
+    //            PhotonNetwork.Destroy(_inGameItem.gameObject);
+    //        }
+    //    }
+    //    _inGameItem = item_Base.gameObject;
+    //    SetupControllerObject(item_Base.inputControllerObject);
+    //}
+
+    //public void SetupControllerObject(InputControllerObject newInputControllerObject)
+    //{
+    //    newInputControllerObject.SetupPlayerController(GetComponent<PlayerController>());
+    //    if (newInputControllerObject.attackType == Define.AttackType.Button)
+    //    {
+    //        _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
+    //          (input) => { UseInputControllerObject(input, newInputControllerObject); }, newInputControllerObject.sprite);
+    //        _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, null);
+    //    }
+    //    else
+    //    {
+    //        _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
+    //          (input) => { ZoomInputConrollerObject(input, newInputControllerObject);  });
+    //        _playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, (input) => UseInputControllerObject(input, newInputControllerObject) , newInputControllerObject.sprite);
+    //    }
+    //}
+
+    //public void SetupEquipmentable(Equipmentable equipmentable)
+    //{
+    //    var avater = _animator.GetComponent<CharacterAvater>();
+    //    var adaptTransform = avater.GetSkinParentTransform(equipmentable.equipSkiType);
+    //    equipmentable.transform.ResetTransform(adaptTransform);
+    //}
+
+    #endregion
 }

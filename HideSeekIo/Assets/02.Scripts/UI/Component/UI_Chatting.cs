@@ -93,21 +93,6 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (string.IsNullOrEmpty(content)) return;
         SendChattingMessage(content);
     }
-    //public void OnPointerClick(PointerEventData eventData)
-    //{
-    //    print("드래그 클릭");
-    //}
-
-    //public void OnPointerDown(PointerEventData eventData)
-    //{
-    //    print("드래그시작");
-    //}
-    //public void OnPointerUp(PointerEventData eventData)
-    //{
-    //    print("드래그 업");
-    //    ChangeBarSize();
-    //}
-
     public  void OnPlayerEnteredRoom(Player newPlayer)
     {
         var content = newPlayer.NickName + "님이 참가 하였습니다.";
@@ -118,7 +103,7 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     public  void OnPlayerLeftRoom(Player otherPlayer)
     {
-        var content = otherPlayer.NickName + "님이 참가 하였습니다.";
+        var content = otherPlayer.NickName + "님이 나가셨습니다.";
         UpdateChatting(Define.ChattingColor.System, content);
     }
 

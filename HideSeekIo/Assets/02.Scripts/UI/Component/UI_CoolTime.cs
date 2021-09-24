@@ -20,9 +20,11 @@ public class UI_CoolTime : MonoBehaviour
         _coolTimeImage = GetComponent<Image>();
         _coolTimeText = this.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _coolTimeImage.enabled = false;
+        ResetCoolTime();
     }
-    private void OnEnable()
+    public void ResetCoolTime()
     {
+        _coolTimeImage.enabled = false;
         _coolTimeText.text = null;
     }
     public void StartCoolTime(float coolTime)
@@ -43,5 +45,10 @@ public class UI_CoolTime : MonoBehaviour
         _coolTimeImage.enabled = false;
         _coolTimeText.text = null;
 
+    }
+
+    public void UpdateCoolTimeImage(float newRemainTime)
+    {
+        //if(r)
     }
 }

@@ -32,65 +32,19 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #endregion
 
 
-
-
-    #region GameState
-    GameState_Base _gameState;
-    Define.GameState _state; //게임 상태, 최초상태 wait
-    int test =0 ;
-    public GameState_Base GameState => _gameState;
-    public Define.GameState State
-    {
-        get => _state;
-        set
-        {
-            _state = value;
-            if (_gameState)
-            {
-                this.photonView.ObservedComponents.Remove(_gameState);
-                Destroy(_gameState);
-            }
-            switch (_state)
-            {
-                case Define.GameState.Wait:
-                    _gameState = this.gameObject.AddComponent<GameState_Wait>();
-                    break;
-                case Define.GameState.CountDown:
-                    _gameState = this.gameObject.AddComponent<GameState_Count>();
-                    break;
-                case Define.GameState.GameReady:
-                    _gameState = this.gameObject.AddComponent<GameState_GameReady>();
-                    break;
-                case Define.GameState.Gameing:
-                    _gameState = this.gameObject.AddComponent<GameState_Gameing>();
-                    break;
-                case Define.GameState.End:
-                    _gameState = this.gameObject.AddComponent<GameState_End>();
-                    break;
-            }
-            //이벤트 있으면 실행
-            if (StateChangeEventDic.ContainsKey(State))
-            {
-                StateChangeEventDic[State]?.Invoke();
-            }
-            this.photonView.ObservedComponents.Add(_gameState);
-        }
-    }
-    #endregion
-
     #region 변수
     public event Action<Player> enterUserList;
     public event Action<Player> leftUserList;
+    public event Action gameStarEventPoster;
     public event Action gameJoin;
     public event Action gameExit;
-
     public event Action<Define.ChattingColor, string> reciveChattingEvent;
     public Dictionary<Define.GameState, Action> StateChangeEventDic = new Dictionary<Define.GameState, Action>();
 
     #endregion
 
 
-
+    public bool testSeeekr { get; set; } = true;
 
 
     private void Awake()
@@ -107,18 +61,14 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnEnable()
     {
-
         PhotonNetwork.AddCallbackTarget(this);
-
-        var ptl = PhotonNetwork.CurrentRoom.PlayerTtl;
-        var ttl = PhotonNetwork.CurrentRoom.EmptyRoomTtl;
-        print($"PTL  {ptl}  TTL : {ttl}" + PhotonNetwork.CurrentRoom.PlayerCount);
     }
 
     public override void OnDisable()
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
+
 
     public void AddListenr(Define.GameState gameState, Action newAction)
     {
@@ -131,6 +81,14 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             StateChangeEventDic.Add(gameState, newAction);
         }
     }
+    public void PostStateEvent(Define.GameState gameState)
+    {
+        //이벤트 있으면 실행
+        if (StateChangeEventDic.ContainsKey(gameState))
+        {
+            StateChangeEventDic[gameState]?.Invoke();
+        }
+    }
     public void GameJoin()
     {
         var characterType = PlayerInfo.GetCurrentUsingCharacter();
@@ -140,6 +98,11 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             { "as" ,PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey }
         }); ;
         gameJoin?.Invoke();
+        var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
+        if (uiMain)
+        {
+            uiMain.ChangePanel(Define.GameScene.Game);
+        }
     }
 
     public void GameExit()
@@ -152,6 +115,25 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
         CameraManager.Instance.ResetCamera();
         InputManager.Instance.SetActiveController(false);
+        var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
+        if (uiMain)
+        {
+            uiMain.ChangePanel(Define.GameScene.Lobby);
+        }
+    }
+
+    /// <summary>
+    /// 팀선정후 게임 시작
+    /// </summary>
+    public void GameStart()
+    {
+       //_gast
+    }
+
+    public override void OnJoinedRoom()
+    {
+        //base.OnJoinedRoom();
+        //PhotonNetwork.IsMessageQueueRunning = true; 
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -160,7 +142,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             var CP = PhotonNetwork.CurrentRoom.CustomProperties;
             var gameState = (Define.GameState)CP["gs"];
-            State = gameState;
+            //State = gameState;
         }
         //유저 정보변경  level => lv 닉네임변경시도 동일레벨,lv호출
         if (propertiesThatChanged.ContainsKey("lv"))
@@ -214,8 +196,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         print("OnPlayerEnter Room");
         enterUserList?.Invoke(newPlayer);
-        
-
     }
 
 
@@ -244,24 +224,19 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         var killPlayer = Managers.Game.GetLivingEntity(attackViewID).GetComponent<PlayerController>();
         var uiMain = Managers.UI.SceneUI as UI_Main;
         uiMain.UpdateKillNotice("dsdowok", "playertEst");
-
-        print(killPlayer.IsMyCharacter() + "킬플레이어 " + killPlayer.gameObject.name);
-
         if (killPlayer.IsMyCharacter())
         {
-
             uiMain.killText.text = $"{deathPlayer.NickName} 를 잡으셨습니다.";
             Color color = uiMain.killText.color;
             color.a = 1;
             uiMain.killText.color = color;
             uiMain.killText.DOFade(0.0f, 2.0f);
         }
-
         //Managers.Sound.Play("Die", Define.Sound.Effect);
     }
 
 
-    #region Ability Caching Event
+    #region OnEvent 
 
     public void OnEvent(EventData photonEvent)
     {
@@ -270,17 +245,43 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             case (byte)Define.PhotonOnEventCode.AbilityCode:
                 var HT = (Hashtable)photonEvent.CustomData;
-                int viewID = (int)HT["vID"];
+                int viewID = (int)HT["vid"];
+                var statDatas = (int[])HT["stl"];
                 var playerController = Managers.Game.GetLivingEntity(viewID).GetComponent<PlayerController>();
                 if (playerController)
-                    playerController.playerStat.UpdateStatDatasByServer((int[])HT["st"]);
+                    Managers.StatSelectManager.OnEvent_StatDatasByServer(playerController, statDatas);
+                    break;
+
+            case (byte)Define.PhotonOnEventCode.Warning:
+                print("OnEvent warning");
+
+                //var HT = (Hashtable)photonEvent.CustomData;
+                //int viewID = (int)HT["vid"];
+                //bool hideActive = (bool)HT["har"];
+
+                //var playerController = Managers.Game.GetLivingEntity(viewID).GetComponent<PlayerController>();
+                //if (playerController)
+                //{
+                //    //playerController.WarningToServer(hideActive);
+                //}
+
                 break;
         }
     }
 
-  
+    void OnEvent_Stat(EventData photonEvent)
+    {
 
-    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode ,EventCaching eventCachingCode,  Hashtable hashtable)
+    }
+    void OnEvent_War(EventData photonEvent)
+    {
+
+    }
+
+    #region SendEvent Overloading
+
+
+    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode ,EventCaching eventCachingCode,  object hashtable)
     {
         byte evCode = (byte)photonOnEventCode;
         object content = hashtable;
@@ -288,7 +289,68 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             CachingOption = eventCachingCode,
             Receivers = ReceiverGroup.All,
-            //InterestGroup = 0,
+        };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+        //PhotonNetwork.RaiseEvent(0, null, new RaiseEventOptions{ TargetActors = new int[]{ 1,2 }  } , sendOptions);
+
+    }
+    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode, EventCaching eventCachingCode, object[] datas)
+    {
+        byte evCode = (byte)photonOnEventCode;
+        object[] content = datas;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            CachingOption = eventCachingCode,
+            Receivers = ReceiverGroup.All,
+        };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode, EventCaching eventCachingCode, object hashtable ,int interestGroup)
+    {
+        byte evCode = (byte)photonOnEventCode;
+        object content = hashtable;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            CachingOption = eventCachingCode,
+            Receivers = ReceiverGroup.All,
+            InterestGroup = (byte)interestGroup
+        };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+
+
+    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode, EventCaching eventCachingCode, object hashtable , int[] targetActors)
+    {
+        byte evCode = (byte)photonOnEventCode;
+        object content = hashtable;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            CachingOption = eventCachingCode,
+            Receivers = ReceiverGroup.All,
+            TargetActors = targetActors
+        };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+
+
+
+    public void SendEvent(Define.PhotonOnEventCode photonOnEventCode, EventCaching eventCachingCode, object hashtable,int interestGroup, int[] targetActors )
+    {
+        byte evCode = (byte)photonOnEventCode;
+        object content = hashtable;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            CachingOption = eventCachingCode,
+            Receivers = ReceiverGroup.All,
+            InterestGroup = (byte)interestGroup,
+            TargetActors = targetActors
         };
         SendOptions sendOptions = new SendOptions { Reliability = true };
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
@@ -297,55 +359,96 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
 
     #endregion
+
+    #endregion
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Managers.Game.myPlayer.GetComponent<LivingEntity>().OnDamage(0, 3, UnityEngine.Vector3.zero);
-        }
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    Managers.Game.myPlayer.GetComponent<LivingEntity>().OnDamage(0, 3, UnityEngine.Vector3.zero);
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Component c = _gameState;
-            Destroy(c);
-        }
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    Component c = _gameState;
+        //    Destroy(c);
+        //}
 
-       
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            Managers.Game.myPlayer.ChangeTeam(Define.Team.Seek);
-        }
 
-        if (Input.GetKeyDown(KeyCode.P))
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    Managers.Game.myPlayer.ChangeTeam(Define.Team.Seek);
+        //}
+
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    Managers.Spawn.WeaponSpawn(Define.Weapon.Flash, Managers.Game.myPlayer.playerShooter);
+        //}
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Managers.Spawn.WeaponSpawn(Define.Weapon.Flash, Managers.Game.myPlayer.playerShooter);
+            Debug.Break();
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            //Debug.
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
-            Managers.Game.myPlayer.playerStat.StatPoint++;
+            //Managers.Game.myPlayer.playerStat.StatPoint++;
+            //object datas = new Hashtable { { "oID", 1 } };
+            var s = new Hashtable { { "a", 1 } ,{ "b", 1 } };
+            object datas2 = new Hashtable { { "oID", 2 }, { "stl", 2 } };
+            //int[] s = {  Managers.Game.myPlayer.photonView.ControllerActorNr};
+            //int[] ss = { Managers.Game.myPlayer.photonView.ControllerActorNr,2 ,3};
+            SendEvent(Define.PhotonOnEventCode.Warning, EventCaching.AddToRoomCacheGlobal, datas2);
         }
-     
+        //}
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            //Managers.Game.myPlayer.playerStat.StatPoint++;
+            //object datas = new Hashtable { { "oID", 1 } };
+            //object datas2 = new Hashtable { { "oID", 2 } };
+            //object datas2 = new Hashtable { { "oID", 2 }, { "stl", new int[] { 1, 2 } } };
+            //print("제거코드");
+            //var s = new Hashtable { { "a", 1 }, { "b", 1 } };
+
+            //object datas2 = new Hashtable { { "oID", 2 }, { "stl", 1 } };
+
+            ////int[] s = { Managers.Game.myPlayer.photonView.ControllerActorNr };
+            ////int[] ss = { Managers.Game.myPlayer.photonView.ControllerActorNr, 2, 3 };
+
+            //SendEvent(Define.PhotonOnEventCode.Warning, EventCaching.RemoveFromRoomCache, datas2);
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            //Managers.Game.myPlayer.playerStat.StatPoint++;
+            PhotonNetwork.IsMessageQueueRunning = true;
+            print(PhotonNetwork.IsMessageQueueRunning +"변경");
+
+        }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             var myPlayer = Managers.Game.myPlayer;
             if (myPlayer == null) return;
-            var selectItem = GetRandomItemEnum(myPlayer.Team);
-            print("생성");
-            if (selectItem.GetType() == typeof(Define.ThrowItem))
-            {
-                //Managers.Spawn.WeaponSpawn(selectItem.GetType)
-                PhotonNetwork.Instantiate($"{selectItem.GetType().Name}/{selectItem.ToString()}", Vector3.up * -5, Quaternion.identity, 0, new object[]{
-            myPlayer.ViewID(),
-               }); ;
-            }
-            else
-            {
-                Managers.Spawn.ItemSpawn(selectItem, myPlayer);
-            }
+            var ranType = GetRandomItemID(seekerItemArray);
+            Managers.Spawn.InGameItemSpawn(ranType, myPlayer);
         }
 
+    }
 
 
+    Define.InGameItem[] seekerItemArray =
+ {
+        Define.InGameItem.Flash,Define.InGameItem.Grenade,Define.InGameItem.PoisonBomb,
+         Define.InGameItem.Stone
+    };
+
+    Define.InGameItem GetRandomItemID(Define.InGameItem[] itemTypeArray)
+    {
+        var ran = UnityEngine.Random.Range(0, itemTypeArray.Length);
+        var seletType = itemTypeArray[ran];
+        return seletType;
     }
 
     Enum GetRandomItemEnum(Define.Team team)

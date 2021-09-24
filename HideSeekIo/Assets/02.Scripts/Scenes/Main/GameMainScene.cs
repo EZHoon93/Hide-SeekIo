@@ -8,83 +8,70 @@ using System;
 
 public class GameMainScene : GameScene
 {
-    [SerializeField] SeekerBlock[] _seekerBlock;
-
-
-    public Enum[] hiderItemArray { get; private set; } =
+    public Define.MissionType[] missionArray { get; private set; } =
     {
-        Define.Skill.Invinc , Define.Skill.Staeth, Define.Skill.Dash,
+       Define.MissionType.Key
     };
 
+    //진행한 이벤트리스트
+    public List<Define.MissionType> doMissionList { get; private set; } = new List<Define.MissionType>(4);
+
+
+
+    //public Enum[] hiderItemArray { get; private set; } =
+    //{
+    //    Define.Skill.Invinc , Define.Skill.Staeth, Define.Skill.Dash,
+    //};
 
     protected override void Init()
     {
         base.Init();
-        Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
-        
-        //Managers.Sound.Play("BGM_Main1", Define.Sound.Bgm, 1.0f);
     }
 
     protected override void Start()
     {
         base.Start();
-        //PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, () => SetActiveSeekerBlock(false, true));
-        //PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait,  ()=> SetActiveSeekerBlock(true, false) );
-
-        var CurrentState = PhotonGameManager.Instacne.State;
-        switch (CurrentState)
-        {
-            case Define.GameState.Gameing:
-            case Define.GameState.End:
-                
-                break;
-        }
+        mission1ok = false;
+        //print("GameMainScene Start!!!");
+        //PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, Clear);
     }
 
     public override void Clear()
     {
-        
+        doMissionList.Clear();
     }
 
-    public Enum[] GetSelectList(Define.Team team)
+    public override void OnUpdateTime(int remainGameTime)
     {
-        if(team == Define.Team.Hide)
+        if(remainGameTime < mission1Time)
         {
-            return hiderItemArray;
+            if (mission1ok) return;
+            print("Create !!");
+            mission1ok = true;
+            CreateMission();    
         }
 
-        return null;
     }
-    void SetActiveSeekerBlock(bool active , bool isEffect)
+
+    void CreateMission()
     {
-        //foreach (var s in _seekerBlock)
-        //{
-        //    s.Explosion(active , isEffect);
-        //}
+        if (PhotonNetwork.IsMasterClient == false) return;
+        //var ranMissionType = Util.GetRandomEnumTypeExcept(doMissionList.ToArray());
+        //object[] sendData = { ranMissionType };
+        object[] sendData = { Define.MissionType.Key};
+        //이벤트 생성
+        PhotonNetwork.InstantiateRoomObject("Mission", Vector3.zero, Quaternion.identity , 0 , sendData);
     }
+    //public Enum[] GetSelectList(Define.Team team)
+    //{
+    //    if(team == Define.Team.Hide)
+    //    {
+    //        return hiderItemArray;
+    //    }
 
-    
+    //    return null;
+    //}
 
-    public Vector3 GetHiderPosition(int index)
-    {
-        //if(mainSpawnPoints.HiderSpawnPoints.Length <= index)
-        //{
-        //    Debug.LogError("Hider 스폰포인트 위치가 더작음");
-        //    return Vector3.zero;
-        //}
 
-        //return mainSpawnPoints.HiderSpawnPoints[index].transform.position;
-        return Vector3.zero;
-    }
-    public Vector3 GetSeekerPosition(int index)
-    {
-        //if (mainSpawnPoints.SeekerSpawnPoints.Length <= index)
-        //{
-        //    Debug.LogError("Seeker 스폰포인트 위치가 더작음");
-        //    return Vector3.zero;
-        //}
 
-        //return mainSpawnPoints.SeekerSpawnPoints[index].transform.position;
-        return Vector3.zero;
-    }
 }

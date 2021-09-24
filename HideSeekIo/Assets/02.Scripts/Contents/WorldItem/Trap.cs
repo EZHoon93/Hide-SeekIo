@@ -10,7 +10,6 @@ public class Trap : MonoBehaviourPun , IPunInstantiateMagicCallback
         
 
         double sendTime = info.SentServerTime;
-        print(PhotonNetwork.Time + "/" + sendTime);
         _modelObject.SetActive(true);
         //생성된지 1초 이하면, 이펙트발생    => 생성시 서버로 이펙트 함수 호출이아닌, 생성시 전송시간이랑 비교해서 로컬로처리 (메시지 하나라도아끼려고)
         //if(PhotonNetwork.Time <= sendTime + 1.0f)
@@ -22,8 +21,8 @@ public class Trap : MonoBehaviourPun , IPunInstantiateMagicCallback
 
     public void TrapCollider(GameObject trapEnemeyObject)
     {
-        print("Trap Collider !! " + trapEnemeyObject.name);
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stun, trapEnemeyObject.GetComponent<LivingEntity>());
+        BuffManager.Instance.CheckBuffController(trapEnemeyObject.GetComponent<LivingEntity>(), Define.BuffType.B_Stun);
+
         EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 1);
         PhotonNetwork.Destroy(this.gameObject);
     }

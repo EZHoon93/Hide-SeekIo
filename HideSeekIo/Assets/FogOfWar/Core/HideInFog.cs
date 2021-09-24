@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
@@ -17,15 +18,18 @@ namespace FoW
 
         [SerializeField] List<Renderer> _renderers = new List<Renderer>();
 
-        public bool isGrass { get; set; }
-        public bool isGrassDetected { get; set; }
-        public bool istransSkill { get; set; }
+        public bool isGrass { get; set; } = false;
+        public bool isGrassDetected { get; set; } = false;
+        public bool istransSkill { get; set; } = false;
+
+        public Action<bool> changeCallBack;
 
         private void Reset()
         {
             minFogStrength = 0.8f;
             _renderers = GetComponentsInChildren<Renderer>().ToList();
         }
+        
         private void OnEnable()
         {
             if (CameraManager.Instance.Target)
@@ -34,17 +38,12 @@ namespace FoW
             }
             CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
             SetActiveRender(false);
-            isGrass = false;
-            istransSkill = false;
-            isGrassDetected = false;
         }
 
         private void OnDisable()
         {
             if (Managers.Game == null) return;
             if (CameraManager.Instance == null) return;
-
-
             CameraManager.Instance.fogChangeEvent -= ChangeCameraTarget;
         }
         void Start()
@@ -69,13 +68,14 @@ namespace FoW
             }
             else
             {
-                //visible = !isGrass;
+                if (isGrass)
+                {
+                    visible = false;
+                }
             }
-            
-            if (istransSkill)
-            {
-                visible = false;
-            }
+
+            changeCallBack?.Invoke(visible);
+
             SetActiveRender(visible);
 
 
@@ -127,21 +127,46 @@ namespace FoW
 
             }
         }
-        public void ChangeTransParent(bool isTransParent)
+
+
+        public void ChangeTransParentBySkill(bool isTransParent , Define.Team team)
         {
             istransSkill = isTransParent;
-            if (isTransParent)
+            if (istransSkill)
             {
-                if (this.enabled) return;
+                //if (this.enabled) return;
                 foreach (var r in _renderers)
                 {
                     Color color = r.material.color;
-                    if (color != null)
+                   
+                    if (CameraManager.Instance.Target)
                     {
-                        color.a = 0.5f;
-                        r.material.color = color;
+                        var viewTeam = CameraManager.Instance.Target.Team;
+                        if (viewTeam == team)
+                        {
+                            if (color != null)
+                            {
+                                color.a = 0.5f;
+                                r.material.color = color;
+                            }
+                        }
+                        else
+                        {
+                            if (color != null)
+                            {
+                                color.a = 0.0f;
+                                r.material.color = color;
+                            }
+                        }   
                     }
-                    
+                    //if (team == Define.Team.Hide)
+                    //{
+                    //    r.gameObject.layer = (int)Define.Layer.TransparentHider;
+                    //}
+                    //else
+                    //{
+                    //    r.gameObject.layer = (int)Define.Layer.SeekerTransCollider;
+                    //}
                 }
             }
             else
@@ -154,6 +179,14 @@ namespace FoW
                         color.a = 1;
                         r.material.color = color;
                     }
+                    //if (team == Define.Team.Hide)
+                    //{
+                    //    r.gameObject.layer = (int)Define.Layer.Hider;
+                    //}
+                    //else
+                    //{
+                    //    r.gameObject.layer = (int)Define.Layer.Seeker;
+                    //}
                 }
             }
         }

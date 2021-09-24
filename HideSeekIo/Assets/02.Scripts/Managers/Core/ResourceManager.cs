@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
+using Photon.Pun;
+
 using UnityEngine;
 
 public class ResourceManager
@@ -51,7 +53,19 @@ public class ResourceManager
             Managers.Pool.Push(poolable);
             return;
         }
-
         Object.Destroy(go);
+    }
+
+    /// <summary>
+    /// PunPoolManagerBridge => Destory => Managers.Destroy
+    /// </summary>
+    /// <param name="go"></param>
+
+    public void PunDestroy(MonoBehaviourPun go)
+    {
+        if (go.photonView.IsMine == false)
+            return;
+
+        PhotonNetwork.Destroy(go.gameObject);
     }
 }

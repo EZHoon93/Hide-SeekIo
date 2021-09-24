@@ -4,14 +4,13 @@ using Photon.Pun;
 using System.Collections;
 public class Weapon_Stone : Weapon, IZoom
 {
-
-    [SerializeField] float _maxDistance = 3;
+    public override WeaponType weaponType => WeaponType.Gun;
+    [SerializeField] float _maxDistance = 5;
     int _zoomLayer = 1 << (int)Define.Layer.Wall;
     GameObject _bullet;
     protected override void Awake()
     {
         base.Awake();
-        weaponType = WeaponType.Gun;
         AttackAnim = "OneThrow";
         AttackDelay = 0.2f;
         AfaterAttackDelay = 0.2f;
@@ -20,7 +19,7 @@ public class Weapon_Stone : Weapon, IZoom
     protected override void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Sub1;
+        inputControllerObject.inputType = InputType.Sub3;
         inputControllerObject.attackType = Define.AttackType.Joystick;
         inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
         inputControllerObject.InitCoolTime = 3;

@@ -1,38 +1,122 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
-public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, IExitTrigger, IGrassDetected
+public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, ICanExitTriggerPlayer
 {
     [SerializeField] Material _orignalMaterial;
     [SerializeField] Material _transMaterial;
-    [SerializeField] Renderer _renderer;
+    [SerializeField] Renderer[] _renderer;
+    [SerializeField] List<PlayerController> playerControllerList = new List<PlayerController>(16);
     private void Start()
     {
-        _renderer.material = _orignalMaterial;
+        CameraManager.Instance.fogChangeEvent += CameraChange;
+        _renderer = GetComponentsInChildren<Renderer>();
+        foreach (var r in _renderer)
+            r.material = _orignalMaterial;
     }
     public void ChangeTransParent(bool active)
     {
-        if (active)
-            _renderer.material = _transMaterial;
-        else
-            _renderer.material = _orignalMaterial;
+       
     }
 
-    public void Enter(PlayerController enterPlayer, Collider collider)
+    //카메라 변경p
+    void CameraChange(int viewID)
     {
-         enterPlayer.isGrass = true;
-    }
-
-
-    public void Exit(GameObject exitGameObject)
-    {
-        var playerController = exitGameObject.GetComponent<PlayerController>();
-        if (playerController)
+        if (playerControllerList.Count <= 0) return;
+        foreach(var player in playerControllerList)
         {
-            playerController.isGrass = false;
+            if(player.ViewID() == viewID)
+            {
+                //player.isGrass = true;
+                //player.fogOfWarController.hideInFog.isGrassDetected = see;
+                SeePlayersInGrass(true);
+                ChangeGrassMaterial(true);
+                return;
+            }
+        }
+        SeePlayersInGrass(false);
+        ChangeGrassMaterial(false);
+    }
+    public void SetActiveByGrassDetected(bool active)
+    {
+        if (active)
+        {
+            foreach (var r in _renderer)
+                r.material = _transMaterial;
+            
+        }
+
+        else
+        {
+            foreach (var r in _renderer)
+                r.material = _orignalMaterial;
+        }
+
+        SeePlayersInGrass(active);
+    }
+
+    void ChangeGrassMaterial(bool trans)
+    {
+        if (trans)
+        {
+            foreach (var r in _renderer)
+                r.material = _transMaterial;
+
+        }
+
+        else
+        {
+            foreach (var r in _renderer)
+                r.material = _orignalMaterial;
         }
     }
 
-    
+    void SeePlayersInGrass(bool see)
+    {
+        foreach (var player in playerControllerList)
+            player.fogOfWarController.hideInFog.isGrassDetected = see;
+    }
+    public void Enter(PlayerController enterPlayer, Collider collider)
+    {
+        enterPlayer.fogOfWarController.hideInFog.isGrass = true;
+        if(playerControllerList.Contains(enterPlayer) == false)
+        {
+            playerControllerList.Add(enterPlayer);
+        }
+
+        //같은부쉬에 들어왔을 시 
+        if (CameraManager.Instance.Target)
+        {
+            if(playerControllerList.Contains(CameraManager.Instance.Target))
+            {
+                enterPlayer.fogOfWarController.hideInFog.isGrassDetected = true;
+            }
+        }
+        if (CameraManager.Instance.Target != enterPlayer) return;
+
+        SeePlayersInGrass(true);
+        ChangeGrassMaterial(true);
+    }
+
+
+
+    public void Exit(PlayerController exitPlayer, Collider collider)
+    {
+        exitPlayer.fogOfWarController.hideInFog.isGrass = false;
+        exitPlayer.fogOfWarController.hideInFog.isGrassDetected = false;
+        if (playerControllerList.Contains(exitPlayer))
+        {
+            playerControllerList.Remove(exitPlayer);
+        }
+        if (CameraManager.Instance.Target != exitPlayer) return;
+
+        SeePlayersInGrass(false);
+        ChangeGrassMaterial(false);
+
+    }
+
+
 }

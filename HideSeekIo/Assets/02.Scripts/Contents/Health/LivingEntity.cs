@@ -8,32 +8,41 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     [SerializeField] FogOfWarController _fogOfWarController;
     public int initHealth = 2; 
     public virtual int Health { get; set; }
-    public bool Dead { get; protected set; }
-    public Define.Team Team;
-    public event Action onDeath; 
-    int _lastAttackViewID;  
+    public virtual bool Dead { get; protected set; }
+    public bool isShield { get; set; }
+    public Define.Team Team; 
+    public event Action onDeath;
+    public event Action<int> onDamageEventPoster;
+    int _lastAttackViewID;
 
-    public List<BuffController> BuffControllerList { get; private set; } = new List<BuffController>();
+    public List<BuffController> n_buffControllerList { get; set; } = new List<BuffController>();
+
+
+
     public FogOfWarController fogController => _fogOfWarController;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(BuffControllerList.Count);
             stream.SendNext(Health);
+            stream.SendNext(Dead);
+            stream.SendNext(n_buffControllerList.Count);
 
         }
         else
         {
-            int buffCount = (int)stream.ReceiveNext();
             Health = (int)stream.ReceiveNext();
-            if (buffCount > BuffControllerList.Count)
+            bool n_dead = (bool)stream.ReceiveNext();
+            int buffCount = (int)stream.ReceiveNext();
+            if (buffCount > n_buffControllerList.Count)
             {
-                var buffController = BuffManager.Instance.MakeBuffController(this.transform);
-                AddBuffController(buffController);
+                BuffManager.Instance.CheckBuffController(this);
             }
-
+            if(Dead != n_dead)
+            {
+                Dead = n_dead;
+            }
         }
     }
  
@@ -81,13 +90,24 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
     {
         if (photonView.IsMine)
         {
+            if (isShield) return;
             Health -= damage;
             _lastAttackViewID = damagerViewId;  
             if (Health <= 0 && !Dead)
             {
                 //Die();
                 photonView.RPC("Die", RpcTarget.All);
+                return;
             }
+            if (Health > 0)
+            {
+                photonView.RPC("OnDamage", RpcTarget.Others , damagerViewId,damage,hitPoint);
+            }
+        }
+        if (Health > 0)
+        {
+            if (isShield) return;
+            onDamageEventPoster?.Invoke(damage);
         }
     }
 
@@ -106,19 +126,44 @@ public class LivingEntity : MonoBehaviourPun, IDamageable, IPunObservable
         Dead = true;
     }
 
-    public void AddBuffController(BuffController newBuff)
-    {
-        BuffControllerList.Add(newBuff);
-        this.photonView.ObservedComponents.Add(newBuff);
+    #region Buff
 
-    }
+    //public void AddBuffController(BuffController newBuff)
+    //{
+    //    var go = Managers.Resource.Instantiate($"Buff/BuffController", this.transform).GetComponent<BuffController>(); 
+    //    go.transform.localPosition = Vector3.zero;
+    //    go.gameObject.SetLayerRecursively(this.gameObject.layer);
 
-    public void RemoveBuffController(BuffController removeBuff)
-    {
-        BuffControllerList.Remove(removeBuff);
-        this.photonView.ObservedComponents.Remove(removeBuff);
-    }
+    //    n_buffControllerList.Add(newBuff);
 
+    //    this.photonView.ObservedComponents.Add(newBuff);
+
+    //}
+
+    //public void RemoveBuffController(BuffController removeBuff)
+    //{
+    //    n_buffControllerList.Remove(removeBuff);
+    //    this.photonView.ObservedComponents.Remove(removeBuff);
+    //}
+
+    //public void BuffControllerCheckOnLocal(Define.BuffType buffType, LivingEntity livingEntity)
+    //{
+    //    if (livingEntity == null) return;
+    //    if (livingEntity.Dead) return;
+    //    var buffControllerList = livingEntity.n_buffControllerList;
+    //    BuffController buffController = buffControllerList.Find(s => s.BuffType == buffType);
+    //    //float durationTime = 10;
+    //    float createServerTime = (float)PhotonNetwork.Time;
+
+    //    if (buffController == null)
+    //    {
+    //        //buffController = n_buffControllerList(livingEntity.transform);
+    //        livingEntity.AddBuffController(buffController);
+    //    }
+    //    buffController.Setup(buffType, livingEntity, createServerTime);
+    //}
+
+    #endregion
 
     public void AddRenderer(RenderController renderController)
     {

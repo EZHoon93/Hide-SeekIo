@@ -24,7 +24,6 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 		private set;
 	}
 	RectTransform canvasRectTrans;
-
 	// JOYSTICK POSITIONING //
 	public RectTransform joystickBase, joystick;
 	public enum ScalingAxis
@@ -942,7 +941,6 @@ public class UltimateJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler
 	IEnumerator TapCountDelay ()
 	{
 		tapCountAchieved = true;
-		print("인인이ㅣㅇ닝");
 		OnTapCallBack?.Invoke();
 		yield return new WaitForEndOfFrame();
 		tapCountAchieved = false;

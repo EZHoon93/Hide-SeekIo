@@ -34,7 +34,7 @@ public static class UserDataSystem
         }
         catch (Exception)
         {
-            Debug.Log("저장실패");
+            //Debug.Log("저장실패");
 
             return false;
         }
@@ -47,7 +47,7 @@ public static class UserDataSystem
     {
         if (!DoseSaveGameExist(name))
         {
-            Debug.Log("lod x");
+            //Debug.Log("lod x");
             return default;
         }
         try
@@ -63,14 +63,7 @@ public static class UserDataSystem
             string jsonData = File.ReadAllText(path);
 #endif
             var userData = JsonUtility.FromJson<T>(jsonData);
-
-
-
-
-
-            Debug.Log("불러옴" + path);
-
-
+            //Debug.Log("불러옴" + path);
 
             return userData;
         }
@@ -86,13 +79,13 @@ public static class UserDataSystem
     {
         try
         {
-            Debug.Log("삭제중");
+            //Debug.Log("삭제중");
             string path = Path.Combine(Application.persistentDataPath, name);
             File.Delete(path);
         }
         catch (Exception)
         {
-            Debug.Log("삭제실패");
+            //Debug.Log("삭제실패");
 
             return false;
         }

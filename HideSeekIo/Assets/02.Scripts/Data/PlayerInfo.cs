@@ -34,16 +34,15 @@ public static class PlayerInfo
         {
             //아이디가 존재한다면
             userData = UserDataSystem.LoadData<UserData>(jsonDataName);
-            Debug.Log("로그인... 존재합니다" + userData);
+            //Debug.Log("로그인... 존재합니다" + userData);
             State = Define.UserDataState.Load;
-
-            Debug.Log("test");
+            //Debug.Log("test");
 
         }
         else
         {
             //아이디가 존재하지않는다면
-            Debug.Log("로그인... 존재하지 않습니다..." + userData);
+            //Debug.Log("로그인... 존재하지 않습니다..." + userData);
             State = Define.UserDataState.Null;
         }
 
@@ -179,15 +178,15 @@ public static class PlayerInfo
         return Define.CharacterType.Cat;
     }
 
-    public static SendAllSkinInfo MakeAllSkinInfo()
-    {
-        SendAllSkinInfo sendAllSkinInfo;
-        var characterType = GetCurrentUsingCharacter();
-        sendAllSkinInfo.autoNumber = PhotonNetwork.LocalPlayer.ActorNumber;
-        sendAllSkinInfo.chacterType = characterType;
-        sendAllSkinInfo.avaterSkinID = GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
-        return sendAllSkinInfo;
-    }
+    //public static SendAllSkinInfo MakeAllSkinInfo()
+    //{
+    //    SendAllSkinInfo sendAllSkinInfo;
+    //    var characterType = GetCurrentUsingCharacter();
+    //    sendAllSkinInfo.autoNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+    //    sendAllSkinInfo.chacterType = characterType;
+    //    sendAllSkinInfo.avaterSkinID = GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey;
+    //    return sendAllSkinInfo;
+    //}
     //public static string ChangeCurrentSkin(int useSelectIndex)
     //{
     //    var currentCh = GetCurrentUsingCharacter();

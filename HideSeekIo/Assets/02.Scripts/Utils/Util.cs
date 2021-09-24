@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
@@ -184,7 +186,7 @@ public class Util
         T result = default;
         do
         {
-            int ran = Random.Range(0, values.Length);
+            int ran = UnityEngine.Random.Range(0, values.Length);
             result = (T)values.GetValue(ran);
             if(@enum == null)
             {
@@ -193,18 +195,57 @@ public class Util
         } while (string.Compare(result.ToString(), @enum.ToString()) == 0);
 
         return result;
-
     }
 
-    public static System.Enum GetEnumByIndex<T>(int index)
+    /// <summary>
+    /// 랜덤으로 1개 타입형 선택, 인수값을 제외
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="existEnumArray"></param> 제외할 값
+    /// <returns></returns>
+    public static T GetRandomEnumTypeExcept<T>(T[] existEnumArray) where T : Enum
     {
-        System.Array values = System.Enum.GetValues(typeof(T));
+        var enumAllArray = EnumToArray<T>();   //열거형 목록전부 배열ㅁ생성
+
+        var randomSelect= enumAllArray.Where(s => existEnumArray.Contains(s) == false).OrderBy(s => Guid.NewGuid()).Single();
+
+        return randomSelect;
+    }
+    public static T[] EnumToArray<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        T[] result = new T[values.Length];
+        int i = 0;
+        foreach(var  value in values)
+        {
+            result[i] = (T)value;
+            i++;
+        }
+        return result;
+
+    }
+    public static int[] EnumToIntArray<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        int[] result = new int[values.Length];
+        int i = 0;
+        foreach (var value in values)
+        {
+            result[i] = (int)value;
+            i++;
+        }
+        return result;
+
+    }
+    public static Enum GetEnumByIndex<T>(int index)
+    {
+        Array values = Enum.GetValues(typeof(T));
 
         foreach(var @enum  in values)
         {
             if(index == (int)@enum)
             {
-                return (System.Enum)@enum;
+                return (Enum)@enum;
             }
         }
 

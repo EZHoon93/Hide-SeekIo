@@ -46,7 +46,7 @@ public class CharacterAvater : MonoBehaviour
         }
         skinObject?.gameObject.SetActive(false);
         skinObject = newSkinObject;
-        skinObject.transform.ResetTransform(GetSkilParentTransform(skinType));
+        skinObject.transform.ResetTransform(GetSkinParentTransform(skinType));
         skinObject.gameObject.SetActive(true);
     }
 
@@ -54,12 +54,12 @@ public class CharacterAvater : MonoBehaviour
     {
         foreach(var skin in skinDic)
         {
-            Transform parentTransform = GetSkilParentTransform(skin.Key);
+            Transform parentTransform = GetSkinParentTransform(skin.Key);
             skin.Value.transform.ResetTransform(parentTransform);
         }
     }
 
-    public Transform GetSkilParentTransform(Define.SkinType skinType)
+    public Transform GetSkinParentTransform(Define.SkinType skinType)
     {
         switch (skinType)
         {

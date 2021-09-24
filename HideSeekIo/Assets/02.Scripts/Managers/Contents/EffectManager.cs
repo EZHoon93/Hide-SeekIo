@@ -24,8 +24,16 @@ public class EffectManager : MonoBehaviourPun
     private static EffectManager _instance; // ???????? ?????? static ????
     #endregion
 
+    /// <summary>
+    /// 0은 포그오브워 밖에서도보이게..
+    /// </summary>
+    /// <param name="effectType"></param>
+    /// <param name="position"></param>
+    /// <param name="isSee"></param>
+    /// <param name="size"></param>
+    /// <param name="viewID"></param>
     [PunRPC]
-    public void EffectOnLocal(Define.EffectType effectType, Vector3 position,int isSee, int viewID = 0)
+    public void EffectOnLocal(Define.EffectType effectType, Vector3 position,int isSee, float size = 1, int viewID = 0)
     {
         var go = Managers.Resource.Instantiate($"Effect/{effectType.ToString()}");
         go.transform.position = position;
@@ -42,9 +50,13 @@ public class EffectManager : MonoBehaviourPun
         {
             go.GetComponent<FoW.FogOfWarUnit>().team = viewID;
         }
+        if(size != 1)
+        {
+            go.transform.localScale = new Vector3(size, size, size);
+        }
     }
 
-    public void EffectToServer(Define.EffectType effectType , Vector3 position,int isSee ,int viewID = 0) 
+    public void EffectToServer(Define.EffectType effectType , Vector3 position,int isSee ,float size = 1 ,int viewID = 0) 
         =>photonView.RPC("EffectOnLocal", RpcTarget.All, effectType, position, isSee, viewID);
 
 

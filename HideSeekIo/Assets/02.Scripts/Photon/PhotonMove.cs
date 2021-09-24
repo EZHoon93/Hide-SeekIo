@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using Photon.Pun;
+using Smooth;
 
 public class PhotonMove : MonoBehaviourPun  , IPunObservable
 {
@@ -29,14 +30,16 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
     {
         if (this.photonView.IsMine == false)
         {
+            if (dataState == DataState.ServerView) return;
             //transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * this.SmoothingDelay);
-            transform.position = Vector3.Lerp(transform.position, networkPosition, m_distance * (2.0f / PhotonNetwork.SerializationRate));
+            transform.position = Vector3.MoveTowards(transform.position, this.networkPosition, m_distance * (3.0f / PhotonNetwork.SerializationRate));
+
+            //transform.position = Vector3.Lerp(transform.position, networkPosition, m_distance * (2.0f / PhotonNetwork.SerializationRate));
             UpdateSmoothRotate(n_direction);
             UpdateRemote();
         }
         else
         {
-      
             oldPosition = this.transform.position;
             UpdateLocal();
             networkPosition = this.transform.position;

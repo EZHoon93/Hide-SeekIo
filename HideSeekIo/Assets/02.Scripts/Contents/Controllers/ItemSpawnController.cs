@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+using Data;
 
 using Photon.Pun;
 
@@ -9,53 +12,23 @@ using UnityEngine;
 public class ItemSpawnController : MonoBehaviour
 {
     [SerializeField] GameObject _prefab;
-    [SerializeField] SpawnPoint[] _spawnPoints;
     [SerializeField] int _initCount;    //게임 시작 시 한번에 생성할 수 
     [SerializeField] int _maxCount;
     [SerializeField] float _spawnDistance;
     [SerializeField] float _spawnTimeBet;   //간격
 
-    float _canRemainSpawnTime;   //마지막 생성타임
-    List<int> _canSpawnIndexList;    //생성가능한 위치
-    List<GetWorldItemController> _createWorldItemList;
-    HashSet<GetWorldItemController> _createspawnList = new HashSet<GetWorldItemController>();
-    public int controllerIndex { get; set; } //스폰매니저에서의 배열인덱스
-    public SpawnPoint[] spawnPoints => _spawnPoints;
+    float _canRemainSpawnTime;   //마지막 생성타임 or 누군가 얻은 마지막시간
+
+    public int controllerIndex { get; set; }
+    public delegate SpawnData delegateSpawnPoint();
+    public delegateSpawnPoint getSpawnEvent;
+    //public Func<SpawnData> func;    //getspawnEvent랑 같은방식
+    [SerializeField] List<GetWorldItemController> _createWorldItemList = new List<GetWorldItemController>(20);
 
 
-    private void Awake()
-    {
-        _spawnPoints = GetComponentsInChildren<SpawnPoint>();
-        _canSpawnIndexList = new List<int>(_spawnPoints.Length);
-        _createWorldItemList = new List<GetWorldItemController>(_spawnPoints.Length);
-    }
-    private void Start()
-    {
-        for (int i = 0; i < _spawnPoints.Length; i++)
-        {
-            _spawnPoints[i].spawnIndex = i;
-            _canSpawnIndexList.Add(i);
-        }
-        _maxCount = _spawnPoints.Length < _maxCount ? _spawnPoints.Length : _maxCount;
-    }
 
     public void Clear()
     {
-        if (_canSpawnIndexList.Count > 0)
-            _canSpawnIndexList.Clear();
-        for (int i = 0; i < _spawnPoints.Length; i++)
-        {
-            _spawnPoints[i].spawnIndex = i;
-            _canSpawnIndexList.Add(i);
-        }
-        foreach (var wc in _createWorldItemList)
-        {
-            if (wc.photonView.IsMine)
-            {
-                wc.isReset = true;
-                PhotonNetwork.Destroy(wc.gameObject);
-            }
-        }
         _createWorldItemList.Clear();
     }
 
@@ -68,33 +41,28 @@ public class ItemSpawnController : MonoBehaviour
     private void CreateSpawn()
     {
         _canRemainSpawnTime = _spawnTimeBet;
-        int ran = Random.Range(0, _canSpawnIndexList.Count);
-        int spawnIndex = _spawnPoints[ran].spawnIndex;
-        var pos = _spawnPoints[spawnIndex].transform.position;
-
-        PhotonNetwork.InstantiateRoomObject(_prefab.name ,pos ,Quaternion.identity, 0, new object[] { controllerIndex, spawnIndex }  ); 
+        var spawnData = getSpawnEvent();    //랜덤위치,및 랜덤위치의 인덱스정보 가져옴.
+        PhotonNetwork.InstantiateRoomObject(_prefab.name ,spawnData.spawnPos  ,Quaternion.identity, 0, new object[] { spawnData.spawnIndex, controllerIndex }  ); 
     }
 
-    public void CreateCallBack(GetWorldItemController  getWorldItemController)
+   
+
+
+    public void CreateCallBack(GetWorldItemController getWorldItemController)
     {
-        _canSpawnIndexList.RemoveAt(getWorldItemController.spawnIndex);
-        _createWorldItemList.Add(getWorldItemController);
-        //if (_createspawnList.Contains(getWorldItemController) == false)
-        //{
-        //    _createspawnList.Add(getWorldItemController);
-        //}
+        if (_createWorldItemList.Contains(getWorldItemController) == false)
+        {
+            _createWorldItemList.Add(getWorldItemController);
+        }
     }
 
-    public void RemoveCallBack(GetWorldItemController  getWorldItemController)
+    public void RemoveCallBack(GetWorldItemController getWorldItemController)
     {
-        _canSpawnIndexList.Add(getWorldItemController.spawnIndex);
         if (_createWorldItemList.Contains(getWorldItemController))
         {
             _createWorldItemList.Remove(getWorldItemController);
+            _canRemainSpawnTime = _spawnTimeBet;
         }
-        //_createspawnList.Remove(getWorldItemController);
-
-
     }
 
 

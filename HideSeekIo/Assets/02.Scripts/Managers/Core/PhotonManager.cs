@@ -60,6 +60,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     //포톤 서버 연결
     public void Connect()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = _gameVersion;
         State = Define.ServerState.Connecting;  //연결중
         PhotonNetwork.ConnectUsingSettings();
@@ -68,7 +69,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        print("JoinRoom");
         if (PhotonNetwork.IsConnected)
         {
             if (string.IsNullOrEmpty(_roomName))
@@ -79,7 +79,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             {
                 // 최대 4명을 수용 가능한 빈방을 생성
                 int ran =  Random.Range(0, 999);
-
                 PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions()
                 {
                     IsVisible = _isScret,
@@ -99,12 +98,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("OnConnectedToMaster");
-
         //마스터 서버에 접속중이라면
         if (PhotonNetwork.IsConnected)
         {
             // 룸 접속 실행
             State = Define.ServerState.Connect;
+            
         }
         else
         {
@@ -126,28 +125,36 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // (빈 방이 없어)랜덤 룸 참가에 실패한 경우 자동 실행
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        print("룸참가실패");
+        print("OnJoinRandomFailed");
+
+        //print("룸참가실패");
         // 최대 4명을 수용 가능한 빈방을 생성
         int ran = Random.Range(0, 999);
         PhotonNetwork.CreateRoom(ran.ToString(), new RoomOptions { MaxPlayers = 4 });
     }
-
+  
     // 룸에 참가 완료된 경우 자동 실행
     public override void OnJoinedRoom()
     {
-        print("OnJoinedRoom");
+        print("OnJoinedRoom");
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Managers.Scene.MasterSelectNextMainScene(Define.Scene.Unknown);
+            print("OnJoined Room Master");
+            PhotonNetwork.LoadLevel("Main1");
+            //Managers.Scene.MasterSelectNextMainScene(Define.Scene.Unknown);
         }
         else
         {
-            var sceneIndex = (int)PhotonNetwork.CurrentRoom.CustomProperties["map"];
-            Managers.Scene.LoadSceneByIndex(sceneIndex);
+            print("OnJoined Room Message 변경 펄스");
+            //var sceneIndex = (int)PhotonNetwork.CurrentRoom.CustomProperties["map"];
+            //Managers.Scene.LoadSceneByIndex(sceneIndex);
         }
     }
-
+    public override void OnConnected()
+    {
+        print("OnConnected!!");
+    }
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         if (propertiesThatChanged.ContainsKey("map"))
@@ -160,7 +167,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        print("마스터 바뀜!!");
+        //print("마스터 바뀜!!");
     }
 
 
@@ -176,7 +183,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     //룸나갈떄 호출
     public override void OnLeftRoom()
     {
-        print("OnLeftRoo");
+        //print("OnLeftRoo");
         Managers.Scene.LoadScene(Define.Scene.Lobby);
         
     }

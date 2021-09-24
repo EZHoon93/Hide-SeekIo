@@ -11,7 +11,6 @@ public class UI_EventHandler : MonoBehaviour, IPointerClickHandler, IDragHandler
 
 	public void OnPointerClick(PointerEventData eventData)
 	{
-		print("클릭!!");
 		if (OnClickHandler != null)
 			OnClickHandler.Invoke(eventData);
 	}

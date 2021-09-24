@@ -8,12 +8,12 @@ public class PlayerGrassDetect : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var grass = other.GetComponent<IGrassDetected>();
-        grass.ChangeTransParent(true);
+        grass.SetActiveByGrassDetected(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
         var grass = other.GetComponent<IGrassDetected>();
-        grass.ChangeTransParent(false);
+        grass.SetActiveByGrassDetected(false);
     }
 }

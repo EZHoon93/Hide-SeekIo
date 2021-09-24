@@ -7,7 +7,9 @@ using UnityEngine.EventSystems;
 
 public class UI_Select_Base : UI_Base
 {
-    [SerializeField] Define.StatType statType;
+    [SerializeField] Define.StatType _statType;
+
+    public Define.StatType statType => _statType;
 
     public event Action clickEvenetCallBack;
     Button _button;
@@ -30,6 +32,8 @@ public class UI_Select_Base : UI_Base
     void Click()
     {
         clickEvenetCallBack?.Invoke();  //UI 꺼줌,
-        Managers.Game.myPlayer.playerStat.UPStatPointToServer(statType);
+        var playerController = Managers.Game.myPlayer;
+        if (!playerController) return;
+        Managers.StatSelectManager.PostEvent_StatDataToServer(playerController, statType);
     }
 }

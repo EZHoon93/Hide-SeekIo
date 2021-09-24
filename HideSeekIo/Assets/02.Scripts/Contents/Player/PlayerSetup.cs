@@ -100,8 +100,8 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
     void SetActiveADNCamera(bool active)
     {
         var mainUI = Managers.UI.SceneUI as UI_Main;
-        mainUI.FindButton.gameObject.SetActive(active);
-        mainUI.ADButton.gameObject.SetActive(active);
+        //mainUI.FindButton.gameObject.SetActive(active);
+        //mainUI.ADButton.gameObject.SetActive(active);
     }
 
 
@@ -124,10 +124,10 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         {
             CameraManager.Instance.FindNextPlayer();
         }
-        if(PhotonGameManager.Instacne.State == Define.GameState.Gameing)
-        {
-            PhotonGameManager.Instacne.GetComponent<GameState_Gameing>().UpdatePlayerCount();
-        }
+        //if(PhotonGameManager.Instacne.State == Define.GameState.Gameing)
+        //{
+        //    PhotonGameManager.Instacne.GetComponent<GameState_Gameing>().UpdatePlayerCount();
+        //}
 
         if (this.IsMyCharacter())
         {

@@ -14,7 +14,13 @@ public class Define
         EnergyMax,
         EnergyRegen,
         CoolTime,
-        Sight
+        Sight ,
+
+        //Dash = 100, //스킬
+        Stealth = 100,
+        Invinc,
+        SightUp,
+        SpeedUp,
     }
     public enum SkinType
     {
@@ -57,19 +63,10 @@ public class Define
         Wait,
         Load
     }
-
     public enum Team
     {
         Seek,
         Hide,
-    }
-
-    public enum PhotonObject
-    {
-
-    }
-    public enum LocalWorldObject
-    {
     }
     public enum Weapon
     {
@@ -86,17 +83,7 @@ public class Define
         Gun
     }
 
-    public enum ThrowItem
-    {
-        Stone = 100,
-        TNT,
-        Grenade,
-        Flash,
-        Dynamite,
-        Glue,
-        PoisonBomb,
-        Null
-    }
+
 
     public enum UseType
     {
@@ -104,28 +91,10 @@ public class Define
         Weapon
     }
 
-    public enum WorldItem
-    {
-        ItemCoin ,       //중립 아이템
-        Trap = 101,
-        Box,
-    }
 
-    public enum RoomItem
-    {
-        HiderRandomBox,
-        SeekerRandomBox,
-        TNT,
-    }
-
-    public enum TimerItem
-    {
-        TNT
-    }
-
-	
     public enum Layer
     {
+        TransparentFX = 1,
         UI = 5,
         Seeker = 8,
         Hider,
@@ -137,8 +106,13 @@ public class Define
         Ground,
         Spike,
         AIHiderItem = 18,
-        AISeekerItem = 19
-            
+        AISeekerItem ,
+        Grass ,
+        GrassDetcted ,
+        TransparentHider,
+        TransparentSeeker,
+        HiderTransCollider,
+        SeekerTransCollider,
     }
 
     public enum Scene
@@ -166,6 +140,14 @@ public class Define
         GameReady,
         Gameing,
         End
+    }
+    public enum MissionType
+    {
+        Key,
+        Circle,
+        SeekerAttack,
+        MosterAttack,
+        NoDie,
     }
     public enum Sound
     {
@@ -202,21 +184,17 @@ public class Define
     public enum InGameItem
     {
         Null,
-        TNT = 10,
+        Trap,
+        Speed,
+        Energy,
+        OverSee,
+        TNT = 100,
         Grenade,
         Glue,
-        Trap,
-        Vaccine,
-        Speed,
-        Shoes,
-        //Shield,
-        Stealth ,
-        Dynamite = 100,
         Flash,
         PoisonBomb,
-        Speed2,
-        SightUp,
-        Immune,
+        Stone,
+
     }
     public enum InGameItemUIState
     {
@@ -258,8 +236,10 @@ public class Define
         B_Revive,
         B_Stealth,
         B_SightUp,
-        B_Immune
-            
+        B_Immune,
+        B_SightCurse,
+        B_OverSee
+                    
     }
 
     public enum EffectEventType
@@ -271,7 +251,8 @@ public class Define
     public enum PhotonOnEventCode
     {
          AbilityCode = 111, 
-         Projectile
+         Projectile,
+         Warning
     }
 
     public enum ChattingColor
@@ -282,10 +263,10 @@ public class Define
 
     public enum Skill
     {
-        Invinc  ,   //무적
+        Dash = 100    ,   //대쉬
         Staeth,     //은신
+        Invinc,   //무적
         Track,      //추적
-        Dash,       //대쉬
         Jump,       //점프
         Banana,      //바나나
         Flash,      //섬광탄

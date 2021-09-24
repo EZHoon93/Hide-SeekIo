@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using FoW;
 
-public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, ICanEnterTriggerPlayer, IExitTrigger ,
+public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, ICanEnterTriggerPlayer, ICanExitTriggerPlayer ,
      IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
 {
     //public LivingEntity gettingLivingEntity { get; set; } //얻고있는 생명체
@@ -28,7 +28,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     public int controllerIndex { get; private set; }
     public int spawnIndex { get; private set; }
     public bool isReset { get; set; }
-    ItemBox_Base  _itemBox_Base;
+    [SerializeField] ItemBox_Base  _itemBox_Base;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -60,12 +60,14 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
-        controllerIndex =(int)info.photonView.InstantiationData[0];
-        spawnIndex = (int)info.photonView.InstantiationData[1];
+        spawnIndex = (int)info.photonView.InstantiationData[0];
+        controllerIndex = (int)info.photonView.InstantiationData[1];
+
         _itemBox_Base.OnPhotonInstantiate(info);
+
+
         isReset = false;
         Managers.Game.CurrentGameScene.itemSpawnManager.CreateCallBack(this);
-
         this.transform.localScale = Vector3.one;
         n_eneterTime = 0;
         gettingLivingEntity = null;
@@ -107,12 +109,12 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
         if (_isGet == false) return;
         //시간이 지났는데도 파괴가되지않았다면.. 
-        if((float)PhotonNetwork.Time - n_getTime >= 5)
+        if((float)PhotonNetwork.Time - n_getTime >= 7)
         {
             if (photonView.IsMine)
             {
                 n_getTime = (float)PhotonNetwork.Time;
-                PhotonNetwork.Destroy(this.gameObject);
+                Managers.Resource.PunDestroy(this);
             }
         }
 
@@ -143,7 +145,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
     void AfaterDestroy()
     {
-        PhotonNetwork.Destroy(this.gameObject);
+        Managers.Resource.PunDestroy(this);
     }
 
 
@@ -185,7 +187,6 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
             _getSlider.gameObject.SetActive(true);
         }
         //권한 넘김
-        print("Check_IsGetOnServer" + getViewID);
         this.photonView.TransferOwnership(photonMessageInfo.Sender.ActorNumber);
         //this.photonView.trasn
     }
@@ -193,10 +194,16 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     //로컬 오브젝트만 실행
     public void Exit(GameObject exitGameObject)
     {
+    }
+
+
+    public void Exit(PlayerController exitPlayer, Collider collider)
+    {
+
         if (photonView.IsMine == false) return;
-        var exitLivingEntity = exitGameObject.GetComponent<LivingEntity>();
+        var exitLivingEntity = exitPlayer.playerHealth;
         if (exitLivingEntity == null) return;
-        if(gettingLivingEntity == exitLivingEntity  && n_eneterTime > 0)
+        if (gettingLivingEntity == exitLivingEntity && n_eneterTime > 0)
         {
             gettingLivingEntity = null;
             this.photonView.TransferOwnership(0);   //중립오브젝트로 전환
@@ -205,9 +212,6 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
         }
     }
-  
-
-  
 
     public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
     {
@@ -235,5 +239,5 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     {
     }
 
- 
+   
 }

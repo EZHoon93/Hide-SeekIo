@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 
+using Photon.Pun;
+
 using TMPro;
 
 using UnityEngine;
@@ -16,7 +18,7 @@ public class LoadingScene : BaseScene
         _originText = _findText.text;
     }
 
-    
+
     public override void Clear()
     {
     }
@@ -24,7 +26,7 @@ public class LoadingScene : BaseScene
     private IEnumerator Start()
     {
         StartCoroutine(UpdateFindText());
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(2.0f) ;
         PhotonManager.Instance.JoinRoom();
     }
 

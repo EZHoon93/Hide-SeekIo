@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IGrassDetected
 {
-    void ChangeTransParent(bool active);
+    void SetActiveByGrassDetected(bool active);
 }

@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public class InputControllerObject : MonoBehaviourPun
 {
     [SerializeField] Sprite _sprite;
-
     public PlayerController playerController { get; private set; }
+    public ConsumItem consumItem { get; private set; }
     public InputType inputType { get; set; }
     public Define.AttackType attackType { get; set; }
     public PlayerShooter.state shooterState{ get; set; }
@@ -20,26 +20,30 @@ public class InputControllerObject : MonoBehaviourPun
     public event Action useSucessEndCallBack;
     public Sprite sprite => _sprite;
     public Vector2 lastInputSucessVector2 { get; set; }
-
     public Vector3 attackDirection { get; set; }
 
+    IEnumerator coolTimeEnumerator;
 
-    public void SetupPlayerController(PlayerController _playerController)
+    private void Awake()
     {
-        playerController = _playerController;
+        consumItem = GetComponent<ConsumItem>();
+
     }
 
-    //public void AddEvent(ControllerInputType controllerInputType , Action<Vector2> newAction)
-    //{
-    //    Action<Vector2> callBackAction = null;
-    //    var isCache = controllerInputTypeDic.TryGetValue(controllerInputType, out callBackAction);
-    //    if(isCache == false)
-    //    {
-    //        controllerInputTypeDic.Add(controllerInputType, callBackAction);
-    //    }
-    //    callBackAction += newAction;
-    //}
+    public void OnPhotonInstantiate(PlayerController newPlayerController)
+    {
+        playerController = newPlayerController;
+        RemainCoolTime = 0;
+        Managers.InputItemManager.SetupControllerObject(playerController, this);
+    }
 
+    public void OnDestroyEvent()
+    {
+        if (playerController == null) return;
+        playerController.playerInput.RemoveInputEvent(inputType);
+        playerController = null;
+    }
+ 
     public void AddUseEvent(Action<Vector2> action)
     {
         useEventCallBack = action;
@@ -50,14 +54,6 @@ public class InputControllerObject : MonoBehaviourPun
         zoomEventCallBack = action;
     }
 
-    //public void RemoveEvent(ControllerInputType controllerInputType , Action<Vector2> removeAction)
-    //{
-    //    if(controllerInputTypeDic.ContainsKey(controllerInputType))
-    //    {
-    //        controllerInputTypeDic[controllerInputType] -= removeAction;
-    //    }
-    //}
-
     IEnumerator UpdateRemainCoolTime()
     {
         while(RemainCoolTime > 0)
@@ -67,33 +63,45 @@ public class InputControllerObject : MonoBehaviourPun
         }
     }
 
-    /// <summary>
-    /// 아이템,스킬,무기등 사용시 
-    /// </summary>
-    /// <param name="inputVector2"></param>
-
     public bool Use(Vector2 inputVector2)
     {
         if (RemainCoolTime > 0) return false;
         RemainCoolTime = InitCoolTime;
         lastInputSucessVector2 = inputVector2;
-
-        if (playerController.IsMyCharacter())
+        //소비용아이템이면.
+        if (consumItem)
         {
-            InputManager.Instance.GetControllerJoystick(inputType).StartCoolTime(RemainCoolTime);
+            consumItem.Use(playerController, inputType);
+            playerController = null;
+        }
+        else
+        {
+            if (playerController.IsMyCharacter())
+            {
+                InputManager.Instance.GetControllerJoystick(inputType).StartCoolTime(RemainCoolTime);
+            }
         }
         useEventCallBack?.Invoke(inputVector2);
         return true;
         
     }
 
+    /// <summary>
+    /// 사용 성공, 프로세스 시작
+    /// </summary>
     public void Call_UseSucessStart()
     {
         useSucessStartCallBack?.Invoke();
+
     }
     public void Call_UseSucessEnd()
     {
         useSucessEndCallBack?.Invoke();
+        if (consumItem)
+        {
+            Managers.Resource.PunDestroy(this);
+        }
+        
     }
 
     public void Zoom(Vector2 inputVector2)

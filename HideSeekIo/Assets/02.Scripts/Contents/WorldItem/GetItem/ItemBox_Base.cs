@@ -4,11 +4,11 @@ using Photon.Pun;
 public abstract class ItemBox_Base : MonoBehaviourPun, IGetWorldItem
 {
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
 
     }
-    public void OnPreNetDestroy(PhotonView rootView)
+    public virtual void OnPreNetDestroy(PhotonView rootView)
     {
      
     }

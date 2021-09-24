@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UI_ItemButton : MonoBehaviour
 {
     //Button _button;
-    [SerializeField] InGameItemController _inGameItem;
+    //[SerializeField] InGameItemController _inGameItem;
     [SerializeField] Image _joystick;
     [SerializeField] Image _itemImage;
     //[SerializeField] Image _weaponUseImage; //수류탄같은 일회성 사용 아이템
@@ -23,14 +23,14 @@ public class UI_ItemButton : MonoBehaviour
 
   
 
-    public void AddItem(InGameItemController newItem)
-    {
-        //_joystick.enabled = newItem._item_Base.useType == Item_Base.UseType.Item ? false : true;
-        //_inGameItem = newItem;
-        //_itemImage.sprite = newItem._item_Base.ItemSprite;
-        //_itemImage.enabled = true;
-        //_ultimateJoystick.OnDragCallback
-    }
+    //public void AddItem(InGameItemController newItem)
+    //{
+    //    //_joystick.enabled = newItem._item_Base.useType == Item_Base.UseType.Item ? false : true;
+    //    //_inGameItem = newItem;
+    //    //_itemImage.sprite = newItem._item_Base.ItemSprite;
+    //    //_itemImage.enabled = true;
+    //    //_ultimateJoystick.OnDragCallback
+    //}
 
     //즉시아이템 사용
     void Click()

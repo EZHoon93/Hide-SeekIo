@@ -22,7 +22,7 @@ public class UI_Zoom : MonoBehaviour
     {
         _weaponType = weaponType;
         _taget = target;
-        this.transform.ResetTransform(_taget.transform);
+        //this.transform.ResetTransform(_taget.transform);
         _meleeZoom.gameObject.SetActive(false);
         _throwZoom.gameObject.SetActive(false);
         _gunZoom.gameObject.SetActive(false);

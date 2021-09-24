@@ -27,7 +27,6 @@ public class UI_GameExit : UI_Popup
     {
         Managers.UI.ClosePopupUI();
         PhotonGameManager.Instacne.GameExit();
-        Managers.UI.SceneUI.GetComponent<UI_Main>().ChangePanel(Define.GameScene.Lobby);
     }
 
     void Cancel(PointerEventData pointerEventData)

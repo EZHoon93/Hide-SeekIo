@@ -7,6 +7,16 @@ public class PlayerHealth : LivingEntity
 {
     public event Action onReviveEvent;
 
+    public override bool Dead { get => base.Dead;
+        protected set
+        {
+            base.Dead = value;
+            if (value)
+            {
+                _playerCharacter.animator.SetTrigger("Die");
+            }
+        }
+    }
     PlayerCharacter _playerCharacter;
 
     private void Awake()

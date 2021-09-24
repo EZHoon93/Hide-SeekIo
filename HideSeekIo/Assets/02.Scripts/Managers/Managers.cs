@@ -15,9 +15,13 @@ public class Managers : MonoBehaviour
     #region Contents
     GameManager _game = new GameManager();
     SpawnManager _spawnManager = new SpawnManager();
+    StatSelectManager _statSelectManager = new StatSelectManager();
+    InputItemManager _inputItemManager = new InputItemManager();
+
     public static GameManager Game { get { return Instance._game; } }
     public static SpawnManager Spawn { get { return Instance._spawnManager; } }
-
+    public static StatSelectManager StatSelectManager => Instance._statSelectManager;
+    public static InputItemManager InputItemManager => Instance._inputItemManager;
 
     #endregion
 
@@ -45,14 +49,9 @@ public class Managers : MonoBehaviour
 #if UNITY_ANDROID
         Application.targetFrameRate = 30;
 #endif
-
+        Screen.SetResolution(1920, 1080, true);
         Init();
 	}
-
-    void Update()
-    {
-        //_input.OnUpdate();
-    }
 
     static void Init()
     {

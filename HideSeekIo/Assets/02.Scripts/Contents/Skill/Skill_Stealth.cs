@@ -10,12 +10,13 @@ public class Skill_Stealth : Skill_Base
 
     protected override void SetupData()
     {
-        inputControllerObject.InitCoolTime = 5;
+        inputControllerObject.InitCoolTime = 15;
     }
 
     public override void Use(Vector2 inputVector2)
     {
         print(playerController.playerHealth + "!!");
-        BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stealth, playerController.playerHealth);
+        BuffManager.Instance.CheckBuffController(playerController.playerHealth, Define.BuffType.B_Stealth);
+
     }
 }

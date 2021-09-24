@@ -10,9 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 982069549174000869}
   - component: {fileID: 1239830544429895430}
-  - component: {fileID: 252441234692914102}
+  - component: {fileID: 82008994958519371}
+  - component: {fileID: 4262686601448847539}
+  - component: {fileID: 32836047919942399}
+  - component: {fileID: 3898675877480827441}
   m_Layer: 0
-  m_Name: Melee2
+  m_Name: Hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,12 +55,49 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 0}
-  - {fileID: 252441234692914102}
+  - {fileID: 3898675877480827441}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &252441234692914102
+--- !u!114 &82008994958519371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951267332459730509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ab6d39b11384357a240e8403cc9eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 21300000, guid: 69e3398efe496f844885067e1e5b2f69, type: 3}
+--- !u!114 &4262686601448847539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951267332459730509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d186cf27c06264df7ab14f7dce3ed0f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &32836047919942399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951267332459730509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3313ef91c8e84894d8b8cbcdf6a25e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers: []
+--- !u!114 &3898675877480827441
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,7 +110,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 5576906626062825140}
-  lineRenderer: {fileID: 0}
 --- !u!1 &8250184970367258720
 GameObject:
   m_ObjectHideFlags: 0

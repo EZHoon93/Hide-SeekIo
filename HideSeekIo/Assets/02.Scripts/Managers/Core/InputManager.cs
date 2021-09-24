@@ -53,6 +53,8 @@ public class InputManager : GenricSingleton<InputManager>
     {
         PlayerInfo.LoadOptionData();
         GetComponent<UI_InputSetting>().Init();
+        foreach (var c in _controllerJoysticks)
+            c.gameObject.SetActive(false);
     }
 
     private void Update()

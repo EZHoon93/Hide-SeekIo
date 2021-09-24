@@ -23,15 +23,12 @@ public abstract class Character_Base : MonoBehaviour
 
     public void OnPhotonInstantiate(PlayerController _playerController)
     {
-        if (_playerController)
-        {
-            inputControllerObject.SetupPlayerController(_playerController);
-        }
+        inputControllerObject.OnPhotonInstantiate(_playerController);
     }
 
     public void ChangeOnwerShip(PlayerController _playerController)
     {
-        _playerController.playerShooter.SetupControllerObject(inputControllerObject);
+        //_playerController.playerShooter.SetupControllerObject(inputControllerObject);
     }
 
 }

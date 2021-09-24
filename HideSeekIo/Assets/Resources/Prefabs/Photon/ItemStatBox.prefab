@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 4235751427057330019}
   - component: {fileID: 6575432186957280525}
   - component: {fileID: 5118889817111871804}
-  m_Layer: 12
+  m_Layer: 16
   m_Name: ItemStatBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,8 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4a80c18f494d0548a1b28011162e46c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _modelObject: {fileID: 0}
-  _aiColliderObject: {fileID: 0}
 --- !u!1 &8443230469711941723
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,7 +174,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6013347297817060218}
-  m_Layer: 12
+  m_Layer: 16
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,9 +350,41 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6013347297817060218}
     m_Modifications:
+    - target: {fileID: 1270825075354956, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1302539741174450, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1377389569135006, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1492593770102336, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1587684609842054, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1761669040747316, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 1878475233117844, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
       propertyPath: m_Name
       value: block_1_arrow
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878475233117844, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1924266577374650, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
+      propertyPath: m_Layer
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 4481688014149258, guid: da3acea4398e5aa45b1f549b9d996740, type: 3}
       propertyPath: m_RootOrder

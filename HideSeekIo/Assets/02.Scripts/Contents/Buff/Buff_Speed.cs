@@ -6,16 +6,16 @@ public class Buff_Speed : BuffBase
 {
     //MoveBase _applayMoveBase;   //적용하고있는 객체
 
-    float addRatioAmount = 0.2f;
+    float addRatioAmount = 0.13f;
+    PlayerMove _playerMove;
     public override void ProcessStart()
     {
-        //_applayMoveBase = _buffController.livingEntity.GetComponent<MoveBase>();
-        //_applayMoveBase.AddMoveBuffList(addRatioAmount, true);
+        _playerMove = _buffController.livingEntity.GetComponent<PlayerMove>();
+        _playerMove.AddMoveBuffList(addRatioAmount, true);
     }
     public override void ProcessEnd()
     {
-        //_applayMoveBase.AddMoveBuffList(addRatioAmount, false);
-
+        _playerMove.AddMoveBuffList(addRatioAmount, false);
     }
 
 }

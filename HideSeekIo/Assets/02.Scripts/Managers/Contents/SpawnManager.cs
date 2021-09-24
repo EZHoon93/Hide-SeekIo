@@ -5,16 +5,25 @@ using Data;
 
 public class SpawnManager 
 {
-    public void WorldItemSpawn(Define.WorldItem photonObject ,Vector3 pos , int itemUseViewID =0  )
-    {
-        switch (photonObject)
-        {
-            case Define.WorldItem.Box:
-            case Define.WorldItem.Trap:
-                break;
+    //public void WorldItemSpawn(Define.WorldItem photonObject ,Vector3 pos , int itemUseViewID =0  )
+    //{
+    //    switch (photonObject)
+    //    {
+    //        case Define.WorldItem.Box:
+    //        case Define.WorldItem.Trap:
+    //            break;
 
-        }
-        PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
+    //    }
+    //    PhotonNetwork.Instantiate(photonObject.ToString(), pos, Quaternion.identity, 0, new object[] { itemUseViewID }); //사용한 플레이어 ViewID
+    //} 
+
+    public GameObject InGameItemSpawn(Define.InGameItem inGameItem, PlayerController playerController)
+    {
+        object[] datas = new object[] { playerController.ViewID()};
+        //즉시사용
+        var go= PhotonNetwork.Instantiate($"InGameItem/{inGameItem.ToString()}", new Vector3(0, -10, 0), Quaternion.identity ,0, datas);
+
+        return go;
     }
 
     public GameObject CharacterSpawn(Define.CharacterType characterType)
@@ -22,12 +31,12 @@ public class SpawnManager
         //string prefabID = $"Character/{characterType.ToString()}";
         string prefabID = $"Character/{Define.CharacterType.Cat}";
         //List<object> datas = new List<object>() {PlayerInfo.CurrentSkin.avaterSeverKey };
-        return Managers.Resource.Instantiate(prefabID);
-
+        return Managers.Resource.Instantiate(prefabID); 
+            
     }
     public CharacterAvater CharacterAvaterSpawn(Define.CharacterType characterType, string key)
     {
-        string prefabID = $"Character/{characterType.ToString()}/{key}";
+        string prefabID = $"Character/{characterType.ToString()}/{key}";        
         var characterAvaterGo = Managers.Resource.Instantiate(prefabID).GetComponent<CharacterAvater>();
         return characterAvaterGo ?? null;
     }
@@ -38,32 +47,15 @@ public class SpawnManager
     }
 
 
-    public void PlayerSpawn(SendAllSkinInfo sendAllSkinInfo, Vector3 pos)
+    public void PlayerSpawn(SendAllSkinInfo sendAllSkinInfo, Vector3 pos )
     {
-        List<object> datas = new List<object>() { PhotonNetwork.LocalPlayer.NickName,sendAllSkinInfo.autoNumber, sendAllSkinInfo.chacterType,sendAllSkinInfo.avaterSkinID  };
+        List<object> datas = new List<object>() { sendAllSkinInfo.nickName,sendAllSkinInfo.autoNumber, sendAllSkinInfo.chacterType,sendAllSkinInfo.avaterSkinID  };
         PhotonNetwork.InstantiateRoomObject("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
     }
 
-    public GameObject ItemSpawn(System.Enum inGameItem, PlayerController playerController)
-    {
-        List<object> datas = new List<object>() { playerController.photonView.ViewID, false };
-        string prefabID = $"{inGameItem.GetType().Name}/{inGameItem.ToString()}";
-        //string prefabID = $"ThrowItem/{inGameItem.ToString()}";
-
-        if (playerController.gameObject.IsValidAI())
-        {
-            return PhotonNetwork.InstantiateRoomObject(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
-        }
-        else
-        {
-            Debug.LogError("생성 " + prefabID);
-
-            return PhotonNetwork.Instantiate(prefabID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
-        }
-    }
     public GameObject WeaponSpawn(Define.Weapon weapon , PlayerShooter playerShooter)
     {
-        List<object> datas = new List<object>() { playerShooter.photonView.ViewID };
+        List<object> datas = new List<object>() { playerShooter.photonView.ViewID }; 
         string weaponID = null;
         switch (weapon)
         {
@@ -91,5 +83,13 @@ public class SpawnManager
 
     }
 
-   
+
+    public GameObject GameStateSpawn(Define.GameState gameState ,object addData =null)
+    {
+        //List<object> datas = new List<object>() { gameState , addData };
+        object[] datas = new object[] { gameState, addData };
+        var go = PhotonNetwork.InstantiateRoomObject($"GameState", Vector3.down, Quaternion.identity,0,datas);
+
+        return go;
+    }
 }

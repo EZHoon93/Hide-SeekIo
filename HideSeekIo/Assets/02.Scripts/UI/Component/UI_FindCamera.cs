@@ -18,7 +18,7 @@ public class UI_FindCamera : MonoBehaviour
         PhotonGameManager.Instacne.AddListenr(Define.GameState.CountDown, () => SetActive(false));
         PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, Check);
 
-        switch (PhotonGameManager.Instacne.State)
+        switch (Managers.Game.gameStateController.gameStateType)
         {
             case Define.GameState.Wait:
             case Define.GameState.CountDown:

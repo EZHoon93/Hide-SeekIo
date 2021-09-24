@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1693647078966534768}
   - component: {fileID: 1721601660728610002}
   - component: {fileID: 1712442848721646370}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: lootblock_block_1_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 1701832591977926224}
   - component: {fileID: 1723188420758492010}
   - component: {fileID: 1712024137537647812}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: lootblock_random_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 1702085853363063790}
   - component: {fileID: 1723163407634521186}
   - component: {fileID: 1712708453983856776}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: lootblock_random_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1693611830928683088}
   - component: {fileID: 1533920377095330760}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: block_1_random
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -309,7 +309,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1693526701956409676}
   - component: {fileID: 1534471401663424814}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: block_random
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 1701838186141391170}
   - component: {fileID: 1723073356573678092}
   - component: {fileID: 1712319803012896784}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: lootblock_block_1_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 1693780615221703774}
   - component: {fileID: 1723133144235890246}
   - component: {fileID: 1711399582036791716}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: lootblock_block_1_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -529,7 +529,7 @@ GameObject:
   - component: {fileID: 1702043773611509006}
   - component: {fileID: 1723151178027972782}
   - component: {fileID: 1713007567184327530}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: lootblock_random_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +607,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8564121890774023067}
   - component: {fileID: 348837462035359518}
-  m_Layer: 18
+  m_Layer: 19
   m_Name: AI Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -655,8 +655,8 @@ GameObject:
   - component: {fileID: 4235751427057330019}
   - component: {fileID: 6575432186957280525}
   - component: {fileID: 1386351324796949718}
-  m_Layer: 12
-  m_Name: ItemRandomBox 1
+  m_Layer: 11
+  m_Name: SeekerItemBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -773,7 +773,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6013347297817060218}
-  m_Layer: 12
+  m_Layer: 11
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -802,6 +802,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7545113474729162088}
     m_Modifications:
+    - target: {fileID: 198520440657889328, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1911430895044588149, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
         type: 3}
       propertyPath: m_Type
@@ -817,6 +822,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TimerUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2083855693527614562, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2157936800805411128, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
         type: 3}
@@ -954,8 +964,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 51.421
       objectReference: {fileID: 0}
+    - target: {fileID: 4439381125685930548, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7167395084332176509, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8790116904825696184, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf48adabf8cdebb45b923dd08d1ebc2a, type: 3}
+--- !u!224 &4112643062699472202 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2911284085044935885, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1258191359348885895}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &135451568730439631 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1194797624302417480, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
@@ -968,9 +999,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &4112643062699472202 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2911284085044935885, guid: bf48adabf8cdebb45b923dd08d1ebc2a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1258191359348885895}
-  m_PrefabAsset: {fileID: 0}

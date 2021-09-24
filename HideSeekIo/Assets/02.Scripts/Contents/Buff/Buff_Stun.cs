@@ -12,7 +12,7 @@ public class Buff_Stun : BuffBase
         if (_playerInput)
         {
             print("Stun!!!! ");
-            _playerInput.Stop(5.0f);
+            _playerInput.Stop(2.0f);
         }
     }
     public override void ProcessEnd()

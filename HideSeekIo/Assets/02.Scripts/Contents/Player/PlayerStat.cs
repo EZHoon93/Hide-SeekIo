@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-using Photon.Realtime;
-using System.Linq;
 using System;
 
 public class PlayerStat : MonoBehaviourPun
@@ -17,13 +13,16 @@ public class PlayerStat : MonoBehaviourPun
 
     int _level;
     int _statPoint;
-    List<int> _statDataList = new List<int>();
+    Skill_Base skill_Base;
+    public List<int> statDataList { get; set; } = new List<int>();
     [SerializeField] float _currentEnergy;
     [SerializeField] float _moveSpeed;
     [SerializeField] float _maxEnergy;
-
+    [SerializeField] float _energyRegenAmount = 1;
     //delegate void StantChangeDelegate(StatChange , int);
     public event Action<StatChange, object> statChangeListenrers;
+
+
     #region 프로퍼티
 
     public int level { get => _level;
@@ -65,96 +64,85 @@ public class PlayerStat : MonoBehaviourPun
         get => _statPoint;
         set
         {
+            var prevPoint = _statPoint;
             _statPoint = value;
-            if (this.IsMyCharacter())
+            if (_statPoint > 0)
             {
-                //UI On
-                var mainUI = Managers.UI.SceneUI as UI_Main;
-                mainUI.StatController.SetActive(true);
-            }
-            //AI
-            if(photonView.IsMine && this.gameObject.IsValidAI())
-            {
-              
+                if (photonView.IsMine)
+                {
+
+                    if (_statPoint == 1 || prevPoint > _statPoint)
+                    {
+                    }
+                }
             }
         }
     }
 
+    public float EnergyRegemAmount {
+        get => _energyRegenAmount;
+        set
+        {
+            _energyRegenAmount = value;
+        }
+    }
 
     #endregion
 
-   
-    
+    private void Awake()
+    {
+    }
+
     private void OnEnable()
     {
         _statPoint = 0;
-        _statDataList.Clear();
+        statDataList.Clear();
     }
 
-    public void AddStatChangeEvent(Action<StatChange,object> notification)
+    private void OnDisable()
     {
-
+        
     }
 
-    public void Recive_ChangeTeam()
+    public void OnPhotonInstantiate()
     {
-        var gameMainScene  = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>();
-        if (gameMainScene)
+        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, GameStart_SeletRandomSkill);
+    }
+
+    public void ChangeTeam(Define.Team team)
+    {
+
+        if(team == Define.Team.Hide)
         {
-            //var enumList = gameMainScene.GetSelectList(_playerHealth.Team);
-            StatPoint++;
+            _energyRegenAmount = 1;
+        }
+        else
+        {
+            MaxEnergy *= 1.5f;
+            _energyRegenAmount = 2;
+
         }
     }
 
-    public void UPStatPointToServer(Define.StatType newStat)
+    void GameStart_SeletRandomSkill()
     {
-        if (this.IsMyCharacter() == false) return;  //로컬 유저만 실행.
-        var copyOriginalData = _statDataList.ToList();
-        Hashtable prevHashtable = new Hashtable()
+        //로컬유저만 실
+        if (this.photonView.IsMine == false) return;
+        var statSelectArray = Managers.StatSelectManager.RandomSelectOnlySkill();    //랜덤으로 선택된 3개의 스킬목록
+        //컨트롤 캐릭
+        if (this.IsMyCharacter())
         {
-            { "vID", this.ViewID() },
-            { "st" , copyOriginalData.ToArray() },
-        };
-        copyOriginalData.Add((int)newStat);
-        Hashtable nextHashtable = new Hashtable()
-        {
-            { "vID", this.ViewID() },
-            { "st" , copyOriginalData.ToArray() }
-        };
-        PhotonGameManager.Instacne.SendEvent(Define.PhotonOnEventCode.AbilityCode, EventCaching.RemoveFromRoomCache, prevHashtable);
-        PhotonGameManager.Instacne.SendEvent(Define.PhotonOnEventCode.AbilityCode, EventCaching.AddToRoomCacheGlobal, nextHashtable);
-    }
-
-    public void UpdateStatDatasByServer(int[] datas)
-    {
-        var copyReciveData = datas.ToList();
-        foreach(var originalData in _statDataList)
-        {
-            var isExistData = _statDataList.Find(s => s == originalData);
-            copyReciveData.Remove(isExistData);
+            var uimain = Managers.UI.SceneUI as UI_Main;
+            uimain.StatController.ShowSelectList(statSelectArray);
         }
-        foreach (var addData in copyReciveData)
+        //AI
+        else
         {
-            ApplyStat(addData);    //Update
-            _statDataList.Add(addData);
-        }
-    }
+            print("AI데이터보냄");
+            var ranSelect = UnityEngine.Random.Range(0,statSelectArray.Length);
+            var selectType =  statSelectArray[ranSelect];
+            Managers.StatSelectManager.PostEvent_StatDataToServer(GetComponent<PlayerController>(), selectType);
 
-    void ApplyStat(int statIndex)
-    {
-        var statType = (Define.StatType)statIndex;
-        switch (statType)
-        {
-            case Define.StatType.Speed:
-                break;
-            case Define.StatType.EnergyMax:
-                break;
-            case Define.StatType.EnergyRegen:
-                break;
-            case Define.StatType.CoolTime:
-                break;
-            case Define.StatType.Sight:
-                break;
         }
     }
 
