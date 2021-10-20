@@ -22,8 +22,10 @@ public enum InputType
     Sub3
 }
 
-public class MyInput
+public class ControllerInput
 {
+    public UI_ControllerJoystick uI_ControllerJoystick { get; set; }
+    public InputType _inputType;
     public Dictionary<ControllerInputType, Action<Vector2>> controllerDic { get; set; }
     = new Dictionary<ControllerInputType, Action<Vector2>>()
     {
@@ -33,6 +35,10 @@ public class MyInput
         {ControllerInputType.Tap,null },
     };
 
+    public ControllerInput(InputType inputType)
+    {
+        _inputType = inputType;
+    }
     public void Call(ControllerInputType controllerInputType, Vector2 vector2)
     {
         controllerDic[controllerInputType]?.Invoke(vector2);
@@ -43,7 +49,7 @@ public class MyInput
         }
     }
 
-    public void Reset()
+    public void Reset() 
     {
         inputVector2 = Vector2.zero; ;
         remainCoolTime = 0;
@@ -51,6 +57,14 @@ public class MyInput
         controllerDic[ControllerInputType.Drag] = null;
         controllerDic[ControllerInputType.Up] = null;
         controllerDic[ControllerInputType.Tap] = null;
+    }   
+
+    public void Use()
+    {
+
+    }
+    public void removeEvent()
+    {
 
     }
 
@@ -72,15 +86,16 @@ public class PlayerInput : MonoBehaviourPun
     public float stopTime { get; set; }
 
     public bool isAI { get; set; }
+    PlayerInput  _playerInput;
 
-    public Dictionary<InputType, MyInput> controllerInputDic { get; set; } =
-    new Dictionary<InputType, MyInput>()
+    public Dictionary<InputType, ControllerInput> controllerInputDic { get; set; } =
+    new Dictionary<InputType, ControllerInput>()
     {
-        {InputType.Move ,  new MyInput() },
-        {InputType.Main ,  new MyInput() },
-        {InputType.Sub1 ,   new MyInput() },
-        {InputType.Sub2 , new MyInput() },
-        {InputType.Sub3 , new MyInput() },
+        {InputType.Move ,  new ControllerInput(InputType.Move ) },
+        {InputType.Main ,  new ControllerInput(InputType.Main) },
+        {InputType.Sub1 ,   new ControllerInput(InputType.Sub1) },
+        {InputType.Sub2 , new ControllerInput(InputType.Sub2) },
+        {InputType.Sub3 , new ControllerInput(InputType.Sub3) },
     };
 
     private void Awake()
@@ -95,12 +110,25 @@ public class PlayerInput : MonoBehaviourPun
     }
 
     
+    /// <summary>
+    /// 최초 생성시 , 방장은 모든 플레이어를 AI로 생성 ,
+    /// </summary>
     public virtual void OnPhotonInstantiate()
     {
         stopTime = 0;
         RandomVector2 = Vector2.one;
-
-      
+        isAI = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            behaviorTree.ExternalBehavior = GameSetting.Instance.hiderTree;
+            behaviorTree.enabled = true;
+            navMeshAgent.enabled = true;
+        }
+        else
+        {
+            behaviorTree.enabled = false;
+            navMeshAgent.enabled = false;
+        }
     }
 
 
@@ -109,15 +137,24 @@ public class PlayerInput : MonoBehaviourPun
         navMeshAgent.enabled = false;
         behaviorTree.enabled = false;
     }
+
+    /// <summary>
+    /// 각 플레이어가 조종
+    /// </summary>
+
     public void ChangeOwnerShip()
     {
         if (this.IsMyCharacter())
         {
             foreach (var input in controllerInputDic)
             {
-                InputManager.Instance.GetControllerJoystick(input.Key).myInput = input.Value;
+                InputManager.Instance.GetControllerJoystick(input.Key).controllerInput = input.Value;
             }
             InputManager.Instance.SetActiveController(true);
+            behaviorTree.enabled = false;
+            navMeshAgent.enabled = false;
+            isAI = false;
+
         }
         if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
         {
@@ -126,8 +163,14 @@ public class PlayerInput : MonoBehaviourPun
             navMeshAgent.enabled = true;
 
         }
-        isAI = this.gameObject.IsValidAI();
+    }
 
+    public void ChangeAI()
+    {
+        behaviorTree.ExternalBehavior = GameSetting.Instance.hiderTree;
+        behaviorTree.enabled = true;
+        navMeshAgent.enabled = true;
+        isAI = true;
     }
 
     private void Update()
@@ -184,9 +227,9 @@ public class PlayerInput : MonoBehaviourPun
         }
     }
 
-    public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType , System.Action<Vector2> action, Sprite sprite= null)
+    public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType , Action<Vector2> action, Sprite sprite= null)
     {
-        MyInput addInput = null;
+        ControllerInput addInput = null;
         bool isCache = controllerInputDic.TryGetValue(inputType, out addInput);
         if (isCache == false)
         {
@@ -195,10 +238,27 @@ public class PlayerInput : MonoBehaviourPun
         addInput.controllerDic[controllerInputType] = action;
         if (this.IsMyCharacter())
         {
-            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, sprite);
-            InputManager.Instance.GetControllerJoystick(inputType).ResetUIController();
+            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, null);
+            InputManager.Instance.GetControllerJoystick(inputType).ResetUIController(); 
         }
     }
+
+    public ControllerInput GetControllerInput(InputType inputType)
+    {
+        return controllerInputDic[inputType];
+    }
+    //public ControllerInput  SetupControllerInput(InputControllerObject inputControllerObject,  Sprite sprite = null)
+    //{
+    //    inputControllerObject.controllerInput = controllerInputDic[inputControllerObject.inputType];
+
+    //    if (this.IsMyCharacter())
+    //    {
+    //        InputManager.Instance.GetControllerJoystick(inputControllerObject.inputType).SetActiveControllerType(inputControllerObject.attackType, sprite);
+    //        InputManager.Instance.GetControllerJoystick(inputControllerObject.inputType).ResetUIController();
+    //    }
+
+    //    return controllerInputDic[inputControllerObject.inputType];
+    //}
 
 
 
@@ -214,6 +274,15 @@ public class PlayerInput : MonoBehaviourPun
         }
     }
 
+    public void SetupControllerInputUI(Define.AttackType attackType, InputType inputType , Sprite sprite)
+    {
+        if (this.IsMyCharacter())
+        {
+            controllerInputDic[inputType].uI_ControllerJoystick = InputManager.Instance.GetControllerJoystick(inputType);
+            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, null);
+            InputManager.Instance.GetControllerJoystick(inputType).ResetUIController();
+        }
+    }
     public virtual void Stop(float newTime)
     {
         stopTime = newTime;

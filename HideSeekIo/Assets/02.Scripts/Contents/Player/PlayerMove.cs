@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Smooth;
 using UnityEngine.AI;
+using System;
 
 public class PlayerMove : PhotonMove 
 {
@@ -14,7 +15,6 @@ public class PlayerMove : PhotonMove
         Run,
         Stun,
     }
-
     public MoveState State { get; set; }
 
     protected override Transform target => _playerCharacter.characterAvater.transform;
@@ -48,24 +48,21 @@ public class PlayerMove : PhotonMove
             }
         }
     }
-    float runCoolTime = 0.0f;
     float startRunTime;
-    float maxAccelTime = 2.5f;
+    public bool isInvinc { get; set; }  //무적
 
-    float _stunTimeInit = 0.3f;
-    float _remainStunTime;
-
-    public bool isInvinc { get; set; }
+    public event Action<MoveState> changeMoveStateEvent;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        agent = this.gameObject.GetOrAddComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
         _playerShooter = GetComponent<PlayerShooter>();
         _playerInput = GetComponent<PlayerInput>();
         _playerStat = GetComponent<PlayerStat>();
         _playerCharacter = GetComponent<PlayerCharacter>();
-        GetComponent<PlayerHealth>().onDamageEventPoster += OnDamageListen;
+
+        //GetComponent<PlayerHealth>().onDamageEventPoster += OnDamageListen; //대미지 입으면 일시멈춤.
     }
     protected override void OnEnable()
     {
@@ -74,7 +71,7 @@ public class PlayerMove : PhotonMove
         _animationValue = 0;
         Run = false;
         startRunTime = 0;
-        _remainStunTime = 0;
+        //_remainStunTime = 0;
     }
     public virtual void OnPhotonInstantiate()
     {
@@ -83,14 +80,10 @@ public class PlayerMove : PhotonMove
 
     public void ChangeOwnerShip()
     {
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = !Run;  } );
+        //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = !Run;  } );
         //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => { Run = false; } );
     }
-    void Change()
-    {
-        Run = !Run;
-    }
-
+   
 
     protected override void WriteData(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -105,33 +98,37 @@ public class PlayerMove : PhotonMove
     }
     protected override void UpdateLocal()
     {
-        if(_remainStunTime > 0)
-        {
-            _remainStunTime -= Time.deltaTime;
-            return;
-        }
+        var inputVector = _playerInput.controllerInputDic[InputType.Move].inputVector2;
 
-        var move = _playerInput.controllerInputDic[InputType.Move].inputVector2;
-        //move = UtillGame.GetInputVector2_ByCamera(move);
-        OnUpdate(move, Run);
-        if (Run)
+        switch (_playerShooter.State)
         {
-            if( startRunTime < maxAccelTime)
-            {
-                startRunTime += Time.deltaTime;
-            }
+            case PlayerShooter.state.Idle:
+                dataState = DataState.SerializeView;
+                UpdateSmoothRotate(new Vector3(inputVector.x, 0, inputVector.y));
+                UpdateMove(inputVector, true);
+                UpdateMoveAnimation(State);
+                break;
+            case PlayerShooter.state.Skill:
+                dataState = DataState.ServerView;
+                UpdateMoveAnimation(  MoveState.Idle);
+                break;
+            case PlayerShooter.state.MoveAttack:
+                dataState = DataState.SerializeView;
+                UpdateMove(inputVector, true);
+                UpdateSmoothRotate(new Vector3(inputVector.x, 0, inputVector.y));
+                UpdateMoveAnimation(State);
+                break;
+            //case PlayerShooter.state.No:
+            //    UpdateMoveAnimation(MoveState.Idle);
+                //break;
         }
     }
     protected override void UpdateRemote()
     {
         switch (_playerShooter.State)
         {
-            case PlayerShooter.state.Jump:
-                UpdateImmediateRotate(_playerShooter.AttackDirection);
-                UpdateMoveFoward(UtillGame.ConventToVector2(_playerShooter.AttackDirection));
-                break;
-            case PlayerShooter.state.Idle:
-            case PlayerShooter.state.NoMove:
+            //case PlayerShooter.state.Idle:
+            //case PlayerShooter.state.NoMove:
             case PlayerShooter.state.MoveAttack:
                 UpdateMoveAnimation(State);
                 break;
@@ -139,50 +136,6 @@ public class PlayerMove : PhotonMove
         UpdateMoveAnimation(State);
 
     }
-    public void OnUpdate(Vector2 inputVector2, bool isRun)
-    {
-        switch (_playerShooter.State)
-        {
-            case PlayerShooter.state.Idle:
-                Vector3 test = UtillGame.ConventToVector3(inputVector2);
-                if (_playerStat.CurrentEnergy > 0)
-                {
-                    UpdateSmoothRotate(test);
-                    UpdateMove(inputVector2, isRun);
-                    UpdateMoveAnimation(State);
-                }
-                else
-                {
-                    Run = false;
-                    UpdateSmoothRotate(Vector2.zero);
-                    UpdateMove(Vector2.zero, isRun);
-                }
-                UpdateMoveAnimation(State);
-                dataState = DataState.SerializeView;
-
-                break;
-            case PlayerShooter.state.NoMove:
-                UpdateImmediateRotate(_playerShooter.AttackDirection);
-                UpdateMoveAnimation(MoveState.Idle);
-                dataState = DataState.SerializeView;
-
-                break;
-            case PlayerShooter.state.MoveAttack:
-                UpdateMove(inputVector2, isRun);
-                UpdateMoveAnimation(State);
-                dataState = DataState.SerializeView;
-
-                break;
-            case PlayerShooter.state.Jump:
-                dataState = DataState.ServerView;
-                UpdateImmediateRotate(_playerShooter.AttackDirection);
-                UpdateMoveFoward(UtillGame.ConventToVector2( _playerShooter.AttackDirection));
-                break;
-        }
-        UpdateEnergy();
-    }
-
-
     protected virtual void UpdateMove(Vector2 inputVector2, bool isRun)
     {
         //조이스틱 입력안할시
@@ -205,18 +158,6 @@ public class PlayerMove : PhotonMove
         }
         ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed) + (startRunTime* _playerStat.moveSpeed*0.0f)  ;
         Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) * ResultSpeed * Time.deltaTime;
-        if (!_characterController.isGrounded)
-        {
-            moveDistance.y -= 9.8f * Time.deltaTime;
-        }
-        _characterController.Move(moveDistance);
-    }
-
-    //대쉬
-    void UpdateMoveFoward(Vector2 inputVector2)
-    {
-        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed);
-        Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) *  6* Time.deltaTime;
         if (!_characterController.isGrounded)
         {
             moveDistance.y -= 9.8f * Time.deltaTime;
@@ -261,27 +202,56 @@ public class PlayerMove : PhotonMove
             _totRatio += v;
         }
     }
-    void UpdateEnergy()
+
+   
+ 
+
+    // 목표지점 이동이아닌 초기 target의 방향으로 ,직진
+    public void MoveToTarget(Vector3 target , float time)
     {
-        switch (State)
-        {
-            case MoveState.Run:
-                if (isInvinc) return;
-                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy - (1 + startRunTime*0.0f) * Time.deltaTime, 0, _playerStat.MaxEnergy);
-                break;
-            case MoveState.Idle:
-            case MoveState.Walk:
-                _playerStat.CurrentEnergy = Mathf.Clamp(_playerStat.CurrentEnergy + _playerStat.EnergyRegemAmount * Time.deltaTime, 0, _playerStat.MaxEnergy);
-                break;
-        }
+        StartCoroutine(ProcessMoveToTarget(target, time));
     }
 
-    protected void OnDamageListen(int damage)
+    IEnumerator ProcessMoveToTarget(Vector3 targetPoint , float duration )
     {
-        _animator.SetTrigger("OnDamage");
-        _remainStunTime = _stunTimeInit;
-        _playerStat.CurrentEnergy -= 1;
-        _remainStunTime = 0.2f;
+        float currTime = 0;
+        Vector3 dir = (targetPoint - this.transform.position);
+        dir.y = this.transform.position.y;
+        Vector3 moveDistance = Vector3.zero;
+        Quaternion newRotation = Quaternion.LookRotation(dir);
+        target.transform.rotation = newRotation;
+        n_direction = target.transform.forward;
+        while (currTime <= duration)
+        {
+            dir.y -= 9.8f * Time.deltaTime;
+            //moveDistance = Vector3.Lerp(moveDistance, 2 * dir, Time.deltaTime * (1 / duration));
+            _characterController.Move(dir * Time.deltaTime * (1 / duration));
+            yield return null;
+            currTime += Time.deltaTime;
+        }
+        //n_direction
+        //float currTime = 0;
+        //Vector3 dir = (target - this.transform.position);
+        //Vector3 moveDistance = Vector3.zero;
+        //while (currTime <= duration)
+        //{
+        //    if(Vector3.Distance(this.transform.position ,dir) >1.5f )
+        //    {
+        //        dir = (target - this.transform.position);
+        //        dir.y -= 9.8f * Time.deltaTime;
+        //        //moveDistance = Vector3.Slerp(moveDistance, 3 * dir, Time.deltaTime * (1 / duration));
+        //        _characterController.Move(dir.normalized * Time.deltaTime * 8);
+        //    }
+        //    else
+        //    {
+
+        //        _characterController.Move(Vector3.zero * Time.deltaTime );
+
+        //    }
+
+        //    yield return null;
+        //    currTime += Time.deltaTime;
+        //}
     }
-    
+
 }

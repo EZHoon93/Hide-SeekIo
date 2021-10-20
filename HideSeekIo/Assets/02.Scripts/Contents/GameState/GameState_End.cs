@@ -28,7 +28,9 @@ public class GameState_End : GameState_Base
     }
     public override void OnTimeEnd()
     {
-        Managers.Scene.MasterSelectNextMainScene(Managers.Game.CurrentGameScene.SceneType);
+        PhotonNetwork.LoadLevel("Main1");
+
+        //Managers.Scene.MasterSelectNextMainScene(Managers.Game.CurrentGameScene.SceneType);
     }
 
 }

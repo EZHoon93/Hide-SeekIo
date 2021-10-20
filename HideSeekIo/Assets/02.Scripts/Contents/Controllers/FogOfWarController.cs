@@ -28,9 +28,9 @@ public class FogOfWarController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (CameraManager.Instance.Target)
+        if (CameraManager.Instance.cameraTagerPlayer)
         {
-            hideInFog.team = CameraManager.Instance.Target.ViewID();
+            hideInFog.team = CameraManager.Instance.cameraTagerPlayer.ViewID();
         }
         CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
     }
@@ -46,7 +46,7 @@ public class FogOfWarController : MonoBehaviour
         fogOfWarTeam.team = _livingEntity.photonView.ViewID;
         fogOfWarUnit.team = _livingEntity.photonView.ViewID;
         _initCircleRadius = fogOfWarUnit.circleRadius;
-        hideInFog.isGrass = false;
+        hideInFog.isInGrass = false;
         hideInFog.isGrassDetected= false;
         hideInFog.istransSkill= false;
         CheckIsCamaeraTarget(false);
@@ -56,14 +56,15 @@ public class FogOfWarController : MonoBehaviour
     void ChangeCameraTarget(int cameraViewID)
     {
         hideInFog.team = cameraViewID;
+        var playerController = _livingEntity.GetComponent<PlayerController>();
+        bool isCurrCameraTarget = cameraViewID == fogOfWarTeam.team ? true : false; //현재 카메라가 보고있는 오브젝트라면
 
-        if(cameraViewID == fogOfWarTeam.team)
+        CheckIsCamaeraTarget(isCurrCameraTarget);
+        //카메
+        if (playerController)
         {
-            CheckIsCamaeraTarget(true);
-        }
-        else
-        {
-            CheckIsCamaeraTarget(false);
+            playerController.playerGrassDetect.gameObject.SetActive(isCurrCameraTarget);
+            playerController.fogOfWarController.hideInFog.isGrassDetected = isCurrCameraTarget;
         }
     }
 
@@ -77,6 +78,7 @@ public class FogOfWarController : MonoBehaviour
         {
             hideInFog.SetActiveRender(true);
         }
+       
     }
 
     public void ChangeTransParentBySkill(bool isTransParent)

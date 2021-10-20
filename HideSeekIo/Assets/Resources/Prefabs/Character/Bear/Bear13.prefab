@@ -1762,7 +1762,7 @@ Transform:
   m_GameObject: {fileID: 1451400167204234}
   m_LocalRotation: {x: 0, y: 0, z: 0.05697243, w: 0.9983758}
   m_LocalPosition: {x: -0.012421359, y: 1.11022296e-17, z: -1.4023873e-17}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 4146467867634624}
   - {fileID: 4416692681013926}
@@ -2139,7 +2139,7 @@ Transform:
   m_GameObject: {fileID: 1597433305303586}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 4366471918771948}
   - {fileID: 4402768014899826}
@@ -2178,7 +2178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e709b5e9bbd34585ba2392f70762223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 0.8
+  size: 0.6
 --- !u!114 &3257692875221650199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2193,8 +2193,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessoriesTransform: {fileID: 4050971318462500}
   _headTransform: {fileID: 4146467867634624}
-  _weaponTransform: {fileID: 4456481834411380}
+  _leftHand: {fileID: 0}
+  _rightHand: {fileID: 4456481834411380}
   _renderController: {fileID: -8077152666725061432}
+  _le: {fileID: 0}
+  _ri: {fileID: 0}
+  _weaponPivot: {fileID: 0}
 --- !u!114 &4351596362006013510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3719,8 +3723,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922405345700368}
-  m_LocalRotation: {x: -0.0014577744, y: 0.7071457, z: 0.70706487, w: -0.0014533695}
-  m_LocalPosition: {x: 0.007999935, y: 0.000032936336, z: 0.000000038146972}
+  m_LocalRotation: {x: -0.9478284, y: -0.17441365, z: 0.23957206, w: 0.11750144}
+  m_LocalPosition: {x: 0.219, y: 0.078, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4582134893921898}

@@ -13,9 +13,10 @@ public class PlayerCharacter : MonoBehaviour
     CharacterAvater _characterAvater;
 
 
-    public void OnPhotonInstantiate(PlayerController _playerController)
+    public void OnPhotonInstantiate(PlayerController playerController)
     {
-        character_Base.OnPhotonInstantiate(_playerController);
+        character_Base.OnPhotonInstantiate(playerController);
+        _characterAvater.OnPhotonInstantiate(playerController);
     }
 
     public void ChangeOnwerShip(PlayerController _playerController)
@@ -45,7 +46,7 @@ public class PlayerCharacter : MonoBehaviour
         string prefabID = $"Character/{characterType.ToString()}/{avaterID}";
         _characterAvater = Managers.Resource.Instantiate(prefabID).GetComponent<CharacterAvater>();
         _characterAvater.transform.ResetTransform(character_Base.transform);
-        _characterAvater.transform.localScale = Vector3.one * 2;
+        //_characterAvater.transform.localScale = Vector3.one * 2;
     }
 
     public RenderController GetRenderController()

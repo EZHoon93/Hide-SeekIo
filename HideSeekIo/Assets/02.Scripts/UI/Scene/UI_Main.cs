@@ -236,18 +236,21 @@ public class UI_Main : UI_Scene
             outLine.Click();
 
         }
-        if (storeEtc)
-            storeEtc.gameObject.SetActive(false);
-        if (storeAvater == null)
-        {
-            storeAvater =  Managers.UI.ShowPopupUI<UI_Store_Character>();
+        //if (storeEtc)
+        //    storeEtc.gameObject.SetActive(false);
 
-        }
-        else
-        {
-            storeAvater.gameObject.SetActive(!storeAvater.gameObject.activeInHierarchy);
+        Managers.UI.ShowPopupUI<UI_Demo>();
 
-        }
+        //if (storeAvater == null)
+        //{
+        //    storeAvater = Managers.UI.ShowPopupUI<UI_Store_Character>();
+
+        //}
+        //else
+        //{
+        //    storeAvater.gameObject.SetActive(!storeAvater.gameObject.activeInHierarchy);
+
+        //}
 
 
     }
@@ -259,16 +262,18 @@ public class UI_Main : UI_Scene
         {
             outLine.Click();
         }
-        if (storeAvater)
-            storeAvater.gameObject.SetActive(false);
-        if(storeEtc== null)
-        {
-            storeEtc = Managers.UI.ShowPopupUI<UI_Store_Etc>();
-        }
-        else
-        {
-            storeEtc.gameObject.SetActive(!storeEtc.gameObject.activeInHierarchy);
-        }
+        Managers.UI.ShowPopupUI<UI_Demo>();
+
+        //if (storeAvater)
+        //    storeAvater.gameObject.SetActive(false);
+        //if(storeEtc== null)
+        //{
+        //    storeEtc = Managers.UI.ShowPopupUI<UI_Store_Etc>();
+        //}
+        //else
+        //{
+        //    storeEtc.gameObject.SetActive(!storeEtc.gameObject.activeInHierarchy);
+        //}
 
     }
 

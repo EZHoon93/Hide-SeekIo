@@ -30,6 +30,8 @@ public class ItemSpawnManager : MonoBehaviour
         }
         _canSpawnPointList.Clear();
         PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, () => StartCoroutine(UpdateSpawn()));
+        PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, Clear);
+
     }
 
     public void Clear()

@@ -38,7 +38,7 @@ public class UI_Store_Character : UI_Popup
         _toggleGroup = GetObject((int)GameObjects.ToggleGroups).GetComponent<ToggleGroup>();
 
         Get<Toggle>((int)Define.SkinType.Skin).onValueChanged.AddListener( (b) => OnChange_ToggleValue(b,Define.SkinType.Skin));
-        Get<Toggle>((int)Define.SkinType.Weapon).onValueChanged.AddListener((b) => OnChange_ToggleValue(b, Define.SkinType.Weapon));
+        Get<Toggle>((int)Define.SkinType.RightHand).onValueChanged.AddListener((b) => OnChange_ToggleValue(b, Define.SkinType.RightHand));
         Get<Toggle>((int)Define.SkinType.Bag).onValueChanged.AddListener((b) => OnChange_ToggleValue(b, Define.SkinType.Bag));
         Get<Toggle>((int)Define.SkinType.Hat).onValueChanged.AddListener((b) => OnChange_ToggleValue(b, Define.SkinType.Hat));
         GetButton((int)Buttons.Cancel).gameObject.BindEvent(ClickEvent_Back);

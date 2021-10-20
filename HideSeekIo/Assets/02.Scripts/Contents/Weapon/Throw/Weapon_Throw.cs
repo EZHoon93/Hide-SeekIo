@@ -6,33 +6,39 @@ using System;
 public abstract class Weapon_Throw : Weapon 
 {
     [SerializeField] GameObject _projectilePrefab;
-    [SerializeField] LineRenderer lineRenderer;
-    [SerializeField] float amount;
-    [SerializeField] float plane;
-    [SerializeField] float speed;
 
+    float _attackRange;
     public override WeaponType weaponType => WeaponType.Throw;
-    public float attackRange { get; protected set; }
+    public override HandType handType => HandType.Right;
 
-    public override void OnPhotonInstantiate(PhotonMessageInfo info)
+    public float attackRange 
     {
-        base.OnPhotonInstantiate(info);
-        if (uiZoom)
+        get => _attackRange;
+        protected set
         {
-            uiZoom.transform.localScale = new Vector3(attackRange, attackRange, attackRange); //범위에 따른 ui변경
-            lineRenderer.enabled = false;
-            lineRenderer.positionCount = 25;
+            _attackRange = value;
+            var uiCurveZoom = _uI_ZoomBase.GetComponent<UI_CurveZoom>();
+            if (uiCurveZoom)
+            {
+                uiCurveZoom.UpdateRange(value);
+            }
         }
     }
+
+    Plane _plane;
+
+
 
     protected override void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Sub3;
+        inputControllerObject.inputType = InputType.Main;
         inputControllerObject.attackType = Define.AttackType.Joystick;
         inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
         inputControllerObject.AddUseEvent(Attack);
         inputControllerObject.AddZoomEvent(Zoom);
+        _plane = new Plane(Vector3.up, Vector3.zero);
+
     }
 
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
@@ -46,75 +52,19 @@ public abstract class Weapon_Throw : Weapon
 
     public override void Zoom(Vector2 inputVector)
     {
-        bool state = false;
-        if (uiZoom)
+        if (inputVector.sqrMagnitude == 0)
         {
-             state = UtillGame.ThrowZoom(inputVector, AttackDistance, playerController.transform, uiZoom.currentZoom, speed);
-            //////
-            ///
-            //var endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform);
-            //GetHitZoom(playerController.transform, endPoint);
+            _uI_ZoomBase.SetActiveZoom(false);
+            return;
         }
-        if (state)
-        {
-            useState = UseState.Use;
-        }
-        if (playerController.gameObject.IsValidAI() == false)
-        {
-            if (inputVector.sqrMagnitude == 0)
-            {
-                uiZoom.gameObject.SetActive(false);
-                useState = UseState.NoUse;
-                return;
-            }
-            uiZoom.FixedUI();
-            uiZoom.gameObject.SetActive(true);
-        }
-        useState = UseState.Use;
+        var endPoint = UtillGame.GetCurveHitPoint(_plane, this.transform, inputVector, AttackDistance);
+        var startPoint = this.transform.position + Vector3.up ;
+        endPoint.y = 0;
+        _uI_ZoomBase.UpdateZoom(startPoint , endPoint);
+        _uI_ZoomBase.SetActiveZoom(true);
     }
 
-    public  void GetHitZoom(Transform attackStart, Vector3 endPoint)
-    {
-        Plane playerPlane = new Plane(Vector3.up, plane);
-
-        var ray = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(endPoint));
-        Vector3 targetPoint = Vector3.zero;
-        float hitDist;
-        Vector3 center = Vector3.zero;
-        
-        if (playerPlane.Raycast(ray, out hitDist))
-        {
-            targetPoint = ray.GetPoint(hitDist);
-            center = (attackStart.transform.position + targetPoint) * 0.5f;
-            center.y -= amount;
-            RaycastHit hitInfo;
-            if (Physics.Linecast(attackStart.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Ground))
-            {
-                targetPoint = hitInfo.point;
-            }
-        }
-        else
-        {
-            targetPoint = attackStart.transform.position;
-        }
-        //targetPoint.y = 0;
-        //playerUI.UpdateDamageUI(targetPoint, 5);   //타겟 위치 UI 표시
-        Vector3 RelCenter = attackStart.position - center;
-        Vector3 aimRelCenter = targetPoint - center;
-        Vector3 theArc;
-        for (float index = 0.0f, interval = -0.0417f; interval < 1.0f;)
-        {
-            theArc = Vector3.Slerp(RelCenter, aimRelCenter, interval += 0.0417f);
-            lineRenderer.SetPosition((int)index++, theArc + center);
-        }
-        print(targetPoint);
-        var s = targetPoint;
-        s.y = 0;
-        lineRenderer.SetPosition(24, s);
-
-
-        lineRenderer.enabled = true;
-    }
+  
 
     #region Attack
     /// <summary>
@@ -123,6 +73,8 @@ public abstract class Weapon_Throw : Weapon
     public override void Attack(Vector2 inputVector)
     {
         Vector3 endPoint = UtillGame.GetThrowPosion(inputVector, AttackDistance, playerController.transform);
+        endPoint.y = 0;
+
         photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, endPoint);
     }
 
@@ -133,7 +85,7 @@ public abstract class Weapon_Throw : Weapon
     [PunRPC]
     public void AttackOnServer(Vector3 endPoint)
     {
-        inputControllerObject.attackDirection = UtillGame.GetDirVector3ByEndPoint(playerController.transform, endPoint).normalized; ;
+        attackPoint = endPoint;
         StartCoroutine(AttackProcessOnAllClinets(endPoint));
     }
 
@@ -145,17 +97,15 @@ public abstract class Weapon_Throw : Weapon
 
     IEnumerator AttackProcessOnAllClinets(Vector3 endPoint)
     {
-        inputControllerObject.Call_UseSucessStart();
+        attackStartCallBack?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();    //투척물 생성
         Vector3 startPoint = playerController.playerCharacter.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
         projectile.Play(playerController, startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
-        inputControllerObject.Call_UseSucessEnd();
-
+        attackEndCallBack?.Invoke();
     }
     #endregion
-
 
 
 

@@ -81,21 +81,21 @@ public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, ICanExitTriggerPlay
     }
     public void Enter(PlayerController enterPlayer, Collider collider)
     {
-        enterPlayer.fogOfWarController.hideInFog.isGrass = true;
+        //enterPlayer.fogOfWarController.hideInFog.isGrass = true;
         if(playerControllerList.Contains(enterPlayer) == false)
         {
             playerControllerList.Add(enterPlayer);
         }
 
         //같은부쉬에 들어왔을 시 
-        if (CameraManager.Instance.Target)
+        if (CameraManager.Instance.cameraTagerPlayer)
         {
-            if(playerControllerList.Contains(CameraManager.Instance.Target))
+            if(playerControllerList.Contains(CameraManager.Instance.cameraTagerPlayer))
             {
                 enterPlayer.fogOfWarController.hideInFog.isGrassDetected = true;
             }
         }
-        if (CameraManager.Instance.Target != enterPlayer) return;
+        if (CameraManager.Instance.cameraTagerPlayer != enterPlayer) return;
 
         SeePlayersInGrass(true);
         ChangeGrassMaterial(true);
@@ -105,13 +105,13 @@ public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, ICanExitTriggerPlay
 
     public void Exit(PlayerController exitPlayer, Collider collider)
     {
-        exitPlayer.fogOfWarController.hideInFog.isGrass = false;
+        //exitPlayer.fogOfWarController.hideInFog.isGrass = false;
         exitPlayer.fogOfWarController.hideInFog.isGrassDetected = false;
         if (playerControllerList.Contains(exitPlayer))
         {
             playerControllerList.Remove(exitPlayer);
         }
-        if (CameraManager.Instance.Target != exitPlayer) return;
+        if (CameraManager.Instance.cameraTagerPlayer != exitPlayer) return;
 
         SeePlayersInGrass(false);
         ChangeGrassMaterial(false);

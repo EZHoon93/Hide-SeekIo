@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class StoneProjectile : BulletProjectile
 {
+    [SerializeField] float _stunTime;
     protected override void EnterPlayer(PlayerController enterPlayer, Collider collider)
     {
         if (isPlay == false) return;
@@ -12,8 +13,8 @@ public class StoneProjectile : BulletProjectile
         {
             EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, collider.transform.position, 0);
             if (playerHealth.photonView.IsMine== false) return;
-            playerHealth.OnDamage(1, 0, collider.transform.position);
-            //BuffManager.Instance.BuffControllerCheckOnLocal(Define.BuffType.B_Stun, playerHealth);
+            playerHealth.OnDamage(_usePlayerViewID, 0, collider.transform.position);
+            BuffManager.Instance.CheckBuffController(playerHealth, Define.BuffType.B_Stun, _stunTime);
         }
     }
     

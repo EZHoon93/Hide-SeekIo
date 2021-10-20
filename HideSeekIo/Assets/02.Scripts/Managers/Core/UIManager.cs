@@ -68,13 +68,10 @@ public class UIManager
 
 	public T ShowSceneUI<T>(string name = null) where T : UI_Scene
 	{
-        Debug.Log("ShowSceneUI");
-
         if (string.IsNullOrEmpty(name))
 			name = typeof(T).Name;
         if(SceneUI != null)
         {
-            Debug.Log("널아님존재함 씬유아ㅇ; ");
             return default;
         }
 		GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");

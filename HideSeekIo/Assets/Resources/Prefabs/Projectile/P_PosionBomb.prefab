@@ -113,8 +113,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsUsing: 0
-  _modelObject: {fileID: 5916761644140447299}
+  _modelObject: {fileID: 6305790893274368789}
   _range: 2
+  _attackClip: {fileID: 8300000, guid: 1b188cc86abc62d458cc5ada4c191073, type: 3}
 --- !u!1 &5916761644140447299
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +141,7 @@ Transform:
   m_GameObject: {fileID: 5916761644140447299}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 3154727897346235903}
   m_Father: {fileID: 4117768412101275063}
@@ -171,15 +172,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4132436767921572, guid: 336d493deab52dd45a50c0afb1739d8a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4132436767921572, guid: 336d493deab52dd45a50c0afb1739d8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4132436767921572, guid: 336d493deab52dd45a50c0afb1739d8a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4132436767921572, guid: 336d493deab52dd45a50c0afb1739d8a, type: 3}
       propertyPath: m_LocalPosition.x

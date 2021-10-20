@@ -17,7 +17,7 @@ public class InGameStore
 public class DataManager
 {
     public Define.GameDataState State { get; private set; }
-    public Dictionary<int, Stat> StatDict { get; private set; } = new Dictionary<int, Data.Stat>();
+    //public Dictionary<int, Stat> StatDict { get; private set; } = new Dictionary<int, Data.Stat>();
 
     //Dictionary<string, InGameStat> InGameItems = new Dictionary<string, InGameStat>();
     //Dictionary<string, InGameStat> inGameSeekrItems = new Dictionary<string, InGameStat>();
@@ -32,7 +32,7 @@ public class DataManager
 
     public void Init()
     {
-        StatDict = LoadJson<StatData, int, Stat>("StatData").MakeDict();
+        //StatDict = LoadJson<StatData, int, Stat>("StatData").MakeDict();
 
         InGameItemDic = LoadJson<InGameStatData, string, InGameStat>("InGameItem").MakeDict();
 

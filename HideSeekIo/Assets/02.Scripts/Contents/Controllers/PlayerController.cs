@@ -1,26 +1,13 @@
-using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using System;
-using System.Linq;
 using FoW;
 using System.Collections.Generic;
-using HasTable = ExitGames.Client.Photon.Hashtable;
-//[RequireComponent(typeof(PlayerInput))]
-//[RequireComponent(typeof(PlayerHealth))]
-//[RequireComponent(typeof(PlayerShooter))]
-//[RequireComponent(typeof(PlayerMove))]
 
 public class PlayerController : MonoBehaviourPun
 {
-    bool _isGrass;
-    bool _isDetectedInGrass;
-    bool _isTransSkill;
-    bool _isWarining;
-    
     [SerializeField] PlayerUI _playerUI;
     [SerializeField] PlayerGrassDetect _playerGrassDetect;
-
     public string NickName { get; set; }
     public Define.Team Team => playerHealth.Team;
     public PlayerInput playerInput { get; private set; }
@@ -30,64 +17,8 @@ public class PlayerController : MonoBehaviourPun
     public PlayerStat playerStat { get; set; }
     public PlayerCharacter playerCharacter { get; set; }
     public PlayerUI playerUI => _playerUI;
-
     public FogOfWarController fogOfWarController => playerHealth.fogController;
-
-
-    //public bool isGrass
-    //{
-    //    get => _isGrass;
-    //    set
-    //    {
-            
-    //        if (_isGrass == value) return;
-    //        fogOfWarController.hideInFog.isGrass = value;
-    //        _isGrass = value;
-    //        if (this.IsMyCharacter())
-    //        {
-    //        }
-    //        else
-    //        {
-    //        }
-    //    }
-    //}
-
-    //public bool isGrass
-    //{
-    //    get => _isGrass;
-    //    set
-    //    {
-
-    //        if (_isGrass == value) return;
-    //        fogOfWarController.hideInFog.isGrass = value;
-    //        _isGrass = value;
-    //        if (this.IsMyCharacter())
-    //        {
-    //        }
-    //        else
-    //        {
-    //        }
-    //    }
-    //}
-
-    //public bool isGrass
-    //{
-    //    get => _isGrass;
-    //    set
-    //    {
-
-    //        if (_isGrass == value) return;
-    //        fogOfWarController.hideInFog.isGrass = value;
-    //        _isGrass = value;
-    //        if (this.IsMyCharacter())
-    //        {
-    //        }
-    //        else
-    //        {
-    //        }
-    //    }
-    //}
-
+    public PlayerGrassDetect playerGrassDetect => _playerGrassDetect;
 
     public List<int> statTypeList = new List<int>();
     public event Action<PhotonView> changeOnwerShip;
@@ -102,11 +33,10 @@ public class PlayerController : MonoBehaviourPun
         playerMove = this.gameObject.GetOrAddComponent<PlayerMove>();
         playerStat = this.gameObject.GetOrAddComponent<PlayerStat>();
         playerCharacter = this.gameObject.GetOrAddComponent<PlayerCharacter>();
-        _playerGrassDetect.gameObject.SetActive(false);
         _playerUI.SetupPlayer(this);
     }
 
-   
+
 
     protected virtual void HandleDeath()
     {
@@ -116,22 +46,27 @@ public class PlayerController : MonoBehaviourPun
         playerStat.enabled = false;
         playerCharacter.enabled = false;
         playerInput.enabled = false;
-        _isWarining = false;
     }
 
     public virtual void OnPhotonInstantiate(PhotonView photonView)
     {
+        playerStat.OnPhotonInstantiate();   //Stat 이 제일먼저!!
+        _playerUI.OnPhotonInstantiate();   
         playerInput.OnPhotonInstantiate();
         playerHealth.OnPhotonInstantiate();
         playerMove.OnPhotonInstantiate();
         playerShooter.OnPhotonInstantiate();
         playerCharacter.OnPhotonInstantiate(this);
-        playerStat.OnPhotonInstantiate();
-        _playerUI.OnPhotonInstantiate();
+        _playerGrassDetect.gameObject.SetActive(false);
         fogOfWarController.OnPhotonInstantiate(playerHealth);
-        fogOfWarController.transform.ResetTransform(playerCharacter.characterAvater.transform);
+        fogOfWarController.transform.ResetTransform(playerCharacter.character_Base.transform);
         statTypeList.Clear();
         ChangeTeam(Define.Team.Hide);
+    }
+    public void ChangeAI()
+    {
+        playerInput.ChangeAI();
+        this.gameObject.tag = "AI";
     }
 
     public virtual void OnPreNetDestroy(PhotonView rootView)
@@ -139,18 +74,23 @@ public class PlayerController : MonoBehaviourPun
 
     }
 
-    public void ChangeOwnerShip()
+
+    /// <summary>
+    /// 유저가 소유권을 가져왔을때 실행
+    /// </summary>
+    public void ChangeOwnerShipOnUser()
     {
         playerInput.ChangeOwnerShip();
         playerMove.ChangeOwnerShip();
         playerShooter.ChangeOwnerShip();
         playerCharacter.ChangeOnwerShip(this);
         _playerUI.ChangeOwnerShip();
-
         changeOnwerShip?.Invoke(this.photonView);
         if (this.IsMyCharacter())
         {
             Managers.Game.myPlayer = this;
+            _playerGrassDetect.gameObject.SetActive(true);
+
         }
     }
 
@@ -168,25 +108,34 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.Team.Seek:
                 this.gameObject.layer = (int)Define.Layer.Seeker;
-                fogOfWarController.fogOfWarUnit.circleRadius =7;
+                fogOfWarController.fogOfWarUnit.circleRadius =3.5f;
                 fogOfWarController.fogOfWarUnit.shapeType = FogOfWarShapeType.Circle;
                 fogOfWarController.fogOfWarUnit.offset = new Vector2(0, 0);
                 //fogOfWarController.fogOfWarUnit.circleRadius = 16;
                 //fogOfWarController.fogOfWarUnit.shapeType = FogOfWarShapeType.Circle;
                 //fogOfWarController.fogOfWarUnit.offset = Vector3.zero;
                 //fogOfWarController.fogOfWarUnit.cellBased = true;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, this);
+                }
                 break;
         }
 
         playerHealth.Team = team;
         playerStat.ChangeTeam(team);
         playerInput.ChangeTeam(team);
+        playerUI.ChangeTeam(team);
         if (this.IsMyCharacter())
         {
-            CameraManager.Instance.ChangeTeam(team);
+            CameraManager.Instance.ChangeTeamByTargetView(this);
         }
     }
+   
+    void Revive()
+    {
 
+    }
     private void OnTriggerEnter(Collider other)
     {
         var enterTrigger = other.gameObject.GetComponent<ICanEnterTriggerPlayer>();
@@ -202,6 +151,11 @@ public class PlayerController : MonoBehaviourPun
         {
             exitTrigger.Exit(this , other);
         }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+         collision.collider.CompareTag("Grass");
     }
 }
 

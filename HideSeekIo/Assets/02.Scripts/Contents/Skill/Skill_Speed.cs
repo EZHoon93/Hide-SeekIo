@@ -12,6 +12,6 @@ public class Skill_Speed : Skill_Base
 
     public override void Use(Vector2 inputVector2)
     {
-        BuffManager.Instance.CheckBuffController(inputControllerObject.playerController.playerHealth, Define.BuffType.B_Speed);
+        BuffManager.Instance.CheckBuffController(playerController.playerHealth, Define.BuffType.B_Speed);
     }
 }

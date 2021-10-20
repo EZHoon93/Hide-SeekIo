@@ -13,6 +13,9 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
 
     Define.GameState _gameStateType;
 
+    protected bool isNextScene;
+
+
     public Define.GameState gameStateType
     {
         get => _gameStateType;
@@ -100,6 +103,9 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
         _isPlay = false;
         _gameState.OnTimeEnd();
     }
+
+    public void NextScene(Define.GameState gameState, object whoCanWin = null) => _gameState.NextScene(gameState, whoCanWin);
+   
 
     
 }

@@ -2,21 +2,17 @@
 
 using UnityEngine;
 
-namespace Assets._02.Scripts.UI.SubItem
+public class UI_Select_Stat : UI_Select_Base
 {
-    public class UI_Select_Stat : MonoBehaviour
+    [SerializeField] Define.StatType _statType;
+
+    public Define.StatType GetStatType() => _statType;
+
+    protected override void Click()
     {
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        base.Click();
+        var playerController = Managers.Game.myPlayer;
+        if (!playerController) return;
+        Managers.StatSelectManager.PostEvent_StatDataToServer(playerController, _statType);
     }
 }

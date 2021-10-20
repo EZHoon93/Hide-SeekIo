@@ -43,13 +43,12 @@ public class GameMainScene : GameScene
 
     public override void OnUpdateTime(int remainGameTime)
     {
-        if(remainGameTime < mission1Time)
-        {
-            if (mission1ok) return;
-            print("Create !!");
-            mission1ok = true;
-            CreateMission();    
-        }
+        //if(remainGameTime < mission1Time)
+        //{
+        //    if (mission1ok) return;
+        //    mission1ok = true;
+        //    CreateMission();    
+        //}
 
     }
 

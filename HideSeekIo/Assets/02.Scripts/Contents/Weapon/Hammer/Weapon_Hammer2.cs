@@ -10,17 +10,18 @@ public class Weapon_Hammer2 : Weapon
     AudioClip _attackClip;
     [SerializeField] LineRenderer lineRenderer;
     [SerializeField] float startTime;
-    [SerializeField] float _maxDistance = 2;
+    [SerializeField] float _maxDistance = 3;
     [SerializeField] LayerMask _zoomLayer;
     bool zoom;
     public override WeaponType weaponType => WeaponType.Hammer;
+    public override HandType handType => HandType.Right;
 
     protected override void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
         inputControllerObject.inputType = InputType.Sub1;
         inputControllerObject.attackType = Define.AttackType.Button;
-        inputControllerObject.shooterState = PlayerShooter.state.NoMove;
+        inputControllerObject.shooterState = PlayerShooter.state.Skill;
         inputControllerObject.AddZoomEvent(Zoom);
         inputControllerObject.AddUseEvent(Attack);
     }
@@ -125,12 +126,12 @@ public class Weapon_Hammer2 : Weapon
         var direction = attackPoint - playerController.transform.position;
         direction = direction.normalized;
         direction.y = playerController.transform.position.y;
-        inputControllerObject.attackDirection = direction;
-        inputControllerObject.Call_UseSucessStart();
+        //inputControllerObject.attackDirection = direction;
+        //inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         AttackEffect(attackPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //움직이기 . 애니메이션의 끝나면
-        inputControllerObject.Call_UseSucessEnd();
+        //inputControllerObject.Call_UseSucessEnd();
         print("End!!");
     }
 

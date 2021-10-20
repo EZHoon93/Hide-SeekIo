@@ -5,6 +5,7 @@ using Photon.Pun;
 using System;
 using FoW;
 using Photon.Realtime;
+using UnityStandardAssets.Characters.ThirdPerson.PunDemos;
 
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(PhotonView))]
@@ -46,7 +47,8 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         var avaterId = (string)info.photonView.InstantiationData[3]; //캐릭터 스킨
         var fogController = this.GetComponentInChildren<FogOfWarController>();
         var playerController = this.GetComponent<PlayerController>();
-        this.gameObject.tag = autoNumber == -1 ? "AI" : "Player";
+        //this.gameObject.tag = autoNumber == -1 ? "AI" : "Player";
+        this.gameObject.tag = "AI"; 
 
         playerController.NickName = nickName;       //닉네임 설정
 
@@ -54,54 +56,59 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
 
         playerController.OnPhotonInstantiate(this.photonView);
         _onPhotonInstantiateEvent?.Invoke(this.photonView);
+        //info.Sender.TagObject = this;
+
+        //소유권을 갖게되는 플레이어는 RPC를 통해 버퍼로 실행
         if (autoNumber == PhotonNetwork.LocalPlayer.ActorNumber && autoNumber != -1)
         {
-            this.photonView.TransferOwnership(autoNumber);
+            photonView.RPC("SetupUserPlayer", RpcTarget.AllBuffered);
         }
-        if(autoNumber == -1 && photonView.IsMine)
+    }
+
+    /// <summary>
+    /// 해당 버퍼가 없으면 추후 들어오는 플레이어는 AI로 간주
+    /// </summary>
+    [PunRPC]
+    public void SetupUserPlayer(PhotonMessageInfo info)
+    {
+        info.Sender.TagObject = this.gameObject;
+        this.gameObject.tag = "Player";
+        if (info.Sender.IsLocal)
         {
-            playerController.ChangeOwnerShip();
+            this.photonView.TransferOwnership(info.Sender.ActorNumber);
+        }
+    }
+
+
+   
+
+    public void RemoveUserPlayerToServer()
+    {
+        photonView.RPC("RemoveUserPlayerOnServer", RpcTarget.All);
+    }
+    /// <summary>
+    /// 수동으로 게임 나갔을 시 AI로 전환
+    /// </summary>
+    [PunRPC]
+    public void RemoveUserPlayerOnServer(PhotonMessageInfo info)
+    {
+        info.Sender.TagObject = null;
+        this.gameObject.tag = "AI";
+        if (info.Sender.IsLocal)
+        {
+            PhotonNetwork.RemoveRPCs(this.photonView);
+            this.photonView.TransferOwnership(0);   //AI이므로 방장한테 넘김
+            CameraManager.Instance.FindNextPlayer();    //다른 유저 관전
         }
     }
 
 
 
-    //CharacterAvater CreateCharacterAvater(Define.CharacterType characterType, string avaterID, PlayerController playerController, FogOfWarController fogOfWarController)
-    //{
-    //    var characterAvater = Managers.Spawn.CharacterAvaterSpawn(characterType,avaterID).GetComponent<CharacterAvater>();
-    //    characterAvater.transform.ResetTransform(this.transform);
-    //    characterAvater.transform.localScale = Vector3.one * 2;
-    //    playerController.character_Base.characterAvater = characterAvater;
-    //    //playerController.character_Base = character_Base;
-    //    //character_Base.playerController = playerController;
-    //    //character_Base.CreateAvater(avaterID);
-    //    //go.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-    //    fogOfWarController._hideInFog.ClearRenders();
-    //    //fogOfWarController.AddHideRender(character_Base.renderers);
-
-    //    return characterAvater;
-    //}
-
-    //void SetupSkill(Character_Base character_Base , PlayerController playerController)
-    //{
-    //    playerController.inputBase.mainInput
-    //}
-
-    //void CreaterAvater(string avaterID, PlayerController playerController, FogOfWarController fogOfWarController )
-    //{
-    //    var avater = Managers.Resource.Instantiate($"Character/{avaterID}", this.transform).GetComponent<CharacterAvater>();
-    //    avater.transform.ResetTransform();
-    //    print(avater + "아바타");
-    //    avater.animator.runtimeAnimatorController = GameSetting.Instance.GetRuntimeAnimatorController(playerController.Team);
-    //    fogOfWarController._hideInFog.ClearRenders();
-    //    fogOfWarController.AddHideRender(avater.GetComponentInChildren<SkinnedMeshRenderer>());
-    //}
-
     void SetActiveADNCamera(bool active)
     {
         var mainUI = Managers.UI.SceneUI as UI_Main;
-        //mainUI.FindButton.gameObject.SetActive(active);
-        //mainUI.ADButton.gameObject.SetActive(active);
+        mainUI.FindButton.gameObject.SetActive(active);
+        mainUI.ADButton.gameObject.SetActive(active);
     }
 
 
@@ -120,7 +127,8 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         {
             Destroy(agent);
         }
-        if (CameraManager.Instance.Target.ViewID() == this.ViewID())
+        //현재 카메라가 보고있는것이 파괴되엇다면
+        if (CameraManager.Instance.cameraTagerPlayer.ViewID() == this.ViewID())
         {
             CameraManager.Instance.FindNextPlayer();
         }
@@ -135,42 +143,6 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
         }
     }
 
-    //Character_Base GetOrAddCharacterComponent(Define.CharacterType characterType)
-    //{
-    //    Character_Base character_Base ;
-    //    switch (characterType)
-    //    {
-    //        case Define.CharacterType.Bear:
-    //            character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
-    //            break;
-    //        case Define.CharacterType.Bunny:
-    //            character_Base = this.gameObject.GetOrAddComponent<Character_Bunny>();
-
-    //            break;
-    //        case Define.CharacterType.Cat:
-    //            character_Base = this.gameObject.GetOrAddComponent<Character_Cat>();
-
-    //            break;
-    //        //case Define.CharacterType.Dog:
-    //        //    character_Base = this.gameObject.GetOrAddComponent<Character_Dog>();
-
-    //        //    break;
-    //        //case Define.CharacterType.Frog:
-    //        //    character_Base = this.gameObject.GetOrAddComponent<Character_Frog>();
-
-    //        //    break;
-    //        //case Define.CharacterType.Monkey:
-    //        //    character_Base = this.gameObject.GetOrAddComponent<Character_Monkey>();
-
-    //            //break;
-    //        default:
-    //            character_Base = this.gameObject.GetOrAddComponent<Character_Bear>();
-    //            break;
-    //    }
-
-    //    return character_Base;
-    //}
-
     public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
     {
         print("요청");
@@ -179,22 +151,21 @@ public class PlayerSetup : MonoBehaviourPun, IPunInstantiateMagicCallback , IOnP
     //전체 이 인터페이스를 가진 오브젝트 전체실행..
     public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
     {
+        //변경된 오브젝트만 실행
         if (targetView.ViewID != this.ViewID()) return;
         PlayerController playerController = GetComponent<PlayerController>();
 
-        if (this.gameObject.IsValidAI())
+        //방장으로 부터 소유권을 넘겨받은 AI가 아닌 캐릭터라면.
+        if (this.IsMyCharacter())
         {
-            playerController.ChangeOwnerShip();
+            playerController.ChangeOwnerShipOnUser();
+            CameraManager.Instance.SetupcameraTagerPlayer(playerController.transform);
+            SetActiveADNCamera(false);
         }
-        else
+        //타 유저 => 방장으로 넘겨받았을 경우 AI로 전환
+        if(previousOwner.IsMasterClient == false && targetView.Controller.IsMasterClient)
         {
-            playerController.ChangeOwnerShip();
-            if (photonView.IsMine)
-            {
-                CameraManager.Instance.SetupTarget(playerController.transform);
-                SetActiveADNCamera(false);
-            }
-            
+            playerController.ChangeAI();
         }
     }
 

@@ -16,7 +16,8 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
     private Vector3 networkPosition = Vector3.zero; //We lerp towards this
     private Vector3 oldPosition;
     private Vector3 movement;
-    Vector3 n_direction;
+
+    protected Vector3 n_direction;
     float m_distance;
     bool m_firstTake;
     public float SmoothingDelay = 5;
@@ -30,11 +31,11 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
     {
         if (this.photonView.IsMine == false)
         {
+            //ServerView는 해당스크립트에서 리모트 플레이어를 이동시키지않음. 
             if (dataState == DataState.ServerView) return;
             //transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * this.SmoothingDelay);
             transform.position = Vector3.MoveTowards(transform.position, this.networkPosition, m_distance * (3.0f / PhotonNetwork.SerializationRate));
 
-            //transform.position = Vector3.Lerp(transform.position, networkPosition, m_distance * (2.0f / PhotonNetwork.SerializationRate));
             UpdateSmoothRotate(n_direction);
             UpdateRemote();
         }

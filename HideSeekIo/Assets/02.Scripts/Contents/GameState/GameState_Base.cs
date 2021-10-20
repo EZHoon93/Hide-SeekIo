@@ -21,7 +21,7 @@ public abstract class GameState_Base : MonoBehaviourPun
     }
 
 
-    protected void NextScene(Define.GameState gameState , object whoCanWin = null)
+    public void NextScene(Define.GameState gameState , object whoCanWin = null)
     {
         if (isNextScene) return;
         isNextScene = true;

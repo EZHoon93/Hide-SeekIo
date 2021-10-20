@@ -38,6 +38,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public event Action gameStarEventPoster;
     public event Action gameJoin;
     public event Action gameExit;
+
     public event Action<Define.ChattingColor, string> reciveChattingEvent;
     public Dictionary<Define.GameState, Action> StateChangeEventDic = new Dictionary<Define.GameState, Action>();
 
@@ -107,13 +108,13 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void GameExit()
     {
-        if (Managers.Game.myPlayer)
+        var myPlayer = Managers.Game.myPlayer;
+        if (myPlayer)
         {
-            PhotonNetwork.Destroy(Managers.Game.myPlayer.gameObject);
+            myPlayer.GetComponent<PlayerSetup>().RemoveUserPlayerToServer();
         }
         gameExit?.Invoke();
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
-        CameraManager.Instance.ResetCamera();
         InputManager.Instance.SetActiveController(false);
         var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
         if (uiMain)
@@ -134,6 +135,26 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         //base.OnJoinedRoom();
         //PhotonNetwork.IsMessageQueueRunning = true; 
+    }
+
+    /// <summary>
+    /// 방장이 바뀌엇을떄
+    /// </summary>
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        var allLivings =  Managers.Game.GetAllLivingEntity();
+        foreach(var living in allLivings)
+        {
+            if (living == null) continue;   //만약 없는캐릭이라면 
+            if (living.gameObject.IsValidAI())
+            {
+                 var playerController = living.GetComponent<PlayerController>();
+                if (playerController)
+                {
+                    playerController.ChangeAI();
+                }
+            }
+        }
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -161,7 +182,9 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             if (joinUserCount <= 0)
             {
                 //게임에 참여중인 유저가 한명도없다면. => 리셋
-                ChangeRoomStateToServer(Define.GameState.Wait);
+                //ChangeRoomStateToServer(Define.GameState.Wait);
+                Managers.Spawn.GameStateSpawn( Define.GameState.Wait);
+
             }
         }
     }
@@ -194,7 +217,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #endregion
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        print("OnPlayerEnter Room");
         enterUserList?.Invoke(newPlayer);
     }
 
@@ -202,7 +224,15 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        print("OnPlayerLetr Room");
+        if (otherPlayer.TagObject != null)
+        {
+            var playerSetup = otherPlayer.TagObject as GameObject;
+            var playerController = playerSetup.GetComponent<PlayerController>();
+            if (playerController)
+            {
+                playerController.ChangeAI();
+            }
+        }
         leftUserList?.Invoke(otherPlayer);
     }
 
@@ -253,17 +283,34 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     break;
 
             case (byte)Define.PhotonOnEventCode.Warning:
-                print("OnEvent warning");
 
-                //var HT = (Hashtable)photonEvent.CustomData;
-                //int viewID = (int)HT["vid"];
-                //bool hideActive = (bool)HT["har"];
-
-                //var playerController = Managers.Game.GetLivingEntity(viewID).GetComponent<PlayerController>();
-                //if (playerController)
-                //{
-                //    //playerController.WarningToServer(hideActive);
-                //}
+                break;
+            case (byte)Define.PhotonOnEventCode.TeamSelect:
+                var HT3 = (Hashtable)photonEvent.CustomData;
+                var seekerArray = (int[] ) HT3["se"];
+                foreach (var seekrer in seekerArray)
+                {
+                    var selectplayer = Managers.Game.GetLivingEntity(seekrer).GetComponent<PlayerController>();
+                    if (selectplayer)
+                    {
+                        selectplayer?.ChangeTeam(Define.Team.Seek);
+                    }
+                }
+                var hiderArray =  Managers.Game.GetAllHiderList();
+                foreach(var hider in hiderArray)
+                {
+                    if (hider)
+                    {
+                        var hiderPlayer = hider.GetComponent<PlayerController>();
+                        Managers.StatSelectManager.SetupRandomWeapon(hiderPlayer);
+                        hiderPlayer?.ChangeTeam(Define.Team.Hide);
+                    }
+                }
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    Managers.Game.gameStateController.NextScene(Define.GameState.Gameing);
+                }
+              
 
                 break;
         }
@@ -368,73 +415,46 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         //    Managers.Game.myPlayer.GetComponent<LivingEntity>().OnDamage(0, 3, UnityEngine.Vector3.zero);
         //}
 
-        //if (Input.GetKeyDown(KeyCode.Escape))
-        //{
-        //    Component c = _gameState;
-        //    Destroy(c);
-        //}
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            
+            Destroy(Managers.Game.CurrentGameScene.gameMissionController);
+        }
 
 
-        //if (Input.GetKeyDown(KeyCode.O))
-        //{
-        //    Managers.Game.myPlayer.ChangeTeam(Define.Team.Seek);
-        //}
+        if (Input.GetKeyDown(KeyCode.O))
+        {
 
-        //if (Input.GetKeyDown(KeyCode.P))
-        //{
-        //    Managers.Spawn.WeaponSpawn(Define.Weapon.Flash, Managers.Game.myPlayer.playerShooter);
-        //}
+            PhotonNetwork.RemoveRPCs(Managers.Game.myPlayer.photonView);
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+         
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Break();
         }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            //Debug.
-        }
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            //Managers.Game.myPlayer.playerStat.StatPoint++;
-            //object datas = new Hashtable { { "oID", 1 } };
-            var s = new Hashtable { { "a", 1 } ,{ "b", 1 } };
-            object datas2 = new Hashtable { { "oID", 2 }, { "stl", 2 } };
-            //int[] s = {  Managers.Game.myPlayer.photonView.ControllerActorNr};
-            //int[] ss = { Managers.Game.myPlayer.photonView.ControllerActorNr,2 ,3};
-            SendEvent(Define.PhotonOnEventCode.Warning, EventCaching.AddToRoomCacheGlobal, datas2);
-        }
-        //}
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            //Managers.Game.myPlayer.playerStat.StatPoint++;
-            //object datas = new Hashtable { { "oID", 1 } };
-            //object datas2 = new Hashtable { { "oID", 2 } };
-            //object datas2 = new Hashtable { { "oID", 2 }, { "stl", new int[] { 1, 2 } } };
-            //print("제거코드");
-            //var s = new Hashtable { { "a", 1 }, { "b", 1 } };
 
-            //object datas2 = new Hashtable { { "oID", 2 }, { "stl", 1 } };
+     
 
-            ////int[] s = { Managers.Game.myPlayer.photonView.ControllerActorNr };
-            ////int[] ss = { Managers.Game.myPlayer.photonView.ControllerActorNr, 2, 3 };
-
-            //SendEvent(Define.PhotonOnEventCode.Warning, EventCaching.RemoveFromRoomCache, datas2);
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            //Managers.Game.myPlayer.playerStat.StatPoint++;
-            PhotonNetwork.IsMessageQueueRunning = true;
-            print(PhotonNetwork.IsMessageQueueRunning +"변경");
-
-        }
-
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             var myPlayer = Managers.Game.myPlayer;
             if (myPlayer == null) return;
-            var ranType = GetRandomItemID(seekerItemArray);
-            Managers.Spawn.InGameItemSpawn(ranType, myPlayer);
+            myPlayer.playerHealth.OnDamage(0, 40, Vector3.zero);
         }
-
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            var myPlayer = Managers.Game.myPlayer;
+            if (myPlayer == null) return;
+            myPlayer.playerHealth.currHp += 50;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            Managers.Game.gameStateController.NextScene(Define.GameState.End, Define.Team.Hide);
+        }
     }
 
 

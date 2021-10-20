@@ -27,6 +27,17 @@ public class StatSelectManager
         return resultArray;
     }
 
+    public Define.Weapon[] RandomSelectOnlyWeapon()
+    {
+        var enumArray = Util.EnumToArray<Define.Weapon>();
+        //enumArray.Select
+        var resultArray = (from e in enumArray
+                           where (int)e > (int)Define.Weapon.Hammer
+                           select e).OrderBy(g => Guid.NewGuid()).Take(initSelectSkillCount).ToArray();
+        return resultArray;
+    }
+
+
     public void PostEvent_StatDataToServer(PlayerController  playerController, Define.StatType newStat)
     {
         if (playerController.photonView.IsMine == false) return;  //로컬 유저만 실행.
@@ -99,5 +110,26 @@ public class StatSelectManager
         var skillObject = Managers.Resource.Instantiate($"Skill/{skillID}").GetComponent<Skill_Base>();
 
         return skillObject;
+    }
+
+    public void SetupRandomWeapon(PlayerController playerController)
+    {
+        if (playerController.photonView.IsMine == false) return;
+
+        var selectWeaponArray = RandomSelectOnlyWeapon();
+        if (playerController.IsMyCharacter())
+        {
+            var uimain = Managers.UI.SceneUI as UI_Main;
+            uimain.StatController.ShowWeaponList(selectWeaponArray);
+        }
+        //AI
+        else
+        {
+
+        }
+    }
+
+    public void SetupWeapon(PlayerController playerController , Define.Weapon weapon)
+    {
     }
 }

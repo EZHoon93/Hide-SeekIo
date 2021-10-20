@@ -29,6 +29,11 @@ public class ItemSpawnController : MonoBehaviour
 
     public void Clear()
     {
+        foreach(var c  in _createWorldItemList.ToArray())
+        {
+            if (c == null) continue;
+            Managers.Resource.PunDestroy(c);
+        }
         _createWorldItemList.Clear();
     }
 

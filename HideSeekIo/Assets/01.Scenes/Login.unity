@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37312, g: 0.38074034, b: 0.35872716, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1027,7 +1027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &352475681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120,12 +1120,12 @@ MonoBehaviour:
   radiusModifier: 3.5
   positionHorizontal: 0
   positionVertical: 45
-  dynamicPositioning: 0
+  dynamicPositioning: 1
   gravity: 60
   extendRadius: 0
   axis: 0
   boundary: 0
-  deadZone: 0.23
+  deadZone: 0.2
   tapCountOption: 1
   tapCountDuration: 0.5
   targetTapCount: 2
@@ -1687,7 +1687,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &464994393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1780,12 +1780,12 @@ MonoBehaviour:
   radiusModifier: 3.5
   positionHorizontal: 23
   positionVertical: 8
-  dynamicPositioning: 0
+  dynamicPositioning: 1
   gravity: 60
   extendRadius: 0
   axis: 0
   boundary: 0
-  deadZone: 0.23
+  deadZone: 0.2
   tapCountOption: 1
   tapCountDuration: 0.5
   targetTapCount: 2
@@ -2407,7 +2407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &643995640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2500,12 +2500,12 @@ MonoBehaviour:
   radiusModifier: 3.5
   positionHorizontal: 15
   positionVertical: 33
-  dynamicPositioning: 0
+  dynamicPositioning: 1
   gravity: 60
   extendRadius: 0
   axis: 0
   boundary: 0
-  deadZone: 0.23
+  deadZone: 0.2
   tapCountOption: 1
   tapCountDuration: 0.5
   targetTapCount: 2
@@ -3925,9 +3925,9 @@ MonoBehaviour:
   radiusModifier: 3.5
   positionHorizontal: 5
   positionVertical: 10
-  dynamicPositioning: 1
+  dynamicPositioning: 0
   gravity: 60
-  extendRadius: 0
+  extendRadius: 1
   axis: 0
   boundary: 0
   deadZone: 0
@@ -7144,7 +7144,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042075366}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0.2
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -7283,7 +7283,7 @@ MonoBehaviour:
   radiusModifier: 3.5
   positionHorizontal: 2.5
   positionVertical: 5
-  dynamicPositioning: 0
+  dynamicPositioning: 1
   gravity: 60
   extendRadius: 0
   axis: 0
@@ -7294,7 +7294,7 @@ MonoBehaviour:
   targetTapCount: 2
   useTouchInput: 0
   disableVisuals: 0
-  inputTransition: 0
+  inputTransition: 1
   transitionUntouchedDuration: 0.1
   transitionTouchedDuration: 0.1
   useFade: 1
@@ -7583,7 +7583,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c5cd48c0281985f43a2b04c36d496252, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ea6bfa60b32922548b93dcaa071bb20d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7717,7 +7717,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 555
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &2111925198
 RectTransform:
@@ -7761,9 +7761,6 @@ MonoBehaviour:
   settingList:
   - {fileID: 1088092682}
   - {fileID: 2042075367}
-  - {fileID: 643995640}
-  - {fileID: 464994393}
-  - {fileID: 352475681}
 --- !u!1 &2132748863
 GameObject:
   m_ObjectHideFlags: 0

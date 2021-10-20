@@ -11,9 +11,11 @@ public class UI_ControllerJoystick : MonoBehaviour
     public InputType inputType;
     public Vector2 InputVector2 { get; private set; }
     public UltimateJoystick _ultimateJoystick { get; private set; }
-    public MyInput myInput { get; set; }
+    public ControllerInput controllerInput { get; set; }
 
     public UI_CoolTime UI_CoolTime => _uiCoolTime;
+
+    float mag;
 
 
 
@@ -32,40 +34,46 @@ public class UI_ControllerJoystick : MonoBehaviour
 
     void Down()
     {
-        if (myInput == null) return;
+        if (controllerInput == null) return;
         InputVector2 = GetInputVector2();
-        myInput.Call(ControllerInputType.Down, InputVector2);
+        controllerInput.Call(ControllerInputType.Down, InputVector2);
     }
 
     void Up()
     {
 
-        if (myInput == null) return;
-        if (InputVector2.magnitude >= _ultimateJoystick.deadZone)
+        if (controllerInput == null) return;
+        if (InputVector2.magnitude > 0)
         {
-            myInput.Call(ControllerInputType.Up, InputVector2);
+            controllerInput.Call(ControllerInputType.Up, InputVector2);
         }
         InputVector2 = Vector2.zero;
     }
     void Drag()
     {
-        if (myInput == null) return;
-        InputVector2 = GetInputVector2();
-        myInput.Call(ControllerInputType.Drag, InputVector2);
+        if (controllerInput == null) return;
+        var inputVector2 = GetInputVector2();
+
+        float mag = Mathf.Clamp( inputVector2.magnitude - 0.2f , 0,1);
+        InputVector2 = inputVector2.normalized * mag;
+        
+
+        controllerInput.Call(ControllerInputType.Drag, InputVector2);
     }
     void Tap()
     {
-        if (myInput == null) return;
-        myInput.Call(ControllerInputType.Tap, InputVector2);
+        if (controllerInput == null) return;
+        controllerInput.Call(ControllerInputType.Tap, InputVector2);
     }
 
     Vector2 GetInputVector2()
     {
         var inputVector2 = new Vector2(_ultimateJoystick.GetHorizontalAxis(),_ultimateJoystick.GetVerticalAxis());
         var result = UtillGame.GetInputVector2_ByCamera(inputVector2);
+
         return result;
     }
-
+  
     public void StartCoolTime(float coolTime)
     {
         _uiCoolTime.StartCoolTime(coolTime);

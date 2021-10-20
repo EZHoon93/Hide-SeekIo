@@ -75,6 +75,7 @@ public class InputManager : GenricSingleton<InputManager>
         foreach (var joystick in _controllerJoysticks)
             joystick.gameObject.SetActive(active);
 
+        //GetControllerJoystick(InputType.Sub1).gameObject.SetActive(false); //공격 아이템
         GetControllerJoystick(InputType.Sub1).gameObject.SetActive(false); //아이템조이스틱은 Off로시작
         GetControllerJoystick(InputType.Sub2).gameObject.SetActive(false); //아이템조이스틱은 Off로시작
         GetControllerJoystick(InputType.Sub3).gameObject.SetActive(false); //아이템조이스틱은 Off로시작

@@ -18,8 +18,8 @@ namespace FoW
 
         [SerializeField] List<Renderer> _renderers = new List<Renderer>();
 
-        public bool isGrass { get; set; } = false;
-        public bool isGrassDetected { get; set; } = false;
+        public bool isInGrass { get; set; } = false;
+        public bool isGrassDetected { get; set; } = false;  //부쉬안에있는걸 들킨 리모트 오브젝트
         public bool istransSkill { get; set; } = false;
 
         public Action<bool> changeCallBack;
@@ -32,9 +32,9 @@ namespace FoW
         
         private void OnEnable()
         {
-            if (CameraManager.Instance.Target)
+            if (CameraManager.Instance.cameraTagerPlayer)
             {
-                team = CameraManager.Instance.Target.ViewID();
+                team = CameraManager.Instance.cameraTagerPlayer.ViewID();
             }
             CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
             SetActiveRender(false);
@@ -68,7 +68,7 @@ namespace FoW
             }
             else
             {
-                if (isGrass)
+                if (isInGrass)
                 {
                     visible = false;
                 }
@@ -139,9 +139,9 @@ namespace FoW
                 {
                     Color color = r.material.color;
                    
-                    if (CameraManager.Instance.Target)
+                    if (CameraManager.Instance.cameraTagerPlayer)
                     {
-                        var viewTeam = CameraManager.Instance.Target.Team;
+                        var viewTeam = CameraManager.Instance.cameraTagerPlayer.Team;
                         if (viewTeam == team)
                         {
                             if (color != null)

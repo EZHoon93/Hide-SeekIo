@@ -64,7 +64,6 @@ public class GameMissionController : MonoBehaviourPun, IPunInstantiateMagicCallb
         _createServerTime = (float)info.SentServerTime;
         _isPlay = true;
         _mission_Base.OnStart(GetMissionInfo(missionType));
-        print("GameMissionController OnPhotonInstantiate");
     }
     public void OnPreNetDestroy(PhotonView rootView)
     {

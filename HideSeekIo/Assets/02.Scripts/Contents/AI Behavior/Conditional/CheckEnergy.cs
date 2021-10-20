@@ -22,7 +22,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 return TaskStatus.Failure;
             }
 
-            if( _playerController.playerStat.CurrentEnergy >= checkEnergy.Value)
+            if( _playerController.playerShooter.currentEnergy >= checkEnergy.Value)
             {
                 return TaskStatus.Success;
             }

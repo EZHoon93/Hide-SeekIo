@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 using UnityEngine;
 
 /// <summary>
@@ -7,19 +9,19 @@ using UnityEngine;
 /// </summary>
 public class RenderController : MonoBehaviour
 {
-    [SerializeField]  Renderer[] _renderers;
+    [SerializeField]  List< Renderer >_renderers = new List<Renderer>(8);
     LivingEntity _livingEntity;
 
-    public Renderer[] renderers => _renderers;
+    public List<Renderer> renderers => _renderers;
 
     private void Reset()
     {
-        _renderers = GetComponentsInChildren<Renderer>();
+        _renderers = GetComponentsInChildren<Renderer>().ToList();
     }
     [ContextMenu("Setup")]
     public void Setup()
     {
-        _renderers = GetComponentsInChildren<Renderer>();
+        _renderers = GetComponentsInChildren<Renderer>().ToList();
     }
     public void OnPhotonInstantiate(LivingEntity newLivingEntity)
     {
@@ -30,6 +32,7 @@ public class RenderController : MonoBehaviour
 
     public void OnDestroyEvent()
     {
+        print("제거!! ㄷ;스.." + _renderers.Count+ this.gameObject.name);
         _livingEntity.RemoveRenderer(this);
     }
 

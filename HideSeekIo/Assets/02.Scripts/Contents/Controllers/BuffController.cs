@@ -43,8 +43,9 @@ public class BuffController : MonoBehaviourPun, IPunObservable
     }
 
     //재갱신 및 최초
-    public void SetupInfo(Define.BuffType buffType, float createServerTime )
+    public void SetupInfo(Define.BuffType buffType, float createServerTime ,float durationTime)
     {
+        if (buffType == Define.BuffType.Null) return;
         n_createServerTime = createServerTime;
 
         if (_buffBase == null)
@@ -52,7 +53,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             BuffType = buffType;
             _buffBase = BuffManager.Instance.MakeBuffObject(buffType, this.transform);
             _buffBase.Setup(this);
-            n_durationTime = _buffBase.durationTime;
+            n_durationTime = durationTime;
             livingEntity.AddRenderer(_buffBase.renderController);
         }
         Play();
@@ -106,7 +107,7 @@ public class BuffController : MonoBehaviourPun, IPunObservable
             var r_durationTime = (float)stream.ReceiveNext();
 
             if (BuffType == r_BuffType) return;
-            SetupInfo(r_BuffType, r_createServerTime);
+            SetupInfo(r_BuffType, r_createServerTime, r_durationTime);
         }
 
     }

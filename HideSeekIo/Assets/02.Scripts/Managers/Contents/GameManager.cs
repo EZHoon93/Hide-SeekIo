@@ -34,6 +34,7 @@ public class GameManager
         var livArray = _livingEntityDic.Values.ToArray();
         foreach (var liv in livArray)
         {
+            if (liv == null) continue;
             Managers.Resource.PunDestroy(liv);
         }
         _livingEntityDic.Clear();

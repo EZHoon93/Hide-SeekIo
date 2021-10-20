@@ -9,10 +9,12 @@ public class GameScene : BaseScene
     Transform _cameraView;
     protected int _initGameTime = 180;
     protected int _initReadyTime = 5;
-
+    protected int _totSeekerCount = 2;
     public Transform CameraView => _cameraView;
     public int initGameTime => _initGameTime;
     public int initReadyTime => _initReadyTime;
+
+    public int totSeekerCount => _totSeekerCount;
 
 
     public Transform test;
@@ -23,8 +25,6 @@ public class GameScene : BaseScene
     public MainSpawnPoints mainSpawnPoints => _mainSpawnPoints;
     public ItemSpawnManager itemSpawnManager => _itemSpawnManager;
     public SpawnPoint[] sectors => _sectors;
-    public int seekerMaxCount { get; set; } = 1;
-
 
 
     protected readonly int mission1Time = 150;

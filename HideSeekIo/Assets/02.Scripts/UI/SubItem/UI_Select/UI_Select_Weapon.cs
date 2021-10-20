@@ -2,21 +2,18 @@
 
 using UnityEngine;
 
-namespace Assets._02.Scripts.UI.SubItem
+public class UI_Select_Weapon : UI_Select_Base
 {
-    public class UI_Select_Weapon : MonoBehaviour
+    [SerializeField]
+    Define.Weapon _weaponType;
+    public Define.Weapon GetWeaponType() => _weaponType;
+
+    protected override void Click()
     {
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        base.Click();
+        var playerController = Managers.Game.myPlayer;
+        if (!playerController) return;
+        Managers.Spawn.WeaponSpawn(_weaponType, playerController);
+        //Managers.Spawn.WeaponSpawn(Define.Weapon.PoisonBomb, playerController);
     }
 }

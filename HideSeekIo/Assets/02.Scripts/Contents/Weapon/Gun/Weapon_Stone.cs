@@ -5,6 +5,10 @@ using System.Collections;
 public class Weapon_Stone : Weapon, IZoom
 {
     public override WeaponType weaponType => WeaponType.Gun;
+
+    public override HandType handType => HandType.Right;
+
+
     [SerializeField] float _maxDistance = 5;
     int _zoomLayer = 1 << (int)Define.Layer.Wall;
     GameObject _bullet;
@@ -43,36 +47,36 @@ public class Weapon_Stone : Weapon, IZoom
         var direction = endPoint - playerController.transform.position;
         direction = direction.normalized;
         direction.y = playerController.transform.position.y;
-        inputControllerObject.attackDirection = direction;
+        //inputControllerObject.attackDirection = direction;
         StartCoroutine(AttackProcessOnAllClinets(endPoint));
     }
 
     public override void Zoom(Vector2 inputVector)
     {
-        if (inputVector.sqrMagnitude == 0)
-        {
-            uiZoom.lineRenderer.enabled = false;
-            return;
-        }
-        var startPoint = uiZoom.lineRenderer.transform.position + UtillGame.ConventToVector3( inputVector).normalized*0.3f;
-        var endPoint = GetHitPoint(uiZoom.lineRenderer.transform, inputVector);
-        startPoint.y = .5f;
+        //if (inputVector.sqrMagnitude == 0)
+        //{
+        //    uiZoom.lineRenderer.enabled = false;
+        //    return;
+        //}
+        //var startPoint = uiZoom.lineRenderer.transform.position + UtillGame.ConventToVector3( inputVector).normalized*0.3f;
+        //var endPoint = GetHitPoint(uiZoom.lineRenderer.transform, inputVector);
+        //startPoint.y = .5f;
 
-        uiZoom.lineRenderer.SetPosition(0, startPoint);
-        uiZoom.lineRenderer.SetPosition(1, endPoint);
-        uiZoom.lineRenderer.enabled = true;
-        uiZoom.gameObject.SetActive(true);
+        //uiZoom.lineRenderer.SetPosition(0, startPoint);
+        //uiZoom.lineRenderer.SetPosition(1, endPoint);
+        //uiZoom.lineRenderer.enabled = true;
+        //uiZoom.gameObject.SetActive(true);
     }
     IEnumerator AttackProcessOnAllClinets(Vector3 endPoint)
     {
-        inputControllerObject.Call_UseSucessStart();
+        //inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var bullet =  Managers.Pool.Pop(_bullet.gameObject).GetComponent<StoneProjectile>();
         Vector3 startPoint = playerController.playerCharacter.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
         bullet.transform.position = startPoint;
-        bullet.Play(endPoint);
+        //bullet.Play(endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
-        inputControllerObject.Call_UseSucessEnd();
+        //inputControllerObject.Call_UseSucessEnd();
     }
 
     Vector3 GetHitPoint(Transform rayTransform, Vector2 inputVector)

@@ -10,13 +10,19 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy, IPunObservable
 {
     [SerializeField] protected Transform _weaponModel;
-
+    [SerializeField] Transform _leftHand;
+    [SerializeField] Transform _rightHand;
+    [SerializeField] protected UI_ZoomBase _uI_ZoomBase;
+    [SerializeField] int _maxEnergy;
+    [SerializeField] float _energyRegenAmount;
+    [SerializeField] float _attackDistance;
     public enum WeaponType
     {
         Melee,
         Hammer,
         Throw,
-        Gun
+        Gun,
+        Bow
     }
     public enum UseState
     {
@@ -24,7 +30,16 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         NoUse
     }
 
+    public enum HandType
+    {
+        Left,
+        Right
+    }
+
     public abstract WeaponType weaponType { get; }
+    public abstract HandType handType { get; }
+
+
     private UseState _useState;
     public UseState useState
     {
@@ -51,11 +66,21 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
     public float AfaterAttackDelay { get; set; }
     public float AttackDistance { get; set; }
 
+    public int maxEnergy => _maxEnergy;
+
+    public float energyRegenAmount => _energyRegenAmount;
+    public Vector3 attackPoint { get; protected set; }
     public PlayerController playerController { get; private set; }
     public InputControllerObject inputControllerObject { get; set; }
     public Equipmentable equipmentable { get; set; }
     public RenderController renderController { get; protected set; }
-    public UI_Zoom uiZoom { get; set; }
+    public UI_ZoomBase uI_ZoomBase => _uI_ZoomBase;
+
+
+    public Action attackStartCallBack;
+    public Action attackEndCallBack;
+
+    [SerializeField] protected int _damage;
 
 
     /// <summary>
@@ -63,10 +88,10 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
     /// </summary>
     protected virtual void Awake()
     {
-        equipmentable = this.gameObject.GetOrAddComponent<Equipmentable>();
+        equipmentable = GetComponent<Equipmentable>();
         renderController = GetComponent<RenderController>();
         SetupCallBack();
-        equipmentable.Setup(_weaponModel, Define.SkinType.Weapon);
+        equipmentable.Setup(_weaponModel, Define.SkinType.RightHand);
     }
 
 
@@ -90,60 +115,39 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="info"></param>
     public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
-        useState = UseState.NoUse;  //사용하지않음으로설정
         var playerViewID = (int)info.photonView.InstantiationData[0];
         playerController = Managers.Game.GetPlayerController(playerViewID);
-        Managers.InputItemManager.SetupWeapon(playerController, this);
+
+        this.photonView.TransferOwnership(playerController.photonView.CreatorActorNr);
+
         inputControllerObject.OnPhotonInstantiate(playerController);
         equipmentable.OnPhotonInstantiate(playerController);
         renderController.OnPhotonInstantiate(playerController.playerHealth);
-        CreateZoomUI(playerController);  //줌 UI생성
+        playerController.playerShooter.SetupWeapon(this);
     }
+
+
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="rootView"></param>
-
     public virtual void OnPreNetDestroy(PhotonView rootView)
     {
         if (Managers.Resource == null) return;
         inputControllerObject.OnDestroyEvent();
         renderController.OnDestroyEvent();
         equipmentable.OnDestroyEvent();
+        _uI_ZoomBase.SetActiveZoom(false);
         if (playerController)
         {
             playerController.playerHealth.RemoveRenderer(renderController);
-          
-        }
-        if (uiZoom)
-        {
-            uiZoom.transform.SetParent(this.transform);
-            uiZoom.gameObject.SetActive(false);
         }
     }
-
-    protected virtual void CreateZoomUI(PlayerController hasMyController)
-    {
-        if (playerController.IsMyCharacter() == false)
-        {
-            return;
-        }
-        if(uiZoom == null)
-        {
-            uiZoom = Managers.Resource.Instantiate("Contents/ZoomUI", this.transform).GetComponent<UI_Zoom>();
-        }
-        uiZoom.Setup(weaponType,this, hasMyController.transform);
-    }
-
-
 
     public virtual void Zoom(Vector2 inputVector)
     {
-  
     }
  
     public void WeaponChange(int instanceID)
@@ -154,9 +158,6 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="stream"></param>
-    /// <param name="info"></param>
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)

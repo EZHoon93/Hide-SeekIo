@@ -25,7 +25,8 @@ public class Define
     public enum SkinType
     {
         Skin,
-        Weapon,
+        LeftHand,
+        RightHand,
         Hat,
         Bag
     }
@@ -72,15 +73,16 @@ public class Define
     {
         Hammer = 1,
 
-        TNT = 101,
-        Grenade,
+        //TNT = 101,
+        //Grenade,
         Flash,
-        Dynamite,
-        Glue,
+        //Dynamite,
+        //Glue,
         PoisonBomb,
-        Sniper = 201,
-        Stone ,
-        Gun
+        //Sniper = 201,
+        //Stone ,
+        SleepGun,
+        SlingShot
     }
 
 
@@ -95,6 +97,7 @@ public class Define
     public enum Layer
     {
         TransparentFX = 1,
+        Water = 4,
         UI = 5,
         Seeker = 8,
         Hider,
@@ -238,7 +241,9 @@ public class Define
         B_SightUp,
         B_Immune,
         B_SightCurse,
-        B_OverSee
+        B_OverSee,
+        B_Sleep
+
                     
     }
 
@@ -252,7 +257,8 @@ public class Define
     {
          AbilityCode = 111, 
          Projectile,
-         Warning
+         Warning,
+         TeamSelect
     }
 
     public enum ChattingColor

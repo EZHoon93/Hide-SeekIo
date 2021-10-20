@@ -11,18 +11,18 @@ public class CameraManager : GenricSingleton<CameraManager>
 {
 
     //public event Action<int, Define.Team> _cameraViewChange;
-
+    [SerializeField] Transform _mapCenterView;
     public CinemachineVirtualCamera VirtualCamera { get; private set; }
 
     public CinemachineCameraOffset offsetCamera { get; private set; }
     public CinemachineBasicMultiChannelPerlin virtualCameraNoise { get; private set; }
 
 
-
-    public PlayerController Target { get; set; }
+    public PlayerController cameraTagerPlayer { get; set; }
 
     FogOfWarLegacy _fogOfWarLegacy;
     public event Action<int> fogChangeEvent;
+    public event Action<PlayerController> cameraViewChangeEvent;
     int _observerNumber = -1;  //현재 관찰하고있는 유저의 actNumber;
 
 
@@ -58,10 +58,15 @@ public class CameraManager : GenricSingleton<CameraManager>
     private void Start()
     {
         SetupFieldOfView();
-        StartCoroutine(UpdateCameraIsViewTarget());
+        StartCoroutine(UpdateCameraIsViewcameraTagerPlayer());
     }
 
-    IEnumerator UpdateCameraIsViewTarget()
+    public void Clear()
+    {
+        ResetCamera();
+    }
+
+    IEnumerator UpdateCameraIsViewcameraTagerPlayer()
     {
         yield return new WaitForSeconds(1.0f);  //지속적으로 확인 
 
@@ -69,7 +74,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             if (Managers.Game.gameStateController.gameStateType == Define.GameState.GameReady || Managers.Game.gameStateController.gameStateType == Define.GameState.Gameing)
             {
-                if (Target == null)
+                if (cameraTagerPlayer == null)
                 {
                     FindNextPlayer();
                 }
@@ -86,21 +91,32 @@ public class CameraManager : GenricSingleton<CameraManager>
     }
 
 
-    public void SetupTarget(Transform target)
+    public void SetupcameraTagerPlayer(Transform target)
     {
         VirtualCamera.Follow = target.transform;
         offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
         var targetPlayer = target.GetComponent<PlayerController>();
         if (targetPlayer == null) return;
-        Target = targetPlayer;
+        //이전에 관찰하던 플레이어가 있다면
+        if (cameraTagerPlayer)
+        {
+            cameraTagerPlayer.playerGrassDetect.Clear();
+        }
+        cameraTagerPlayer = targetPlayer;
         _fogOfWarLegacy.team = targetPlayer.ViewID();
         fogChangeEvent?.Invoke(targetPlayer.ViewID());
-        ChangeTeam(targetPlayer.Team);
+        ChangeTeamByTargetView(targetPlayer);
     }
 
-    public void ChangeTeam(Define.Team team)
+
+    /// <summary>
+    /// 카메라가 보고 있는 대상의 팀에 따라 변경할것들 변경.
+    /// --- 플레이어들 UI변경 
+    /// --- 팀에따른 보이는 객체 변경
+    /// </summary>
+    public void ChangeTeamByTargetView(PlayerController playerController)
     {
-        if (team == Define.Team.Hide)
+        if (playerController.Team == Define.Team.Hide)
         {
             Camera.main.cullingMask = ~(1 << (int)Define.Layer.SeekerItem | 1 << (int)Define.Layer.UI | 1<<(int)Define.Layer.TransparentFX);
 
@@ -109,6 +125,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             Camera.main.cullingMask = ~(1 << (int)Define.Layer.HiderItem | 1 << (int)Define.Layer.UI | 1 << (int)Define.Layer.TransparentFX);
         }
+        cameraViewChangeEvent?.Invoke(playerController);    //플레이어 UI변경 이벤트 콜백
     }
 
     /// <summary>
@@ -116,7 +133,7 @@ public class CameraManager : GenricSingleton<CameraManager>
     /// </summary>
     public void FindNextPlayer()
     {
-        PlayerController findTarget = null;
+        PlayerController findcameraTagerPlayer = null;
         var livingEntities = Managers.Game.GetAllLivingEntity();
         Array.Sort(livingEntities , (a,b) => (a.ViewID() > b.ViewID() )? -1 : 1 );
         if (livingEntities.Length <= 0) return;  //없으면 X
@@ -125,23 +142,23 @@ public class CameraManager : GenricSingleton<CameraManager>
         {
             if (_observerNumber < i )
             {
-                findTarget = livingEntities[i].GetComponent<PlayerController>();
-                if (findTarget == null)
+                findcameraTagerPlayer = livingEntities[i].GetComponent<PlayerController>();
+                if (findcameraTagerPlayer == null)
                 {
                     i++;
                     continue;
                 }
-                if (Target != null)
+                if (cameraTagerPlayer != null)
                 {
-                    if (Target == findTarget)
+                    if (cameraTagerPlayer == findcameraTagerPlayer)
                     {
-                        findTarget = null;
+                        findcameraTagerPlayer = null;
                         i++;
                         continue;
                     }
                 }
                 _observerNumber = i;
-                SetupTarget(findTarget.transform);
+                SetupcameraTagerPlayer(findcameraTagerPlayer.transform);
                 return;
             }
             i++;
@@ -152,7 +169,7 @@ public class CameraManager : GenricSingleton<CameraManager>
             }
 
 
-        } while (findTarget == null);
+        } while (findcameraTagerPlayer == null);
     }
 
 

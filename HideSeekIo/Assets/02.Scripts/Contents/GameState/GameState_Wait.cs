@@ -11,7 +11,9 @@ public class GameState_Wait : GameState_Base
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info, float createServerTime)
     {
-        CameraManager.Instance.SetupTarget(Managers.Game.CurrentGameScene.CameraView);  //카메라 초기화
+        Managers.Game.Clear();  //게임초기화.
+        //CameraManager.Instance.SetupcameraTagerPlayer(Managers.Game.CurrentGameScene.CameraView);  //카메라 초기화
+        CameraManager.Instance.Clear();
         InputManager.Instance.SetActiveController(false);       //조이스틱 오프 
         uI_Main.ResetTexts();
     }

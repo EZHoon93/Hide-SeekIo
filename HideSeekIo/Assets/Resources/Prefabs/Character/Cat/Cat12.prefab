@@ -2493,7 +2493,7 @@ Transform:
   m_GameObject: {fileID: 1582150874281674}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 4765960466106804}
   - {fileID: 4827883812590236}
@@ -2514,7 +2514,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 02d5ec93278ea5c4cae238841be11363, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -2532,7 +2532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e709b5e9bbd34585ba2392f70762223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 0.8
+  size: 0.6
 --- !u!114 &-2926672850396887482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2547,8 +2547,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessoriesTransform: {fileID: 4153954749276114}
   _headTransform: {fileID: 4037778423400920}
-  _weaponTransform: {fileID: 4715660033341240}
+  _leftHand: {fileID: 0}
+  _rightHand: {fileID: 4715660033341240}
   _renderController: {fileID: 7263836634244006719}
+  _le: {fileID: 0}
+  _ri: {fileID: 0}
+  _weaponPivot: {fileID: 0}
 --- !u!114 &6245868492956204642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3843,8 +3847,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940125148632448}
-  m_LocalRotation: {x: -0.0014577745, y: 0.70714575, z: 0.7070649, w: -0.0014533696}
-  m_LocalPosition: {x: 0.007999935, y: 0.000032936336, z: 0.000000038146972}
+  m_LocalRotation: {x: -0.9478284, y: -0.17441365, z: 0.23957206, w: 0.11750144}
+  m_LocalPosition: {x: 0.219, y: 0.078, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4858580642586734}
@@ -3905,7 +3909,7 @@ Transform:
   m_GameObject: {fileID: 1956513981780384}
   m_LocalRotation: {x: 0, y: 0, z: 0.05697243, w: 0.9983758}
   m_LocalPosition: {x: -0.012421359, y: 1.11022296e-17, z: -1.406225e-17}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 4037778423400920}
   - {fileID: 4509885875351574}

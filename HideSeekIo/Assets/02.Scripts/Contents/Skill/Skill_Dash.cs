@@ -17,7 +17,7 @@ public class Skill_Dash : Skill_Base
     public override void OnPhotonInstantiate(PlayerController playerController)
     {
         inputControllerObject.inputType = playerController.Team == Define.Team.Hide ? InputType.Sub1 : InputType.Sub2;
-        Managers.InputItemManager.SetupSkill(playerController, this);
+        //Managers.InputItemManager.SetupSkill(playerController, this);
         inputControllerObject.OnPhotonInstantiate(playerController);
     }
 

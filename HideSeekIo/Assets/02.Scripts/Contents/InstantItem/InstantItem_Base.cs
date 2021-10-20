@@ -26,7 +26,7 @@ public abstract class InstantItem_Base : MonoBehaviourPun ,IPunInstantiateMagicC
     {
         var playerViewID = (int)info.photonView.InstantiationData[0];
         hasPlayerController = Managers.Game.GetLivingEntity(playerViewID).GetComponent<PlayerController>();
-        Managers.InputItemManager.SetupImmediateGameItem(hasPlayerController, this);
+        //Managers.InputItemManager.SetupImmediateGameItem(hasPlayerController, this);
         _consumItem.OnPhotonInstantiate(hasPlayerController);
         inputControllerObject.OnPhotonInstantiate(hasPlayerController);
     }
@@ -53,7 +53,7 @@ public abstract class InstantItem_Base : MonoBehaviourPun ,IPunInstantiateMagicC
     public virtual void Use(Vector2 inputVector2)
     {
         if (hasPlayerController == null) return;
-        _consumItem?.Use(hasPlayerController, inputControllerObject.inputType);
+        //_consumItem?.Use(hasPlayerController, inputControllerObject.inputType);
         UsePorecess(hasPlayerController);
         Managers.Resource.PunDestroy(this);
     }

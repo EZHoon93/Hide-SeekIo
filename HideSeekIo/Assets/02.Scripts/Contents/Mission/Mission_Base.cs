@@ -17,7 +17,6 @@ public abstract class Mission_Base : MonoBehaviourPun
 
     private void OnEnable()
     {
-        print("On Enable!!! ");
         _uI_Mission = Managers.UI.SceneUI.GetComponent<UI_Main>().Mission;
     }
 

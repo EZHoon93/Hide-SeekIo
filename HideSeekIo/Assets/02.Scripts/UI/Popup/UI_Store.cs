@@ -297,7 +297,7 @@ public class UI_Store : UI_Popup
         }
 
         _currentShowWeaponAvater = showWeaponSkin;
-        _currentShowWeaponAvater.transform.ResetTransform(_currentShowCharacterAvater.weaponTransform.transform);
+        _currentShowWeaponAvater.transform.ResetTransform(_currentShowCharacterAvater.rightHand.transform);
         _currentShowWeaponAvater.gameObject.SetActive(true);
 
         //bool hasSkin = PlayerInfo.CheckUserHasWeaponSkin(key);

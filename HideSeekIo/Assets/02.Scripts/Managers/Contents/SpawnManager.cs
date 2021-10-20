@@ -53,34 +53,30 @@ public class SpawnManager
         PhotonNetwork.InstantiateRoomObject("Player", pos, Quaternion.identity, 0, datas.ToArray()).GetComponent<PlayerController>();
     }
 
-    public GameObject WeaponSpawn(Define.Weapon weapon , PlayerShooter playerShooter)
+    public GameObject WeaponSpawn(Define.Weapon weapon , PlayerController playerController)
     {
-        List<object> datas = new List<object>() { playerShooter.photonView.ViewID }; 
+        List<object> datas = new List<object>() { playerController.photonView.ViewID }; 
         string weaponID = null;
         switch (weapon)
         {
             case Define.Weapon.Hammer:
-                weaponID = "Hammer";
+                weaponID = "Hammer3";
                 datas.Add("Wm01");
                 break;
-            case Define.Weapon.Sniper:
-            case Define.Weapon.Stone:
-                weaponID = $"Gun/{weapon.ToString()}";
+            //case Define.Weapon.Sniper:
+            //case Define.Weapon.Stone:
+            //    weaponID = $"Gun/{weapon.ToString()}";
+            //    break;
+            case Define.Weapon.SleepGun:
+            case Define.Weapon.SlingShot:
+                weaponID = $"Weapon/Straight/{weapon.ToString()}";
                 break;
             default:
-                weaponID = $"ThrowItem/{weapon.ToString()}";
+                //weaponID = $"ThrowItem/{weapon.ToString()}";
+                weaponID = $"Weapon/ThrowItem/{weapon.ToString()}";
                 break;
         }
-
-        if (playerShooter.gameObject.IsValidAI())
-        {
-            return PhotonNetwork.InstantiateRoomObject(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
-        }
-        else
-        {
-            return PhotonNetwork.Instantiate(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
-        }
-
+        return PhotonNetwork.InstantiateRoomObject(weaponID, new Vector3(0, -10, 0), Quaternion.identity, 0, datas.ToArray());
     }
 
 

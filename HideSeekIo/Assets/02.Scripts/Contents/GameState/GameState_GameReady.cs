@@ -3,15 +3,18 @@ using System.Linq;
 
 using Photon.Pun;
 
-using TMPro;
 
 using UnityEngine;
+
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 //바로 바뀌는거 방지를 위한
 public class GameState_GameReady : GameState_Base
 {
 
     public override float remainTime => Managers.Game.CurrentGameScene.initReadyTime;
+
+    int _totSeekerCount => Managers.Game.CurrentGameScene.totSeekerCount;
 
     /// <summary>
     /// GameReady,Start는 게임씬 데이터 이용
@@ -37,102 +40,82 @@ public class GameState_GameReady : GameState_Base
         uI_Main.UpdateCountText(remainTime);
         Managers.Sound.Play("TimeCount", Define.Sound.Effect);
     }
+
+    void Test()
+    {
+        //if (PhotonGameManager.Instacne.testSeeekr)
+        //{
+        //    selectSeekerViewIDLIst.Add(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
+        //    allHiderList.Remove(Managers.Game.myPlayer.playerHealth);
+        //}
+
+        //else
+        //{
+        //    selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
+        //    allHiderList.Add(Managers.Game.myPlayer.playerHealth);
+        //    //var ai = allHiderList[allHiderList.Count - 1].ViewID();
+
+        //    //selectSeekerViewIDLIst.Add(ai); //뷰아이디 등록
+        //}
+    }
     public override void OnTimeEnd()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            var allHiderList = Managers.Game.GetAllHiderList().ToList();
-            List<int> selectSeekerViewIDLIst = new List<int>(10);
-            //for (int i = 0; i < _selectSeekerCount; i++)
-            //{
-            //    int ran = Random.Range(0, allHiderList.Count);
-            //    selectSeekerViewIDLIst.Add(allHiderList[ran].ViewID()); //뷰아이디 등록
-            //    allHiderList.RemoveAt(ran);
-            //}
-
-            //selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-            if (PhotonGameManager.Instacne.testSeeekr)
-            {
-                selectSeekerViewIDLIst.Add(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-                allHiderList.Remove(Managers.Game.myPlayer.playerHealth);
-            }
-
-            else
-            {
-                selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-                allHiderList.Add(Managers.Game.myPlayer.playerHealth);
-                var ai = allHiderList[allHiderList.Count - 1].ViewID();
-                selectSeekerViewIDLIst.Add(ai); //뷰아이디 등록
-            }
-            List<int> sendData = new List<int>();
-            foreach (var s in allHiderList)
-            {
-                sendData.Add(s.ViewID());
-            }
-            photonView.RPC("SelectSeeker", RpcTarget.AllViaServer, selectSeekerViewIDLIst.ToArray(), sendData.ToArray());
+            MakeTeamList(_totSeekerCount);  //술래 정하기
         }
     }
 
-    //시간이 0초일 때
-    //protected override void EndRemainTime()
+    void MakeTeamList(int totSeekerCount)
+    {
+        var allHiderList = Managers.Game.GetAllHiderList().ToList();
+        List<int> selectSeekerViewIDLIst = new List<int>(10);
+
+        for (int i = 0; i < totSeekerCount; i++)
+        {
+            int ran = Random.Range(0, allHiderList.Count);
+            selectSeekerViewIDLIst.Add(allHiderList[ran].ViewID()); //술래로 등록
+            allHiderList.RemoveAt(ran); //숨는팀 목록에서 삭제
+
+        }
+
+
+        Hashtable sendSeekrHashData = new Hashtable()
+            {
+                { "se", selectSeekerViewIDLIst.ToArray()},
+            };
+        PhotonGameManager.Instacne.SendEvent(Define.PhotonOnEventCode.TeamSelect, Photon.Realtime.EventCaching.AddToRoomCacheGlobal, sendSeekrHashData);
+    }
+
+ 
+
+    //[PunRPC]
+    //public void OnSelectSeeker(int[] seekerArray, int[] hiderArray)
     //{
+    //    foreach (var s in seekerArray)
+    //    {
+    //        var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController>();
+    //        if (selectplayer.photonView.IsMine)
+    //        {
+    //            Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, selectplayer);
+    //        }
+    //    }
+    //    foreach (var s in hiderArray)
+    //    {
+    //        var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController>();
+    //        if (selectplayer.photonView.IsMine)
+    //        {
+    //            //var skillObject = Managers.Resource.Instantiate($"Skill/{Define.Skill.Dash}").GetComponent<Skill_Base>(); //지원론
+    //            //skillObject.OnPhotonInstantiate(selectplayer);
+    //            //Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, selectplayer.playerShooter);
+    //        }
+    //    }
     //    if (PhotonNetwork.IsMasterClient)
     //    {
-    //        var allHiderList = Managers.Game.GetAllHiderList().ToList();
-    //        List<int> selectSeekerViewIDLIst = new List<int>(10);
-    //        //for (int i = 0; i < _selectSeekerCount; i++)
-    //        //{
-    //        //    int ran = Random.Range(0, allHiderList.Count);
-    //        //    selectSeekerViewIDLIst.Add(allHiderList[ran].ViewID()); //뷰아이디 등록
-    //        //    allHiderList.RemoveAt(ran);
-    //        //}
-
-    //        //selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-    //        selectSeekerViewIDLIst.Add(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-    //        allHiderList.Remove(Managers.Game.myPlayer.playerHealth);
-    //        List<int> sendData = new List<int>();
-    //        foreach (var s in allHiderList)
-    //        {
-    //            sendData.Add(s.ViewID());
-    //        }
-    //        photonView.RPC("SelectSeeker", RpcTarget.AllViaServer, selectSeekerViewIDLIst.ToArray(), sendData.ToArray());
+    //        NextScene(Define.GameState.Gameing);
     //    }
     //}
 
-    [PunRPC]
-    public void SelectSeeker(int[] seekerArray, int[] hiderArray)
-    {
-        foreach (var s in seekerArray)
-        {
-            var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController>();
-            if (selectplayer.photonView.IsMine)
-            {
-                Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, selectplayer.playerShooter);
-                var skillObject = Managers.Resource.Instantiate($"Skill/{Define.Skill.Dash}").GetComponent<Skill_Base>(); //지원론
-                skillObject.OnPhotonInstantiate(selectplayer);
-            }
-        }
-        foreach (var s in hiderArray)
-        {
-            var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController>();
-            if (selectplayer.photonView.IsMine)
-            {
-                var skillObject = Managers.Resource.Instantiate($"Skill/{Define.Skill.Dash}").GetComponent<Skill_Base>(); //지원론
-                skillObject.OnPhotonInstantiate(selectplayer);
-                //Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, selectplayer.playerShooter);
-            }
-        }
-        if (PhotonNetwork.IsMasterClient)
-        {
-            NextScene(Define.GameState.Gameing);
-        }
-    }
-
-    //public void UpdatePlayerCount()
-    //{
-    //    uI_Main.UpdateHiderCount(Managers.Game.GetHiderCount());
-    //    uI_Main.UpdateHiderCount(Managers.Game.GetSeekerCount());
-    //}
 
 
 

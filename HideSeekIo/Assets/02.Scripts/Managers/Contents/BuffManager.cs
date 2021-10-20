@@ -40,7 +40,7 @@ public class BuffManager : GenricSingleton<BuffManager>
     /// 버프 아이템 사용시, 해당 버프가 이미 있는버프인지 체크, =>있는버프 재갱신 없는버프 => 생성
     /// 
     /// </summary>
-    public void CheckBuffController(LivingEntity livingEntity, Define.BuffType buffType = Define.BuffType.Null)
+    public void CheckBuffController(LivingEntity livingEntity, Define.BuffType buffType = Define.BuffType.Null, float durationTime = -1 )
     {
         if (livingEntity == null) return;
         if (livingEntity.Dead) return;
@@ -53,7 +53,7 @@ public class BuffManager : GenricSingleton<BuffManager>
             buffController = MakeBuffController(livingEntity);
             AddBuffController(livingEntity, buffController);
             buffController.SetupLivingEntitiy(livingEntity);
-            buffController.SetupInfo(buffType, createServerTime);
+            buffController.SetupInfo(buffType, createServerTime , durationTime);
         }
         else
         {

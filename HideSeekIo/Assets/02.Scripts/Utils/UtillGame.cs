@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Data;
+using System.Collections.Generic;
 
 public static class UtillGame
 {
@@ -97,7 +98,7 @@ public static class UtillGame
         return true;
     }
 
-    public static void GetHitZoom(Transform attackStart , Vector3 endPoint )
+    public static Vector3 GetHitZoom(Transform attackStart , Vector3 endPoint )
     {
         Plane playerPlane = new Plane(Vector3.up, 0);
 
@@ -109,9 +110,9 @@ public static class UtillGame
         {
             targetPoint = ray.GetPoint(hitDist);
             center = (attackStart.transform.position + targetPoint) * 0.5f;
-            center.y -= 2.0f;
+            center.y += 1.0f;
             RaycastHit hitInfo;
-            if (Physics.Linecast(attackStart.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Wall))
+            if (Physics.Linecast(attackStart.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Water))
             {
                 targetPoint = hitInfo.point;
             }
@@ -120,65 +121,56 @@ public static class UtillGame
         {
             targetPoint = attackStart.transform.position;
         }
-
+        targetPoint.y = 0;
+        return targetPoint;
     }
-    public static void ZoomByLinerender()
-    {
-        //if (inputVector.sqrMagnitude == 0)
-        //{
-        //    zoomLineRenderer.enabled = false;
-        //    //playerUI.GetDamageUI().gameObject.SetActive(false);
-        //    return;
-        //}
-        //var ve = this.transform.position;
-        //ve.y = 4;
-        //Plane playerPlane = new Plane(Vector3.up*3, ve);
-        //Vector3 theArc;
-        //Vector3 center;
-        //Vector3 targetPoint;
-        //var temp = new Vector3(inputVector.x, 0, inputVector.y);  //direct 변환을 위해 사용
-        ////_attackPlayer.CenterPivot.localPosition = inputVector.normalized * 0.4f;
-        //var target = this.transform.position + (temp * 5); //타겟범위
-        //float hitdist; // out 값.
-
-        ////레이캐스트
-        //Ray ray = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(target));
-        //targetPoint = Vector3.zero;
-        //if (playerPlane.Raycast(ray, out hitdist))
-        //{
-        //    targetPoint = ray.GetPoint(hitdist);
-        //    center = (_attackPlayer.CenterPivot.position + targetPoint) * 0.5f;
-        //    center.y -= 0.5f + y;
-        //    RaycastHit hitInfo;
-        //    if (Physics.Linecast(_attackPlayer.CenterPivot.position, targetPoint, out hitInfo, 1 << (int)Define.Layer.Wall))
-        //    {
-        //        targetPoint = hitInfo.point;
-        //    }
-        //}
-        //else
-        //{
-        //    targetPoint = this.transform.position;
-        //    center = Vector3.zero;
-        //}
-        ////targetPoint.y = 0;
-        ////playerUI.UpdateDamageUI(targetPoint, 5);   //타겟 위치 UI 표시
-        //print(targetPoint);
-        //Vector3 RelCenter = _attackPlayer.CenterPivot.position - center;
-        //Vector3 aimRelCenter = targetPoint - center;
-        //for (float index = 0.0f, interval = -0.0417f; interval < 1.0f;)
-        //{
-        //    theArc = Vector3.Slerp(RelCenter, aimRelCenter, interval += 0.0417f);
-        //    zoomLineRenderer.SetPosition((int)index++, theArc + center);
-        //}
-        //var s = targetPoint;
-        //s.y = 0;
-        //zoomLineRenderer.SetPosition(24, s);
-
-
-        //zoomLineRenderer.enabled = true;
-    }
-
+ 
   
+    public static Vector3 GetStraightHitPoint(Transform startTransform, Vector2 inputVector, float distance)
+    {
+        RaycastHit hit;
+        Vector3 hitPosition;
+        Vector3 start = startTransform.position;
+        start.y = 0.5f;
+        Vector3 direction = ConventToVector3(inputVector).normalized;
+        if (Physics.Raycast(start, direction, out hit, distance, 1 << (int)Define.Layer.Wall))
+        {
+            hitPosition = hit.point;
+            hitPosition.y = startTransform.transform.position.y;
+        }
+        else
+        {
+            hitPosition = start + direction * distance;
+        }
+        hitPosition.y = 0.5f;
+        return hitPosition;
+    }
+
+    public static Vector3 GetCurveHitPoint(Plane plane,Transform startTransform, Vector2 inputVector2, float distance)
+    {
+        var startPoint = startTransform.position;
+        var endPoint = startTransform.position + new Vector3(inputVector2.x, 0, inputVector2.y) * distance  ;
+
+        var ray = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(endPoint));
+        Vector3 targetPoint = Vector3.zero;
+        float hitDist;
+
+        if (plane.Raycast(ray, out hitDist))
+        {
+            targetPoint = ray.GetPoint(hitDist);
+            RaycastHit hitInfo;
+            if (Physics.Linecast(startPoint, targetPoint, out hitInfo, 1 << (int)Define.Layer.Ground))
+            {
+                targetPoint = hitInfo.point;
+            }
+        }
+        else
+        {
+            targetPoint = endPoint;
+        }
+        return targetPoint;
+    }
+
 
     // 네브 메시 위의 랜덤한 위치를 반환하는 메서드
     // center를 중심으로 distance 반경 안에서 랜덤한 위치를 찾는다.
@@ -220,6 +212,24 @@ public static class UtillGame
         }
     }
 
+    public static List<Collider> FindInRange(Transform center, float radius, LayerMask attackLayer , float angle = 360) 
+    {
+        Collider[] colliders = new Collider[16];
+        var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
+        List<Collider> resultList = new List<Collider>(16);
+        if (hitCount > 0)
+        {
+            for (int i = 0; i < hitCount; i++)
+            {
+                if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
+                {
+                    resultList.Add(colliders[i] );
+                }
+            }
+
+        }
+        return resultList;
+    }
     public static void DamageInRange(Vector3 center, float radius, int damage, int damagerViewID,
         LayerMask attackLayer)
     {
@@ -244,16 +254,13 @@ public static class UtillGame
         LayerMask attackLayer, float angle = 360)
     {
         Collider[] colliders = new Collider[10];
-
         var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
-        Debug.Log(hitCount);
         if (hitCount > 0)
         {
             for (int i = 0; i < hitCount; i++)
             {
                 if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
                 {
-                    Debug.Log(colliders[i].gameObject.name + "각도안..");
                     var damageable = colliders[i].gameObject.GetComponent<IDamageable>();
                     if (damageable != null)
                     {
@@ -270,24 +277,20 @@ public static class UtillGame
         }
     }
     public static void BuffInRange(Transform center, float radius, Define.BuffType buffType, int damagerViewID,
-        LayerMask attackLayer, float angle = 360)
+        LayerMask attackLayer, float durationTime, float angle = 360)
     {
         Collider[] colliders = new Collider[10];
 
         var hitCount = Physics.OverlapSphereNonAlloc(center.position, radius, colliders, attackLayer);
         if (hitCount > 0)
         {
-            Debug.Log($"{hitCount} 힛");
             for (int i = 0; i < hitCount; i++)
             {
                 if (IsTargetOnSight(center, colliders[i].transform, angle, attackLayer))
                 {
-                    Debug.LogError("시야 안 " + colliders[i].name);
-
                 }
                 else
                 {
-                    Debug.LogError("시야 밖 " + colliders[i].name);
 
                 }
                 var livingEntity = colliders[i].gameObject.GetComponent<LivingEntity>();
@@ -296,7 +299,7 @@ public static class UtillGame
                     //로컬캐릭이 실행
                     if (livingEntity.photonView.IsMine)
                     {
-                        BuffManager.Instance.CheckBuffController(livingEntity, buffType);
+                        BuffManager.Instance.CheckBuffController(livingEntity, buffType , durationTime);
 
                     }
                 }
@@ -316,7 +319,6 @@ public static class UtillGame
 
         var direction = endPoint - startPoint;
 
-        Debug.LogError(Vector3.Angle(direction, center.forward) + "각도" + target.name);
 
         if (Vector3.Angle(direction, center.forward) > angle * 0.5f)
         {
@@ -358,4 +360,24 @@ public static class UtillGame
 
         return direction;
     }
+    /// <summary>
+    /// 해당지점 근처로부터 건널수있는 위치를 찾을때까지 반복
+    /// </summary>
+    public static Vector3 GetPointOnNavMeshLoop(Vector3 center)
+    {
+        // center를 중심으로 반지름이 maxDinstance인 구 안에서의 랜덤한 위치 하나를 저장
+        // Random.insideUnitSphere는 반지름이 1인 구 안에서의 랜덤한 한 점을 반환하는 프로퍼티
+        float distance = 0;
+        NavMeshHit hit;
+        while (true)
+        {
+            Vector3 randomPos = Random.insideUnitSphere * distance + center;
+            if (NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas))
+            {
+                return hit.position;
+            }
+            distance += 0.5f;
+        }
+    }
+
 }
