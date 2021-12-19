@@ -218,9 +218,11 @@ namespace Photon.Pun
                 }
 
                 Player prevOwner = this.Owner;
-                this.ownerActorNr = value;
-                this.Owner = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(this.ownerActorNr, true);
-                this.AmOwner = PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == value;
+
+                this.Owner = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(value, true);
+                this.ownerActorNr = this.Owner != null ? this.Owner.ActorNumber : value;
+
+                this.AmOwner = PhotonNetwork.LocalPlayer != null && this.ownerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
 
                 this.UpdateCallbackLists();
                 if (!ReferenceEquals(this.OnOwnerChangeCallbacks, null))
@@ -245,6 +247,10 @@ namespace Photon.Pun
                 Player prevController = this.Controller;
 
                 this.Controller = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(value, true);
+                if (this.Controller != null && this.Controller.IsInactive)
+                {
+                    this.Controller = PhotonNetwork.MasterClient;
+                }
                 this.controllerActorNr = this.Controller != null ? this.Controller.ActorNumber : value;
 
                 this.IsMine = PhotonNetwork.LocalPlayer != null && this.controllerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
@@ -293,6 +299,11 @@ namespace Photon.Pun
                 {
                     Debug.LogWarning("Changing a ViewID while it's in use is not possible (except setting it to 0 (not being used). Current ViewID: " + this.viewIdField);
                     return;
+                }
+                
+                if (value == 0 && this.viewIdField != 0)
+                {
+                    PhotonNetwork.LocalCleanPhotonView(this);
                 }
 
                 this.viewIdField = value;
@@ -353,89 +364,8 @@ namespace Photon.Pun
             this.lastOnSerializeDataSent = null;
         }
 
-
-
-        /// Called in PhotonHandler.OnPlayerEnteredRoom
-        internal void ResetOwnership()
-        {
-            //if (this.CreatorActorNr == 0)
-            //{
-            //    this.SetOwnerInternal(null, 0);
-            //}
-            //else
-            //{
-            //    // Offline Mode or just offline edge cases... just set to null.
-            //    if (ReferenceEquals(PhotonNetwork.CurrentRoom, null))
-            //    {
-            //        this.SetOwnerInternal(null, this.CreatorActorNr);
-            //    }
-            //    else
-            //    {
-            //        this.SetOwnerInternal(PhotonNetwork.CurrentRoom.GetPlayer(this.CreatorActorNr), this.CreatorActorNr);
-            //    }
-            //}
-        }
-
-        ///// <summary>
-        ///// Set the owner of an object manually. This is exposed for developers who are handling ownership with their own code
-        ///// rather than using the photonView.RequestOwnership and photoneView.TransferOwnership() methods.
-        ///// </summary>
-        //public void SetOwnerInternal(Player newOwner, int newOwnerId)
-        //{
-        //    this.ownerActorNr = newOwnerId;
-
-        //    //// If this is the first set, run regardless of change, otherwise exit if this is not changing the owner.
-        //    //if ((this.ownershipCacheIsValid & OwnershipCacheState.OwnerValid) != 0)
-        //    //{
-        //    //    if (this.ownerActorNr == newOwnerId)
-        //    //    {
-        //    //        RebuildControllerCache(false);
-        //    //        return;
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    this.ownershipCacheIsValid = OwnershipCacheState.OwnerValid;
-        //    //}
-
-        //    //Player prevOwner = this.owner;
-        //    //this.owner = newOwner;
-        //    //this.ownerActorNr = newOwnerId;
-        //    //this.AmOwner = newOwner == PhotonNetwork.LocalPlayer;
-
-        //    //this.UpdateCallbackLists();
-
-        //    //if (newOwner != prevOwner)
-        //    //    if (!ReferenceEquals(this.OnOwnerChangeCallbacks, null))
-        //    //        for (int i = 0, cnt = this.OnOwnerChangeCallbacks.Count; i < cnt; ++i)
-        //    //            this.OnOwnerChangeCallbacks[i].OnOwnerChange(newOwner, prevOwner);
-
-        //    //RebuildControllerCache(true);
-        //}
-
-        ///// Called by NetMaster.ReceiveMessage
-        //public void SetControllerInternal(int newControllerId)
-        //{
-        //    this.controllerActorNr = newControllerId;
-
-        //    //Player newController = PhotonNetwork.CurrentRoom.GetPlayer(newControllerId);
-        //    //Player prevController = this.controller;
-
-        //    //this.controller = newController;
-        //    //this.controllerActorNr = newControllerId;
-        //    //this.amController = newController == PhotonNetwork.LocalPlayer;
-
-        //    //this.ownershipCacheIsValid |= OwnershipCacheState.ControllerValid;
-
-        //    //this.UpdateCallbackLists();
-
-        //    //if (this.controller != prevController)
-        //    //    if (!ReferenceEquals(this.OnControllerChangeCallbacks, null))
-        //    //        for (int i = 0, cnt = this.OnControllerChangeCallbacks.Count; i < cnt; ++i)
-        //    //            this.OnControllerChangeCallbacks[i].OnControllerChange(newController, prevController);
-        //}
-
-        /// Called by OnJoinedRoom, OnMasterClientSwitched, OnPlayerEnteredRoom and OnEvent for OwnershipUpdate
+        
+        /// called by OnJoinedRoom, OnMasterClientSwitched, OnPlayerEnteredRoom and OnEvent for OwnershipUpdate
         /// OnPlayerLeftRoom will set a new controller directly, if the controller or owner left
         internal void RebuildControllerCache(bool ownerHasChanged = false)
         {
@@ -451,26 +381,7 @@ namespace Photon.Pun
             {
                 this.ControllerActorNr = this.OwnerActorNr;
             }
-
-            ////    // No changes to the controller or owner - nothing has changed.
-            ////if (!ownerHasChanged && this.ownershipCacheIsValid >= OwnershipCacheState.ControllerValid && ReferenceEquals(this.controller, prevController))
-            ////    {
-            ////    Debug.Log("NothingChanged");
-            ////        return;
-            ////    }
-
-            //this.ownershipCacheIsValid |= OwnershipCacheState.ControllerValid;
-
-            //this.amController = this.controllerActorNr != -1 && this.controllerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
-
-            //this.UpdateCallbackLists();
-
-            //if (this.controller != prevController)
-            //    if (!ReferenceEquals(this.OnControllerChangeCallbacks, null))
-            //        for (int i = 0, cnt = this.OnControllerChangeCallbacks.Count; i < cnt; ++i)
-            //            this.OnControllerChangeCallbacks[i].OnControllerChange(this.controller, prevController);
         }
-
 
 
         public void OnPreNetDestroy(PhotonView rootView)
@@ -592,7 +503,7 @@ namespace Photon.Pun
             }
             else
             {
-            this.ObservedComponents.Clear();
+                this.ObservedComponents.Clear();
             }
 
             this.transform.GetNestedComponentsInChildren<Component, IPunObservable, PhotonView>(force || this.observableSearch == ObservableSearch.AutoFindAll, this.ObservedComponents);

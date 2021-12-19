@@ -1,37 +1,34 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+using Data;
 
 using Photon.Pun;
 
 using UnityEngine;
 
-public class GameScene : BaseScene
+public abstract class GameScene : BaseScene
 {
-    Transform _cameraView;
-    protected int _initGameTime = 180;
-    protected int _initReadyTime = 5;
-    protected int _totSeekerCount = 2;
+    [SerializeField] Transform _cameraView;
+    protected Define.GameMode _gameMode;
     public Transform CameraView => _cameraView;
-    public int initGameTime => _initGameTime;
-    public int initReadyTime => _initReadyTime;
+    public abstract int initReadyTime { get; }
+    public abstract int initGameTime { get; }
+    public abstract int totSeekerCount { get; }
+    public abstract int maxPlayerCount { get; }
 
-    public int totSeekerCount => _totSeekerCount;
 
-
-    public Transform test;
     [SerializeField] MainSpawnPoints _mainSpawnPoints;
     [SerializeField] ItemSpawnManager _itemSpawnManager;
     [SerializeField] SpawnPoint[] _sectors;
-
+    [SerializeField] MapController _mapController;
     public MainSpawnPoints mainSpawnPoints => _mainSpawnPoints;
     public ItemSpawnManager itemSpawnManager => _itemSpawnManager;
     public SpawnPoint[] sectors => _sectors;
+    public MapController mapController => _mapController;
+    public abstract Define.GameMode gameMode { get; }
 
-
-    protected readonly int mission1Time = 150;
-    protected readonly int mission2Time = 90;
-
-    protected bool mission1ok;    //
-    protected bool mission2ok;    //
 
 
     GameMissionController _gameMissionController;
@@ -50,42 +47,63 @@ public class GameScene : BaseScene
     }
 
 
+
+
+
     protected override void Init()
     {
         base.Init();
         _cameraView = this.transform.Find("cameraView");
         Managers.UI.ShowSceneUI<UI_Main>(); //메인 UI온 
-        Managers.Game.CurrentGameScene = this;
-    }
-    
-    protected virtual void Start()
-    {
+        Managers.Sound.Play("Bgm", Define.Sound.Bgm);
+        mapController.InitMapMaker();   //맵 
+
         if (PhotonNetwork.IsMasterClient)
         {
-
-            if (Managers.Game.gameStateController != null) return;
             Managers.Spawn.GameStateSpawn(Define.GameState.Wait);
         }
-        if((bool)PhotonNetwork.LocalPlayer.CustomProperties["jn"])
+    }
+
+    protected virtual void Start()
+    {
+        Managers.Spawn.UserControllerSpawn();
+        print("Start");
+
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["jn"])
         {
-            PhotonGameManager.Instacne.GameJoin();
+            print("Enter");
+            Managers.Game.NotifyGameEvent(Define.GameEvent.GameEnter);
         }
         else
         {
-            PhotonGameManager.Instacne.GameExit();
-
+            print("Exit");
+            Managers.Game.NotifyGameEvent(Define.GameEvent.GameExit);
         }
-        PhotonGameManager.Instacne.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name}{DynamicTextData.gamaSceneNotice}");
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.Wait, () => Clear());
-
+        Managers.photonGameManager.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name.Substring(1)}{DynamicTextData.gamaSceneNotice}");
+        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => Clear());
     }
     public override void Clear()
     {
-        itemSpawnManager.Clear();
+
     }
 
-    public virtual void OnUpdateTime(int remainGameTime)
+    public virtual void PlayerSpawn()
     {
 
     }
+
+
+    public virtual void PlayerSpawnOnGameReady(Dictionary<int, Dictionary<string, object>> playerDataTable)
+    {
+
+    }
+
+    public virtual void PlayerSpawnOnGameStart(Dictionary<int, Dictionary<string, object>> playerDataTable)
+    {
+
+    }
+
+
+
+
 }

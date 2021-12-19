@@ -23,7 +23,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
     protected override void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Main;
+        inputControllerObject.inputType = InputType.Sub1;
         inputControllerObject.attackType = Define.AttackType.Joystick;
         inputControllerObject.shooterState = PlayerShooter.state.Skill;
         inputControllerObject.AddZoomEvent(Zoom);
@@ -37,7 +37,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
         AttackDelay = 0.25f;
         AfaterAttackDelay = 0.25f;
         AttackDistance = 2.2f;
-        inputControllerObject.InitCoolTime = 0;
+        inputControllerObject.InitCoolTime = 0.5f;
         _damage = 50;
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -124,7 +124,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
         _effect.Play();
         if (playerController.IsMyCharacter())
         {
-            CameraManager.Instance.ShakeCameraByPosition(attackPoint, 0.3f, 0.5f, 0.1f);
+            Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.5f, 0.1f);
             Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         }
         yield return new WaitForSeconds(0.2f);   //대미지 주기전까지 시간
@@ -154,7 +154,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
             if (damageable != null)
             {
                 damageable.OnDamage(playerController.ViewID(), _damage, raycastHit.collider.transform.position);
-                EffectManager.Instance.EffectOnLocal(Define.EffectType.Hit, raycastHit.collider.transform.position, 0);
+                Managers.effectManager.EffectOnLocal(Define.EffectType.Hit, raycastHit.collider.transform.position, 0);
             }
         }
 
@@ -183,11 +183,11 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
 
     void AttackEffect(Vector3 attackPoint)
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0, _damageRange);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0, _damageRange);
         UtillGame.DamageInRange(attackPoint, _damageRange, _damage, playerController.ViewID(), UtillLayer.seekerToHiderAttack);
-        if (CameraManager.Instance.IsView(attackPoint) && playerController.IsMyCharacter())
+        if (Managers.cameraManager.IsView(attackPoint) && playerController.IsMyCharacter())
         {
-            CameraManager.Instance.ShakeCameraByPosition(attackPoint, 0.3f, 0.4f, 0.1f);
+            Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.4f, 0.1f);
             Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         }
     }
@@ -263,7 +263,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
         if (livingEntity)
         {
             livingEntity.OnDamage(playerController.ViewID(), _damage, other.transform.position);
-            EffectManager.Instance.EffectOnLocal(Define.EffectType.Hit, livingEntity.transform.position, 0);
+            Managers.effectManager.EffectOnLocal(Define.EffectType.Hit, livingEntity.transform.position, 0);
         }
     }
 }

@@ -14,7 +14,6 @@ public static class UserDataSystem
     {
         try
         {
-            Debug.Log(userData);
 
             string jsonData = JsonUtility.ToJson(userData, true);
 #if false   //암호화
@@ -63,7 +62,6 @@ public static class UserDataSystem
             string jsonData = File.ReadAllText(path);
 #endif
             var userData = JsonUtility.FromJson<T>(jsonData);
-            //Debug.Log("불러옴" + path);
 
             return userData;
         }

@@ -11,6 +11,9 @@ using UnityEngine;
 
 public class ItemSpawnController : MonoBehaviour
 {
+    ItemSpawnManager _itemSpawnManager;
+
+
     [SerializeField] GameObject _prefab;
     [SerializeField] int _initCount;    //게임 시작 시 한번에 생성할 수 
     [SerializeField] int _maxCount;
@@ -26,7 +29,10 @@ public class ItemSpawnController : MonoBehaviour
     [SerializeField] List<GetWorldItemController> _createWorldItemList = new List<GetWorldItemController>(20);
 
 
-
+    private void Awake()
+    {
+        _itemSpawnManager = this.transform.parent.GetComponentInParent<ItemSpawnManager>();
+    }
     public void Clear()
     {
         foreach(var c  in _createWorldItemList.ToArray())
@@ -46,7 +52,7 @@ public class ItemSpawnController : MonoBehaviour
     private void CreateSpawn()
     {
         _canRemainSpawnTime = _spawnTimeBet;
-        var spawnData = getSpawnEvent();    //랜덤위치,및 랜덤위치의 인덱스정보 가져옴.
+        var spawnData = _itemSpawnManager.GetSpawnPoint();    //랜덤위치,및 랜덤위치의 인덱스정보 가져옴.
         PhotonNetwork.InstantiateRoomObject(_prefab.name ,spawnData.spawnPos  ,Quaternion.identity, 0, new object[] { spawnData.spawnIndex, controllerIndex }  ); 
     }
 

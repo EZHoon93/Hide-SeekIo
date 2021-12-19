@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputManager : GenricSingleton<InputManager>
+public class InputManager : MonoBehaviour
 {
-    //[SerializeField] UltimateJoystick _moveJoystick;
-    //public Vector2 MoveVector { get; private set; }
-
     [SerializeField] UI_ControllerJoystick[] _controllerJoysticks;
-
-
-    //public UltimateJoystick moveJoystick => _moveJoystick;
-
-
-
     public UI_ControllerJoystick GetControllerJoystick(InputType inputType)
     {
         foreach(var joystick in _controllerJoysticks)
@@ -31,32 +23,28 @@ public class InputManager : GenricSingleton<InputManager>
        //return _controllerJoysticks.Single(s => s.inputType == inputType);
     }
 
+ 
+
+
+    public void Init()
+    {
+        foreach (var c in _controllerJoysticks)
+        {
+            c.Init();
+            c.gameObject.SetActive(false);
+        }
+    }
     public void Clear()
     {
         SetActiveController(false);
     }
-    protected override  void Awake()
+
+    public void SetUpControllerInput(KeyValuePair<InputType, ControllerInput> keyValuePair)
     {
-        base.Awake();
-        DontDestroyOnLoad(this.gameObject);
-        Clear();
+        GetControllerJoystick(keyValuePair.Key).controllerInput = keyValuePair.Value;
+        GetControllerJoystick(keyValuePair.Key).SetActiveControllerType(keyValuePair.Value.attackType);
+
     }
-
-
-
-
-    private void Start()
-    {
-        InitSetup();
-    }
-    public void InitSetup()
-    {
-        PlayerInfo.LoadOptionData();
-        GetComponent<UI_InputSetting>().Init();
-        foreach (var c in _controllerJoysticks)
-            c.gameObject.SetActive(false);
-    }
-
     private void Update()
     {
 
@@ -75,25 +63,9 @@ public class InputManager : GenricSingleton<InputManager>
         foreach (var joystick in _controllerJoysticks)
             joystick.gameObject.SetActive(active);
 
-        //GetControllerJoystick(InputType.Sub1).gameObject.SetActive(false); //공격 아이템
-        GetControllerJoystick(InputType.Sub1).gameObject.SetActive(false); //아이템조이스틱은 Off로시작
-        GetControllerJoystick(InputType.Sub2).gameObject.SetActive(false); //아이템조이스틱은 Off로시작
-        GetControllerJoystick(InputType.Sub3).gameObject.SetActive(false); //아이템조이스틱은 Off로시작
     }
 
 
-
-    //public void AddItemByButton(int index, InGameItemController newItem)
-    //{
-    //    _itemControllerJoysticks[index].AddItem(newItem);
-    //    //uI_ItemButtons[index].gameObject.SetActive(true);
-    //    //uI_ItemButtons[index].AddItem(newItem);
-    //}
-    public void RemoveItemButton(int index)
-    {
-        //uI_ItemButtons[index].gameObject.SetActive(false);
-        //uI_ItemButtons[index].RemoveItem();
-    }
 
 
 }

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Bear06
-  m_Shader: {fileID: 4800000, guid: 481153b840b6e408da95e6afbe176397, type: 3}
+  m_Shader: {fileID: 4800000, guid: f7e38193b7f064d7380403618fd8b69e, type: 3}
   m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _CELPRIMARYMODE_SINGLE _SEGMENTED_ON _TEXTUREBLENDINGMODE_MULTIPLY
     _UNITYSHADOWMODE_NONE
   m_LightmapFlags: 4
@@ -109,12 +109,14 @@ Material:
     - _Mode: 3
     - _OcclusionStrength: 1
     - _Offset: 0.5
+    - _OutlineDepthOffset: 0
+    - _OutlineWidth: 2
     - _Parallax: 0.02
     - _RimEnabled: 0
     - _Segmented: 1
-    - _SelfShadingSize: 0.5
+    - _SelfShadingSize: 0.338
     - _SelfShadingSizeExtra: 0.6
-    - _ShadowEdgeSize: 0.05
+    - _ShadowEdgeSize: 0.085
     - _ShadowEdgeSizeExtra: 0.05
     - _ShnIntense: 0
     - _ShnOverlap: 0
@@ -136,7 +138,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorDim: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
+    - _ColorDim: {r: 0, g: 0, b: 0, a: 1}
     - _ColorDimCurve: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _ColorDimExtra: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _ColorDimSteps: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
@@ -144,6 +146,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlatRimColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _FlatSpecularColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
-    - _ShadowColor: {r: 0.8, g: 0.8, b: 1, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShnColor: {r: 1, g: 1, b: 0, a: 1}
     - _UnityShadowColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}

@@ -10,9 +10,9 @@ public class UI_Select_Stat : UI_Select_Base
 
     protected override void Click()
     {
-        base.Click();
-        var playerController = Managers.Game.myPlayer;
-        if (!playerController) return;
-        Managers.StatSelectManager.PostEvent_StatDataToServer(playerController, _statType);
+        //base.Click();
+        //var playerController = Managers.Game.myPlayer;
+        //if (!playerController) return;
+        //Managers.StatSelectManager.PostEvent_StatDataToServer(playerController, _statType);
     }
 }

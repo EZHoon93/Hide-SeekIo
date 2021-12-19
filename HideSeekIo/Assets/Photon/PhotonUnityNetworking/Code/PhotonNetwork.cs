@@ -64,7 +64,7 @@ namespace Photon.Pun
     public static partial class PhotonNetwork
     {
         /// <summary>Version number of PUN. Used in the AppVersion, which separates your playerbase in matchmaking.</summary>
-        public const string PunVersion = "2.32";
+        public const string PunVersion = "2.40";
 
         /// <summary>Version number of your game. Setting this updates the AppVersion, which separates your playerbase in matchmaking.</summary>
         /// <remarks>
@@ -398,6 +398,16 @@ namespace Photon.Pun
             }
         }
 
+        /// <summary>
+        /// Used to enable reaction to CloseConnection events. Default: false.
+        /// </summary>
+        /// <remarks>
+        /// Using CloseConnection is a security risk, as exploiters can send the event as Master Client.
+        ///
+        /// In best case, a game would implement this "disconnect others" independently from PUN in game-code
+        /// with some security checks.
+        /// </remarks>
+        public static bool EnableCloseConnection = false;
 
         /// <summary>
         /// The minimum difference that a Vector2 or Vector3(e.g. a transforms rotation) needs to change before we send it via a PhotonView's OnSerialize/ObservingComponent.
@@ -1015,19 +1025,34 @@ namespace Photon.Pun
         /// </summary>
         static PhotonNetwork()
         {
-            #if !UNITY_EDITOR || (UNITY_EDITOR && !UNITY_2019_4_OR_NEWER)
-            StaticReset();
+            #if !UNITY_EDITOR
+            StaticReset();  // in builds, we just reset/init the client once
+            #else
+
+                #if UNITY_2019_4_OR_NEWER
+                if (NetworkingClient == null)
+                {
+                    NetworkingClient = new LoadBalancingClient();
+                }
+                #else
+                StaticReset();  // in OLDER unity editor versions there is no RuntimeInitializeOnLoadMethod, so call reset
+                #endif
+
             #endif
         }
 
-        #if UNITY_2019_4_OR_NEWER && UNITY_EDITOR
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        #if UNITY_EDITOR && UNITY_2019_4_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         #endif
         private static void StaticReset()
         {
             #if UNITY_EDITOR
-            if (!EditorApplication.isPlayingOrWillChangePlaymode) return;
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return;
+            }
             #endif
+
             // This clear is for when Domain Reloading is disabled. Typically will already be empty.
             monoRPCMethodsCache.Clear();
 
@@ -1127,7 +1152,9 @@ namespace Photon.Pun
 
 
             NetworkingClient.LoadBalancingPeer.TransportProtocol = appSettings.Protocol;
+            NetworkingClient.ExpectedProtocol = null;
             NetworkingClient.EnableProtocolFallback = appSettings.EnableProtocolFallback;
+            NetworkingClient.AuthMode = appSettings.AuthMode;
 
 
             IsMessageQueueRunning = true;
@@ -1169,7 +1196,7 @@ namespace Photon.Pun
 
 
             NetworkingClient.NameServerPortInAppSettings = appSettings.Port;
-			if (!appSettings.IsDefaultNameServer)
+            if (!appSettings.IsDefaultNameServer)
             {
                 NetworkingClient.NameServerHost = appSettings.Server;
             }
@@ -1468,13 +1495,19 @@ namespace Photon.Pun
             }
         }
 
-        /// <summary>Request a client to disconnect (KICK). Only the master client can do this</summary>
-        /// <remarks>Only the target player gets this event. That player will disconnect automatically, which is what the others will notice, too.</remarks>
+        /// <summary>Request a client to disconnect/kick, which happens if EnableCloseConnection is set to true. Only the master client can do this.</summary>
+        /// <remarks>Only the target player gets this event. That player will disconnect if EnableCloseConnection = true.</remarks>
         /// <param name="kickPlayer">The Player to kick.</param>
         public static bool CloseConnection(Player kickPlayer)
         {
             if (!VerifyCanUseNetwork())
             {
+                return false;
+            }
+
+            if (!PhotonNetwork.EnableCloseConnection)
+            {
+                Debug.LogError("CloseConnection is disabled. No need to call it.");
                 return false;
             }
 
@@ -1642,6 +1675,68 @@ namespace Photon.Pun
             opParams.ExpectedUsers = expectedUsers;
 
             return NetworkingClient.OpJoinRandomRoom(opParams);
+        }
+
+
+        /// <summary>
+        /// Attempts to join a room that matches the specified filter and creates a room if none found.
+        /// </summary>
+        /// <remarks>
+        /// This operation is a combination of filter-based random matchmaking with the option to create a new room,
+        /// if no fitting room exists.
+        /// The benefit of that is that the room creation is done by the same operation and the room can be found
+        /// by the very next client, looking for similar rooms.
+        ///
+        /// There are separate parameters for joining and creating a room.
+        ///
+        /// This method can only be called while connected to a Master Server.
+        /// This client's State is set to ClientState.Joining immediately.
+        ///
+        /// Either IMatchmakingCallbacks.OnJoinedRoom or IMatchmakingCallbacks.OnCreatedRoom gets called.
+        ///
+        /// Should the creation on the Master Server, IMatchmakingCallbacks.OnJoinRandomFailed gets called.
+        /// Should the "join" on the Game Server fail, IMatchmakingCallbacks.OnJoinRoomFailed gets called.
+        ///
+        ///
+        /// Check the return value to make sure the operation will be called on the server.
+        /// Note: There will be no callbacks if this method returned false.
+        /// </remarks>
+        /// <returns>If the operation will be sent (requires connection to Master Server).</returns>
+        public static bool JoinRandomOrCreateRoom(Hashtable expectedCustomRoomProperties = null, byte expectedMaxPlayers = 0, MatchmakingMode matchingType = MatchmakingMode.FillRoom, TypedLobby typedLobby = null, string sqlLobbyFilter = null, string roomName = null, RoomOptions roomOptions = null, string[] expectedUsers = null)
+        {
+            if (OfflineMode)
+            {
+                if (offlineModeRoom != null)
+                {
+                    Debug.LogError("JoinRandomOrCreateRoom failed. In offline mode you still have to leave a room to enter another.");
+                    return false;
+                }
+                EnterOfflineRoom("offline room", null, true);
+                return true;
+            }
+            if (NetworkingClient.Server != ServerConnection.MasterServer || !IsConnectedAndReady)
+            {
+                Debug.LogError("JoinRandomOrCreateRoom failed. Client is on "+ NetworkingClient.Server+ " (must be Master Server for matchmaking)" + (IsConnectedAndReady ? " and ready" : " but not ready for operations (State: "+ NetworkingClient.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
+                return false;
+            }
+
+            typedLobby = typedLobby ?? ((NetworkingClient.InLobby) ? NetworkingClient.CurrentLobby : null); // use given lobby, or active lobby (if any active) or none
+
+            OpJoinRandomRoomParams opParams = new OpJoinRandomRoomParams();
+            opParams.ExpectedCustomRoomProperties = expectedCustomRoomProperties;
+            opParams.ExpectedMaxPlayers = expectedMaxPlayers;
+            opParams.MatchingType = matchingType;
+            opParams.TypedLobby = typedLobby;
+            opParams.SqlLobbyFilter = sqlLobbyFilter;
+            opParams.ExpectedUsers = expectedUsers;
+
+            EnterRoomParams enterRoomParams = new EnterRoomParams();
+            enterRoomParams.RoomName = roomName;
+            enterRoomParams.RoomOptions = roomOptions;
+            enterRoomParams.Lobby = typedLobby;
+            enterRoomParams.ExpectedUsers = expectedUsers;
+
+            return NetworkingClient.OpJoinRandomOrCreateRoom(opParams, enterRoomParams);
         }
 
 
@@ -2414,6 +2509,7 @@ namespace Photon.Pun
 
             return null;
         }
+
         private static GameObject NetworkInstantiate(Hashtable networkEvent, Player creator)
         {
 
@@ -3115,7 +3211,7 @@ namespace Photon.Pun
             // don't save the settings before OnProjectUpdated got called (this hints at an ongoing import/load)
             if (!PhotonEditorUtils.ProjectChangedWasCalled)
             {
-                return; 
+                return;
             }
 
             string punResourcesDirectory = PhotonNetwork.FindPunAssetFolder() + "Resources/";
@@ -3128,7 +3224,10 @@ namespace Photon.Pun
                 AssetDatabase.ImportAsset(serverSettingsDirectory);
             }
 
-            AssetDatabase.CreateAsset(photonServerSettings, serverSettingsAssetPath);
+            if (!File.Exists(serverSettingsAssetPath))
+            {
+                AssetDatabase.CreateAsset(photonServerSettings, serverSettingsAssetPath);
+            }
             AssetDatabase.SaveAssets();
 
             // if the project does not have PhotonServerSettings yet, enable "Development Build" to use the Dev Region.

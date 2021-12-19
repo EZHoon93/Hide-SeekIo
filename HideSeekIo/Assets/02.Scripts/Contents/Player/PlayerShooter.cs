@@ -2,6 +2,7 @@
 using UnityEngine;
 using Photon.Pun;
 using System;
+using FoW;
 
 public class PlayerShooter : MonoBehaviourPun
 {
@@ -14,14 +15,15 @@ public class PlayerShooter : MonoBehaviourPun
     public state State { get; protected set; }
     PlayerCharacter _playerCharacter;
     PlayerInput _playerInput;
-    PlayerStat _playerStat;
-    InputControllerObject currentInputController ;
+    InputControllerObject currentInputController;
 
-    //Skill_Base _currentSkill;
+
+    [SerializeField] HideInFog _hideInFog;
     [SerializeField] Transform upperSpine;
     [SerializeField] Transform _weaponPivot;
     [SerializeField] Transform _leftHand;
     [SerializeField] Transform _rightHand;
+    [SerializeField] AudioClip _weaponChangeAudio;  //무기바꿀대 행해지는 사운드
 
 
     Animator _animator => _playerCharacter.animator;
@@ -67,12 +69,18 @@ public class PlayerShooter : MonoBehaviourPun
     {
         State = state.Idle;
     }
+    private void OnDisable()
+    {
+        if (currentInputController)
+        {
+            currentInputController.Zoom(Vector2.zero);
+        }
+    }
 
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         _playerCharacter = GetComponent<PlayerCharacter>();
-        _playerStat = GetComponent<PlayerStat>();
     }
     
     private void LateUpdate()
@@ -126,6 +134,15 @@ public class PlayerShooter : MonoBehaviourPun
         }
     }
 
+    public virtual void OnPreNetDestroy(PhotonView rootView)
+    {
+    }
+
+    public void HandleDeath()
+    {
+   
+    }
+
     public void ChangeOwnerShip()
     {
         
@@ -133,42 +150,20 @@ public class PlayerShooter : MonoBehaviourPun
 
     void RecoveryCurrentEnergy()
     {
-        currentEnergy = Mathf.Clamp(currentEnergy + Time.deltaTime * _energyRegenAmount , 0, maxEnergy);
+        //currentEnergy = Mathf.Clamp(currentEnergy + Time.deltaTime * _energyRegenAmount , 0, maxEnergy);
     }
 
-    void GameStart_SeletRandomSkill()
-    {
-        //로컬유저만 실
-        if (this.photonView.IsMine == false) return;
-        var weaponSelectArray = Managers.StatSelectManager.RandomSelectOnlyWeapon();    //랜덤으로 선택된 3개의 스킬목록
-        foreach (var s in weaponSelectArray)
-            print(s.ToString());
-        //컨트롤 캐릭
-        if (this.IsMyCharacter())
-        {
-            var uimain = Managers.UI.SceneUI as UI_Main;
-            uimain.StatController.ShowWeaponList(weaponSelectArray);
-        }
-        //AI
-        else
-        {
-            //print("AI데이터보냄");
-            //var ranSelect = UnityEngine.Random.Range(0, statSelectArray.Length);
-            //var selectType = statSelectArray[ranSelect];
-            //Managers.StatSelectManager.PostEvent_StatDataToServer(GetComponent<PlayerController>(), selectType);
-
-        }
-    }
-
-
+ 
 
 
     public void ChangeWeapon(Weapon useNewWeapon)
     {
+       
         weaponChangeCallBack?.Invoke(useNewWeapon.GetInstanceID());
-        //currentInputController = useNewWeapon.inputControllerObject;
-        maxEnergy = useNewWeapon.maxEnergy;
-        _energyRegenAmount = useNewWeapon.energyRegenAmount;
+
+        currentInputController = useNewWeapon.inputControllerObject;
+        //maxEnergy = useNewWeapon.maxEnergy;
+        //_energyRegenAmount = useNewWeapon.energyRegenAmount;
         SetupAnimation(useNewWeapon);
     }
 
@@ -178,27 +173,18 @@ public class PlayerShooter : MonoBehaviourPun
         switch (newWeapon.weaponType)
         {
             case Weapon.WeaponType.Gun:
-                //_animator.SetBool("Gun", true);
-                //_animator.SetBool("Melee", false);
                 _animator.CrossFade("Gun", 0.1f);
-
                 break;
             case Weapon.WeaponType.Melee:
-                //_animator.SetBool("Gun", false);
-                //_animator.SetBool("Melee", true);
-
                 break;
             case Weapon.WeaponType.Throw:
-                //_animator.SetBool("Melee", false);
                 _animator.CrossFade("Throw", 0.1f);
                 //_animator.cor
                 break;
             case Weapon.WeaponType.Hammer:
-                //_animator.SetBool("Hammer", true);
                 _animator.CrossFade("Hammer", 0.1f);
                 break;
             case Weapon.WeaponType.Bow:
-                //_animator.SetBool("Hammer", true);
                 _animator.CrossFade("Bow", 0.1f);
                 break;
         }
@@ -208,6 +194,10 @@ public class PlayerShooter : MonoBehaviourPun
     #region Setup 
     public void SetupWeapon(Weapon newWeapon)
     {
+        if (this.IsMyCharacter())
+        {
+            Managers.Sound.Play(_weaponChangeAudio, Define.Sound.Effect);
+        }
         //var playerShooter = playerController.playerShooter;
         newWeapon.transform.ResetTransform(this.transform);
         newWeapon.attackStartCallBack += () => WeaponAttackStart(newWeapon);
@@ -219,22 +209,8 @@ public class PlayerShooter : MonoBehaviourPun
         }
         baseWeapon = newWeapon;
         ChangeWeapon(newWeapon);
-        //currentEnergy = maxEnergy;
         var uiZoom = this.IsMyCharacter() ? true : false;
         baseWeapon.uI_ZoomBase.gameObject.SetActive(uiZoom);
-        //switch (newWeapon.inputControllerObject.inputType)
-        //{
-        //    case InputType.Main:    //술래!!
-            
-        //        if (newWeapon.weaponType == Weapon.WeaponType.Gun)
-        //        {
-
-        //        }
-        //        break;
-        //    case InputType.Sub3:
-
-        //        break;
-        //}
     }
 
     public void SetupInputControllerObject(InputControllerObject newInputControllerObject)
@@ -242,6 +218,7 @@ public class PlayerShooter : MonoBehaviourPun
         var inputType = newInputControllerObject.inputType;
         var attackType = newInputControllerObject.attackType;
         var sprite = newInputControllerObject.sprite;
+        _playerInput.RemoveInputEvent(inputType); //현재 인풋타입에있는것을 없앰..
         if (newInputControllerObject.attackType == Define.AttackType.Button)
         {
             //playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, null);
@@ -255,18 +232,21 @@ public class PlayerShooter : MonoBehaviourPun
         }
         else
         {
-            _playerInput.AddInputEvent(attackType, ControllerInputType.Down, inputType,(input) => { ChangeInputConrollerObject(input, newInputControllerObject); });
+            _playerInput.AddInputEvent(attackType, ControllerInputType.Down, inputType, (input) => { ChangeInputConrollerObject(input, newInputControllerObject); });
             _playerInput.AddInputEvent(attackType, ControllerInputType.Up, inputType, (input) => UseInputControllerObject(input, newInputControllerObject));
         }
-
+        
         _playerInput.SetupControllerInputUI(attackType, inputType, sprite);
     }
 
     #endregion
     public void UseInputControllerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
-        if (this.enabled == false) return;
-        if (this.State != state.Idle || currentEnergy < 1) return;
+
+        if (this.enabled == false || this == null) return;
+        print("Use!!!!" + State + "/" + currentEnergy);
+
+        if (this.State != state.Idle || currentEnergy < -1) return;
         currentInputController = inputControllerObject;
         if (this.IsMyCharacter())
         {
@@ -283,6 +263,7 @@ public class PlayerShooter : MonoBehaviourPun
     }
     public void ChangeInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
+        print("Change!!");
         if(currentInputController != null)
         {
             currentInputController.Zoom(Vector2.zero);
@@ -294,15 +275,18 @@ public class PlayerShooter : MonoBehaviourPun
     {
         if (currentInputController == null) return;
         var currInputType = currentInputController.inputType;
-        var inputVector2 = _playerInput.controllerInputDic[currInputType].inputVector2;
+        var inputVector2 = _playerInput.GetVector2(currInputType);
         currentInputController.Zoom(inputVector2);
     }
 
 
     public virtual void WeaponAttackStart(Weapon attackWeapon)
     {
+        print("WeaponAttackStart!!");
+
         currentEnergy -= 1;
         State = attackWeapon.inputControllerObject.shooterState;
+        _hideInFog.isAttack = true;
         AttackDirection = UtillGame.GetDirVector3ByEndPoint(this.transform, attackWeapon.attackPoint);
         if (attackWeapon.weaponType == Weapon.WeaponType.Hammer)
         {
@@ -323,6 +307,7 @@ public class PlayerShooter : MonoBehaviourPun
                 ChangeWeapon(baseWeapon);
             }
         }
+        _hideInFog.isAttack = false;
         State = state.Idle;
 
     }

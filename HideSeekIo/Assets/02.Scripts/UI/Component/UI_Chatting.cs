@@ -27,9 +27,9 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _openButton.onClick.AddListener(() => ChangeChattingActive(true));
         _closeButton.onClick.AddListener(() => ChangeChattingActive(false));
         _inputField.text = null;
-        PhotonGameManager.Instacne.reciveChattingEvent += UpdateChatting;
-        PhotonGameManager.Instacne.enterUserList += OnPlayerEnteredRoom;
-        PhotonGameManager.Instacne.leftUserList += OnPlayerLeftRoom;
+        Managers.photonGameManager.reciveChattingEvent += UpdateChatting;
+        Managers.photonGameManager.AddEventListenr(Define.InGamePhotonEvent.Left, OnPlayerLeftRoom);
+        Managers.photonGameManager.AddEventListenr(Define.InGamePhotonEvent.Enter, OnPlayerEnteredRoom);
 
 
     }
@@ -83,7 +83,7 @@ public class UI_Chatting : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         if (content.Length > 0)
         {
-            PhotonGameManager.Instacne.photonView.RPC("SendChattingMessageOnServer", Photon.Pun.RpcTarget.All, Define.ChattingColor.Message, content);
+            Managers.photonGameManager.photonView.RPC("SendChattingMessageOnServer", Photon.Pun.RpcTarget.All, Define.ChattingColor.Message, content);
             _inputField.text = null;
         }
     }

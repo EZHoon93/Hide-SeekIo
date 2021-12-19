@@ -16,7 +16,7 @@ public class Skill_Stealth : Skill_Base
     public override void Use(Vector2 inputVector2)
     {
         print(playerController.playerHealth + "!!");
-        BuffManager.Instance.CheckBuffController(playerController.playerHealth, Define.BuffType.B_Stealth);
+        //BuffManager.Instance.CheckBuffController(playerController.playerHealth, Define.BuffType.B_Stealth);
 
     }
 }

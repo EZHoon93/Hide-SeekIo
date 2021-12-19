@@ -22,13 +22,13 @@ public class Buff_Stealth : BuffBase
     public override void ProcessStart()
     {
         _colliderObject.gameObject.SetActive(true);
-        ChangeLayer(_buffController.livingEntity.Team);
-        _buffController.livingEntity.fogController.ChangeTransParentBySkill(true);
+        ChangeLayer(_livingEntity.Team);
+        _livingEntity.fogController.ChangeTransParentBySkill(true);
     }
     public override void ProcessEnd()
     {
         _colliderObject.gameObject.SetActive(false);
-        _buffController.livingEntity.fogController.ChangeTransParentBySkill(false);
+        _livingEntity.fogController.ChangeTransParentBySkill(false);
     }
 
     public void OnListen_TriggerStayCallBack(Collider other)
@@ -37,7 +37,7 @@ public class Buff_Stealth : BuffBase
         //트리거 검출 줄이기
         if (CheckInRange(other.transform))
         {
-            var buffPalyer = _buffController.livingEntity.GetComponent<PlayerController>();
+            var buffPalyer = _livingEntity.GetComponent<PlayerController>();
             if (buffPalyer)
             {
                 buffPalyer.playerUI.ChangeWarining(true);
@@ -48,7 +48,7 @@ public class Buff_Stealth : BuffBase
             {
                 otherPlayer.playerUI.ChangeWarining(true);
             }
-            _buffController.End();
+            //_buffController.End();
         }
     }
 
@@ -89,8 +89,8 @@ public class Buff_Stealth : BuffBase
     {
         var s = target.GetComponent<PlayerController>();
         RaycastHit raycastHit;
-        var startPoint = _buffController.livingEntity.transform.position;
-        var direction =  target.transform.position - _buffController.livingEntity.transform.position;
+        var startPoint = _livingEntity.transform.position;
+        var direction =  target.transform.position - _livingEntity.transform.position;
         startPoint.y = 0.2f;
         direction.y = 0.2f;
         start = startPoint;

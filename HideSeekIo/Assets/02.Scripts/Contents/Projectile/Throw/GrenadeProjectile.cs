@@ -17,7 +17,7 @@ public class GrenadeProjectile : ThrowProjectileObject
         _modelObject.gameObject.SetActive(false);
         _fogOfWarUnit.enabled = true;
         _fogOfWarUnit.team = _attackViewID;
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0,_range);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0,_range);
         Invoke("Push", 1.0f);
 
         var colliderList = UtillGame.FindInRange(this.transform, _range, applyLayer);

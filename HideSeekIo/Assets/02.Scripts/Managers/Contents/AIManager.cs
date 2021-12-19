@@ -6,33 +6,88 @@ using Data;
 using System.Linq;
 using System;
 
-public class AIManager : GenricSingleton<AIManager>
+public class AIManager : MonoBehaviour
 {
-
-
-
-    private void Start()
+    List<int> _nickNameIndexList = new List<int>(16);
+    private void Awake()
     {
-
+        Managers.aIManager = this;
     }
 
-    /// <summary>
-    /// 현재 유
-    /// </summary>
-    /// <param name="count"></param>
-    /// <param name="currentUserInfos"></param> 현재 참currentUserInfos유저들 스킨,등 목록담긴 리스트
+
     public void CreateAI(int count, ref List<SendAllSkinInfo> currentUserInfos)
     {
-        var nameList = AISetting.Instance.aINames.OrderBy(s=>Guid.NewGuid()).Take(count).ToArray();
+        var nameList = AISetting.Instance.aINames.OrderBy(s => Guid.NewGuid()).Take(count).ToArray();
 
         for (int i = currentUserInfos.Count; i < count; i++)  //나머지 자리 AI추가.
         {
-            SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAIInfo();
-            sendAllSkinInfo.nickName = nameList[i];
-            currentUserInfos.Add(sendAllSkinInfo);
+            //SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAIInfo();
+            //sendAllSkinInfo.nickName = nameList[i];
+            //
+            //currentUserInfos.Add(sendAllSkinInfo);
         }
-
-
     }
-    
+
+    public void AddAIInfo(ref List<SendAllSkinInfo> sendAllSkinInfos , int maxPlayerCount)
+    {
+        for (int i = sendAllSkinInfos.Count; i < maxPlayerCount; i++)  //나머지 자리 AI추가.
+        {
+            
+        }
+    }
+    //public void SetupRandomSkinnfo(Dictionary<int, object[]> objectDataDic, int maxPlayerCount)
+    //{
+    //    for(int i = objectDataDic.Count; i < maxPlayerCount; i++)
+    //    {
+    //        objectDataDic.Add(-i, new object[]
+    //        {
+    //            -i,
+    //            (string)GetRandomNickName(),
+    //            (int)Managers.productSetting.GetSkinIndexByType(Define.ProductType.Character) ,
+    //            0,
+    //            0,
+    //            0
+    //        });
+    //    }
+    //}
+
+
+    public void SetupRandomSkinnfo(Dictionary<int, Dictionary<string, object>> playerDataTable, int maxPlayerCount )
+    {
+        for (int i = playerDataTable.Count; i < maxPlayerCount; i++)
+        {
+            playerDataTable.Add(-i, new Dictionary<string, object>()
+            {
+                //["nu"] = -i,        //넘버
+                ["nn"] = GetRandomNickName(),          //닉네임
+                ["te"] = Define.Team.Hide,           //팀
+                ["ch"] = 0,                          //캐릭스킨
+                ["we"] = 0,                        //무기스킨
+                ["ac"] = 0,                        //악세스킨
+            });
+        }
+    }
+    public string GetRandomNickName()
+    {
+        int index;
+        while (true)
+        {
+            index = UnityEngine.Random.Range(0, AISetting.Instance.aINames.Length);
+            if(_nickNameIndexList.Contains(index) == false)
+            {
+                _nickNameIndexList.Add(index);
+                return AISetting.Instance.aINames[index];
+            }
+        }
+    }
+    public SendAllSkinInfo GetSendAllSkinInfo()
+    {
+        SendAllSkinInfo resultInfo = new SendAllSkinInfo() ;
+        resultInfo.avaterKey = 0;
+        //resultInfo.accessoriesSkinID = ProductSetting.Instance.GetRandomSkinName(Define.ProductType.Accessories, null);
+        resultInfo.nickName = GetRandomNickName();
+        resultInfo.autoNumber = -_nickNameIndexList.Count;    //음수로. 
+        resultInfo.team = Define.Team.Hide;
+        return resultInfo;
+    }
 }

@@ -82,13 +82,13 @@ namespace Data
         public string nickName;
         public int level;
         public int coin;
+        public int gem;
         public int exp;
         public int maxExp;
 
-        public List<CharacterUserHasData> characterList;
-        public List<string> weaponList;
-        public List<string> accessoriesList;
-        //초기 생성
+        public List<AvaterSlotInfo> avaterList;
+
+        //최초 생성
         public UserData(string _key, string _nickName)
         {
             key = _key;
@@ -96,17 +96,46 @@ namespace Data
             level = 1;
             coin = 0;
             exp = 0;
+            gem = 0;
             maxExp = 10;
-            weaponList = new List<string>() { "Wm01" };
-            accessoriesList = new List<string>();
-            characterList = new List<CharacterUserHasData>()
+            avaterList = new List<AvaterSlotInfo>()
             {
-                new CharacterUserHasData(Define.CharacterType.Bear, new SkinHasData("Bear01", true), weaponList[0] ),
-                new CharacterUserHasData(Define.CharacterType.Bunny, new SkinHasData("Bunny01", true), weaponList[0]),
-                new CharacterUserHasData(Define.CharacterType.Cat, new SkinHasData("Cat01", true), weaponList[0])
+                new AvaterSlotInfo()
             };
-
         }
+
+        public AvaterSlotInfo GetCurrentAvater()
+        {
+            var index = GetCurrentAvaterIndex();
+
+            if(avaterList.Count > index)
+            {
+                return avaterList[index];
+            }
+            //만약 없으면..
+            return null;
+        }
+
+        public int GetCurrentAvaterIndex()
+        {
+            return PlayerPrefs.GetInt("av");
+        }
+
+        public bool UseNewCharacterAvater(int index)
+        {
+            if(index > avaterList.Count)
+            {
+                //실패 
+                return false;
+            }
+            else
+            {
+                PlayerPrefs.SetInt("av", index);
+
+                return true;
+            }
+        }
+
     }
     [Serializable]
     public class ServerKey
@@ -114,7 +143,7 @@ namespace Data
         public bool isUsing;
         public string avaterSeverKey;
         public string weaponSeverKey;
-
+        public string accesoryKey;
         public ServerKey(string newServerKey, string newWeaponServerKey, bool newUsing)
         {
             avaterSeverKey = newServerKey;
@@ -124,26 +153,19 @@ namespace Data
     }
 
     [Serializable]
-    public class CharacterUserHasData
+    public class AvaterSlotInfo
     {
-        public Define.CharacterType characterType;
+        public string characterAvaterKey;
         public string weaponKey;
         public string accesoryKey;
-        public string etc;
         public bool isSelect;
-        public List<SkinHasData> characterSkinList;
 
-        public CharacterUserHasData(Define.CharacterType _characterType, SkinHasData _skinData, string _weaponKey)
+        public AvaterSlotInfo()
         {
-            characterType = _characterType;
-            characterSkinList = new List<SkinHasData>() { _skinData };
-            weaponKey = _weaponKey;
+            characterAvaterKey = "Ch01";
+            weaponKey = "Wm01";
+            accesoryKey = null;
             isSelect = false;
-        }
-
-        public string GetIsUsingAvater()
-        {
-            return characterSkinList.Find(s => s.isUsing == true).avaterKey;
         }
     }
 
@@ -165,15 +187,15 @@ namespace Data
     [System.Serializable]
     public class OptionData
     {
-        public bool bgmValue;
-        public bool soundValue;
+        public float bgmValue;
+        public float soundValue;
         public bool isLeftHand;
         public List<InputUIInfo> joystickSettings = new List<InputUIInfo>();
         //기본값
         public OptionData()
         {
-            bgmValue = true;
-            soundValue = true;
+            bgmValue = .5f;
+            soundValue = .5f;
             isLeftHand = false;
 
             joystickSettings.Clear();

@@ -13,6 +13,6 @@ public class SoilProjectile : ThrowProjectileObject
     //protected override void Explosion()
     //{
     //    _modelObject.SetActive(false);
-    //    EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
+    //    Managers.effectManager.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
     //}
 }

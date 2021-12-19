@@ -1,106 +1,68 @@
 ﻿
 using Photon.Pun;
 using Photon.Realtime; // 포톤 서비스 관련 라이브러리
-using System;
 using Random = UnityEngine.Random;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+using UnityEditor;
+using DigitalOpus.MB.MBEditor;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
 
-
-    #region SingleTon
-    public static PhotonManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                // 씬에서 GameManager 오브젝트를 찾아 할당
-                _instance = FindObjectOfType<PhotonManager>();
-            }
-
-            // 싱글톤 오브젝트를 반환
-            return _instance;
-        }
-    }
-    private static PhotonManager _instance; // 싱글톤이 할당될 static 변수
-    #endregion
-
-
-
-    readonly string _gameVersion = "1.0.0";
+    readonly string _gameVersion = "3.0.0";
     public Define.ServerState State { get; private set; }
-    
 
 
-    bool _isScret;
-    string _roomName;
 
+    public bool isScret { get; set; } = false;
+    public string roomName { get; set; } = null;
+    public Define.GameMode gameMode { get; set; } = Define.GameMode.Item;
 
-    private void Awake()
+ 
+
+    public void Init()
     {
-        // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
-        if (Instance != this)
+
+    }
+    public void Clear()
+    {
+        if (PhotonNetwork.IsMasterClient)
         {
-            // 자신을 파괴
-            Destroy(this.gameObject);
+            PhotonNetwork.DestroyAll();
         }
-        DontDestroyOnLoad(this.gameObject);
+        //foreach(var photonObject in myPhtonViewDic.Values.ToArray())
+        //{
+        //    if (photonObject)
+        //    {
+        //        Managers.Resource.PunDestroy(photonObject);
+        //    }
+        //}
     }
-
-    //최초 로그인 후 포톤에 접속시 
-    private void Start()
-    {
-        _isScret = false;
-        _roomName = null;
-    }
-
-
+    
     //포톤 서버 연결
     public void Connect()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.AutomaticallySyncScene = false;
         PhotonNetwork.GameVersion = _gameVersion;
         State = Define.ServerState.Connecting;  //연결중
         PhotonNetwork.ConnectUsingSettings();
-
     }
 
-    public void JoinRoom()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            if (string.IsNullOrEmpty(_roomName))
-            {
-                PhotonNetwork.JoinRandomRoom();
-            }
-            else
-            {
-                // 최대 4명을 수용 가능한 빈방을 생성
-                int ran =  Random.Range(0, 999);
-                PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions()
-                {
-                    IsVisible = _isScret,
-                    MaxPlayers = 8,
-                    EmptyRoomTtl = 1,
-                    PlayerTtl = 1,
-                }, TypedLobby.Default); ; ;
-            }
-        }
-        else
-        {
-            PhotonNetwork.ConnectUsingSettings();
-        }
-    }
 
     /// 포톤 서버 접속시 자동 실행
     public override void OnConnectedToMaster()
     {
+        print("연결성공마스터");
+
         //마스터 서버에 접속중이라면
         if (PhotonNetwork.IsConnected)
         {
             // 룸 접속 실행
+            PhotonNetwork.ConnectToRegion("kr");
+
             State = Define.ServerState.Connect;
             
         }
@@ -119,56 +81,32 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
             { "jn", false } 
         });
-    }
-    
-    // (빈 방이 없어)랜덤 룸 참가에 실패한 경우 자동 실행
-    public override void OnJoinRandomFailed(short returnCode, string message)
-    {
-        //print("룸참가실패");
-        // 최대 4명을 수용 가능한 빈방을 생성
-        int ran = Random.Range(0, 999);
-        PhotonNetwork.CreateRoom(ran.ToString(), new RoomOptions { MaxPlayers = 4 });
-    }
-  
-    // 룸에 참가 완료된 경우 자동 실행
-    public override void OnJoinedRoom()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.LoadLevel("Main1");
-            //Managers.Scene.MasterSelectNextMainScene(Define.Scene.Unknown);
-        }
-        else
-        {
-            //var sceneIndex = (int)PhotonNetwork.CurrentRoom.CustomProperties["map"];
-            //Managers.Scene.LoadSceneByIndex(sceneIndex);
-        }
-    }
-    public override void OnConnected()
-    {
-    }
-    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-    {
-        if (propertiesThatChanged.ContainsKey("map"))
-        {
-            var sceneIndex = (int)PhotonNetwork.CurrentRoom.CustomProperties["map"];
-            Managers.Scene.LoadSceneByIndex(sceneIndex);
-        }
 
     }
+
+    public override void OnConnected()
+    {
+        print("연결성공");
+    }
+   
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         //print("마스터 바뀜!!");
     }
 
-
+    public void SetupRoomInfo(Define.GameMode newGameMode, string newRoomName = null, bool newIsScret = false)
+    {
+        gameMode = newGameMode;
+        roomName = newRoomName;
+        isScret = newIsScret;
+    }
 
     //UI에서 다른채널 찾기 및 미입력시 빠른채널찾기
     public void ChangeChannel(string newRoomName= null , bool newIsScret =false)
     {
-        _roomName = newRoomName;
-        _isScret = newIsScret;
+        roomName = newRoomName;
+        isScret = newIsScret;
         PhotonNetwork.LeaveRoom();
     }
 
@@ -176,8 +114,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         //print("OnLeftRoo");
-        Managers.Scene.LoadScene(Define.Scene.Loading);
-        
+        Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
  
 }

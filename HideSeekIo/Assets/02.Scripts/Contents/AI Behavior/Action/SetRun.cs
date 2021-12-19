@@ -21,7 +21,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
                 return TaskStatus.Failure;
             }
 
-            _playerController.playerMove.Run = setValue.Value;
+            //_playerController.playerMove.Run = setValue.Value;
 
             return TaskStatus.Success;
 

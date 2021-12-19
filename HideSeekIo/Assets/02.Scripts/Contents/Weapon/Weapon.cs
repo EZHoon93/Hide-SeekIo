@@ -120,8 +120,12 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         if (info.photonView.InstantiationData == null) return;
         var playerViewID = (int)info.photonView.InstantiationData[0];
         playerController = Managers.Game.GetPlayerController(playerViewID);
-
-        this.photonView.TransferOwnership(playerController.photonView.CreatorActorNr);
+        if (playerController == null) return;
+        
+        if (playerController.photonView.IsMine)
+        {
+            this.photonView.TransferOwnership(playerController.photonView.CreatorActorNr);
+        }
 
         inputControllerObject.OnPhotonInstantiate(playerController);
         equipmentable.OnPhotonInstantiate(playerController);

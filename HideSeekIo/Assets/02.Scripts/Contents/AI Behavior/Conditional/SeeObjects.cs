@@ -64,8 +64,9 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.EZ
                     if (hit.collider.gameObject.layer == seeLayerIndex)
                     {
                         var livingEntity = hit.collider.gameObject.GetComponent<LivingEntity>();
+                        //if (livingEntity == null) continue;
                         //최초 라면 만약 없다면 해당값을 최소값으로 등록
-                        if (livingEntity.Dead) continue;
+                        if (livingEntity == null || livingEntity.Dead) continue;
                         else
                         {
                             if (seeLivingObject.Value == null)

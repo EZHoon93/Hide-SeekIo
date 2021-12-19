@@ -63,8 +63,8 @@ public class Mission_Key : Mission_Base
         if (PhotonNetwork.IsMasterClient == false) return;
         for (int i = 0; i < _initKeyCount; i++)
         {
-            var spawnData = Managers.Game.CurrentGameScene.itemSpawnManager.GetSpawnPoint();
-            PhotonNetwork.InstantiateRoomObject("ItemKey", spawnData.spawnPos, Quaternion.identity, 0, new object[] { spawnData.spawnIndex, -1 });
+            //var spawnData = _gameScene.itemSpawnManager.GetSpawnPoint();
+            //PhotonNetwork.InstantiateRoomObject("ItemKey", spawnData.spawnPos, Quaternion.identity, 0, new object[] { spawnData.spawnIndex, -1 });
         }
     }
 

@@ -9,6 +9,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
     {
         public SharedInputType sharedInputType;
         public SharedControllerInputType sharedControllerInputType;
+        public SharedGameObject sharedTarget;
         PlayerController _playerController;
         public override void OnAwake()
         {
@@ -21,8 +22,16 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity
             {
                 return TaskStatus.Failure;
             }
-
-            _playerController.playerInput.controllerInputDic[sharedInputType.Value].Call(sharedControllerInputType.Value, Vector2.zero);
+            var direction = (sharedTarget.Value.transform.position - this.transform.position).normalized;
+            var inputVector2 = new Vector2(direction.x, direction.z);
+            if (_playerController.playerShooter.baseWeapon)
+            {
+                var distance = Vector3.Distance(sharedTarget.Value.transform.position, this.transform.position);
+                var mag = distance / _playerController.playerShooter.baseWeapon.AttackDistance;
+                inputVector2 = inputVector2 * mag;
+            }
+            _playerController.playerInput.GetControllerInput(sharedInputType.Value).Call(sharedControllerInputType.Value, inputVector2);
+            //p_playerController.playerInput.controllerInputDic[sharedInputType.Value].Call(sharedControllerInputType.Value, inputVector2);
 
             return TaskStatus.Success;
         }

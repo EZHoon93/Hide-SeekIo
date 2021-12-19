@@ -55,8 +55,8 @@ public class StatSelectManager
         };
 
         Debug.Log("AI스킬보냄");
-        PhotonGameManager.Instacne.SendEvent(Define.PhotonOnEventCode.AbilityCode, EventCaching.RemoveFromRoomCache, removeData);
-        PhotonGameManager.Instacne.SendEvent(Define.PhotonOnEventCode.AbilityCode, EventCaching.AddToRoomCacheGlobal, nextHashtable);
+        Managers.photonGameManager.SendEvent(Define.PhotonOnEventCode.AbilityCode, EventCaching.RemoveFromRoomCache, removeData);
+        Managers.photonGameManager.SendEvent(Define.PhotonOnEventCode.AbilityCode, EventCaching.AddToRoomCacheGlobal, nextHashtable);
     }
 
     public void OnEvent_StatDatasByServer(PlayerController playerController, int[] datas)
@@ -117,15 +117,23 @@ public class StatSelectManager
         if (playerController.photonView.IsMine == false) return;
 
         var selectWeaponArray = RandomSelectOnlyWeapon();
-        if (playerController.IsMyCharacter())
+        //if (playerController.IsMyCharacter())
+        //{
+        //    var uimain = Managers.UI.SceneUI as UI_Main;
+        //    uimain.StatController.ShowWeaponList(selectWeaponArray);
+        //}
+        ////AI 랜덤 무기세팅
+        //else
+        //{
+        //    var ran = UnityEngine.Random.Range(0, selectWeaponArray.Length);
+        //    var seelectWeapon = selectWeaponArray[ran];
+        //    Managers.Spawn.WeaponSpawn(seelectWeapon, playerController);    
+        //}
+        if (playerController.photonView.IsMine)
         {
-            var uimain = Managers.UI.SceneUI as UI_Main;
-            uimain.StatController.ShowWeaponList(selectWeaponArray);
-        }
-        //AI
-        else
-        {
-
+            var ran = UnityEngine.Random.Range(0, selectWeaponArray.Length);
+            var seelectWeapon = selectWeaponArray[ran];
+            Managers.Spawn.WeaponSpawn(seelectWeapon, playerController);
         }
     }
 

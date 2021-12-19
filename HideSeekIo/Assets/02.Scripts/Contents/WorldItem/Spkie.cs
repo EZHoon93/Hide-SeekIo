@@ -12,7 +12,7 @@ public class Spkie : MonoBehaviour
     [SerializeField] EasyWallCollider _collider;
     private void Start()
     {
-        PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, Down);
+        Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, Down);
 
     }
 

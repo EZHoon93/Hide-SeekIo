@@ -16,12 +16,12 @@ public class Buff_Sight : BuffBase
 
     public override void ProcessStart()
     {
-        _fogOfWarUnit = _buffController.livingEntity.GetComponentInChildren<FogOfWarUnit>();
+        _fogOfWarUnit = _livingEntity.GetComponentInChildren<FogOfWarUnit>();
         _fogOfWarUnit.circleRadius = 1;
     }
     public override void ProcessEnd()
     {
-        _fogOfWarUnit = _buffController.livingEntity.GetComponentInChildren<FogOfWarUnit>();
+        _fogOfWarUnit = _livingEntity.GetComponentInChildren<FogOfWarUnit>();
         _fogOfWarUnit.circleRadius = 5;
 
     }

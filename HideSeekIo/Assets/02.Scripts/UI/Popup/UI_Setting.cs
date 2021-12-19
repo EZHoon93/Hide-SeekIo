@@ -5,156 +5,65 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class UI_Setting : UI_Popup
 {
-    [SerializeField] Transform _optionPanel;
-    [SerializeField] Transform _editPanel;
+    [SerializeField] Slider _bgmSlider;
+    [SerializeField] Slider _sfxSlider;
 
-    enum Buttons
-    {
-        Confirm,
-        Cancel,
-        Joystick,
-        SaveEdit,
-        CancelEdit,
-        Reset,
-        //BgmOn,
-        //BgmOff,
-        //SfxOn,
-        //SfxOff
-    }
+    [SerializeField] Button _confirmButton;
+    [SerializeField] Button _cancelButton;
+    [SerializeField] Button _joystickEditButton;
+    [SerializeField] Button _languageButton;
 
 
     public override void Init()
     {
         base.Init();
 
-        Bind<Button>(typeof(Buttons));
-        GetButton((int)Buttons.Confirm).gameObject.BindEvent(Confirm);
-        GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
-        GetButton((int)Buttons.Reset).gameObject.BindEvent(Click_Reset);
-        GetButton((int)Buttons.Joystick).gameObject.BindEvent(Click_EditJoysitck);
-        GetButton((int)Buttons.SaveEdit).gameObject.BindEvent(Click_SaveEdit);
-        GetButton((int)Buttons.CancelEdit).gameObject.BindEvent(Click_CancelEdit);
-        //GetButton((int)Buttons.BgmOn).gameObject.BindEvent(Click_OnBgm);
-        //GetButton((int)Buttons.BgmOff).gameObject.BindEvent(Click_OffBgm);
-        //GetButton((int)Buttons.SfxOn).gameObject.BindEvent(Click_OnSfx);
-        //GetButton((int)Buttons.SfxOff).gameObject.BindEvent(Click_OffSfx);
+        _bgmSlider.value = PlayerInfo.optionData.bgmValue;
+        _sfxSlider.value = PlayerInfo.optionData.soundValue;
 
+        _confirmButton.onClick.AddListener(OnClick_Confirm);
+        _cancelButton.onClick.AddListener(OnClick_Cancel);
+        _joystickEditButton.onClick.AddListener(OnClick_JoystickEdit);
+        _languageButton.onClick.AddListener(OnClick_Language);
 
-
-        SetActiveOptionMode(true);
-    }
-    private void OnEnable()
-    {
-   
-        //GetButton((int)Buttons.BgmOn).gameObject.SetActive(PlayerInfo.optionData.bgmValue);
-        //GetButton((int)Buttons.BgmOff).gameObject.SetActive(!PlayerInfo.optionData.bgmValue);
-        //GetButton((int)Buttons.SfxOn).gameObject.SetActive(PlayerInfo.optionData.soundValue);
-        //GetButton((int)Buttons.SfxOff).gameObject.SetActive(!PlayerInfo.optionData.soundValue);
-
-     }
-   
-
-    void SetActiveOptionMode(bool active)
-    {
-        _optionPanel.gameObject.SetActive(active);
-        _editPanel.gameObject.SetActive(!active);
 
     }
 
-    void Confirm(PointerEventData pointerEventData)
+   
+    public void ChangeBgmValue()
+    {
+        Managers.Sound.ChangeBgmValue(_bgmSlider.value);
+    }
+
+    public void ChangeSfxValue()
+    {
+        Managers.Sound.ChangeSfxValue(_sfxSlider.value);
+
+    }
+
+    /// <summary>
+    /// 확인 누르면 데이터저장
+    /// </summary>
+    void OnClick_Confirm()
     {
         Managers.UI.ClosePopupUI();
-        var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
-        if (uiMain)
-        {
-            uiMain.ChangePanel(Define.GameScene.Lobby);
-        }
+        PlayerInfo.optionData.soundValue = _sfxSlider.value;
+        PlayerInfo.optionData.bgmValue = _bgmSlider.value;
+        PlayerInfo.SaveOptionData();
     }
 
-    void Cancel(PointerEventData pointerEventData)
+    void OnClick_Cancel()
     {
         Managers.UI.ClosePopupUI();
     }
 
-    void Click_EditJoysitck(PointerEventData pointerEventData)
+    void OnClick_JoystickEdit()
     {
-        SetActiveOptionMode(false);
-
-
-        var inputSetting = InputManager.Instance.GetComponent<UI_InputSetting>();
-        if (inputSetting)
-        {
-            inputSetting.SetActive(true);
-        }
-        Managers.UI.SceneUI.gameObject.SetActive(false);
+        Managers.UI.ShowPopupUI<UI_JoystickEdit>();
     }
 
-    void Click_Reset(PointerEventData pointerEventData)
+    void OnClick_Language()
     {
-        var inputSetting = InputManager.Instance.GetComponent<UI_InputSetting>();
-        if (inputSetting)
-        {
-            inputSetting.ResetSetting();
-        }
-    }
-
-    void Click_CancelEdit(PointerEventData pointerEventData)
-    {
-        SetActiveOptionMode(true);
-        var inputSetting = InputManager.Instance.GetComponent<UI_InputSetting>();
-        if (inputSetting)
-        {
-            inputSetting.Init();
-            inputSetting.SetActive(false);
-        }
-
-        Managers.UI.SceneUI.gameObject.SetActive(true);
 
     }
-    void Click_SaveEdit(PointerEventData pointerEventData)
-    {
-        SetActiveOptionMode(true);
-        var inputSetting = InputManager.Instance.GetComponent<UI_InputSetting>();
-        if (inputSetting)
-        {
-            inputSetting.Save();
-            inputSetting.SetActive(false);
-        }
-
-        Managers.UI.SceneUI.gameObject.SetActive(true);
-    }
-
-
-    //void Click_OnBgm(PointerEventData pointerEventData)
-    //{
-    //    GetButton((int)Buttons.BgmOn).gameObject.SetActive(false);
-    //    GetButton((int)Buttons.BgmOff).gameObject.SetActive(true);
-
-    //    PlayerInfo.optionData.bgmValue = GetButton((int)Buttons.BgmOn).gameObject.activeSelf;
-    //    PlayerInfo.SaveOptionData();
-    //}
-
-    //void Click_OffBgm(PointerEventData pointerEventData)
-    //{
-    //    GetButton((int)Buttons.BgmOn).gameObject.SetActive(true);
-    //    GetButton((int)Buttons.BgmOff).gameObject.SetActive(false);
-    //    PlayerInfo.optionData.bgmValue = GetButton((int)Buttons.BgmOn).gameObject.activeSelf;
-    //    PlayerInfo.SaveOptionData();
-    //}
-
-    //void Click_OnSfx(PointerEventData pointerEventData)
-    //{
-    //    GetButton((int)Buttons.SfxOn).gameObject.SetActive(false);
-    //    GetButton((int)Buttons.SfxOff).gameObject.SetActive(true);
-    //    PlayerInfo.optionData.soundValue = GetButton((int)Buttons.SfxOn).gameObject.activeSelf;
-    //    PlayerInfo.SaveOptionData();
-    //}
-
-    //void Click_OffSfx(PointerEventData pointerEventData)
-    //{
-    //    GetButton((int)Buttons.SfxOn).gameObject.SetActive(true);
-    //    GetButton((int)Buttons.SfxOff).gameObject.SetActive(false);
-    //    PlayerInfo.optionData.soundValue = GetButton((int)Buttons.SfxOn).gameObject.activeSelf;
-    //    PlayerInfo.SaveOptionData();
-    //}
 }

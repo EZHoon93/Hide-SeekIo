@@ -7,4 +7,11 @@ public class UtillLayer
     public static int seekerToHiderAttack = (1 << (int)Define.Layer.Hider) | (1 << (int)Define.Layer.SeekerItem);
     public static int hiderToSeekerAttack = (1 << (int)Define.Layer.Seeker) | (1 << (int)Define.Layer.HiderItem);
 
+
+    public static int SetupLayerByTeam(Define.Team team)
+    {
+        int layer = team == Define.Team.Hide ? (int)Define.Layer.Hider : (int)Define.Layer.Seeker;
+
+        return layer;
+    }
 }

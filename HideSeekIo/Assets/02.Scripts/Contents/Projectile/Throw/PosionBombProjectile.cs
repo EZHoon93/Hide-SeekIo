@@ -14,7 +14,7 @@ public class PosionBombProjectile : ThrowProjectileObject
     {
         _modelObject.gameObject.SetActive(false);
         _fogOfWarUnit.enabled = true;
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, this.transform.position, 0,_range);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.Curse, this.transform.position, 0,_range);
         //UtillGame.BuffInRange(this.transform, _range, Define.BuffType.B_Direction, _attackViewID, applyLayer,_buffTime);
         Invoke("Push", 1.0f);
 
@@ -30,7 +30,7 @@ public class PosionBombProjectile : ThrowProjectileObject
             var liv = c.GetComponent<LivingEntity>();
             if (liv)
             {
-                BuffManager.Instance.CheckBuffController(liv, Define.BuffType.B_Direction, _buffTime);
+                //BuffManager.Instance.CheckBuffController(liv, Define.BuffType.B_Direction, _buffTime);
             }
             //var buffable = c.GetComponent<IBuffable>();
             //if(buffable != null)

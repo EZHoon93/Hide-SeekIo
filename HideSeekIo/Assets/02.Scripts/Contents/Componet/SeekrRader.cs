@@ -18,7 +18,7 @@ public class SeekrRader : MonoBehaviour
     {
         _myLivingEntity = GetComponentInParent<LivingEntity>();
 
-        this.transform.parent.GetComponent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
+        this.transform.parent.GetComponent<IOnPhotonInstantiate>().onPhotonInstantiateEvent += OnPhotonInstantiate;
     }
     private void OnPhotonInstantiate(PhotonView photonView)
     {

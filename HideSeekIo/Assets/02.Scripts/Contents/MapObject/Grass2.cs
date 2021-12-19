@@ -41,14 +41,14 @@ public class Grass2 : MonoBehaviour
         }
 
         //같은부쉬에 들어왔을 시 
-        if (CameraManager.Instance.cameraTagerPlayer)
+        if (Managers.cameraManager.cameraTagerPlayer)
         {
-            if (playerControllerList.Contains(CameraManager.Instance.cameraTagerPlayer))
+            if (playerControllerList.Contains(Managers.cameraManager.cameraTagerPlayer))
             {
                 enterPlayer.fogOfWarController.hideInFog.isGrassDetected = true;
             }
         }
-        if (CameraManager.Instance.cameraTagerPlayer != enterPlayer) return;
+        if (Managers.cameraManager.cameraTagerPlayer != enterPlayer) return;
         //SeePlayersInGrass(true);
     }
 
@@ -62,7 +62,7 @@ public class Grass2 : MonoBehaviour
         {
             playerControllerList.Remove(exitPlayer);
         }
-        if (CameraManager.Instance.cameraTagerPlayer != exitPlayer) return;
+        if (Managers.cameraManager.cameraTagerPlayer != exitPlayer) return;
 
         //SeePlayersInGrass(false);
     }

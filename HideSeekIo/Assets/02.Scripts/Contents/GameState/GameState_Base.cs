@@ -2,12 +2,14 @@
 
 public abstract class GameState_Base : MonoBehaviourPun 
 {
+    protected GameScene _gameScene;
     protected UI_Main uI_Main;
     protected bool isNextScene;
  
     protected virtual void OnEnable()
     {
         uI_Main = Managers.UI.SceneUI as UI_Main;
+        _gameScene = Managers.Scene.currentScene as GameScene;
     }
 
     public abstract float remainTime { get; }

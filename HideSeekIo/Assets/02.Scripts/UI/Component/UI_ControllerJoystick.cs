@@ -6,27 +6,29 @@ using UnityEngine.UI;
 
 public class UI_ControllerJoystick : MonoBehaviour
 {
+    [SerializeField] Image _buttonImage;
     [SerializeField] Image _itemImage;
     [SerializeField] UI_CoolTime _uiCoolTime;
-    public InputType inputType;
-    public Vector2 InputVector2 { get; private set; }
-    public UltimateJoystick _ultimateJoystick { get; private set; }
-    public ControllerInput controllerInput { get; set; }
+    [SerializeField] InputType _inputType;
+    [SerializeField] Color _precssButtonColor;
 
+    public InputType inputType => _inputType;
+    public Vector2 InputVector2 { get; private set; }
+    public ControllerInput controllerInput { get; set; }
     public UI_CoolTime UI_CoolTime => _uiCoolTime;
 
-    float mag;
+    UltimateJoystick _ultimateJoystick;
+    Define.AttackType _attackType;
+    Color _orignalButtonColor;
 
-
-
-
-    private void Awake()
+    public void Init()
     {
         _ultimateJoystick = GetComponent<UltimateJoystick>();
         _ultimateJoystick.OnPointerDownCallback += Down;
         _ultimateJoystick.OnDragCallback += Drag;
         _ultimateJoystick.OnPointerUpCallback += Up;
         _ultimateJoystick.OnTapCallBack += Tap;
+
     }
 #if UNITY_ANDROID
 
@@ -37,17 +39,27 @@ public class UI_ControllerJoystick : MonoBehaviour
         if (controllerInput == null) return;
         InputVector2 = GetInputVector2();
         controllerInput.Call(ControllerInputType.Down, InputVector2);
+
+        if (_attackType == Define.AttackType.Button)
+        {
+            _buttonImage.color = _precssButtonColor;
+        }
     }
 
     void Up()
     {
-
+ 
         if (controllerInput == null) return;
         if (InputVector2.magnitude > 0)
         {
             controllerInput.Call(ControllerInputType.Up, InputVector2);
         }
         InputVector2 = Vector2.zero;
+        if (_attackType == Define.AttackType.Button)
+        {
+            _buttonImage.color = Color.white;
+        }
+
     }
     void Drag()
     {
@@ -82,22 +94,37 @@ public class UI_ControllerJoystick : MonoBehaviour
     {
         InputVector2 = Vector2.zero;
         _ultimateJoystick.joystick.localPosition = Vector3.zero;
-        UI_CoolTime?.ResetCoolTime();
+        //UI_CoolTime?.ResetCoolTime();
     }
 
+    public void SetupItemImage(Sprite newSprite)
+    {
+        _itemImage.sprite = newSprite;
+    }
+
+
+ 
     public void SetActiveControllerType(Define.AttackType attackType ,Sprite sprite = null)
     {
-        if(attackType == Define.AttackType.Button)
+        _attackType = attackType;
+        if (attackType == Define.AttackType.Button)
         {
             _ultimateJoystick.joystick.gameObject.SetActive(false);
-            _itemImage.transform.ResetTransform(_ultimateJoystick.joystickBase.transform);
+            _buttonImage?.gameObject.SetActive(true);
+            _itemImage.transform.ResetTransform(_buttonImage.transform);
+            _ultimateJoystick.dynamicPositioning = false;
+            _ultimateJoystick.inputTransition = false;
+            GetComponent<CanvasGroup>().alpha = 1;
         }
         else
         {
-            _itemImage.transform.ResetTransform(_ultimateJoystick.joystick.transform);
-            var joystick = _ultimateJoystick.joystick;
-            joystick.gameObject.SetActive(true);
-            //joystick.GetComponent<Image>().enabled = true;
+            _itemImage?.transform.ResetTransform(_ultimateJoystick.joystick.transform);
+            _ultimateJoystick.joystick.gameObject.SetActive(true);
+            _buttonImage?.gameObject.SetActive(false);
+            _ultimateJoystick.dynamicPositioning = true;
+            //_ultimateJoystick.inputTransition = true;
+            //GetComponent<CanvasGroup>().alpha = _ultimateJoystick.fadeUntouched;
+
         }
         if (sprite)
         {

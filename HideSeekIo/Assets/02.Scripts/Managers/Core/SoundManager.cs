@@ -7,6 +7,10 @@ public class SoundManager
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.MaxCount];
     Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 
+    float _sfxValue;
+    float _bgmValue;
+
+    
     public void Init()
     {
         GameObject root = GameObject.Find("@Sound");
@@ -49,13 +53,16 @@ public class SoundManager
         if (audioClip == null)
             return;
 
-		if (type == Define.Sound.Bgm)
+        var amountValue = type == Define.Sound.Bgm ? _bgmValue : _sfxValue;
+        amountValue = amountValue * volume;
+
+        if (type == Define.Sound.Bgm)
 		{
 			AudioSource audioSource = _audioSources[(int)Define.Sound.Bgm];
 			if (audioSource.isPlaying)
 				audioSource.Stop();
 
-			audioSource.volume = volume;
+			audioSource.volume = amountValue;
 			audioSource.clip = audioClip;
 			audioSource.Play();
             audioSource.spatialBlend = 0;
@@ -63,7 +70,7 @@ public class SoundManager
         else
 		{
 			AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
-			audioSource.volume = volume;
+			audioSource.volume = amountValue;
 			audioSource.PlayOneShot(audioClip);
             audioSource.spatialBlend = 0;
 		}
@@ -94,5 +101,17 @@ public class SoundManager
 			Debug.Log($"AudioClip Missing ! {path}");
 
 		return audioClip;
+    }
+
+
+    public void ChangeSfxValue(float value)
+    {
+        _sfxValue = value;
+    }
+
+    public void ChangeBgmValue(float value)
+    {
+        _bgmValue = value;
+        _audioSources[(int)Define.Sound.Bgm].volume = value;
     }
 }

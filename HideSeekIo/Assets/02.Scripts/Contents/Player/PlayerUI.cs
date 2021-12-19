@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
 
 public class PlayerUI : MonoBehaviourPun
 {
@@ -14,6 +15,7 @@ public class PlayerUI : MonoBehaviourPun
 
     [SerializeField] Slider _hpSlider;
     [SerializeField] Slider _backHpSlider;
+    [SerializeField] Slider _energySlider;
     [SerializeField] UI_ShootEnergy[] _uI_ShootEnergyArray;
     [SerializeField] Transform _moveUI;
     [SerializeField] SpriteRenderer _groundUI;
@@ -24,9 +26,8 @@ public class PlayerUI : MonoBehaviourPun
 
     bool _isBackHpHit;
     Define.Team _team;
-    /// <summary>
-    /// PlayerController Awake에서 발생
-    /// </summary>
+    
+
     public void SetupPlayer(PlayerController playerController)
     {
         _playerController = playerController;
@@ -34,17 +35,29 @@ public class PlayerUI : MonoBehaviourPun
         _playerController.playerShooter.onChangeCurrEnergyListeners += ChangeCurrentEnergy;   //현재 에너지값 변경시 UI 변경
         _playerController.playerHealth.onChangeCurrHpEvent += ChangeCurrentHP;
         _playerController.playerHealth.onChangeMaxHpEvent+= ChangeMaxHP;
+        //_playerController.playerMove.onChangeMoveEnergy += ChangeCurrentMoveEnergy;
+        //_playerController.playerMove.onChangeMoveMaxEnergy += ChangeMaxMoveEnergy;
 
-        CameraManager.Instance.cameraViewChangeEvent += ChangeCameraTarget;
+        Managers.cameraManager.cameraViewChangeEvent += ChangeCameraTarget;
+    }
+
+    private void Awake()
+    {
+        SetActiveUI(false);
+        foreach (var se in _uI_ShootEnergyArray)
+            se.gameObject.SetActive(false);
     }
     public void OnPhotonInstantiate()
     {
         _playerInput = _playerController.playerInput;
         _playerNameText.text = _playerController.NickName;
         _isBackHpHit = false;
-        foreach (var se in _uI_ShootEnergyArray)
-            se.gameObject.SetActive(false);
-        _moveUI.gameObject.SetActive(false);
+      
+    }
+
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        Managers.cameraManager.cameraViewChangeEvent -= ChangeCameraTarget;
     }
 
     public void ChangeStatEventCallBack(PlayerStat.StatChange statChange, object value )
@@ -72,7 +85,15 @@ public class PlayerUI : MonoBehaviourPun
             //다른 팀이라면
             else
             {
-                ChangeColor(Color.red);
+                if(cameraViewPlayer.Team == Define.Team.Hide)
+                {
+                    ChangeColor(Color.red);
+                }
+                //술래라면.. 숨는오브젝트들 UI가 안보이게
+                else
+                {
+                    _playerNameText.gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -80,10 +101,20 @@ public class PlayerUI : MonoBehaviourPun
 
     public void ChangeTeam(Define.Team team)
     {
-        if(team == Define.Team.Seek)
+        var viewPlayer = Managers.cameraManager.cameraTagerPlayer;
+        if (viewPlayer == null) return;
+        if(_playerController.IsMyCharacter() == false)
         {
-
+            if(viewPlayer.Team == team)
+            {
+                ChangeColor(Color.yellow);
+            }
+            else
+            {
+                ChangeColor(Color.red);
+            }
         }
+      
     }
 
 
@@ -93,12 +124,22 @@ public class PlayerUI : MonoBehaviourPun
     public void ChangeOwnerShip()
     {
         bool active = _playerController.IsMyCharacter() ? true : false;
-
-        if (active == false) return;
-        _moveUI.gameObject.SetActive(active);
-        ChangeColor(Color.green);
+        if (active)
+        {
+            ChangeColor(Color.green);
+        }
     }
 
+    void SetActiveUI(bool active)
+    {
+        
+        _energySlider.gameObject.SetActive(active);
+        _moveUI.gameObject.SetActive(active);
+        _energySlider.gameObject.SetActive(active);
+        _hpSlider.gameObject.SetActive(active);
+        _backHpSlider.gameObject.SetActive(active);
+        _hpText.gameObject.SetActive(active);
+    }
     void ChangeColor(Color color)
     {
         _playerNameText.color = color;
@@ -116,6 +157,7 @@ public class PlayerUI : MonoBehaviourPun
         //_warningImage.enabled = false;
     }
 
+    #region ShootEnergy
     void ChangeMaxEnergy(int newValue)
     {
         if (_playerController.IsMyCharacter() == false) return;
@@ -137,7 +179,9 @@ public class PlayerUI : MonoBehaviourPun
             _uI_ShootEnergyArray[i].UpdateUI(value);
         }
     }
+    #endregion
 
+    #region Hp
     void ChangeCurrentHP(int newValue)
     {
         
@@ -160,7 +204,6 @@ public class PlayerUI : MonoBehaviourPun
         _backHpSlider.maxValue = newValue;
     }
 
-
     void UpdateBackHealthSlider()
     {
 
@@ -174,7 +217,24 @@ public class PlayerUI : MonoBehaviourPun
         
 
     }
+    #endregion
 
+    #region MoveEnergy
+    public void ChangeCurrentMoveEnergy(float newValue)
+    {
+        _energySlider.value = newValue;
+    }
+
+    public void ChangeMaxMoveEnergy(float newValue)
+    {
+        _energySlider.maxValue = newValue;
+    }
+
+    public void SetActiveMoveEnergyUI(bool active) => _energySlider.gameObject.SetActive(active);
+    
+
+
+    #endregion
     private void Update()
     {
         
@@ -189,6 +249,6 @@ public class PlayerUI : MonoBehaviourPun
 
         UpdateBackHealthSlider();
 
-        _moveUI.localPosition = _playerInput.controllerInputDic[InputType.Move].inputVector2*3;
+        _moveUI.localPosition = _playerInput.GetVector2(InputType.Move)*3;
     }
 }

@@ -2,23 +2,11 @@
 
 using Photon.Pun;
 
-using TMPro;
-
-using UnityEngine;
-
 public class GameState_Gameing : GameState_Base , IPunObservable
 {
-    //bool _gameStart;    //게임 시작
-    //readonly int _maxEventCount = 3;
-    //readonly int _eventCreateTimeInterval = 30;
-
-    //int _currentEventCount = 0;
-    //float _remainEventCreateTime;
-
     int n_hiderCount;
     int n_seekerCount;
-    //float n_endEventTime;    //최근 끝난 이벤트 타임
-    GameMainScene _gameMainScene;
+    Dictionary<int, Dictionary<string, object>> _playerDataTable;
 
     public int seekerCount
     {
@@ -26,7 +14,7 @@ public class GameState_Gameing : GameState_Base , IPunObservable
         set
         {
             n_seekerCount = value;
-            uI_Main.UpdateSeekerCount(value);
+            //uI_Main.UpdateSeekerCount(value);
         }
     }
     public int hiderCount
@@ -35,48 +23,32 @@ public class GameState_Gameing : GameState_Base , IPunObservable
         set
         {
             n_hiderCount = value;
-            uI_Main.UpdateHiderCount(value);
+            //uI_Main.UpdateHiderCount(value);
         }
     }
-    public override float remainTime => Managers.Game.CurrentGameScene.initGameTime;
+    public override float remainTime => _gameScene.initGameTime;
+
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        _gameMainScene = Managers.Game.CurrentGameScene as GameMainScene;
-        GetComponent<GameStateController>().ChangeInitTime(_gameMainScene.initGameTime);    //게임타임 설정
+        GetComponent<GameStateController>().ChangeInitTime(_gameScene.initGameTime);    //게임타임 설정
     }
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info, float createServerTime)
     {
-        uI_Main.ResetTexts();
-        if (PhotonNetwork.IsMasterClient)
-        {
-            UpdatePlayerCount();
-        }
-
-        if (Managers.Game.myPlayer)
-        {
-            var team = Managers.Game.myPlayer.Team;
-            if (team == Define.Team.Seek)
-            {
-                var noticeContent = Util.GetColorContent(Color.red, "당신은 술래입니다. ");
-                uI_Main.noticeBg.enabled = true;
-                uI_Main.UpdateNoticeText(noticeContent);
-            }
-        }
-        uI_Main.titleText.text = "술래가 정해졌습니다.";
+        uI_Main.ResetTexts();   // Text 리셋 
+        _playerDataTable = (Dictionary<int, Dictionary<string, object>>)info.photonView.InstantiationData[1];
+        _gameScene.PlayerSpawnOnGameStart(_playerDataTable);
         Invoke("OffText", 2.0f);
     }
     public override void OnUpdate(int remainTime)
     {
-        uI_Main.UpdateInGameTime(remainTime);   //시간
-        _gameMainScene.OnUpdateTime(remainTime);
-        UpdatePlayerCount();    //인원
+        Managers.Game.inGameTime = remainTime;
     }
     public override void OnTimeEnd()
     {
-        NextScene(Define.GameState.End, Define.Team.Hide);
+        NextScene(Define.GameState.End, Define.Team.Hide);  //숨는팀 승리로 게임 종료
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 
+using Data;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,10 +18,15 @@ public class UI_InputSetting : MonoBehaviour
     {
         settingList = GetComponentsInChildren<UltiMateSetting>();
     }
-    
-    public void Init()
-    {   
-        foreach(var settingData in PlayerInfo.optionData.joystickSettings)
+
+    private void Awake()
+    {
+        PlayerInfo.chnageOptionInfoEvent += Setup;
+    }
+
+    public void Setup(OptionData optionData )
+    {
+        foreach (var settingData in PlayerInfo.optionData.joystickSettings)
         {
             foreach(var setting in settingList)
             {

@@ -299,7 +299,7 @@ public static class UtillGame
                     //로컬캐릭이 실행
                     if (livingEntity.photonView.IsMine)
                     {
-                        BuffManager.Instance.CheckBuffController(livingEntity, buffType , durationTime);
+                        //BuffManager.Instance.CheckBuffController(livingEntity, buffType , durationTime);
 
                     }
                 }
@@ -334,18 +334,19 @@ public static class UtillGame
         return false;
     }
 
-    public static SendAllSkinInfo MakeRandomAIInfo()
-    {
-        SendAllSkinInfo sendAllSkinInfo;
-        var ranCharacterType = Util.RandomEnum<Define.CharacterType>();
-        var avaterAll = Resources.LoadAll<GameObject>($"Prefabs/Character/{ranCharacterType.ToString()}");
-        var selectAvater = avaterAll[Random.Range(0, avaterAll.Length - 1)].name;
-        sendAllSkinInfo.autoNumber = -1;
-        sendAllSkinInfo.chacterType = ranCharacterType;
-        sendAllSkinInfo.avaterSkinID = selectAvater;
-        sendAllSkinInfo.nickName = null;
-        return sendAllSkinInfo;
-    }
+    //public static SendAllSkinInfo MakeRandomAIInfo()
+    //{
+    //    SendAllSkinInfo sendAllSkinInfo;
+    //    var ranCharacterType = Util.RandomEnum<Define.CharacterType>();
+    //    var avaterAll = Resources.LoadAll<GameObject>($"Prefabs/Character/{ranCharacterType.ToString()}");
+    //    var selectAvater = avaterAll[Random.Range(0, avaterAll.Length - 1)].name;
+    //    sendAllSkinInfo.autoNumber = -1;
+    //    sendAllSkinInfo.avaterSkinID = selectAvater;
+    //    sendAllSkinInfo.accessoriesSkinID= selectAvater;
+    //    sendAllSkinInfo.nickName = null;
+        
+    //    return sendAllSkinInfo;
+    //}
 
     /// <summary>
     /// Y값을 같게하고 방향벡터만, 정규화X

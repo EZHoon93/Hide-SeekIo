@@ -6,5 +6,5 @@ using Photon.Pun;
 
 public interface IOnPhotonInstantiate
 {
-    event Action<PhotonView> OnPhotonInstantiateEvent;
+    event Action<PhotonView> onPhotonInstantiateEvent;
 }

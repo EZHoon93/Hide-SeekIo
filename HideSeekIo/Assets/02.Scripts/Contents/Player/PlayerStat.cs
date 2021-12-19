@@ -92,7 +92,7 @@ public class PlayerStat : Stat
     }
     public void OnPhotonInstantiate()
     {
-        //PhotonGameManager.Instacne.AddListenr(Define.GameState.Gameing, GameStart_SeletRandomSkill);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, GameStart_SeletRandomSkill);
     }
 
     public void ChangeTeam(Define.Team team)

@@ -67,7 +67,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
 
 
         isReset = false;
-        Managers.Game.CurrentGameScene.itemSpawnManager.CreateCallBack(this);
+        //_gameScene.itemSpawnManager.CreateCallBack(this);
         this.transform.localScale = Vector3.one;
         n_eneterTime = 0;
         gettingLivingEntity = null;
@@ -83,7 +83,7 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
         PhotonNetwork.RemoveCallbackTarget(this);
         _itemBox_Base.OnPreNetDestroy(rootView);
         if (isReset) return;
-        Managers.Game.CurrentGameScene.itemSpawnManager.RemoveCallBack(this);
+        //_gameScene.itemSpawnManager.RemoveCallBack(this);
     }
     private void Update()
     {
@@ -152,23 +152,20 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     //누군가 얻으려고할때 => 얻으려는 로컬 오브젝트가 서버전송
     public void Enter(PlayerController enterPlayer, Collider collider)
     {
-        //print("Enter Item!!");
-        //this._modelTransform.DOShakeScale(_shakeScaleDuration * 0.5f);
-
-        //if (gettingLivingEntity != null) return;   //이미 얻고있는 플레이어가 있다면 취소
-        //var living = enterPlayer.playerHealth;
-        //if (living.photonView.IsMine == false) return;  //얻은캐릭이 자기자신캐릭이아니라면 x
-        //if (living)
-        //{
-
-        //    if (living.IsMyCharacter())
-        //    {
-        //        _hideInFog.enabled = false;
-        //        _hideInFog.SetActiveRender(true);
-        //        Managers.Sound.Play("Getting", Define.Sound.Effect);
-        //    }
-        //    photonView.RPC("Check_IsGetOnServer", RpcTarget.AllViaServer, living.ViewID());
-        //}
+        this._modelTransform.DOShakeScale(_shakeScaleDuration * 0.5f);
+        if (gettingLivingEntity != null) return;   //이미 얻고있는 플레이어가 있다면 취소
+        var living = enterPlayer.playerHealth;
+        if (living.photonView.IsMine == false) return;  //얻은캐릭이 자기자신캐릭이아니라면 x
+        if (living)
+        {
+            if (living.IsMyCharacter())
+            {
+                _hideInFog.enabled = false;
+                _hideInFog.SetActiveRender(true);
+                Managers.Sound.Play("Getting", Define.Sound.Effect);
+            }
+            photonView.RPC("Check_IsGetOnServer", RpcTarget.AllViaServer, living.ViewID());
+        }
     }
     //동시에 얻는걸 막기위해 서버 전송후 체크 
     [PunRPC]

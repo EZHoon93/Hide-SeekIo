@@ -1,52 +1,86 @@
 ﻿using System.Collections;
 
+using ExitGames.Client.Photon.StructWrapping;
+
+using Photon.Pun;
+
 using UnityEngine;
 
-public abstract class BuffBase : Poolable
+public abstract class BuffBase : Poolable 
 {
     [SerializeField] protected ParticleSystem _buffEffect;
     [SerializeField] protected ParticleSystem _playEffect;
-    [SerializeField] float _durationTime;
     [SerializeField] bool _isNuff;
 
-    protected BuffController _buffController;
+    float _createTime;
+    float _durationTime;
+    IEnumerator _processEnumerator;
+    Define.BuffType _buffType;
 
+    protected BuffController _buffController;
+    protected LivingEntity _livingEntity => _buffController.livingEntity;
     public bool isNuff => _isNuff;
-    public float durationTime => _durationTime;
+
     public RenderController renderController { get; private set; }
+    public Define.BuffType buffType => _buffType;
+
+    public float durationTime => _durationTime;
+    public float createTime => _createTime;
+
 
     private void Awake()
     {
         renderController = GetComponent<RenderController>();
     }
-    public void Setup(BuffController buffController)
+    public void Setup(BuffController buffController, Define.BuffType newBuffType)
     {
         _buffController = buffController;
+        _buffType = newBuffType;
+    }
+    public void Play(float createTime , float durationTime)
+    {
+        _createTime = createTime;
+        _durationTime = durationTime;
+        if (_buffEffect && _createTime <= PhotonNetwork.Time + 0.5f)
+        {
+            _buffEffect?.Play();
+        }
+        Util.StartCoroutine(this, ref _processEnumerator, UpdateBuff());
     }
 
     public override void Push()
     {
-        ProcessEnd();
-        Managers.Pool.Push(this);
+        _buffController.RemoveBuff(this);
+        _durationTime = 0;
+        _buffController = null;
+        _createTime = 0;
+        base.Push();
     }
-    public void Play()
+
+    public void RePlay(float addDurationTime)
     {
-        if (_buffEffect)
-        {
-            _buffEffect?.Play();
-        }
+        _durationTime += addDurationTime;
+    }
+
+
+    IEnumerator UpdateBuff()
+    {
         ProcessStart();
-    }
-    public void PlayEffect()
-    {
-        if (_playEffect)
+        while (PhotonNetwork.Time <= _createTime + _durationTime)
         {
-            _playEffect.Play();
+            yield return new WaitForSeconds(0.1f);
         }
+        ProcessEnd();
+        Push();
+    }
+
+    public virtual void ProecessUpdate()
+    {
+
     }
     public abstract void ProcessStart();
 
     public abstract void ProcessEnd();
-  
-    
+
+ 
 }

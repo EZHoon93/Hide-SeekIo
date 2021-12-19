@@ -7,7 +7,7 @@ public class Buff_SightUp : BuffBase
     float resetValue;
     public override void ProcessStart()
     {
-        _fogOfWarUnit = _buffController.livingEntity.GetComponentInChildren<FogOfWarUnit>();
+        _fogOfWarUnit = _livingEntity.GetComponentInChildren<FogOfWarUnit>();
         resetValue = _fogOfWarUnit.circleRadius;
         _fogOfWarUnit.circleRadius = 5;
     }
@@ -15,7 +15,7 @@ public class Buff_SightUp : BuffBase
    
     public override void ProcessEnd()
     {
-        _fogOfWarUnit = _buffController.livingEntity.GetComponentInChildren<FogOfWarUnit>();
+        _fogOfWarUnit = _livingEntity.GetComponentInChildren<FogOfWarUnit>();
         _fogOfWarUnit.circleRadius = resetValue;
     }
 }

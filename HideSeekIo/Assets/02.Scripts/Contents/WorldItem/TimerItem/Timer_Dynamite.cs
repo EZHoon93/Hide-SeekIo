@@ -18,8 +18,8 @@ public class Timer_Dynamite : TimerItem
     }
     public override void EndTime()
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0,_timerItemController.usePlayer.ViewID());
-        //EffectManager.Instance.EffectOnLocal(Define.EffectType.FogSight, this.transform.position, 0);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0,_timerItemController.usePlayer.ViewID());
+        //Managers.effectManager.EffectOnLocal(Define.EffectType.FogSight, this.transform.position, 0);
         //UtillGame.BuffInRange(this.transform, _damageRange, Define.BuffType.B_Stun, _timerItemController.usePlayer.ViewID(), UtillLayer.seekerToHiderAttack);
 
     }

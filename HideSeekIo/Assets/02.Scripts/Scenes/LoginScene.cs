@@ -18,6 +18,7 @@ public class LoginScene : BaseScene
         base.Init();
         SceneType = Define.Scene.Login;
         StartCoroutine(LoadAllData());
+
     }
     public override void Clear()
     {
@@ -27,31 +28,34 @@ public class LoginScene : BaseScene
     IEnumerator LoadAllData()
     {
         PlayerInfo.Login();
-        PhotonManager.Instance.Connect();
+        //Managers.photonManager.Connect();
+        PlayerInfo.LoadOptionData();
+        Managers.Sound.Play("Bgm", Define.Sound.Bgm);
+
         //필요 데이터 갖고옴
         while (_state == State.UnLoad)
         {
-            //print(_state);
             if (GetIsAllOnLoad())
             {
                 _state = State.AllLoad;
-                PhotonManager.Instance.PhotonLogin();   //정보 업데이트. 닉네임,레벨,참여여부등
+                Managers.photonManager.PhotonLogin();   //정보 업데이트. 닉네임,레벨,참여여부등
 
             }
             yield return new WaitForSeconds(1.0f);
         }
-        Managers.Scene.LoadScene(Define.Scene.Loading);
+        Managers.Scene.LoadScene(Define.Scene.Lobby);
 
     }
 
 
     bool GetIsAllOnLoad()
     {
-        var photonData = CheckPhoton();
+        //var photonData = CheckPhoton();
         var userData = CheckPlayerInfo();
         bool gameData = CheckData();
+        var opationData = CheckOptionData();
         //print(photonData + "/" + userData + "/" + gameData);
-        return photonData && userData && gameData ;
+        return  userData && gameData  && opationData;
     }
 
 
@@ -75,7 +79,7 @@ public class LoginScene : BaseScene
 
    bool CheckPhoton()
     {
-        if (PhotonManager.Instance.State == Define.ServerState.Connect)
+        if (Managers.photonManager.State == Define.ServerState.Connect)
         {
             return true;
         }
@@ -86,6 +90,15 @@ public class LoginScene : BaseScene
     bool CheckData()
     {
         if (Managers.Data.State == Define.GameDataState.Load)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool CheckOptionData()
+    {
+        if( PlayerInfo.optionState == Define.UserDataState.Load)
         {
             return true;
         }

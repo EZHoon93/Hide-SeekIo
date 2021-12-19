@@ -13,7 +13,7 @@ public class MakeRunEffect : MonoBehaviour
     private void Awake()
     {
         _makeRunEffect = this.GetComponentInParent<IMakeRunEffect>();
-        GetComponentInParent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
+        GetComponentInParent<IOnPhotonInstantiate>().onPhotonInstantiateEvent += OnPhotonInstantiate;
         GetComponentInParent<LivingEntity>().onDeath += () => this.gameObject.SetActive(false);
     }
 
@@ -44,20 +44,20 @@ public class MakeRunEffect : MonoBehaviour
     void CreateEffect()
     {
         //Photon.r
-        EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+        Managers.effectManager.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
 
-        if (CameraManager.Instance.cameraTagerPlayer == null)
+        if (Managers.cameraManager.cameraTagerPlayer == null)
         {
-            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+            Managers.effectManager.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
         }
-        else if(CameraManager.Instance.cameraTagerPlayer.Team == Define.Team.Hide)
+        else if(Managers.cameraManager.cameraTagerPlayer.Team == Define.Team.Hide)
         {
         }
         else
         {
 
 
-            EffectManager.Instance.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
+            Managers.effectManager.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
         }
     }
 

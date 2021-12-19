@@ -11,14 +11,13 @@ GameObject:
   - component: {fileID: 4720035371829386}
   - component: {fileID: 95974166736755498}
   - component: {fileID: 205679157088588508}
-  - component: {fileID: 1254171566797048724}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_LOD_setup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4720035371829386
 Transform:
   m_ObjectHideFlags: 0
@@ -26,9 +25,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013142489265190}
-  m_LocalRotation: {x: -0, y: 0.06054621, z: -0, w: 0.9981654}
+  m_LocalRotation: {x: 0, y: 0.060543302, z: 0, w: 0.9981656}
   m_LocalPosition: {x: -10.976, y: 2.21, z: -8.89}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 1, z: 0.7}
   m_Children:
   - {fileID: 4134086533876296}
   - {fileID: 4874495606782156}
@@ -85,19 +84,6 @@ LODGroup:
     - renderer: {fileID: 23609727926234250}
     - renderer: {fileID: 23025718938565250}
   m_Enabled: 1
---- !u!65 &1254171566797048724
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013142489265190}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.3953284, y: 0.5086837, z: 2.378805}
-  m_Center: {x: 0.000000059604645, y: 0.24597807, z: 0.17239714}
 --- !u!1 &1050919358471370
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +95,7 @@ GameObject:
   - component: {fileID: 4195966003293144}
   - component: {fileID: 33929846749461098}
   - component: {fileID: 23025718938565250}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_lid_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +174,7 @@ GameObject:
   - component: {fileID: 4134086533876296}
   - component: {fileID: 33008369737715610}
   - component: {fileID: 23821752485671752}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +254,7 @@ GameObject:
   - component: {fileID: 4800917892331578}
   - component: {fileID: 33587626183644500}
   - component: {fileID: 23572549266242660}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_lid_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +333,7 @@ GameObject:
   - component: {fileID: 4874495606782156}
   - component: {fileID: 33701872655510610}
   - component: {fileID: 23029555898073552}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -427,7 +413,7 @@ GameObject:
   - component: {fileID: 4212196914687772}
   - component: {fileID: 33529695414138012}
   - component: {fileID: 23609727926234250}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -507,7 +493,7 @@ GameObject:
   - component: {fileID: 4705453508888444}
   - component: {fileID: 33103581412955190}
   - component: {fileID: 23391551414820898}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: coffin_lid_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

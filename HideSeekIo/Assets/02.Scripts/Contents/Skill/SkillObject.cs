@@ -42,7 +42,7 @@ public class SkillObject : MonoBehaviour
             RemainCoolTime -= Time.deltaTime;
             if (playerController.IsMyCharacter())
             {
-                //InputManager.Instance.GetControllerJoystick(InputType.Skill)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
+                //Managers.Input.GetControllerJoystick(InputType.Skill)._UI_Slider_CoolTime.UpdateCoolTime(InitCoolTime, RemainCoolTime);
             }
         }
     }

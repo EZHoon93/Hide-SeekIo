@@ -37,7 +37,7 @@ public class GameMissionController : MonoBehaviourPun, IPunInstantiateMagicCallb
             _mission_Base = newMission;
             _initRemainTime = _mission_Base.missionTime;
             _missionType = value;
-            Managers.Game.CurrentGameScene.gameMissionController = this;
+            //_gameScene.gameMissionController = this;
         }
     }
     public int remainTime
@@ -77,7 +77,7 @@ public class GameMissionController : MonoBehaviourPun, IPunInstantiateMagicCallb
      
     //void SetupMainGameScene()
     //{
-    //    var gameMainScene = Managers.Game.CurrentGameScene.GetComponent<GameMainScene>();
+    //    var gameMainScene = _gameScene.GetComponent<GameMainScene>();
     //    if (gameMainScene)
     //    {
     //        gameMainScene.gameMissionController = this;

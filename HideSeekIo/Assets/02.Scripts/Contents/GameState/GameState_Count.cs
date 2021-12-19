@@ -2,53 +2,78 @@
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
-using UnityEngine;
 using Data;
+using ExitGames.Client.Photon;
+using System;
 
 public class GameState_Count : GameState_Base
 {
-    public override float remainTime => 5;
+    public override float remainTime => 10;
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info, float createServerTime)
     {
         uI_Main = Managers.UI.SceneUI as UI_Main;
         uI_Main.UpdateNoticeText("잠시 후 게임이 시작됩니다.");
-        PhotonGameManager.Instacne.gameExit += GameExit;
-
     }
-    public override void OnDestroy()
-    {
-        PhotonGameManager.Instacne.gameExit -= GameExit;
-    }
+  
     public override void OnUpdate(int remainTime)
     {
         uI_Main.UpdateCountText(remainTime);
         Managers.Sound.Play("TimeCount", Define.Sound.Effect);
     }
   
+    /// <summary>
+    /// 카운트가 끝나면 술래 미리 정해주고 각 플레이어 캐릭터생성 
+    /// 다음 상태로 넘어감.
+    /// </summary>
     public override void OnTimeEnd()
     {
+        //방장만 실행.. 캐릭터 생성.
         if (PhotonNetwork.IsMasterClient)
         {
-            List<SendAllSkinInfo> playerDataInfoList = GetJoinUserList();   //참가한 유저수 채워넣음.
-            AIManager.Instance.CreateAI(8, ref playerDataInfoList);
-            //for (int i = playerDataInfoList.Count; i < 8; i++)  //나머지 자리 AI추가.
-            //{
-            //    SendAllSkinInfo sendAllSkinInfo = UtillGame.MakeRandomAllSkin();
-            //    playerDataInfoList.Add(sendAllSkinInfo);
-            //}
-
-            //자동으로랜덤 선정
-            var playerSpawnPointList = Managers.Game.CurrentGameScene.mainSpawnPoints.playerSpawnPoints.ToList();
-            foreach (var p in playerDataInfoList)
+            var gameScene = Managers.Scene.currentGameScene;
+            var maxPlayerCount = gameScene.maxPlayerCount;
+            var seekerCount = gameScene.totSeekerCount;
+            //Dictionary<int, object[]> playerTeamDic = new Dictionary<int, object[]>();
+            
+            Dictionary<int, Dictionary<string, object>> playerDataTable = new Dictionary<int, Dictionary<string, object>>();
+    
+            
+            //참여한 유저 추가
+            foreach (var player in PhotonNetwork.CurrentRoom.Players.Values.Where(s => (bool)s.CustomProperties["jn"] == true).ToList())
             {
-                int ran = Random.Range(0, playerSpawnPointList.Count);
-                Managers.Spawn.PlayerSpawn(p, playerSpawnPointList[ran].transform.position);
-                playerSpawnPointList.RemoveAt(ran);
+                var HT = player.CustomProperties;
+                playerDataTable.Add(player.ActorNumber, new Dictionary<string, object>()
+                {
+                    //["nu"] = player.ActorNumber,        //넘버
+                    ["nn"] = player.NickName ,          //닉네임
+                    ["te"] = Define.Team.Hide,           //팀
+                    ["ch"] = HT["ch"],                          //캐릭스킨
+                    ["we"] = HT["we"],                        //무기스킨
+                    ["ac"] = HT["ac"],                        //악세스킨
+                });
             }
-            //print("Spawn Readt!!");
-            NextScene(Define.GameState.GameReady);
 
+
+            //AI 추가
+            Managers.aIManager.SetupRandomSkinnfo(playerDataTable, maxPlayerCount);
+
+            //var s = from data in playerDataTable where( )
+
+            //술래 정함
+            var seekrDic = playerDataTable.Keys.OrderBy(g => Guid.NewGuid()).Take(seekerCount);
+            //술래 데이터로 변경
+            foreach(var seekerKey in seekrDic)
+            {
+                if (playerDataTable.ContainsKey(seekerKey))
+                {
+                    playerDataTable[seekerKey]["te"] = Define.Team.Seek;
+                }
+            }
+
+            playerDataTable[PhotonNetwork.LocalPlayer.ActorNumber]["te"] = Define.Team.Seek;    //테스트 로컬 술래
+
+            NextScene(Define.GameState.GameReady , playerDataTable);   //다음 게임 단계로 진행
         }
     }
 
@@ -57,27 +82,64 @@ public class GameState_Count : GameState_Base
     /// 참여한 유저 리스트를 받아옴.
     /// </summary>
     /// <returns></returns>
-    List<SendAllSkinInfo> GetJoinUserList()
+    void AddJoinUserSkinInfo(ref List<SendAllSkinInfo> sendAllSkinInfosList)
     {
         var playerList = PhotonNetwork.CurrentRoom.Players.Values.Where(s => (bool)s.CustomProperties["jn"] == true).ToList();
-        List<SendAllSkinInfo> result = new List<SendAllSkinInfo>();
         foreach (var p in playerList)
         {
-            SendAllSkinInfo sendAllSkinInfo;
+            SendAllSkinInfo sendAllSkinInfo = new SendAllSkinInfo();
             sendAllSkinInfo.autoNumber = p.ActorNumber;
-            sendAllSkinInfo.chacterType = (Define.CharacterType)p.CustomProperties["ch"];
-            sendAllSkinInfo.avaterSkinID = p.CustomProperties["as"].ToString();
+            sendAllSkinInfo.avaterKey =(int)p.CustomProperties["ch"];
             sendAllSkinInfo.nickName = p.NickName;
-            result.Add(sendAllSkinInfo);
+            sendAllSkinInfo.team = Define.Team.Hide;    
+            sendAllSkinInfosList.Add(sendAllSkinInfo);
         }
-        return result;
     }
 
-    void GameExit()
+    /// <summary>
+    /// AI 추가
+    /// </summary>
+    void AddAISkinInfo(ref List<SendAllSkinInfo> sendAllSkinInfosList)
     {
-        if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        //AI로 채움
+        var maxPlayerCount = _gameScene.maxPlayerCount;
+        for (int i = sendAllSkinInfosList.Count; i < maxPlayerCount; i++)
         {
-            NextScene(Define.GameState.Wait);
+            //SendAllSkinInfo sendAllSkinInfo = AIManager.Instance.GetSendAllSkinInfo();
+            //sendAllSkinInfosList.Add(sendAllSkinInfo);
         }
     }
+
+    void SelectSeeker(List<SendAllSkinInfo> sendAllSkinInfosList)
+    {
+        //술래 정해줌
+        var seekerCount = _gameScene.totSeekerCount;
+        //var seekrList = sendAllSkinInfosList.OrderBy(g => Guid.NewGuid()).Take(seekerCount);
+        //foreach (var skinInfo in seekrList)
+        //{
+        //    skinInfo.team = Define.Team.Seek;
+        //}
+        sendAllSkinInfosList[0].team = Define.Team.Seek;
+    }
+
+    void PlayerSapwn(List<SendAllSkinInfo> sendAllSkinInfosList)
+    {
+        Hashtable HT = new Hashtable();
+        foreach (var p in sendAllSkinInfosList)
+        {
+            var spawnPointController = _gameScene.mainSpawnPoints;
+            if(p.team== Define.Team.Seek)
+            {
+
+            }
+            else
+            {
+                //Managers.Spawn.PlayerSpawn(p, spawnPointController.GetSpawnPos());
+                //                PhotonNetwork.SetPlayerCustomProperties
+            }
+            
+        }
+        NextScene(Define.GameState.GameReady);   //다음 상태로 이동..
+    }
+ 
 }

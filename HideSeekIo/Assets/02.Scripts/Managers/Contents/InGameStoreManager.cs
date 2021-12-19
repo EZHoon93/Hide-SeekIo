@@ -161,26 +161,26 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
     //    switch (hiderItemEnum)
     //    {
     //        case Define.HiderStoreList.Trap:
-    //            EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
+    //            Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
     //            break;
     //        //case Define.HiderStoreList.Box:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
 
     //        //    break;
     //        //case Define.HiderStoreList.Shoes:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
 
     //        //    break;
     //        //case Define.HiderStoreList.Speed:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
 
     //        //    break;
     //        case Define.HiderStoreList.Shield:
-    //            EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
+    //            Managers.effectManager.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 1);
 
     //            break;
     //        case Define.HiderStoreList.Grenade:
-    //            EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
+    //            Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 1);
 
     //            break;
     //    }
@@ -194,28 +194,28 @@ public class InGameStoreManager : GenricSingleton<InGameStoreManager>
     //    switch (seekerItemEnum)
     //    {
     //        //case Define.SeekrStoreList.ChangeWeapon:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 0);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, usePlayer.transform.position, 0);
 
     //        //    break;
     //        //case Define.SeekrStoreList.DirectionCurse:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, usePlayer.transform.position, 0);
-    //        //    EffectManager.Instance.EffectAllLivingEntity(Define.EffectEventType.Hider, Define.EffectType.Curse);    //전체이펙트
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.Curse, usePlayer.transform.position, 0);
+    //        //    Managers.effectManager.EffectAllLivingEntity(Define.EffectEventType.Hider, Define.EffectType.Curse);    //전체이펙트
 
     //        //    break;
     //        //case Define.SeekrStoreList.SightCurse:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, usePlayer.transform.position, 0);
-    //        //    EffectManager.Instance.EffectAllLivingEntity(Define.EffectEventType.Hider, Define.EffectType.Curse);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.Curse, usePlayer.transform.position, 0);
+    //        //    Managers.effectManager.EffectAllLivingEntity(Define.EffectEventType.Hider, Define.EffectType.Curse);
 
     //        //    break;
     //        //case Define.SeekrStoreList.Speed:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 0);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 0);
     //        //    break;
     //        //case Define.SeekrStoreList.BodyUp:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 0);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.BuffEffect, usePlayer.transform.position, 0);
     //        //    break;
     //        //case Define.SeekrStoreList.AllumanClap:
-    //        //    EffectManager.Instance.EffectOnLocal(Define.EffectType.Curse, usePlayer.transform.position, 0);
-    //        //    EffectManager.Instance.EffectAllLivingEntity(Define.EffectEventType.Hider, Define.EffectType.Curse);
+    //        //    Managers.effectManager.EffectOnLocal(Define.EffectType.Curse, usePlayer.transform.position, 0);
+    //        //    Managers.effectManager.EffectAllLivingEntity(Define.EffectEventType.Hider, Define.EffectType.Curse);
 
     //        //    break;
     //    }

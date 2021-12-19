@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Photon.Pun;
 
-public abstract class BaseScene : MonoBehaviour
+public abstract class BaseScene : MonoBehaviourPun
 {
     public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
 
@@ -18,8 +19,7 @@ public abstract class BaseScene : MonoBehaviour
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
 
-       Managers.Sound.Play("Bgm", Define.Sound.Bgm, 0.3f);
-
+        Managers.Scene.currentScene = this; 
     }
 
     public abstract void Clear();

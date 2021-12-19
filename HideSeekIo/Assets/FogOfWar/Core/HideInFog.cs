@@ -22,6 +22,8 @@ namespace FoW
         public bool isGrassDetected { get; set; } = false;  //부쉬안에있는걸 들킨 리모트 오브젝트
         public bool istransSkill { get; set; } = false;
 
+        public bool isAttack { get; set; } = false;
+
         public Action<bool> changeCallBack;
 
         private void Reset()
@@ -32,19 +34,23 @@ namespace FoW
         
         private void OnEnable()
         {
-            if (CameraManager.Instance.cameraTagerPlayer)
+            if (Managers.cameraManager.cameraTagerPlayer)
             {
-                team = CameraManager.Instance.cameraTagerPlayer.ViewID();
+                team = Managers.cameraManager.cameraTagerPlayer.ViewID();
             }
-            CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
+            Managers.cameraManager.fogChangeEvent += ChangeCameraTarget;
             SetActiveRender(false);
+            isAttack = false;
+            isInGrass = false;
+            isGrassDetected = false;
+            istransSkill = false;
         }
 
         private void OnDisable()
         {
             if (Managers.Game == null) return;
-            if (CameraManager.Instance == null) return;
-            CameraManager.Instance.fogChangeEvent -= ChangeCameraTarget;
+            if (Managers.cameraManager == null) return;
+            Managers.cameraManager.fogChangeEvent -= ChangeCameraTarget;
         }
         void Start()
         {
@@ -72,6 +78,11 @@ namespace FoW
                 {
                     visible = false;
                 }
+            }
+            if (isAttack)
+            {
+                //visible = true;
+                visible = fow.GetFogValue(_transform.position) < minFogStrength * 255;
             }
 
             changeCallBack?.Invoke(visible);
@@ -139,9 +150,9 @@ namespace FoW
                 {
                     Color color = r.material.color;
                    
-                    if (CameraManager.Instance.cameraTagerPlayer)
+                    if (Managers.cameraManager.cameraTagerPlayer)
                     {
-                        var viewTeam = CameraManager.Instance.cameraTagerPlayer.Team;
+                        var viewTeam = Managers.cameraManager.cameraTagerPlayer.Team;
                         if (viewTeam == team)
                         {
                             if (color != null)

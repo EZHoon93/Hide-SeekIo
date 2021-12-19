@@ -13,7 +13,7 @@ public class FlashProjectile : ThrowProjectileObject
     {
         _modelObject.gameObject.SetActive(false);
         _fogOfWarUnit.enabled = true;
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.FlashEffect, this.transform.position, 0,_range);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.FlashEffect, this.transform.position, 0,_range);
         Invoke("Push", 1.0f);
 
 
@@ -29,7 +29,7 @@ public class FlashProjectile : ThrowProjectileObject
             var liv = c.GetComponent<LivingEntity>();
             if (liv)
             {
-                BuffManager.Instance.CheckBuffController(liv, Define.BuffType.B_Direction, _buffTime);
+                //BuffManager.Instance.CheckBuffController(liv, Define.BuffType.B_Direction, _buffTime);
             }
             //var buffable = c.GetComponent<IBuffable>();
             //if (buffable != null)

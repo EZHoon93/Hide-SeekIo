@@ -65,7 +65,7 @@ public class UltiMateSetting : MonoBehaviour, IPointerDownHandler , IDragHandler
     public void Awake()
     {
         var button = GetComponent<UltimateButton>();
-        canvasRectTrans = InputManager.Instance.GetComponent<RectTransform>();
+        canvasRectTrans = Managers.Input.GetComponent<RectTransform>();
         if(button)
         {
             _type = Type.Button;
@@ -105,7 +105,7 @@ public class UltiMateSetting : MonoBehaviour, IPointerDownHandler , IDragHandler
         }
 
 
-        InputManager.Instance.GetComponent<UI_InputSetting>().SetupEdit(this);
+        Managers.Input.GetComponent<UI_InputSetting>().SetupEdit(this);
 
     }
     public void OnDrag(PointerEventData eventData)

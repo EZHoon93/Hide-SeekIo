@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Photon.Pun;
+
 public class PlayerHealth : LivingEntity
 {
     public event Action onReviveEvent;
@@ -70,17 +70,22 @@ public class PlayerHealth : LivingEntity
     [PunRPC]
     public override void Die()
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 0);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 0);
         base.Die();
         _playerCharacter.animator.SetTrigger("Die");
         if(Team == Define.Team.Hide)
         {
-            Managers.Resource.PunDestroy(this);
+            Invoke("AfterDestory", 3.0f);
         }
         else
         {
             StartCoroutine(Revive());
         }
+    }
+
+    public void AfterDestory()
+    {
+        Managers.Resource.PunDestroy(this);
     }
 
     IEnumerator Revive()

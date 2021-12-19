@@ -18,7 +18,7 @@ public class Buff_OverSee : BuffBase
 
     public override void ProcessStart()
     {
-        _fogOfWarUnit.team = _buffController.livingEntity.ViewID();
+        _fogOfWarUnit.team = _livingEntity.ViewID();
         _fogOfWarUnit.enabled = true;
     }
 

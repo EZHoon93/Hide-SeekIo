@@ -55,12 +55,12 @@ public class UI_Store_Character2: UI_Popup
     //{
     //    _currentAvaterIndex = PlayerInfo.CurrentAvaterUsingIndex();
     //    UpdateAvater(PlayerInfo.CurrentSkin);
-    //    PhotonGameManager.Instacne.gameJoin += Destroy;
+    //    Managers.photonGameManager.gameJoin += Destroy;
     //}
     
     //void Destroy()
     //{
-    //    PhotonGameManager.Instacne.gameJoin -= Destroy;
+    //    Managers.photonGameManager.gameJoin -= Destroy;
     //    Managers.Resource.Destroy(this.gameObject);
     //}
 

@@ -7,12 +7,12 @@ public class Buff_SightCurse : BuffBase
 
     public override void ProcessStart()
     {
-        _buffController.livingEntity.fogController.ratio = 0.3f;
+        _livingEntity.fogController.ratio = 0.3f;
     }
 
     public override void ProcessEnd()
     {
-        _buffController.livingEntity.fogController.ratio = 1f;
+        _livingEntity.fogController.ratio = 1f;
 
     }
 

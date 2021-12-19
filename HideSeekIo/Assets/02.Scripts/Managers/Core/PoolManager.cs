@@ -54,7 +54,7 @@ public class PoolManager
 
             // DontDestroyOnLoad 해제 용도
             if (parent == null)
-                poolable.transform.parent = Managers.Scene.CurrentScene.transform;
+                poolable.transform.parent = Managers.Scene.currentScene.transform;
 
             poolable.transform.parent = parent;
             poolable.IsUsing = true;
@@ -114,6 +114,7 @@ public class PoolManager
 
     public void Clear()
     {
+        Debug.Log("Clear + " + _pool.Keys.Count);
         foreach (Transform child in _root)
             GameObject.Destroy(child.gameObject);
 

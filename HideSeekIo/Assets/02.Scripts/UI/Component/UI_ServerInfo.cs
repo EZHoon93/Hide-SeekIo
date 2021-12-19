@@ -18,7 +18,7 @@ public class UI_ServerInfo : MonoBehaviour
         {
             string content = $"Ping : {PhotonNetwork.GetPing()}ms " +
                 $"{PhotonNetwork.CloudRegion } / " +
-                $"{PhotonNetwork.CurrentRoom.Name} 채널 ";
+                $"{PhotonNetwork.CurrentRoom.Name.Substring(1)} 채널 ";
             _serverInfoText.text = content;
             yield return new WaitForSeconds(1.0f);
         }

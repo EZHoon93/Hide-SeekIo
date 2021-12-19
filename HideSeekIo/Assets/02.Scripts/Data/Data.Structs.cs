@@ -10,12 +10,16 @@ namespace Data
         public float size;
     }
 
-    public struct SendAllSkinInfo
+    public class SendAllSkinInfo
     {
+        public Define.Team team;
         public int autoNumber;
-        public Define.CharacterType chacterType;
-        public string avaterSkinID;
+        public int avaterKey;
+        //public string accessoriesSkinID;
+        //public string weaponSkinID;
         public string nickName;
+
+        
     }
     public struct SpawnData
     {

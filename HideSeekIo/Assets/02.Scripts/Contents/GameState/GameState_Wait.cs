@@ -6,17 +6,16 @@ using Photon.Pun;
 //바로 바뀌는거 방지를 위한
 public class GameState_Wait : GameState_Base
 {
-    float _remainTime;
     public override float remainTime  => 5;
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info, float createServerTime)
     {
-        Managers.Game.Clear();  //게임초기화.
-        //CameraManager.Instance.SetupcameraTagerPlayer(Managers.Game.CurrentGameScene.CameraView);  //카메라 초기화
-        CameraManager.Instance.Clear();
-        InputManager.Instance.SetActiveController(false);       //조이스틱 오프 
+        Managers.ContentsClear();
+        //Managers.Input.SetActiveController(false);       //조이스틱 오프 
         uI_Main.ResetTexts();
     }
+
+ 
     public override void OnUpdate(int remainTime)
     {
         CheckReadyPlayer();

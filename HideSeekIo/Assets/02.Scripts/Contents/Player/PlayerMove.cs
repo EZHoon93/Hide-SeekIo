@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections;
 using Photon.Pun;
-using Smooth;
-using UnityEngine.AI;
-using System;
+using UnityEngine;
 
 public class PlayerMove : PhotonMove 
 {
@@ -15,73 +12,111 @@ public class PlayerMove : PhotonMove
         Run,
         Stun,
     }
-    public MoveState State { get; set; }
 
-    protected override Transform target => _playerCharacter.characterAvater.transform;
+    MoveState _moveState;
+    public MoveState State 
+    {
+        get => _moveState;
+        set
+        {
+            if (_moveState == value) return;
+            _moveState = value;
+            onChangeMoveStateEvent?.Invoke(_moveState);
+        }
+    }
+
     CharacterController _characterController;
     PlayerShooter _playerShooter;
     PlayerStat _playerStat;
     PlayerInput _playerInput;
     PlayerCharacter _playerCharacter;
-    NavMeshAgent agent;
     Animator _animator => _playerCharacter.animator;
 
     float _animationValue;
     bool _run;
-    List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
-    protected float _totRatio;    //버퍼리스트 합계산한 최종 이속 증/감소율
-    
+    public bool run { get; set; }
     public float ResultSpeed { get; set; }
-    public bool Run { 
-        get => _run; 
+
+    float _moveCurrEnergy;
+    public float moveCurrEnergy
+    {
+        get => _moveCurrEnergy;
         set
         {
-            if (_run == value) return;
-            _run = value;
-            if (_run)
-            {
-                startRunTime = 0;
-            }
-            else
-            {
-                startRunTime = 0;
-            }
+            _moveCurrEnergy = value;
+            onChangeMoveEnergy?.Invoke(value);
         }
     }
-    float startRunTime;
-    public bool isInvinc { get; set; }  //무적
 
-    public event Action<MoveState> changeMoveStateEvent;
+    float _moveMaxEnergy;
+    public float moveMaxEnergy {
+        get => _moveMaxEnergy;
+        set
+        {
+            _moveMaxEnergy = value;
+            onChangeMoveMaxEnergy?.Invoke(value);
+        }
+    } 
+
+    public event Action<float> onChangeMoveEnergy;
+    public event Action<float> onChangeMoveMaxEnergy;
+    public event Action<MoveState> onChangeMoveStateEvent;
+
+
+    //사물모드전용
+    public bool isOnlyRotation { get; set; }
+    [SerializeField] Sprite _noFixedSprite;
+    [SerializeField] Sprite _fixedSprite;
+
+
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        agent = GetComponent<NavMeshAgent>();
         _playerShooter = GetComponent<PlayerShooter>();
         _playerInput = GetComponent<PlayerInput>();
         _playerStat = GetComponent<PlayerStat>();
         _playerCharacter = GetComponent<PlayerCharacter>();
+        _playerInput.AddInputEvent(Define.AttackType.Joystick, ControllerInputType.Drag, InputType.Move, null);
+        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { run = true; });
+        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => {
+            run = false; });
 
-        //GetComponent<PlayerHealth>().onDamageEventPoster += OnDamageListen; //대미지 입으면 일시멈춤.
+        _playerShooter.weaponChangeCallBack += (a) => { isOnlyRotation = false; };
+
     }
     protected override void OnEnable()
     {
         base.OnEnable();
         State = MoveState.Idle;
         _animationValue = 0;
-        Run = false;
-        startRunTime = 0;
-        //_remainStunTime = 0;
+        run = false;
+        isOnlyRotation = false;
+        moveMaxEnergy = 2;
+        moveCurrEnergy = moveMaxEnergy;
     }
-    public virtual void OnPhotonInstantiate()
+    public override void OnPhotonInstantiate(PlayerController playerController)
     {
-        isInvinc = false;
+        //if(Managers.Scene.currentGameScene.gameMode == Define.GameMode.Object)
+        //{
+        //    _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Sub1, (v) => { FixedRotationByObjectMode(); });
+
+        //}
     }
 
+    public override void OnPreNetDestroy(PhotonView rootView)
+    {
+        
+    }
+    //소유권이 온다면 ..
     public void ChangeOwnerShip()
     {
-        //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { Run = !Run;  } );
-        //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => { Run = false; } );
+        
+    }
+
+    public void ChangeTeam(Define.Team team)
+    {
+
     }
    
 
@@ -98,14 +133,13 @@ public class PlayerMove : PhotonMove
     }
     protected override void UpdateLocal()
     {
-        var inputVector = _playerInput.controllerInputDic[InputType.Move].inputVector2;
-
+        var inputVector = _playerInput.GetVector2(InputType.Move);
         switch (_playerShooter.State)
         {
             case PlayerShooter.state.Idle:
                 dataState = DataState.SerializeView;
                 UpdateSmoothRotate(new Vector3(inputVector.x, 0, inputVector.y));
-                UpdateMove(inputVector, true);
+                UpdateMove(inputVector, run);
                 UpdateMoveAnimation(State);
                 break;
             case PlayerShooter.state.Skill:
@@ -114,7 +148,7 @@ public class PlayerMove : PhotonMove
                 break;
             case PlayerShooter.state.MoveAttack:
                 dataState = DataState.SerializeView;
-                UpdateMove(inputVector, true);
+                UpdateMove(inputVector, run);
                 UpdateSmoothRotate(new Vector3(inputVector.x, 0, inputVector.y));
                 UpdateMoveAnimation(State);
                 break;
@@ -122,13 +156,14 @@ public class PlayerMove : PhotonMove
             //    UpdateMoveAnimation(MoveState.Idle);
                 //break;
         }
+
+        UpdateMoveEnergy();
+
     }
     protected override void UpdateRemote()
     {
         switch (_playerShooter.State)
         {
-            //case PlayerShooter.state.Idle:
-            //case PlayerShooter.state.NoMove:
             case PlayerShooter.state.MoveAttack:
                 UpdateMoveAnimation(State);
                 break;
@@ -136,8 +171,15 @@ public class PlayerMove : PhotonMove
         UpdateMoveAnimation(State);
 
     }
+
+
     protected virtual void UpdateMove(Vector2 inputVector2, bool isRun)
     {
+        print(isRun + "/" + isOnlyRotation);
+        if(isOnlyRotation)
+        {
+            return;
+        }
         //조이스틱 입력안할시
         if (inputVector2.sqrMagnitude == 0)
         {
@@ -156,15 +198,33 @@ public class PlayerMove : PhotonMove
             State = MoveState.Walk;
             ResultSpeed = _playerStat.moveSpeed* 0.7f;
         }
-        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed) + (startRunTime* _playerStat.moveSpeed*0.0f)  ;
+        ResultSpeed = ResultSpeed + (_totRatio * ResultSpeed) + (_playerStat.moveSpeed*0.0f)  ;
         Vector3 moveDistance = UtillGame.ConventToVector3(inputVector2.normalized) * ResultSpeed * Time.deltaTime;
         if (!_characterController.isGrounded)
         {
             moveDistance.y -= 9.8f * Time.deltaTime;
         }
         _characterController.Move(moveDistance);
+        //_rigidbody.MovePosition(_rigidbody.position+ moveDistance);
     }
 
+    
+    protected  void UpdateMoveEnergy()
+    {
+        if(State == MoveState.Run)
+        {
+            moveCurrEnergy = Mathf.Clamp(moveCurrEnergy - Time.deltaTime, 0, moveMaxEnergy);
+            if(moveCurrEnergy <= 0)
+            {
+                State = MoveState.Walk;
+                run = false;
+            }
+        }
+        else
+        {
+            moveCurrEnergy = Mathf.Clamp(moveCurrEnergy + Time.deltaTime *0.3f , 0, moveMaxEnergy);
+        }
+    }
     protected void UpdateMoveAnimation(MoveState moveState)
     {
         switch (moveState)
@@ -184,28 +244,25 @@ public class PlayerMove : PhotonMove
         }
         _animator.SetFloat("Speed", _animationValue);
     }
-    public void AddMoveBuffList(float ratio, bool isAdd)
+
+
+  
+    /// <summary>
+    /// 사물모드 전용
+    /// </summary>
+    void FixedRotationByObjectMode()
     {
-        if (isAdd)
+        isOnlyRotation = !isOnlyRotation;
+        if (this.IsMyCharacter())
         {
-
-            _moveBuffRatioList.Add(ratio);
-        }
-        else
-        {
-            _moveBuffRatioList.Remove(ratio);
+            Sprite sprite = isOnlyRotation ? _fixedSprite : _noFixedSprite;
+            Managers.Input.GetControllerJoystick(InputType.Sub1).SetupItemImage(sprite);
         }
 
-        _totRatio = 0; ;
-        foreach (var v in _moveBuffRatioList)
-        {
-            _totRatio += v;
-        }
     }
 
-   
- 
 
+    #region 필없음
     // 목표지점 이동이아닌 초기 target의 방향으로 ,직진
     public void MoveToTarget(Vector3 target , float time)
     {
@@ -219,13 +276,13 @@ public class PlayerMove : PhotonMove
         dir.y = this.transform.position.y;
         Vector3 moveDistance = Vector3.zero;
         Quaternion newRotation = Quaternion.LookRotation(dir);
-        target.transform.rotation = newRotation;
-        n_direction = target.transform.forward;
+        _rotateTarget.transform.rotation = newRotation;
+        n_direction = _rotateTarget.transform.forward;
         while (currTime <= duration)
         {
             dir.y -= 9.8f * Time.deltaTime;
             //moveDistance = Vector3.Lerp(moveDistance, 2 * dir, Time.deltaTime * (1 / duration));
-            _characterController.Move(dir * Time.deltaTime * (1 / duration));
+            //_characterController.Move(dir * Time.deltaTime * (1 / duration));
             yield return null;
             currTime += Time.deltaTime;
         }
@@ -253,5 +310,5 @@ public class PlayerMove : PhotonMove
         //    currTime += Time.deltaTime;
         //}
     }
-
+    #endregion
 }

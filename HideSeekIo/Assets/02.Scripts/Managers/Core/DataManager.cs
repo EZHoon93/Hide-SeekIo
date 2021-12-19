@@ -37,14 +37,14 @@ public class DataManager
         InGameItemDic = LoadJson<InGameStatData, string, InGameStat>("InGameItem").MakeDict();
 
 
-        foreach (var productType in Enum.GetValues(typeof(Define.ProductType)))
-        {
-            var productDataDic = LoadJson<InGameStatData, string, InGameStat>(productType.ToString()).MakeDict();
-            if(ProductDic.ContainsKey(productType.ToString()) == false)
-            {
-                ProductDic.Add(productType.ToString(), productDataDic);
-            }
-        }
+        //foreach (var productType in Enum.GetValues(typeof(Define.ProductType)))
+        //{
+        //    var productDataDic = LoadJson<InGameStatData, string, InGameStat>(productType.ToString()).MakeDict();
+        //    if(ProductDic.ContainsKey(productType.ToString()) == false)
+        //    {
+        //        ProductDic.Add(productType.ToString(), productDataDic);
+        //    }
+        //}
 
         //inGameSeekrItems = LoadJson<InGameStatData, string, InGameStat>("InGameSeeker").MakeDict();
 

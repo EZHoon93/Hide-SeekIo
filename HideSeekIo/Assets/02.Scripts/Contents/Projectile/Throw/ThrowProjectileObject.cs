@@ -45,6 +45,8 @@ public class ThrowProjectileObject : Poolable
     /// <param name="endPoint"></param>
     public virtual void Play(PlayerController attackPlayer, Vector3 startPoint, Vector3 endPoint)
     {
+        if (attackPlayer == null) return;
+
         _attackPlayer = attackPlayer;
         _modelObject.gameObject.SetActive(true);
         _fogOfWarUnit.team = _attackViewID;
@@ -58,6 +60,7 @@ public class ThrowProjectileObject : Poolable
         {
             _hideInFog.enabled = true;
         }
+        //_hideInFog.enabled = false;
         StartCoroutine(Move(startPoint,endPoint, .0f, .2f, 2.0f ));
     }
     IEnumerator Move(Vector3 startPoint, Vector3 endPoint, float arriveMinTime , float addTimeByDistance, float arriveMaxTime)
@@ -73,8 +76,14 @@ public class ThrowProjectileObject : Poolable
         transform.DOMoveY(endPoint.y, arriveTime * 0.5f).SetEase(Ease.InSine);
         yield return new WaitForSeconds(arriveTime * 0.5f);
 
-        CameraManager.Instance.ShakeCameraByPosition(endPoint, 0.3f, 0.5f, 0.1f);
-        Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        if (Managers.cameraManager.IsView(this.transform.position))
+        {
+            Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        }
+        if (_attackPlayer.IsMyCharacter())
+        {
+            Managers.cameraManager.ShakeCameraByPosition(endPoint, 0.3f, 0.5f, 0.1f);
+        }
         Explosion();
     }
     

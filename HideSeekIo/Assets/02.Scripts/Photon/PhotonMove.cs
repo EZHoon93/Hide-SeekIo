@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 using Photon.Pun;
-using Smooth;
+using System.Collections.Generic;
 
 public class PhotonMove : MonoBehaviourPun  , IPunObservable
 {
@@ -11,7 +11,7 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
         ServerView
     }
     public DataState dataState;
-    protected virtual Transform target { get; set; }
+    [SerializeField] protected Transform _rotateTarget;
     protected float rotationSpeed = 8;
     private Vector3 networkPosition = Vector3.zero; //We lerp towards this
     private Vector3 oldPosition;
@@ -21,12 +21,21 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
     float m_distance;
     bool m_firstTake;
     public float SmoothingDelay = 5;
+
+    List<float> _moveBuffRatioList = new List<float>(); //캐릭에 슬로우및이속증가 버퍼리스트
+     protected float _totRatio;    //버퍼리스트 합계산한 최종 이속 증/감소율
     protected virtual void OnEnable()
     {
         m_firstTake = true;
         dataState = DataState.SerializeView;
     }
 
+    public virtual void OnPhotonInstantiate(PlayerController playerController)
+    {
+    }
+    public virtual void OnPreNetDestroy(PhotonView rootView)
+    {
+    }
     protected virtual void Update()
     {
         if (this.photonView.IsMine == false)
@@ -95,30 +104,48 @@ public class PhotonMove : MonoBehaviourPun  , IPunObservable
        
     }
  
-    protected void UpdateSmoothRotate(Vector3 direction)
+    protected virtual void UpdateSmoothRotate(Vector3 direction)
     {
         if (direction.normalized.sqrMagnitude == 0)
         {
-            n_direction = this.target.forward;
+            n_direction = this._rotateTarget.forward;
             return;
         }
         n_direction = direction;
         Quaternion quaternion = Quaternion.Euler(0, 0, 0);
         var newDirection = quaternion * direction;
         Quaternion newRotation = Quaternion.LookRotation(newDirection);
-        this.target.rotation = Quaternion.Slerp(this.target.rotation, newRotation, rotationSpeed * Time.deltaTime);
+        this._rotateTarget.rotation = Quaternion.Slerp(this._rotateTarget.rotation, newRotation, rotationSpeed * Time.deltaTime);
     }
 
     protected void UpdateImmediateRotate(Vector3 lookDirection)
     {
-        //inputVector3.y = target.transform.position.y;
+        //inputVector3.y = _rotateTarget.transform.position.y;
         Quaternion newRotation = Quaternion.LookRotation(lookDirection);
-        this.target.rotation = newRotation;
-        //this.target.LookAt(inputVector3);
-        n_direction = this.target.forward;
+        this._rotateTarget.rotation = newRotation;
+        //this._rotateTarget.LookAt(inputVector3);
+        n_direction = this._rotateTarget.forward;
 
     }
 
+    public void AddMoveBuffList(float ratio, bool isAdd)
+    {
+        if (isAdd)
+        {
+
+            _moveBuffRatioList.Add(ratio);
+        }
+        else
+        {
+            _moveBuffRatioList.Remove(ratio);
+        }
+
+        _totRatio = 0; ;
+        foreach (var v in _moveBuffRatioList)
+        {
+            _totRatio += v;
+        }
+    }
 
 
 

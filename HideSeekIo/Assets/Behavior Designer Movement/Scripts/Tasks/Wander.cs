@@ -54,7 +54,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             var attempts = targetRetries.Value;
             var destination = transform.position;
             while (!validDestination && attempts > 0) {
-                direction = direction + Random.insideUnitSphere * wanderRate.Value;
+                direction = Vector3.zero+ Random.insideUnitSphere * wanderRate.Value;
                 destination = transform.position + direction.normalized * Random.Range(minWanderDistance.Value, maxWanderDistance.Value);
                 validDestination = SamplePosition(destination);
                 attempts--;

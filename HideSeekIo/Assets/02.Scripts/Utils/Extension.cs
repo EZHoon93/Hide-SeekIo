@@ -56,12 +56,17 @@ public static class Extension
 		return PhotonNetwork.Time <= createTime + 1 ? true : false;
 	}
 
-	public static void ResetTransform(this Transform go ,Transform parent = null)
+	public static void ResetTransform(this Transform go ,Transform parent = null, bool isScaleOne = false)
     {
         if (parent != null)
         {
 			go.transform.SetParent(parent);
         }
 		Util.UtillResetTransform(go );
+
+        if (isScaleOne)
+        {
+			go.transform.localScale = Vector3.one;
+        }
     }
 }

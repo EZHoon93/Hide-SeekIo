@@ -14,7 +14,7 @@ public class Timer_TNT : TimerItem
     public override void EndTime()
     {
         //UtillGame.DamageInRange(this.transform, _damageRange, _damage, _timerItemController.usePlayer.ViewID(), UtillLayer.seekerToHiderAttack);
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
             
     }
 

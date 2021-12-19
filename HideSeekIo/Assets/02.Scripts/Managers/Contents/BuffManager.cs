@@ -2,63 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-public class BuffManager : GenricSingleton<BuffManager>
+public class BuffManager : MonoBehaviourPun
 {
-
-    private void AddBuffController(LivingEntity livingEntity, BuffController buffController)
+    private void Awake()
     {
-        livingEntity.n_buffControllerList.Add(buffController);
-        livingEntity.photonView.ObservedComponents.Add(buffController);
+        Managers.buffManager = this;
     }
-
-    public void RemoveBuffController(LivingEntity livingEntity, BuffController buffController)
+    public virtual void OnApplyBuffOnLocal(IBuffable buffable, Define.BuffType buffType, float durationTime )
     {
-        livingEntity.photonView.ObservedComponents.Remove(buffController);
-        livingEntity.n_buffControllerList.Remove(buffController);
-    }
-
-    private BuffController MakeBuffController(LivingEntity livingEntity)
-    {
-        var buffController = Managers.Resource.Instantiate($"Buff/BuffController").GetComponent<BuffController>();
-        buffController.transform.ResetTransform(livingEntity.transform);
-        buffController.gameObject.SetLayerRecursively(livingEntity.gameObject.layer);
-        return buffController;
-    }
-    //버프 이펙트 생성
-    public BuffBase MakeBuffObject(Define.BuffType buffType, Transform target)
-    {
-        if (buffType == Define.BuffType.Null) return null;
-        var buffBase = Managers.Resource.Instantiate($"Buff/{buffType.ToString()}", target).GetComponent<BuffBase>();
-        buffBase.transform.ResetTransform(target);
-        buffBase.gameObject.SetLayerRecursively(target.gameObject.layer);
-        return buffBase;
-    }
-
-
-
-    /// <summary>
-    /// 버프 아이템 사용시, 해당 버프가 이미 있는버프인지 체크, =>있는버프 재갱신 없는버프 => 생성
-    /// 
-    /// </summary>
-    public void CheckBuffController(LivingEntity livingEntity, Define.BuffType buffType = Define.BuffType.Null, float durationTime = -1 )
-    {
-        if (livingEntity == null) return;
-        if (livingEntity.Dead) return;
-        var buffControllerList = livingEntity.n_buffControllerList;
-        BuffController buffController = buffControllerList.Find(s => s.BuffType == buffType);
-        //float durationTime = 10;
-        float createServerTime = livingEntity.photonView.IsMine ? (float)PhotonNetwork.Time : 0;
-        if (buffController == null)
+        float createTime = (float)PhotonNetwork.Time;
+        var buffController = buffable.buffController;
+        if (buffController.photonView.IsMine)
         {
-            buffController = MakeBuffController(livingEntity);
-            AddBuffController(livingEntity, buffController);
-            buffController.SetupLivingEntitiy(livingEntity);
-            buffController.SetupInfo(buffType, createServerTime , durationTime);
+            CheckBuff(buffController, buffType, createTime, durationTime);
+        }
+    }
+
+    public void CheckBuff(BuffController buffController, Define.BuffType buffType , float createTime, float durationTime)
+    {
+        var buff = buffController.buffBaseList.Find(s => s.buffType == buffType);
+        //없는 버프라면 생성
+        if (buff == null)
+        {
+            buff = Managers.Resource.Instantiate($"Buff/{buffType.ToString()}").GetComponent<BuffBase>();
+            buff.Setup(buffController, buffType);
+            buff.transform.ResetTransform(buffController.transform);
+            buffController.AddBuff(buff);
+            buff.Play(createTime , durationTime);
         }
         else
         {
-            buffController.Renew(createServerTime);
+            buff.RePlay(durationTime);
         }
+        
+
     }
+
+    
 
 }

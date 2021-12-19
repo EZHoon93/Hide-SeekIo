@@ -1,6 +1,8 @@
 ﻿
 using UnityEngine;
 using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class GameState_End : GameState_Base
 
 {
@@ -28,9 +30,9 @@ public class GameState_End : GameState_Base
     }
     public override void OnTimeEnd()
     {
-        PhotonNetwork.LoadLevel("Main1");
-
-        //Managers.Scene.MasterSelectNextMainScene(Managers.Game.CurrentGameScene.SceneType);
+        Managers.photonManager.Clear();
+        Managers.Scene.CallRandomGameScene();
+        
     }
 
 }

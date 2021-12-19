@@ -12,7 +12,7 @@ public class InstantItem_Trap : InstantItem_Base
 
     public override void UseEffect()
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, hasPlayerController.transform.position, 1);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, hasPlayerController.transform.position, 1);
     }
 
     protected override void UsePorecess(PlayerController usePlayer)

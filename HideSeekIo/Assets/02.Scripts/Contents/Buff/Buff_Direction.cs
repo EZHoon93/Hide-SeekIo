@@ -10,7 +10,7 @@ public class Buff_Direction : BuffBase
     PlayerInput _playerInput;
     public override void ProcessStart()
     {
-        _playerInput = _buffController.livingEntity.GetComponent<PlayerInput>();
+        _playerInput = _livingEntity.GetComponent<PlayerInput>();
         if (_playerInput == null) return;
         int isOppsive = Random.Range(0, 3);
         float x = 1;

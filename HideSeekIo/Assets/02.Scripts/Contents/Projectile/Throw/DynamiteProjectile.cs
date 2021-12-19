@@ -7,7 +7,7 @@ public class DynamiteProjectile : ThrowProjectileObject
 
     //protected override void Explosion()
     //{
-    //    EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position + new Vector3(0, 0.5f, 0), 0);
+    //    Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position + new Vector3(0, 0.5f, 0), 0);
     //    if (attackPlayer== null) return;
     //    if (attackPlayer.photonView.IsMine )
     //    {
@@ -42,7 +42,7 @@ public class DynamiteProjectile : ThrowProjectileObject
 
     //    //깜박임..
     //    yield return new WaitForSeconds(0.3f);
-    //    EffectManager.Instance.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
+    //    Managers.effectManager.EffectOnLocal(Define.EffectType.GrenadeEffect, this.transform.position, 0);
     //    UtillGame.DamageInRange(this.transform, _range, _damage, _useViewID, UtillLayer.seekerToHiderAttack);
     //    _modelObject.SetActive(false);
     //    _slider.gameObject.SetActive(false);

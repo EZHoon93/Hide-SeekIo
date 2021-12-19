@@ -137,11 +137,11 @@ public class Weapon_Hammer2 : Weapon
 
     void AttackEffect(Vector3 attackPoint)
     {
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0, _damageRange);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0, _damageRange);
         UtillGame.DamageInRange(attackPoint, _damageRange, _damage, playerController.ViewID(), UtillLayer.seekerToHiderAttack);
-        if (CameraManager.Instance.IsView(attackPoint) && playerController.IsMyCharacter())
+        if (Managers.cameraManager.IsView(attackPoint) && playerController.IsMyCharacter())
         {
-            CameraManager.Instance.ShakeCameraByPosition(attackPoint, 0.3f, 0.7f, 0.1f);
+            Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.7f, 0.1f);
             Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         }
     }

@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] PlayerUI _playerUI;
     [SerializeField] PlayerGrassDetect _playerGrassDetect;
+    [SerializeField] MoveEnergyController _moveEnergyController;
+    [SerializeField] PlayerObjectController _playerObjectController;
     public string NickName { get; set; }
     public Define.Team Team => playerHealth.Team;
     public PlayerInput playerInput { get; private set; }
@@ -20,14 +22,15 @@ public class PlayerController : MonoBehaviourPun
     public FogOfWarController fogOfWarController => playerHealth.fogController;
     public PlayerGrassDetect playerGrassDetect => _playerGrassDetect;
 
-    public List<int> statTypeList = new List<int>();
     public event Action<PhotonView> changeOnwerShip;
+    public event Action<PhotonView> onPhotonDestroyEvent;
+    public event Action<PlayerController> onPhotonInstantiateEvent;
 
 
     private void Awake()
     {
         playerHealth = this.gameObject.GetOrAddComponent<PlayerHealth>();
-        playerHealth.onDeath += HandleDeath;
+        playerHealth.onDeath += () => { SetActiveEnable(false); };
         playerInput = this.gameObject.GetOrAddComponent<PlayerInput>();
         playerShooter = this.gameObject.GetOrAddComponent<PlayerShooter>();
         playerMove = this.gameObject.GetOrAddComponent<PlayerMove>();
@@ -38,7 +41,7 @@ public class PlayerController : MonoBehaviourPun
 
 
 
-    protected virtual void HandleDeath()
+    protected virtual void SetActiveEnable(bool active)
     {
         playerHealth.enabled = false;
         playerShooter.enabled = false;
@@ -54,43 +57,58 @@ public class PlayerController : MonoBehaviourPun
         _playerUI.OnPhotonInstantiate();   
         playerInput.OnPhotonInstantiate();
         playerHealth.OnPhotonInstantiate();
-        playerMove.OnPhotonInstantiate();
+        playerMove.OnPhotonInstantiate(this);
         playerShooter.OnPhotonInstantiate();
         playerCharacter.OnPhotonInstantiate(this);
         _playerGrassDetect.gameObject.SetActive(false);
+        _playerObjectController.OnPhotonInstantiate(this);
+        _moveEnergyController.OnPhotonInstantiate(this);
         fogOfWarController.OnPhotonInstantiate(playerHealth);
-        fogOfWarController.transform.ResetTransform(playerCharacter.character_Base.transform);
-        statTypeList.Clear();
-        ChangeTeam(Define.Team.Hide);
+        fogOfWarController.transform.ResetTransform(this.transform);
+
+        fogOfWarController.fogOfWarUnit.circleRadius = 7;
+        fogOfWarController.fogOfWarUnit.shapeType = FogOfWarShapeType.Circle;
+        fogOfWarController.fogOfWarUnit.offset = Vector3.zero;
     }
+
+    public virtual void OnPreNetDestroy(PhotonView rootView)
+    {
+        _playerUI.OnPreNetDestroy(rootView);
+        playerInput.OnPreNetDestroy(rootView);
+        playerShooter.OnPreNetDestroy(rootView);
+        playerHealth.OnPreNetDestroy(rootView);
+        playerCharacter.OnPreNetDestroy(rootView);
+    }
+
     public void ChangeAI()
     {
         playerInput.ChangeAI();
         this.gameObject.tag = "AI";
     }
 
-    public virtual void OnPreNetDestroy(PhotonView rootView)
-    {
-
-    }
-
+ 
 
     /// <summary>
     /// 유저가 소유권을 가져왔을때 실행
     /// </summary>
-    public void ChangeOwnerShipOnUser()
+    public void ChangeOwnerShipOnUser(bool isMyCharacter)
     {
         playerInput.ChangeOwnerShip();
         playerMove.ChangeOwnerShip();
         playerShooter.ChangeOwnerShip();
         playerCharacter.ChangeOnwerShip(this);
+        _moveEnergyController.ChangeOwnerShipOnUser(isMyCharacter);
         _playerUI.ChangeOwnerShip();
-        changeOnwerShip?.Invoke(this.photonView);
+        //changeOnwerShip?.Invoke(this.photonView);
+        if (photonView.IsMine)
+        {
+            //Managers.buffManager.OnApplyBuffOnLocal(playerHealth, Define.BuffType.B_Speed, 15);
+
+        }
         if (this.IsMyCharacter())
         {
-            Managers.Game.myPlayer = this;
+            Managers.Game.myPlayer= this;
             _playerGrassDetect.gameObject.SetActive(true);
-
         }
     }
 
@@ -104,7 +122,15 @@ public class PlayerController : MonoBehaviourPun
                 fogOfWarController.fogOfWarUnit.circleRadius = 7;
                 fogOfWarController.fogOfWarUnit.shapeType = FogOfWarShapeType.Circle;
                 fogOfWarController.fogOfWarUnit.offset = Vector3.zero;
-
+                if (photonView.IsMine)
+                {
+                    //if(Managers.Game.gameStateController.gameStateType == Define.GameState.GameReady ||
+                    //    Managers.Game.gameStateController.gameStateType == Define.GameState.Gameing)
+                    //{
+                    //    Managers.StatSelectManager.SetupRandomWeapon(this);
+                    //    //Managers.Spawn.WeaponSpawn(Define.Weapon.Flash, this);
+                    //} 
+                }
                 break;
             case Define.Team.Seek:
                 this.gameObject.layer = (int)Define.Layer.Seeker;
@@ -115,9 +141,13 @@ public class PlayerController : MonoBehaviourPun
                 //fogOfWarController.fogOfWarUnit.shapeType = FogOfWarShapeType.Circle;
                 //fogOfWarController.fogOfWarUnit.offset = Vector3.zero;
                 //fogOfWarController.fogOfWarUnit.cellBased = true;
-                if (PhotonNetwork.IsMasterClient)
+                if (photonView.IsMine)
                 {
-                    Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, this);
+                    //if (Managers.Game.gameStateController.gameStateType == Define.GameState.GameReady ||
+                    //    Managers.Game.gameStateController.gameStateType == Define.GameState.Gameing)
+                    //{
+                    //    Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, this);
+                    //}
                 }
                 break;
         }
@@ -128,7 +158,7 @@ public class PlayerController : MonoBehaviourPun
         playerUI.ChangeTeam(team);
         if (this.IsMyCharacter())
         {
-            CameraManager.Instance.ChangeTeamByTargetView(this);
+            Managers.cameraManager.ChangeTeamByTargetView(this);
         }
     }
    
@@ -156,6 +186,15 @@ public class PlayerController : MonoBehaviourPun
     private void OnCollisionStay(Collision collision)
     {
          collision.collider.CompareTag("Grass");
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Managers.buffManager.OnApplyBuffOnLocal(playerHealth, Define.BuffType.B_Stealth, 5);
+
+        }
     }
 }
 

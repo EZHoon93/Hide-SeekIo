@@ -9,7 +9,7 @@ public class TNTProjectile : ThrowProjectileObject
     
     //protected override void Explosion()
     //{
-    //    EffectManager.Instance.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position + new Vector3(0, 0.5f, 0), 0);
+    //    Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position + new Vector3(0, 0.5f, 0), 0);
     //    if (attackPlayer == null) return;
     //    if (attackPlayer.photonView.IsMine)
     //    {

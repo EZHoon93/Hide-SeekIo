@@ -28,17 +28,17 @@ public class FogOfWarController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (CameraManager.Instance.cameraTagerPlayer)
+        if (Managers.cameraManager.cameraTagerPlayer)
         {
-            hideInFog.team = CameraManager.Instance.cameraTagerPlayer.ViewID();
+            hideInFog.team = Managers.cameraManager.cameraTagerPlayer.ViewID();
         }
-        CameraManager.Instance.fogChangeEvent += ChangeCameraTarget;
+        Managers.cameraManager.fogChangeEvent += ChangeCameraTarget;
     }
 
     private void OnDisable()
     {
-        if (CameraManager.Instance == null) return;
-        CameraManager.Instance.fogChangeEvent -= ChangeCameraTarget;
+        if (Managers.cameraManager == null) return;
+        Managers.cameraManager.fogChangeEvent -= ChangeCameraTarget;
     }
     public void OnPhotonInstantiate(LivingEntity livingEntity)
     {

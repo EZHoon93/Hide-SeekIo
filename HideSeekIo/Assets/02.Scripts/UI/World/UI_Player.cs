@@ -13,16 +13,16 @@ public class UI_Player : MonoBehaviour
     [SerializeField] GameObject _hearRange;
 
     PlayerController _playerController;
-    Character_Base _character_Base;
+    //Character_Base _character_Base;
 
     private void Awake()
     {
-        this.transform.parent.GetComponentInParent<IOnPhotonInstantiate>().OnPhotonInstantiateEvent += OnPhotonInstantiate;
+        this.transform.parent.GetComponentInParent<IOnPhotonInstantiate>().onPhotonInstantiateEvent += OnPhotonInstantiate;
     }
     void OnPhotonInstantiate(PhotonView photonView)
     {
         _playerController = this.transform.parent.GetComponentInParent<PlayerController>();
-        _character_Base = _playerController.playerCharacter.character_Base;
+        //_character_Base = _playerController.playerCharacter.character_Base;
         _playerNameText.text = _playerController.NickName;
 
         bool active = _playerController.IsMyCharacter() ? true : false;
@@ -49,14 +49,14 @@ public class UI_Player : MonoBehaviour
 
     private void Update()
     {
-        if (_playerController.playerMove != null)
-        {
-            _energySlider.value = _character_Base.CurrentEnergy;
-            if(_energySlider.maxValue != _character_Base.MaxEnergy)
-            {
-                _energySlider.maxValue = _character_Base.MaxEnergy;
-            }
+        //if (_playerController.playerMove != null)
+        //{
+        //    _energySlider.value = _character_Base.CurrentEnergy;
+        //    if(_energySlider.maxValue != _character_Base.MaxEnergy)
+        //    {
+        //        _energySlider.maxValue = _character_Base.MaxEnergy;
+        //    }
 
-        }
+        //}
     }
 }

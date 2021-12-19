@@ -9,133 +9,98 @@ using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
 
+/// <summary>
+/// InGameManager...
+/// </summary>
 public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
 
-
-    #region SingleTon
-    public static PhotonGameManager Instacne
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                // 씬에서 GameManager 오브젝트를 찾아 할당
-                _instance = FindObjectOfType<PhotonGameManager>();
-            }
-
-            // 싱글톤 오브젝트를 반환
-            return _instance;
-        }
-    }
-    private static PhotonGameManager _instance; // 싱글톤이 할당될 static 변수
-    #endregion
-
-
     #region 변수
-    public event Action<Player> enterUserList;
-    public event Action<Player> leftUserList;
-    public event Action gameStarEventPoster;
-    public event Action gameJoin;
-    public event Action gameExit;
-
+    
+    //public event Action<bool> onMyCharacter;  //내캐릭터 생성시 ..
     public event Action<Define.ChattingColor, string> reciveChattingEvent;
-    public Dictionary<Define.GameState, Action> StateChangeEventDic = new Dictionary<Define.GameState, Action>();
-
+    public Dictionary<Define.InGamePhotonEvent, Action<Player>> onPlayerEventCallBackDic = new Dictionary<Define.InGamePhotonEvent, Action<Player>>();
     #endregion
-
-
-    public bool testSeeekr { get; set; } = true;
-
 
     private void Awake()
     {
-        // 씬에 싱글톤 오브젝트가 된 다른 GameManager 오브젝트가 있다면
-        if (Instacne != this)
-        {
-            // 자신을 파괴
-            Destroy(this.gameObject);
-        }
-        DontDestroyOnLoad(this.gameObject);
+        Managers.photonGameManager = this;
     }
-
 
     public override void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);
-    }
 
+    }
     public override void OnDisable()
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
 
-    public void AddListenr(Define.GameState gameState, Action newAction)
-    {
-        if (StateChangeEventDic.ContainsKey(gameState))
-        {
-            StateChangeEventDic[gameState] += newAction;
-        }
-        else
-        {
-            StateChangeEventDic.Add(gameState, newAction);
-        }
-    }
-    public void PostStateEvent(Define.GameState gameState)
-    {
-        //이벤트 있으면 실행
-        if (StateChangeEventDic.ContainsKey(gameState))
-        {
-            StateChangeEventDic[gameState]?.Invoke();
-        }
-    }
-    public void GameJoin()
-    {
-        var characterType = PlayerInfo.GetCurrentUsingCharacter();
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
-            { "jn", true },
-            { "ch", (int)characterType},
-            { "as" ,PlayerInfo.GetCurrentUsingCharacterAvaterSkin(characterType).avaterKey }
-        }); ;
-        gameJoin?.Invoke();
-        var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
-        if (uiMain)
-        {
-            uiMain.ChangePanel(Define.GameScene.Game);
-        }
-    }
+    //public void AddListenr(Define.GameState gameState, Action newAction)
+    //{
+    //    if (StateChangeEventDic.ContainsKey(gameState))
+    //    {
+    //        StateChangeEventDic[gameState] += newAction;
+    //    }
+    //    else
+    //    {
+    //        StateChangeEventDic.Add(gameState, newAction);
+    //    }
+    //}
+    //public void PostStateEvent(Define.GameState gameState)
+    //{
+    //    //이벤트 있으면 실행
+    //    if (StateChangeEventDic.ContainsKey(gameState))
+    //    {
+    //        StateChangeEventDic[gameState]?.Invoke();
+    //    }
+    //}
+    //public void GameJoin()
+    //{
+    //    var currentSkinInfo = PlayerInfo.userData.GetCurrentAvater();
+    //    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
+    //        { "jn", true },
+    //        { "ch" ,currentSkinInfo.characterAvaterKey },   // 캐릭아바타스킨
+    //        { "we" ,currentSkinInfo.weaponKey },   //무기아바타스킨
+    //        { "ac" ,currentSkinInfo.accesoryKey },   //악세사리스킨
 
-    public void GameExit()
-    {
-        var myPlayer = Managers.Game.myPlayer;
-        if (myPlayer)
-        {
-            myPlayer.GetComponent<PlayerSetup>().RemoveUserPlayerToServer();
-        }
-        gameExit?.Invoke();
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
-        InputManager.Instance.SetActiveController(false);
-        var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
-        if (uiMain)
-        {
-            uiMain.ChangePanel(Define.GameScene.Lobby);
-        }
-    }
+    //    }); ;
+    //    gameJoin?.Invoke();
+    //    var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
+    //    if (uiMain)
+    //    {
+    //        uiMain.ChangePanel(Define.GameScene.Game);
+    //    }
+    //}
+
+    //public void GameExit()
+    //{
+    //    if (myPlayer)
+    //    {
+    //        myPlayer.GetComponent<PlayerSetup>().RemoveUserPlayerToServer();
+    //    }
+    //    gameExit?.Invoke();
+    //    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
+    //    Managers.Input.SetActiveController(false);
+    //    var uiMain = Managers.UI.SceneUI.GetComponent<UI_Main>();
+    //    if (uiMain)
+    //    {
+    //        uiMain.ChangePanel(Define.GameScene.Lobby);
+    //    }
+
+        
+    //    if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+    //    {
+    //        Managers.Spawn.GameStateSpawn(Define.GameState.Wait);
+    //    }
+    //}
 
     /// <summary>
     /// 팀선정후 게임 시작
     /// </summary>
-    public void GameStart()
-    {
-       //_gast
-    }
-
-    public override void OnJoinedRoom()
-    {
-        //base.OnJoinedRoom();
-        //PhotonNetwork.IsMessageQueueRunning = true; 
-    }
+  
 
     /// <summary>
     /// 방장이 바뀌엇을떄
@@ -183,22 +148,24 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             {
                 //게임에 참여중인 유저가 한명도없다면. => 리셋
                 //ChangeRoomStateToServer(Define.GameState.Wait);
-                Managers.Spawn.GameStateSpawn( Define.GameState.Wait);
+                //Managers.Spawn.GameStateSpawn( Define.GameState.Wait);
 
             }
         }
     }
 
-  
-
-    public void ChangeRoomStateToServer(Define.GameState gameState)
+    public void AddEventListenr(Define.InGamePhotonEvent @eventType, Action<Player> action)
     {
-        if (PhotonNetwork.IsMasterClient == false) return;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable()
+        if (onPlayerEventCallBackDic.ContainsKey(@eventType))
         {
-            {"gs" , gameState }
-        });
+            onPlayerEventCallBackDic[@eventType] += action;
+        }
+        else
+        {
+            onPlayerEventCallBackDic.Add(@eventType, action);
+        }
     }
+
 
 
     #region Chatting
@@ -217,11 +184,11 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     #endregion
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        enterUserList?.Invoke(newPlayer);
+        if (onPlayerEventCallBackDic.ContainsKey(Define.InGamePhotonEvent.Enter))
+        {
+            onPlayerEventCallBackDic[Define.InGamePhotonEvent.Enter]?.Invoke(newPlayer);
+        }
     }
-
-
-
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         if (otherPlayer.TagObject != null)
@@ -233,7 +200,10 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 playerController.ChangeAI();
             }
         }
-        leftUserList?.Invoke(otherPlayer);
+        if (onPlayerEventCallBackDic.ContainsKey(Define.InGamePhotonEvent.Left))
+        {
+            onPlayerEventCallBackDic[Define.InGamePhotonEvent.Left]?.Invoke(otherPlayer);
+        }
     }
 
     public void HiderDieOnLocal(int dieViewID, int attackViewID)
@@ -252,8 +222,9 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
         var killPlayer = Managers.Game.GetLivingEntity(attackViewID).GetComponent<PlayerController>();
+        if (deathPlayer == null || killPlayer == null) return;
         var uiMain = Managers.UI.SceneUI as UI_Main;
-        uiMain.UpdateKillNotice("dsdowok", "playertEst");
+        uiMain.UpdateKillNotice(killPlayer.NickName, deathPlayer.NickName);
         if (killPlayer.IsMyCharacter())
         {
             uiMain.killText.text = $"{deathPlayer.NickName} 를 잡으셨습니다.";
@@ -262,7 +233,15 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             uiMain.killText.color = color;
             uiMain.killText.DOFade(0.0f, 2.0f);
         }
-        //Managers.Sound.Play("Die", Define.Sound.Effect);
+        Managers.Sound.Play("Die", Define.Sound.Effect);
+
+        if (deathPlayer.IsMyCharacter())
+        {
+        }
+        if (killPlayer.IsMyCharacter())
+        {
+            //Managers.Sound.Play("Die", Define.Sound.Effect);
+        }
     }
 
 
@@ -273,14 +252,14 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         byte eventCode = photonEvent.Code;
         switch (eventCode)
         {
-            case (byte)Define.PhotonOnEventCode.AbilityCode:
-                var HT = (Hashtable)photonEvent.CustomData;
-                int viewID = (int)HT["vid"];
-                var statDatas = (int[])HT["stl"];
-                var playerController = Managers.Game.GetLivingEntity(viewID).GetComponent<PlayerController>();
-                if (playerController)
-                    Managers.StatSelectManager.OnEvent_StatDatasByServer(playerController, statDatas);
-                    break;
+            //case (byte)Define.PhotonOnEventCode.AbilityCode:
+            //    var HT = (Hashtable)photonEvent.CustomData;
+            //    int viewID = (int)HT["vid"];
+            //    var statDatas = (int[])HT["stl"];
+            //    var playerController = Managers.Game.GetLivingEntity(viewID).GetComponent<PlayerController>();
+            //    if (playerController)
+            //        //Managers.StatSelectManager.OnEvent_StatDatasByServer(playerController, statDatas);
+            //        break;
 
             case (byte)Define.PhotonOnEventCode.Warning:
 
@@ -302,15 +281,22 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     if (hider)
                     {
                         var hiderPlayer = hider.GetComponent<PlayerController>();
-                        Managers.StatSelectManager.SetupRandomWeapon(hiderPlayer);
+                        //Managers.StatSelectManager.SetupRandomWeapon(hiderPlayer);
                         hiderPlayer?.ChangeTeam(Define.Team.Hide);
                     }
                 }
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    Managers.Game.gameStateController.NextScene(Define.GameState.Gameing);
-                }
+                //if (PhotonNetwork.IsMasterClient)
+                //{
+                //    Managers.Game.gameStateController.NextScene(Define.GameState.Gameing);
+                //}
               
+
+                break;
+            case (byte)Define.PhotonOnEventCode.InitMapObject:
+                var value = (int[])photonEvent.CustomData;
+                var _gameScene = Managers.Scene.currentScene as GameScene;
+                _gameScene.mapController.MapMake(value) ;
+
 
                 break;
         }
@@ -325,7 +311,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     }
 
-    #region SendEvent Overloading
 
 
     public void SendEvent(Define.PhotonOnEventCode photonOnEventCode ,EventCaching eventCachingCode,  object hashtable)
@@ -407,84 +392,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     #endregion
 
-    #endregion
-    public void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    Managers.Game.myPlayer.GetComponent<LivingEntity>().OnDamage(0, 3, UnityEngine.Vector3.zero);
-        //}
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            
-            Destroy(Managers.Game.CurrentGameScene.gameMissionController);
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-
-            PhotonNetwork.RemoveRPCs(Managers.Game.myPlayer.photonView);
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-         
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Break();
-        }
-
-     
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            var myPlayer = Managers.Game.myPlayer;
-            if (myPlayer == null) return;
-            myPlayer.playerHealth.OnDamage(0, 40, Vector3.zero);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            var myPlayer = Managers.Game.myPlayer;
-            if (myPlayer == null) return;
-            myPlayer.playerHealth.currHp += 50;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-        {
-            Managers.Game.gameStateController.NextScene(Define.GameState.End, Define.Team.Hide);
-        }
-    }
-
-
-    Define.InGameItem[] seekerItemArray =
- {
-        Define.InGameItem.Flash,Define.InGameItem.Grenade,Define.InGameItem.PoisonBomb,
-         Define.InGameItem.Stone
-    };
-
-    Define.InGameItem GetRandomItemID(Define.InGameItem[] itemTypeArray)
-    {
-        var ran = UnityEngine.Random.Range(0, itemTypeArray.Length);
-        var seletType = itemTypeArray[ran];
-        return seletType;
-    }
-
-    Enum GetRandomItemEnum(Define.Team team)
-    {
-        switch (team)
-        {
-            case Define.Team.Hide:
-                int hiderRandom = UnityEngine.Random.Range(0, RandomItemBox.hiderItemArray.Length);
-                return RandomItemBox.hiderItemArray[hiderRandom];
-            case Define.Team.Seek:
-                int seekerRandom = UnityEngine.Random.Range(0, RandomItemBox.seekerItemArray.Length);
-                return RandomItemBox.seekerItemArray[seekerRandom];
-        }
-
-        return Define.InGameItem.Null;
-    }
+    
 
 
 

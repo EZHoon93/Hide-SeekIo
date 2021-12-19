@@ -12,7 +12,7 @@ public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, ICanExitTriggerPlay
     [SerializeField] List<PlayerController> playerControllerList = new List<PlayerController>(16);
     private void Start()
     {
-        CameraManager.Instance.fogChangeEvent += CameraChange;
+        Managers.cameraManager.fogChangeEvent += CameraChange;
         _renderer = GetComponentsInChildren<Renderer>();
         foreach (var r in _renderer)
             r.material = _orignalMaterial;
@@ -88,14 +88,14 @@ public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, ICanExitTriggerPlay
         }
 
         //같은부쉬에 들어왔을 시 
-        if (CameraManager.Instance.cameraTagerPlayer)
+        if (Managers.cameraManager.cameraTagerPlayer)
         {
-            if(playerControllerList.Contains(CameraManager.Instance.cameraTagerPlayer))
+            if(playerControllerList.Contains(Managers.cameraManager.cameraTagerPlayer))
             {
                 enterPlayer.fogOfWarController.hideInFog.isGrassDetected = true;
             }
         }
-        if (CameraManager.Instance.cameraTagerPlayer != enterPlayer) return;
+        if (Managers.cameraManager.cameraTagerPlayer != enterPlayer) return;
 
         SeePlayersInGrass(true);
         ChangeGrassMaterial(true);
@@ -111,7 +111,7 @@ public class Grass : MonoBehaviour , ICanEnterTriggerPlayer, ICanExitTriggerPlay
         {
             playerControllerList.Remove(exitPlayer);
         }
-        if (CameraManager.Instance.cameraTagerPlayer != exitPlayer) return;
+        if (Managers.cameraManager.cameraTagerPlayer != exitPlayer) return;
 
         SeePlayersInGrass(false);
         ChangeGrassMaterial(false);

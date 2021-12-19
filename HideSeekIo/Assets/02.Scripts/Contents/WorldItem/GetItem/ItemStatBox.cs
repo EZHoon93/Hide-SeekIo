@@ -33,12 +33,12 @@ public class ItemStatBox : ItemBox_Base
         {
             statTypes = seekerStatArray;
         }
-        var selectStatArray = Managers.StatSelectManager.GetStatArrayExceptSkill(playerCurrentSkill.skillType, statTypes);
+        //var selectStatArray = Managers.StatSelectManager.GetStatArrayExceptSkill(playerCurrentSkill.skillType, statTypes);
 
         if (playerController.IsMyCharacter())
         {
             var uimain = Managers.UI.SceneUI as UI_Main;
-            uimain.StatController.ShowSelectList(selectStatArray);
+            //uimain.StatController.ShowSelectList(selectStatArray);
         }
     }
 

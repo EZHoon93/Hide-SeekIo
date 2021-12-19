@@ -26,6 +26,7 @@ public class ControllerInput
 {
     public UI_ControllerJoystick uI_ControllerJoystick { get; set; }
     public InputType _inputType;
+    public Define.AttackType attackType { get; set; }
     public Dictionary<ControllerInputType, Action<Vector2>> controllerDic { get; set; }
     = new Dictionary<ControllerInputType, Action<Vector2>>()
     {
@@ -74,30 +75,13 @@ public class ControllerInput
 }
 
 
-public class PlayerInput : MonoBehaviourPun
+public class PlayerInput : InputBase
 {
     NavMeshAgent navMeshAgent;
     BehaviorTree behaviorTree;
-
-    //protected float _stopTime;
-    //protected bool _isAttack;
     public Vector2 RandomVector2 { get; set; }
-    //public bool IsStop { get; protected set; }
     public float stopTime { get; set; }
-
     public bool isAI { get; set; }
-    PlayerInput  _playerInput;
-
-    public Dictionary<InputType, ControllerInput> controllerInputDic { get; set; } =
-    new Dictionary<InputType, ControllerInput>()
-    {
-        {InputType.Move ,  new ControllerInput(InputType.Move ) },
-        {InputType.Main ,  new ControllerInput(InputType.Main) },
-        {InputType.Sub1 ,   new ControllerInput(InputType.Sub1) },
-        {InputType.Sub2 , new ControllerInput(InputType.Sub2) },
-        {InputType.Sub3 , new ControllerInput(InputType.Sub3) },
-    };
-
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -106,7 +90,6 @@ public class PlayerInput : MonoBehaviourPun
         navMeshAgent.enabled = false;
         behaviorTree.enabled = false;
         GetComponent<PlayerHealth>().onDeath += HandleDeath;
-        //behaviorTree.GetVariable("")
     }
 
     
@@ -131,6 +114,11 @@ public class PlayerInput : MonoBehaviourPun
         }
     }
 
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        RemoveInputEvent(InputType.Main);
+    }
+
 
     public void HandleDeath()
     {
@@ -148,9 +136,10 @@ public class PlayerInput : MonoBehaviourPun
         {
             foreach (var input in controllerInputDic)
             {
-                InputManager.Instance.GetControllerJoystick(input.Key).controllerInput = input.Value;
+                Managers.Input.GetControllerJoystick(input.Key).controllerInput = input.Value;
+                Managers.Input.GetControllerJoystick(input.Key).SetActiveControllerType(input.Value.attackType);
             }
-            InputManager.Instance.SetActiveController(true);
+            //Managers.Input.SetActiveController(true);
             behaviorTree.enabled = false;
             navMeshAgent.enabled = false;
             isAI = false;
@@ -158,9 +147,10 @@ public class PlayerInput : MonoBehaviourPun
         }
         if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
         {
-            behaviorTree.ExternalBehavior = GameSetting.Instance.hiderTree;
-            behaviorTree.enabled = true;
+            var extBehaviorTree = this.GetComponent<PlayerController>().Team == Define.Team.Hide ? GameSetting.Instance.hiderTree : GameSetting.Instance.seekerTree;
+            behaviorTree.ExternalBehavior = extBehaviorTree;
             navMeshAgent.enabled = true;
+            behaviorTree.enabled = true;
 
         }
     }
@@ -189,12 +179,15 @@ public class PlayerInput : MonoBehaviourPun
                 if(navMeshAgent.remainingDistance <= 0.2f)
                 {
                     controllerInputDic[InputType.Move].inputVector2 = Vector2.zero;
-
                 }
-                float h = navMeshAgent.velocity.x;
-                float v = navMeshAgent.velocity.z;
-                Vector2 move = new Vector2(h, v);
-                controllerInputDic[InputType.Move].inputVector2 = move.normalized * RandomVector2;
+                else
+                {
+                    float h = navMeshAgent.velocity.x;
+                    float v = navMeshAgent.velocity.z;
+                    Vector2 move = new Vector2(h, v);
+                    controllerInputDic[InputType.Move].inputVector2 = move.normalized * RandomVector2;
+                }
+           
             }
             else
             {
@@ -217,7 +210,8 @@ public class PlayerInput : MonoBehaviourPun
     {
         if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
         {
-            behaviorTree.ExternalBehavior = GameSetting.Instance.seekerTree;
+            var extBehaviorTree = team == Define.Team.Hide ? GameSetting.Instance.hiderTree : GameSetting.Instance.seekerTree;
+            behaviorTree.ExternalBehavior = extBehaviorTree;
             navMeshAgent.enabled = true;
             behaviorTree.enabled = true;
             //navMeshAgent.enabled = false;
@@ -227,62 +221,6 @@ public class PlayerInput : MonoBehaviourPun
         }
     }
 
-    public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType , Action<Vector2> action, Sprite sprite= null)
-    {
-        ControllerInput addInput = null;
-        bool isCache = controllerInputDic.TryGetValue(inputType, out addInput);
-        if (isCache == false)
-        {
-            controllerInputDic.Add(inputType, addInput);
-        }
-        addInput.controllerDic[controllerInputType] = action;
-        if (this.IsMyCharacter())
-        {
-            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, null);
-            InputManager.Instance.GetControllerJoystick(inputType).ResetUIController(); 
-        }
-    }
-
-    public ControllerInput GetControllerInput(InputType inputType)
-    {
-        return controllerInputDic[inputType];
-    }
-    //public ControllerInput  SetupControllerInput(InputControllerObject inputControllerObject,  Sprite sprite = null)
-    //{
-    //    inputControllerObject.controllerInput = controllerInputDic[inputControllerObject.inputType];
-
-    //    if (this.IsMyCharacter())
-    //    {
-    //        InputManager.Instance.GetControllerJoystick(inputControllerObject.inputType).SetActiveControllerType(inputControllerObject.attackType, sprite);
-    //        InputManager.Instance.GetControllerJoystick(inputControllerObject.inputType).ResetUIController();
-    //    }
-
-    //    return controllerInputDic[inputControllerObject.inputType];
-    //}
-
-
-
-    public virtual void RemoveInputEvent(InputType inputType)
-    {
-        if (controllerInputDic.ContainsKey(inputType))
-        {
-            controllerInputDic[inputType].Reset();
-        }
-        if (this.IsMyCharacter())
-        {
-           InputManager.Instance.GetControllerJoystick(inputType).gameObject.SetActive(false);
-        }
-    }
-
-    public void SetupControllerInputUI(Define.AttackType attackType, InputType inputType , Sprite sprite)
-    {
-        if (this.IsMyCharacter())
-        {
-            controllerInputDic[inputType].uI_ControllerJoystick = InputManager.Instance.GetControllerJoystick(inputType);
-            InputManager.Instance.GetControllerJoystick(inputType).SetActiveControllerType(attackType, null);
-            InputManager.Instance.GetControllerJoystick(inputType).ResetUIController();
-        }
-    }
     public virtual void Stop(float newTime)
     {
         stopTime = newTime;
@@ -291,7 +229,6 @@ public class PlayerInput : MonoBehaviourPun
     public void RemoveStop()
     {
         stopTime = 0;
-
     }
 
 }

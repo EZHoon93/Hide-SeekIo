@@ -12,10 +12,10 @@ public class SleepProjectile : BulletProjectile
         var playerHealth = enterPlayer.playerHealth;
         if (playerHealth != null)
         {
-            EffectManager.Instance.EffectOnLocal(Define.EffectType.Dust, collider.transform.position, 0);
+            Managers.effectManager.EffectOnLocal(Define.EffectType.Dust, collider.transform.position, 0);
             if (playerHealth.photonView.IsMine == false) return;
             playerHealth.OnDamage(_usePlayerViewID, 0, collider.transform.position);
-            BuffManager.Instance.CheckBuffController(playerHealth, Define.BuffType.B_Sleep, _stunTime);
+            //BuffManager.Instance.CheckBuffController(playerHealth, Define.BuffType.B_Sleep, _stunTime);
         }
     }
 

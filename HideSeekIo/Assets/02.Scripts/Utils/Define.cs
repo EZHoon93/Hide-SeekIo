@@ -32,12 +32,9 @@ public class Define
     }
     public enum ProductType
     {
-        Bear,
-        Bunny,
-        Cat,
-        Weapon,
-        Hat,
-        Bag,
+        Character,
+        Hammer,
+        Accessories
     }
     public enum ControllerType
     {
@@ -58,6 +55,11 @@ public class Define
         Null
     }
 
+    public enum GameMode
+    {
+        Item,
+        Object
+    }
     public enum GameDataState
     {
         UnLoad,
@@ -66,8 +68,8 @@ public class Define
     }
     public enum Team
     {
-        Seek,
         Hide,
+        Seek,
     }
     public enum Weapon
     {
@@ -124,11 +126,9 @@ public class Define
         Login,
         Lobby = 10,
         Loading,
-        Main1 = 21,
-        Main2 ,
-        Main3 ,
-
-        Gun1 = 51
+        Game,
+        ItemMode = 20,
+        ObjectMode
     }
     public enum GameScene
     {
@@ -143,6 +143,24 @@ public class Define
         GameReady,
         Gameing,
         End
+    }
+
+    public enum InGamePhotonEvent
+    {
+        Left,
+        Enter,
+    }
+
+    public enum GameEvent
+    {
+        ChangeSeeker,
+        ChangeHider,
+        ChangeInGameTime,
+        ChangeReadyTime,
+        ChangeMyCharacter,
+        GameExit,
+        GameEnter,
+        MyPlayerOn
     }
     public enum MissionType
     {
@@ -258,7 +276,9 @@ public class Define
          AbilityCode = 111, 
          Projectile,
          Warning,
-         TeamSelect
+         TeamSelect,
+         InitMapObject,
+         ChangeMapObject,
     }
 
     public enum ChattingColor

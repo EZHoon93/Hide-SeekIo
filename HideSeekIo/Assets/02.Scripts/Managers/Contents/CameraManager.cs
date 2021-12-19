@@ -1,33 +1,38 @@
 ﻿using System;
 using System.Collections;
 
+using BehaviorDesigner.Runtime.Tasks;
+
 using Cinemachine;
 
 using FoW;
 
 using UnityEngine;
 
-public class CameraManager : GenricSingleton<CameraManager>
+public class CameraManager : MonoBehaviour
 {
-
-    //public event Action<int, Define.Team> _cameraViewChange;
+    [SerializeField] LayerMask _initObjectModeLayer;
+    [SerializeField] LayerMask  _seekerLayer;
+    [SerializeField] LayerMask _hiderLayer;
+    [SerializeField] ObserverController _observerController;
     [SerializeField] Transform _mapCenterView;
+    [SerializeField] Camera _worldUICamera;
     public CinemachineVirtualCamera VirtualCamera { get; private set; }
-
     public CinemachineCameraOffset offsetCamera { get; private set; }
     public CinemachineBasicMultiChannelPerlin virtualCameraNoise { get; private set; }
-
-
     public PlayerController cameraTagerPlayer { get; set; }
 
     FogOfWarLegacy _fogOfWarLegacy;
+
     public event Action<int> fogChangeEvent;
     public event Action<PlayerController> cameraViewChangeEvent;
+
     int _observerNumber = -1;  //현재 관찰하고있는 유저의 actNumber;
 
 
-    protected override void Awake()
+    protected void Awake()
     {
+        Managers.cameraManager = this;
         if (VirtualCamera == null)
             VirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
         if (offsetCamera == null)
@@ -39,9 +44,34 @@ public class CameraManager : GenricSingleton<CameraManager>
 
         _fogOfWarLegacy.team = 0;
         _fogOfWarLegacy.enabled = true;
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameEnter, (n)=>SetActiveOberserver(true));
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameExit, (n) => SetActiveOberserver(false));
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.MyPlayerOn, SetActiveOberserver);
+    }
+    private void Start()
+    {
+        SetupFieldOfView();
+        StartCoroutine(UpdateCameraIsViewcameraTagerPlayer());
+        if (Managers.Game.gameMode == Define.GameMode.Object)
+        {
+            Camera.main.cullingMask = _initObjectModeLayer;
+            _worldUICamera.gameObject.SetActive(false);
+        }
+        else
+        {
+
+        }
     }
 
+    public void Clear()
+    {
+        VirtualCamera.Follow = Managers.Scene.currentGameScene.CameraView;  //카메라 초기화
+        offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
+        _fogOfWarLegacy.team = 0;
+    }
 
+    void SetActiveOberserver(object active) => _observerController.SetActive((bool)active);
+ 
     void SetupFieldOfView()
     {
         var cam = Camera.main;
@@ -55,26 +85,17 @@ public class CameraManager : GenricSingleton<CameraManager>
         cam.fieldOfView = reusltFov;
     }
 
-    private void Start()
-    {
-        SetupFieldOfView();
-        StartCoroutine(UpdateCameraIsViewcameraTagerPlayer());
-    }
 
-    public void Clear()
-    {
-        ResetCamera();
-    }
 
     IEnumerator UpdateCameraIsViewcameraTagerPlayer()
     {
-        yield return new WaitForSeconds(1.0f);  //지속적으로 확인 
+        yield return new WaitForSeconds(3.0f);  //지속적으로 확인 
 
         while (true)
         {
-            if (Managers.Game.gameStateController.gameStateType == Define.GameState.GameReady || Managers.Game.gameStateController.gameStateType == Define.GameState.Gameing)
+            if (Managers.Game.gameStateType == Define.GameState.Gameing )
             {
-                if (cameraTagerPlayer == null)
+                if (cameraTagerPlayer == null && _observerController.gameObject.activeSelf == false)
                 {
                     FindNextPlayer();
                 }
@@ -83,12 +104,7 @@ public class CameraManager : GenricSingleton<CameraManager>
         }
     }
 
-    public void ResetCamera()
-    {
-        VirtualCamera.Follow = Managers.Game.CurrentGameScene.CameraView;  //카메라 초기화
-        offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
-        _fogOfWarLegacy.team = 0;
-    }
+ 
 
 
     public void SetupcameraTagerPlayer(Transform target)
@@ -116,17 +132,10 @@ public class CameraManager : GenricSingleton<CameraManager>
     /// </summary>
     public void ChangeTeamByTargetView(PlayerController playerController)
     {
-        if (playerController.Team == Define.Team.Hide)
-        {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.SeekerItem | 1 << (int)Define.Layer.UI | 1<<(int)Define.Layer.TransparentFX);
-
-        }
-        else
-        {
-            Camera.main.cullingMask = ~(1 << (int)Define.Layer.HiderItem | 1 << (int)Define.Layer.UI | 1 << (int)Define.Layer.TransparentFX);
-        }
+        Camera.main.cullingMask = playerController.Team == Define.Team.Hide ? _hiderLayer : _seekerLayer;
         cameraViewChangeEvent?.Invoke(playerController);    //플레이어 UI변경 이벤트 콜백
     }
+
 
     /// <summary>
     /// 다음 유저를 찾음.
@@ -135,8 +144,8 @@ public class CameraManager : GenricSingleton<CameraManager>
     {
         PlayerController findcameraTagerPlayer = null;
         var livingEntities = Managers.Game.GetAllLivingEntity();
-        Array.Sort(livingEntities , (a,b) => (a.ViewID() > b.ViewID() )? -1 : 1 );
         if (livingEntities.Length <= 0) return;  //없으면 X
+        Array.Sort(livingEntities, (a, b) => (a.ViewID() > b.ViewID()) ? -1 : 1);
         int i = 0;
         do
         {

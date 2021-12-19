@@ -26,13 +26,16 @@ public class RenderController : MonoBehaviour
     public void OnPhotonInstantiate(LivingEntity newLivingEntity)
     {
         //Managers.InputItemManager.SeupRenderController(livingEntity, this);
+        foreach(var r in _renderers)
+        {
+            r.enabled = true;
+        }
         _livingEntity = newLivingEntity;
         _livingEntity.AddRenderer(this);
     }
 
     public void OnDestroyEvent()
     {
-        print("제거!! ㄷ;스.." + _renderers.Count+ this.gameObject.name);
         _livingEntity.RemoveRenderer(this);
     }
 

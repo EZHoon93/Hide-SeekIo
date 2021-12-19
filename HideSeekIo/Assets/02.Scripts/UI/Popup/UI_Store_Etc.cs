@@ -36,13 +36,13 @@ public class UI_Store_Etc : UI_Popup
     }
     private void Start()
     {
-        PhotonGameManager.Instacne.gameJoin += Destroy;
+        //Managers.photonGameManager.gameJoin += Destroy;
         _InputField.text = PlayerInfo.nickName;
     }
 
     void Destroy()
     {
-        PhotonGameManager.Instacne.gameJoin -= Destroy;
+        //Managers.photonGameManager.gameJoin -= Destroy;
         Managers.Resource.Destroy(this.gameObject);
     }
 

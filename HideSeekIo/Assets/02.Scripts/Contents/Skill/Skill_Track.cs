@@ -30,6 +30,6 @@ public class Skill_Track : Skill_Base
 
     //    var trackItem = Managers.Resource.Instantiate("Contents/TrackItem").GetComponent<TrackItem>();
     //    trackItem.transform.position = usePlayerController.transform.position;
-    //    trackItem.SetupTarget(Managers.Game.CurrentGameScene.test);
+    //    trackItem.SetupTarget(_gameScene.test);
     //}
 }

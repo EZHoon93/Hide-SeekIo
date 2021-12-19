@@ -49,7 +49,6 @@ public class InputControllerObject : MonoBehaviourPun
 
     public bool Use(Vector2 inputVector2)
     {
-        print(RemainCoolTime);
         if (RemainCoolTime > 0) return false;
         RemainCoolTime = InitCoolTime;
         //소비용아이템이면.

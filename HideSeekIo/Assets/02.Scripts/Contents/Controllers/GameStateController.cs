@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using ExitGames.Client.Photon.StructWrapping;
 
 public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallback, IOnPhotonViewPreNetDestroy
 {
@@ -10,12 +11,8 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
     int _remainTime;
     bool _isPlay = false;  //다음단계 넘어갔는지 안넘어갔는지
     GameState_Base _gameState;
-
     Define.GameState _gameStateType;
-
     protected bool isNextScene;
-
-
     public Define.GameState gameStateType
     {
         get => _gameStateType;
@@ -57,8 +54,10 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
         get => _remainTime;
         set
         {
-            if (_remainTime == value) return;
+            //Mathf.Abs( remainTime - _initRemainTime) <= 1
+            if (_remainTime == value   ) return;
             _remainTime = value;
+
             _gameState.OnUpdate(_remainTime);
             if (_remainTime <= 0)
             {
@@ -77,8 +76,11 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
     {
         _initRemainTime = time; 
     }
+    private void OnEnable()
+    {
+        StartCoroutine(Test());
 
-
+    }
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null) return;
@@ -91,17 +93,28 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
     {
         _gameState.OnDestroy();
     }
-    private void Update()
+    //private void Update()
+    //{
+    //    if (_createServerTime == 0 ) return;
+    //    remainTime = (int)((_initRemainTime + _createServerTime) - (float)PhotonNetwork.Time);
+    //}
+
+    IEnumerator Test()
     {
-        if (_createServerTime == 0) return;
-        remainTime =(int)((_initRemainTime + _createServerTime) - (float)PhotonNetwork.Time);
+        yield return new WaitForSeconds(0.5f);
+        while (true)
+        {
+            yield return new WaitForSeconds(0.2f);
+            remainTime = (int)((_initRemainTime + _createServerTime) - (float)PhotonNetwork.Time);
+        }
+
     }
 
     void TimeEnd()
     {
         if (_isPlay == false) return;
         _isPlay = false;
-        _gameState.OnTimeEnd();
+        _gameState?.OnTimeEnd();
     }
 
     public void NextScene(Define.GameState gameState, object whoCanWin = null) => _gameState.NextScene(gameState, whoCanWin);

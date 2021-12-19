@@ -8,7 +8,7 @@ public class Buff_Shoes : BuffBase
 
     public override void ProcessStart()
     {
-        _makeRunEffect = _buffController.livingEntity.GetComponentInChildren<MakeRunEffect>();
+        _makeRunEffect = _livingEntity.GetComponentInChildren<MakeRunEffect>();
 
         if (_makeRunEffect)
         {

@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 8100139328376396741}
   - component: {fileID: 47284888695837257}
   - component: {fileID: 3365496860876130624}
+  - component: {fileID: 2902731966214414464}
   m_Layer: 8
   m_Name: SleepGun
   m_TagString: Untagged
@@ -180,8 +181,8 @@ MonoBehaviour:
   _leftHand: {fileID: 0}
   _rightHand: {fileID: 0}
   _uI_ZoomBase: {fileID: 2830684868694948518}
-  _maxEnergy: 2
-  _energyRegenAmount: 0.3
+  _maxEnergy: 1
+  _energyRegenAmount: 0.2
   _attackDistance: 8
   _damage: 11
   _fireParentPivot: {fileID: 7272834488786357377}
@@ -193,6 +194,18 @@ MonoBehaviour:
   _amount: 1
   _projectilePrefab: {fileID: 2491987369736266811, guid: af4b6f8a1a231a4409b7b7d03ad052ce,
     type: 3}
+--- !u!114 &2902731966214414464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3274607034770920168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d19fb86012e5944a53d65c7d67daf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4229560702031150066
 GameObject:
   m_ObjectHideFlags: 0

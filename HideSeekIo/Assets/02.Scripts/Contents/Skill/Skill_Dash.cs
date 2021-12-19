@@ -25,7 +25,7 @@ public class Skill_Dash : Skill_Base
     {
         print("스킬사용!! 대쉬");
         //playerController.character_Base.characterAvater.animator.SetTrigger("Dash");
-        var AttackDirection =  playerController.playerInput.controllerInputDic[InputType.Move].inputVector2;
+        var AttackDirection = playerController.playerInput.GetVector2(InputType.Move);
         playerController.playerShooter.photonView.RPC("Dash", Photon.Pun.RpcTarget.AllViaServer, playerController.transform.position, playerController.playerCharacter.characterAvater.transform.forward);
     }
 

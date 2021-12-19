@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2148554075551905999}
   - component: {fileID: 2422181710837721775}
   - component: {fileID: 2085955942272642480}
+  - component: {fileID: -4502401405379306611}
   m_Layer: 8
   m_Name: Flash
   m_TagString: Untagged
@@ -87,6 +88,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 3783786556891508390}
+  _leftHand: {fileID: 0}
+  _rightHand: {fileID: 0}
   _uI_ZoomBase: {fileID: 3777593185006306204}
   _maxEnergy: 2
   _energyRegenAmount: 0.2
@@ -131,6 +134,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d186cf27c06264df7ab14f7dce3ed0f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-4502401405379306611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135648753785477893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d19fb86012e5944a53d65c7d67daf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6042340488016960596

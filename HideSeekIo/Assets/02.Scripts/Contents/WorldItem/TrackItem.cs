@@ -23,8 +23,8 @@ public class TrackItem : MonoBehaviour
 
     private void Update()
     {
-        _trailRenderer.SetPosition(0, Managers.Game.myPlayer.transform.position);
-        _agent.Move(_agent.nextPosition);
-        print(_agent.transform.position);
+        //_trailRenderer.SetPosition(0, Managers.Game.myPlayer.transform.position);
+        //_agent.Move(_agent.nextPosition);
+        //print(_agent.transform.position);
     }
 }

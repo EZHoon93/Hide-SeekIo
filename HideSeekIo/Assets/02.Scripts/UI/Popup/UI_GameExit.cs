@@ -26,7 +26,7 @@ public class UI_GameExit : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
-        PhotonGameManager.Instacne.GameExit();
+        Managers.Game.NotifyGameEvent(Define.GameEvent.GameExit);
     }
 
     void Cancel(PointerEventData pointerEventData)

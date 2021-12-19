@@ -55,7 +55,7 @@ public class Skill_Jump : Skill_Base
         playerController.playerCharacter.animator.SetTrigger("JumpEnd");
 
         yield return new WaitForSeconds(0.25f);
-        EffectManager.Instance.EffectOnLocal(Define.EffectType.BodySlam, targetPoint, 0, 1);
+        Managers.effectManager.EffectOnLocal(Define.EffectType.BodySlam, targetPoint, 0, 1);
 
     }
 

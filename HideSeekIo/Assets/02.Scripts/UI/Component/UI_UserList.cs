@@ -17,8 +17,8 @@ public class UI_UserList : MonoBehaviour
     void Start()
     {
         LoadCurrentPlayer();
-        PhotonGameManager.Instacne.enterUserList += UpdatePlayer;
-        PhotonGameManager.Instacne.leftUserList += LeftrPlayer;
+        Managers.photonGameManager.AddEventListenr(Define.InGamePhotonEvent.Enter, UpdatePlayer);
+        Managers.photonGameManager.AddEventListenr(Define.InGamePhotonEvent.Left, LeftrPlayer);
 
     }
 

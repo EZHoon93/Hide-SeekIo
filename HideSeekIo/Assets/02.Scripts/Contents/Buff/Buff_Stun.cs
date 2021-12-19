@@ -8,10 +8,9 @@ public class Buff_Stun : BuffBase
 
     public override void ProcessStart()
     {
-        _playerInput = _buffController.livingEntity.GetComponent<PlayerInput>();
+        _playerInput = _livingEntity.GetComponent<PlayerInput>();
         if (_playerInput)
         {
-            print("Stun!!!! ");
             _playerInput.Stop(2.0f);
         }
     }

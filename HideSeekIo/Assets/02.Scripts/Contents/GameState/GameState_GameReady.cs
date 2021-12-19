@@ -1,20 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-
 using Photon.Pun;
-
-
 using UnityEngine;
-
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 //바로 바뀌는거 방지를 위한
 public class GameState_GameReady : GameState_Base
 {
 
-    public override float remainTime => Managers.Game.CurrentGameScene.initReadyTime;
+    public override float remainTime => _gameScene.initReadyTime;
+    int _totSeekerCount => _gameScene.totSeekerCount;
 
-    int _totSeekerCount => Managers.Game.CurrentGameScene.totSeekerCount;
+    Dictionary<int, Dictionary<string, object>> _playerDataTable;
+
+
 
     /// <summary>
     /// GameReady,Start는 게임씬 데이터 이용
@@ -22,101 +19,57 @@ public class GameState_GameReady : GameState_Base
     protected override void OnEnable()
     {
         base.OnEnable();
-        var _gameMainScene = Managers.Game.CurrentGameScene as GameMainScene;
-        GetComponent<GameStateController>().ChangeInitTime(_gameMainScene.initReadyTime);
+        var gameScene = _gameScene;
+        GetComponent<GameStateController>().ChangeInitTime(gameScene.initReadyTime);
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info, float createServerTime)
     {
-        uI_Main.UpdateInGameTime(Managers.Game.CurrentGameScene.initGameTime); //플레이타임 갖고옴 v
-        var noticeContent = Util.GetColorContent(Color.blue, "숨는 팀 ");
-        uI_Main.noticeBg.enabled = true;
-        uI_Main.UpdateNoticeText(noticeContent);
-        uI_Main.titleText.text = "잠시 후 술래가 정해 집니다.";
-        uI_Main.UpdateNoticeText("잠시 후 술래가 정해 집니다.");
+        var inGameTime = _gameScene.initGameTime;
+        switch (_gameScene.gameMode)
+        {
+            case Define.GameMode.Object:
+                uI_Main.UpdateNoticeText(Util.GetColorContent(Color.white, "잠시 후 술래가 등장합니다 "));
 
+                break;
+            case Define.GameMode.Item:
+                break;
+        }
+        _playerDataTable = (Dictionary<int, Dictionary<string, object>>)info.photonView.InstantiationData[1];
+        
+        //캐릭터 생성 
+        Managers.Scene.currentGameScene.PlayerSpawnOnGameReady(_playerDataTable);
     }
-    public override void OnUpdate(int remainTime)
+    public override void OnUpdate(int newTime)
     {
-        uI_Main.UpdateCountText(remainTime);
+        uI_Main.UpdateCountText(newTime);
         Managers.Sound.Play("TimeCount", Define.Sound.Effect);
-    }
-
-    void Test()
-    {
-        //if (PhotonGameManager.Instacne.testSeeekr)
-        //{
-        //    selectSeekerViewIDLIst.Add(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-        //    allHiderList.Remove(Managers.Game.myPlayer.playerHealth);
-        //}
-
-        //else
-        //{
-        //    selectSeekerViewIDLIst.Remove(Managers.Game.myPlayer.ViewID()); //뷰아이디 등록
-        //    allHiderList.Add(Managers.Game.myPlayer.playerHealth);
-        //    //var ai = allHiderList[allHiderList.Count - 1].ViewID();
-
-        //    //selectSeekerViewIDLIst.Add(ai); //뷰아이디 등록
-        //}
     }
     public override void OnTimeEnd()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            MakeTeamList(_totSeekerCount);  //술래 정하기
+            NextScene(Define.GameState.Gameing, _playerDataTable);    //게임 상태바꿈
         }
     }
 
-    void MakeTeamList(int totSeekerCount)
-    {
-        var allHiderList = Managers.Game.GetAllHiderList().ToList();
-        List<int> selectSeekerViewIDLIst = new List<int>(10);
-
-        for (int i = 0; i < totSeekerCount; i++)
-        {
-            int ran = Random.Range(0, allHiderList.Count);
-            selectSeekerViewIDLIst.Add(allHiderList[ran].ViewID()); //술래로 등록
-            allHiderList.RemoveAt(ran); //숨는팀 목록에서 삭제
-
-        }
-
-
-        Hashtable sendSeekrHashData = new Hashtable()
-            {
-                { "se", selectSeekerViewIDLIst.ToArray()},
-            };
-        PhotonGameManager.Instacne.SendEvent(Define.PhotonOnEventCode.TeamSelect, Photon.Realtime.EventCaching.AddToRoomCacheGlobal, sendSeekrHashData);
-    }
-
- 
-
-    //[PunRPC]
-    //public void OnSelectSeeker(int[] seekerArray, int[] hiderArray)
+    //void MakeTeamList(int totSeekerCount)
     //{
-    //    foreach (var s in seekerArray)
+    //    var allHiderList = Managers.Game.GetAllHiderList().ToList();
+    //    List<int> selectSeekerViewIDLIst = new List<int>(10);
+
+    //    for (int i = 0; i < totSeekerCount; i++)
     //    {
-    //        var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController>();
-    //        if (selectplayer.photonView.IsMine)
+    //        int ran = Random.Range(0, allHiderList.Count);
+    //        selectSeekerViewIDLIst.Add(allHiderList[ran].ViewID()); //술래로 등록
+    //        allHiderList.RemoveAt(ran); //숨는팀 목록에서 삭제
+
+    //    }
+    //    Hashtable sendSeekrHashData = new Hashtable()
     //        {
-    //            Managers.Spawn.WeaponSpawn(Define.Weapon.Hammer, selectplayer);
-    //        }
-    //    }
-    //    foreach (var s in hiderArray)
-    //    {
-    //        var selectplayer = Managers.Game.GetLivingEntity(s).GetComponent<PlayerController>();
-    //        if (selectplayer.photonView.IsMine)
-    //        {
-    //            //var skillObject = Managers.Resource.Instantiate($"Skill/{Define.Skill.Dash}").GetComponent<Skill_Base>(); //지원론
-    //            //skillObject.OnPhotonInstantiate(selectplayer);
-    //            //Managers.Spawn.WeaponSpawn(Define.Weapon.Stone, selectplayer.playerShooter);
-    //        }
-    //    }
-    //    if (PhotonNetwork.IsMasterClient)
-    //    {
-    //        NextScene(Define.GameState.Gameing);
-    //    }
+    //            { "se", selectSeekerViewIDLIst.ToArray()},
+    //        };
+    //    Managers.photonGameManager.SendEvent(Define.PhotonOnEventCode.TeamSelect, Photon.Realtime.EventCaching.AddToRoomCacheGlobal, sendSeekrHashData);
     //}
-
-
 
 
 

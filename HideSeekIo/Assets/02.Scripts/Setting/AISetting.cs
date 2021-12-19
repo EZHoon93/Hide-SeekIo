@@ -59,24 +59,15 @@ public class AISetting : ScriptableObject
     }
 
     [SerializeField] string[] _aINames;
-
-    List<string> existNameList = new List<string>(50);
-
     public string[] aINames => _aINames;
 
 
 
     public string GetAINameByRandom()
     {
-        if(existNameList == null)
-        {
-            existNameList = _aINames.ToList();
-        }
+        var ran = Random.Range(0, _aINames.Length);
 
-        var ran = Random.Range(0, existNameList.Count);
-        var name = existNameList[ran];
-        //existNameList.RemoveAt(ran);
-        return name;
+        return aINames[ran];
     }
 
 }

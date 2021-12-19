@@ -4,34 +4,10 @@ using UnityEngine;
 using Photon.Pun;
 public class EffectManager : MonoBehaviourPun
 {
-    #region ??????
-    // ???????? ?????? ?????????? ???????? ?????? ????????
-    public static EffectManager Instance
+    private void Awake()
     {
-        get
-        {
-            // ???? ?????? ?????? ???? ?????????? ???????? ????????
-            if (_instance == null)
-            {
-                // ?????? GameManager ?????????? ???? ????
-                _instance = FindObjectOfType<EffectManager>();
-            }
-
-            // ?????? ?????????? ????
-            return _instance;
-        }
+        Managers.effectManager = this;
     }
-    private static EffectManager _instance; // ???????? ?????? static ????
-    #endregion
-
-    /// <summary>
-    /// 0은 포그오브워 밖에서도보이게..
-    /// </summary>
-    /// <param name="effectType"></param>
-    /// <param name="position"></param>
-    /// <param name="isSee"></param>
-    /// <param name="size"></param>
-    /// <param name="viewID"></param>
     [PunRPC]
     public void EffectOnLocal(Define.EffectType effectType, Vector3 position,int isSee, float size = 1, int viewID = 0)
     {
@@ -45,7 +21,6 @@ public class EffectManager : MonoBehaviourPun
         {
             go.SetLayerRecursively((int)Define.Layer.Hider);
         }
-        //?????? ?????????? ??????????????
         if(viewID != 0)
         {
             go.GetComponent<FoW.FogOfWarUnit>().team = viewID;
@@ -59,17 +34,8 @@ public class EffectManager : MonoBehaviourPun
     public void EffectToServer(Define.EffectType effectType , Vector3 position,int isSee ,float size = 1 ,int viewID = 0) 
         =>photonView.RPC("EffectOnLocal", RpcTarget.All, effectType, position, isSee, viewID);
 
-
-    
-    
-    /// <summary>
-    /// ???? ??????, 
-    /// </summary>
-    /// <param name="effectEventType"></param>
-    /// <param name="effectType"></param>
     public void EffectAllLivingEntity(Define.EffectEventType effectEventType, Define.EffectType effectType)
     {
-        //List<LivingEntity> livingEntitieList = null;
        
         LivingEntity[] livingEntitieList = null;
         int isSee = 0;
@@ -87,9 +53,6 @@ public class EffectManager : MonoBehaviourPun
                 isSee = 0;
                 break;
         }
-
-        print(livingEntitieList.Length + " ????????     ");
-
         foreach(var living in livingEntitieList)
         {
             EffectOnLocal(effectType, living.transform.position, isSee);

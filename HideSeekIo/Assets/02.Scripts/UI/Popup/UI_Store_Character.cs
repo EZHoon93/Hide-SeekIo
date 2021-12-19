@@ -42,12 +42,12 @@ public class UI_Store_Character : UI_Popup
         Get<Toggle>((int)Define.SkinType.Bag).onValueChanged.AddListener((b) => OnChange_ToggleValue(b, Define.SkinType.Bag));
         Get<Toggle>((int)Define.SkinType.Hat).onValueChanged.AddListener((b) => OnChange_ToggleValue(b, Define.SkinType.Hat));
         GetButton((int)Buttons.Cancel).gameObject.BindEvent(ClickEvent_Back);
-        _uI_CharacterView.changeViewCallBack += ChangeMyCharcterType;
+        //_uI_CharacterView.changeViewCallBack += ChangeMyCharcterType;
     }
     private void Start()
     {
-        _uI_CharacterView.InitSetupUserSkin();
-        _uI_CharacterView.ShowCharacter(PlayerInfo.GetCurrentUsingCharacter());
+        //_uI_CharacterView.InitSetupUserSkin();
+        //_uI_CharacterView.ShowCharacter(PlayerInfo.GetCurrentUsingCharacter());
     }
 
     void OnChange_ToggleValue(bool isOn, Define.SkinType skinType)
@@ -87,51 +87,51 @@ public class UI_Store_Character : UI_Popup
         string showSkinKey;
         Dictionary<string, UI_Product> content;
 
-        if (skinType == Define.SkinType.Skin)
-        {
-            showSkinKey = _uI_CharacterView.currentCharacterType.ToString();    //스킨타입은 보고있는캐릭으로
-        }
-        else
-        {
-            showSkinKey = skinType.ToString();
-        }
+        //if (skinType == Define.SkinType.Skin)
+        //{
+        //    showSkinKey = _uI_CharacterView.currentCharacterType.ToString();    //스킨타입은 보고있는캐릭으로
+        //}
+        //else
+        //{
+        //    showSkinKey = skinType.ToString();
+        //}
 
-        bool isExist = productDic.TryGetValue(showSkinKey, out content);
-        if (isExist == false)
-        {
-            content = new Dictionary<string, UI_Product>();
-            foreach (var productData in Managers.Data.ProductDic[showSkinKey].Values)
-            {
-                var productUI = Managers.Resource.Instantiate("UI/SubItem/UI_Product").GetComponent<UI_Product>();
-                var price = productData.price;
-                var productkey = productData.key;
-                string folder = skinType == Define.SkinType.Skin ? "Character" : "Accessories";
-                var sprite = Managers.Resource.Load<Sprite>($"Sprites/{folder}/{showSkinKey}/{productkey}");
-                Action clickEventCallBack = null;
-                //콜백함수 설정
-                switch (skinType)
-                {
-                    case Define.SkinType.Skin:
-                        clickEventCallBack = () => { _uI_CharacterView.ShowSkinObject(skinType, $"{folder}/{showSkinKey}/{productkey}"); };
-                        productUI.Setup(showSkinKey, price, sprite, clickEventCallBack);
-                        break;
-                    default:
-                        productUI.Setup(showSkinKey, price, sprite, clickEventCallBack);
-                        break;
-                }
-                productUI.transform.SetParent(GetObject((int)GameObjects.ProductContent).transform);
-                content.Add(productkey, productUI);
-            }
-            productDic.Add(showSkinKey, content);
-        }
-        else
-        {
-            foreach (var p in content.Values)
-                p.gameObject.SetActive(true);
-        }
+        //bool isExist = productDic.TryGetValue(showSkinKey, out content);
+        //if (isExist == false)
+        //{
+        //    content = new Dictionary<string, UI_Product>();
+        //    foreach (var productData in Managers.Data.ProductDic[showSkinKey].Values)
+        //    {
+        //        var productUI = Managers.Resource.Instantiate("UI/SubItem/UI_Product").GetComponent<UI_Product>();
+        //        var price = productData.price;
+        //        var productkey = productData.key;
+        //        string folder = skinType == Define.SkinType.Skin ? "Character" : "Accessories";
+        //        var sprite = Managers.Resource.Load<Sprite>($"Sprites/{folder}/{showSkinKey}/{productkey}");
+        //        Action clickEventCallBack = null;
+        //        //콜백함수 설정
+        //        switch (skinType)
+        //        {
+        //            case Define.SkinType.Skin:
+        //                clickEventCallBack = () => { _uI_CharacterView.ShowSkinObject(skinType, $"{folder}/{showSkinKey}/{productkey}"); };
+        //                productUI.Setup(showSkinKey, price, sprite, clickEventCallBack);
+        //                break;
+        //            default:
+        //                productUI.Setup(showSkinKey, price, sprite, clickEventCallBack);
+        //                break;
+        //        }
+        //        productUI.transform.SetParent(GetObject((int)GameObjects.ProductContent).transform);
+        //        content.Add(productkey, productUI);
+        //    }
+        //    productDic.Add(showSkinKey, content);
+        //}
+        //else
+        //{
+        //    foreach (var p in content.Values)
+        //        p.gameObject.SetActive(true);
+        //}
         
 
-        _currentShowProuctDic = content;
+        //_currentShowProuctDic = content;
     }
 
     
