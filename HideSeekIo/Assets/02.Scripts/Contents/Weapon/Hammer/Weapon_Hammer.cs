@@ -6,6 +6,7 @@ public class Weapon_Hammer : Weapon
 {
 
     float _damageRange = 1.2f;
+    float _angle = 30;
     //int _damage = 10;
     AudioClip _attackClip;
 
@@ -15,20 +16,23 @@ public class Weapon_Hammer : Weapon
     protected override void SetupCallBack()
     {
         inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Sub1;
-        inputControllerObject.attackType =  Define.AttackType.Button;
+        inputControllerObject.inputType = InputType.Main;
+        inputControllerObject.attackType =  Define.AttackType.Joystick;
         inputControllerObject.shooterState = PlayerShooter.state.Skill;
-        inputControllerObject.AddZoomEvent(null);
+        inputControllerObject.AddZoomEvent(Zoom);
         inputControllerObject.AddUseEvent(Attack);
     }
     private void Start()
     {
-        AttackAnim = "HammerAttack";
+        AttackAnim = "Attack";
         AttackDelay = 0.25f;
         AfaterAttackDelay = 0.25f;
         AttackDistance = 1;
         inputControllerObject.InitCoolTime = 1;
         _attackClip = Resources.Load<AudioClip>("Sounds/SMelee2");
+         var arcZoom = _uI_ZoomBase as UI_ArcZoom;
+
+        arcZoom?.SetupAngle(_damageRange, _angle);
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -43,7 +47,19 @@ public class Weapon_Hammer : Weapon
 
     }
 
+    public override void Zoom(Vector2 inputVector)
+    {
+        if (inputVector.sqrMagnitude == 0)
+        {
+            _uI_ZoomBase.SetActiveZoom(false);
+            return;
+        }
+        //var endPoint = GetHitPoint(inputVector.normalized);
+        //var startPoint = this.transform.position + Vector3.up * 0.5f;
+        _uI_ZoomBase.UpdateZoom(Vector3.zero, inputVector);
+        _uI_ZoomBase.SetActiveZoom(true);
 
+    }
     #region Attack
 
     public override void Attack(Vector2 inputVector)
@@ -65,11 +81,15 @@ public class Weapon_Hammer : Weapon
         var direction = attackPoint - playerController.transform.position;
         direction = direction.normalized;
         direction.y = playerController.transform.position.y;
+        attackStartCallBack?.Invoke();
+
         //inputControllerObject.attackDirection = direction;
         //inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         AttackEffect(attackPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //움직이기 . 애니메이션의 끝나면
+        attackEndCallBack?.Invoke();
+
         //inputControllerObject.Call_UseSucessEnd();
     }
 

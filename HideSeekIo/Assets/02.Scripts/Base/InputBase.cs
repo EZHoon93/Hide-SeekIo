@@ -16,6 +16,7 @@ public class InputBase : MonoBehaviourPun
     {
         foreach (var input in controllerInputDic)
         {
+            print(input.Key.ToString());
             Managers.Input.SetUpControllerInput(input);
             Managers.Input.GetControllerJoystick(input.Key).gameObject.SetActive(active);
         }

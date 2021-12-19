@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviourPun
     /// </summary>
     public void ChangeOwnerShipOnUser(bool isMyCharacter)
     {
-        playerInput.ChangeOwnerShip();
+        playerInput.ChangeOwnerShip(isMyCharacter);
         playerMove.ChangeOwnerShip();
         playerShooter.ChangeOwnerShip();
         playerCharacter.ChangeOnwerShip(this);

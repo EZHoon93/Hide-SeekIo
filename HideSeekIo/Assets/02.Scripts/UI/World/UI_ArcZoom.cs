@@ -20,11 +20,12 @@ public class UI_ArcZoom : UI_ZoomBase
         _arcImage.fillAmount = _angle / 360;
         _arcImage.transform.localRotation = Quaternion.Euler(0, 0, _angle * 0.5f);
     }
-    public void SetupAngle(float value)
+    public void SetupAngle(float distance, float angle)
     {
-        _angle = value;
+        _angle = angle;
         _arcImage.fillAmount = _angle / 360;
         _arcImage.transform.localRotation = Quaternion.Euler(0, 0, _angle * 0.5f);
+        _parentTr.localScale = Vector3.one * distance;
     }
     public override void UpdateZoom(Vector3 startPoint, Vector3 endPoint)
     {

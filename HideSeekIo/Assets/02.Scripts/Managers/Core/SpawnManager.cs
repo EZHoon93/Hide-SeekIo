@@ -135,7 +135,7 @@ public class SpawnManager
         switch (weapon)
         {
             case Define.Weapon.Hammer:
-                weaponID = "Hammer4";
+                weaponID = "Hammer3";
                 datas.Add("Wm01");
                 break;
             //case Define.Weapon.Sniper:

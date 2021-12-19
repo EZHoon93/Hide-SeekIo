@@ -16,7 +16,8 @@ public class GameManager  : MonoBehaviourPun
         set
         {
             _myPlayer = value;
-            NotifyGameEvent(Define.GameEvent.MyPlayerOn, false);
+            NotifyGameEvent(Define.GameEvent.MyPlayerOn);
+            _myPlayer.playerInput.SetActiveUserControllerJoystick(true);
         }
     }
     //public GameScene CurrentGameScene { get; set; }

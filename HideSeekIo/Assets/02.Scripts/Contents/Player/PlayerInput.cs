@@ -130,29 +130,26 @@ public class PlayerInput : InputBase
     /// 각 플레이어가 조종
     /// </summary>
 
-    public void ChangeOwnerShip()
+    public void ChangeOwnerShip(bool isMyCharacter)
     {
-        if (this.IsMyCharacter())
+        if (this.gameObject.IsValidAI() == false)
         {
-            foreach (var input in controllerInputDic)
-            {
-                Managers.Input.GetControllerJoystick(input.Key).controllerInput = input.Value;
-                Managers.Input.GetControllerJoystick(input.Key).SetActiveControllerType(input.Value.attackType);
-            }
-            //Managers.Input.SetActiveController(true);
             behaviorTree.enabled = false;
             navMeshAgent.enabled = false;
             isAI = false;
-
         }
-        if (PhotonNetwork.IsMasterClient && this.gameObject.IsValidAI())
+        else
         {
+            if(PhotonNetwork.IsMasterClient == false)
+            {
+                return;
+            }
             var extBehaviorTree = this.GetComponent<PlayerController>().Team == Define.Team.Hide ? GameSetting.Instance.hiderTree : GameSetting.Instance.seekerTree;
             behaviorTree.ExternalBehavior = extBehaviorTree;
             navMeshAgent.enabled = true;
             behaviorTree.enabled = true;
-
         }
+     
     }
 
     public void ChangeAI()

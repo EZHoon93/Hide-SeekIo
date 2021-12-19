@@ -40,6 +40,13 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
         }
     }
 
+
+    private void Awake()
+    {
+        this.gameObject.SetActive(false);
+
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -53,20 +60,32 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
     }
     public void OnPhotonInstantiate(PlayerController playerController)
     {
-        _playerCharacter = playerController.playerCharacter;
         if(Managers.Game.gameMode == Define.GameMode.Object && playerController.Team == Define.Team.Hide)
         {
+            this.gameObject.SetActive(true);
             playerController.photonView.ObservedComponents.Add(this);
+            _playerMove.onChangeMoveStateEvent += ChangeObject;
+        }
+        else
+        {
+            this.gameObject.SetActive(false);
         }
     }
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
+
         if (Managers.Game.gameMode == Define.GameMode.Object)
         {
             _playerCharacter.photonView.ObservedComponents.Remove(this);
+            _playerMove.onChangeMoveStateEvent -= ChangeObject;
+
         }
     }
 
+    void ChangeObject(PlayerMove.MoveState moveState)
+    {
+        print("ChangeObj");
+    }
  
 }

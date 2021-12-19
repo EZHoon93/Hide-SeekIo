@@ -46,7 +46,7 @@ public class CameraManager : MonoBehaviour
         _fogOfWarLegacy.enabled = true;
         Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameEnter, (n)=>SetActiveOberserver(true));
         Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameExit, (n) => SetActiveOberserver(false));
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.MyPlayerOn, SetActiveOberserver);
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.MyPlayerOn, (n) =>SetActiveOberserver(false));
     }
     private void Start()
     {

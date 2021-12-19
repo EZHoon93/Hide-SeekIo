@@ -33,8 +33,14 @@ public class PlayerMove : PhotonMove
     Animator _animator => _playerCharacter.animator;
 
     float _animationValue;
-    bool _run;
-    public bool run { get; set; }
+    bool _run = true;
+    public bool run {
+        get => _run;
+        set
+        {
+            _run = value;
+        }
+    }
     public float ResultSpeed { get; set; }
 
     float _moveCurrEnergy;
@@ -78,9 +84,9 @@ public class PlayerMove : PhotonMove
         _playerStat = GetComponent<PlayerStat>();
         _playerCharacter = GetComponent<PlayerCharacter>();
         _playerInput.AddInputEvent(Define.AttackType.Joystick, ControllerInputType.Drag, InputType.Move, null);
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { run = true; });
-        _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => {
-            run = false; });
+        //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { run = true; });
+        //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => {
+        //    run = false; });
 
         _playerShooter.weaponChangeCallBack += (a) => { isOnlyRotation = false; };
 
@@ -175,7 +181,6 @@ public class PlayerMove : PhotonMove
 
     protected virtual void UpdateMove(Vector2 inputVector2, bool isRun)
     {
-        print(isRun + "/" + isOnlyRotation);
         if(isOnlyRotation)
         {
             return;
@@ -281,8 +286,8 @@ public class PlayerMove : PhotonMove
         while (currTime <= duration)
         {
             dir.y -= 9.8f * Time.deltaTime;
-            //moveDistance = Vector3.Lerp(moveDistance, 2 * dir, Time.deltaTime * (1 / duration));
-            //_characterController.Move(dir * Time.deltaTime * (1 / duration));
+            moveDistance = Vector3.Lerp(moveDistance, 2 * dir, Time.deltaTime * (1 / duration));
+            _characterController.Move(dir * Time.deltaTime * (1 / duration));
             yield return null;
             currTime += Time.deltaTime;
         }

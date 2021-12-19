@@ -183,6 +183,8 @@ public class PlayerShooter : MonoBehaviourPun
                 break;
             case Weapon.WeaponType.Hammer:
                 _animator.CrossFade("Hammer", 0.1f);
+                //_animator.CrossFade("TwoHandHammer", 0.1f);
+
                 break;
             case Weapon.WeaponType.Bow:
                 _animator.CrossFade("Bow", 0.1f);
@@ -244,8 +246,6 @@ public class PlayerShooter : MonoBehaviourPun
     {
 
         if (this.enabled == false || this == null) return;
-        print("Use!!!!" + State + "/" + currentEnergy);
-
         if (this.State != state.Idle || currentEnergy < -1) return;
         currentInputController = inputControllerObject;
         if (this.IsMyCharacter())
@@ -263,7 +263,6 @@ public class PlayerShooter : MonoBehaviourPun
     }
     public void ChangeInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
-        print("Change!!");
         if(currentInputController != null)
         {
             currentInputController.Zoom(Vector2.zero);
@@ -282,9 +281,7 @@ public class PlayerShooter : MonoBehaviourPun
 
     public virtual void WeaponAttackStart(Weapon attackWeapon)
     {
-        print("WeaponAttackStart!!");
-
-        currentEnergy -= 1;
+        //currentEnergy -= 1;
         State = attackWeapon.inputControllerObject.shooterState;
         _hideInFog.isAttack = true;
         AttackDirection = UtillGame.GetDirVector3ByEndPoint(this.transform, attackWeapon.attackPoint);

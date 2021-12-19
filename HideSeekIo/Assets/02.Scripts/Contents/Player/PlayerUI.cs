@@ -31,8 +31,8 @@ public class PlayerUI : MonoBehaviourPun
     public void SetupPlayer(PlayerController playerController)
     {
         _playerController = playerController;
-        _playerController.playerShooter.onChangeMaxEnergyListeners += ChangeMaxEnergy;   //최대 에너지값 변경시 UI 변경
-        _playerController.playerShooter.onChangeCurrEnergyListeners += ChangeCurrentEnergy;   //현재 에너지값 변경시 UI 변경
+        //_playerController.playerShooter.onChangeMaxEnergyListeners += ChangeMaxEnergy;   //최대 에너지값 변경시 UI 변경
+        //_playerController.playerShooter.onChangeCurrEnergyListeners += ChangeCurrentEnergy;   //현재 에너지값 변경시 UI 변경
         _playerController.playerHealth.onChangeCurrHpEvent += ChangeCurrentHP;
         _playerController.playerHealth.onChangeMaxHpEvent+= ChangeMaxHP;
         //_playerController.playerMove.onChangeMoveEnergy += ChangeCurrentMoveEnergy;
