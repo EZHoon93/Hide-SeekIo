@@ -39,12 +39,16 @@ public class GameState_Gameing : GameState_Base , IPunObservable
     {
         uI_Main.ResetTexts();   // Text 리셋 
         _playerDataTable = (Dictionary<int, Dictionary<string, object>>)info.photonView.InstantiationData[1];
+        //방장만 실행. 술래생성
         _gameScene.PlayerSpawnOnGameStart(_playerDataTable);
+
         Invoke("OffText", 2.0f);
     }
     public override void OnUpdate(int remainTime)
     {
         Managers.Game.inGameTime = remainTime;
+        UpdatePlayerCount();
+
     }
     public override void OnTimeEnd()
     {
@@ -84,31 +88,6 @@ public class GameState_Gameing : GameState_Base , IPunObservable
             NextScene(Define.GameState.End, Define.Team.Seek);
         }
     }
-
-    ///// <summary>
-    ///// 조건1. 방장,이벤트최대3이하
-    ///// 조건2. 시간 0이하, 현재미션이 없다면 생성
-    ///// </summary>
-    //void CheckEvent()
-    //{
-    //    if (_currentEventCount >= _maxEventCount || currentMission != null || !PhotonNetwork.IsMasterClient  ) return; //이미 이벤트 진행중이거나, 이벤트최대횟수,방장아니면 리턴
-    //    _remainEventCreateTime = (n_endEventTime + _eventCreateTimeInterval) - (float)PhotonNetwork.Time;
-
-    //    if(_remainEventCreateTime <= 0 ) 
-    //    {
-    //        var ranMissionType  = Util.GetRandomEnumTypeExcept(_existMissionList.ToArray());
-    //        object[] sendData = { ranMissionType };
-    //        //이벤트 생성
-    //        PhotonNetwork.Instantiate("GameMission", Vector3.zero, Quaternion.identity , 0 , sendData);
-    //    }
-
-    //}
-
-    //[PunRPC]
-    //public void GameEndOnServer(Define.Team winTeam)
-    //{
-
-    //}
 
 
 }

@@ -103,11 +103,10 @@ public class PlayerMove : PhotonMove
     }
     public override void OnPhotonInstantiate(PlayerController playerController)
     {
-        //if(Managers.Scene.currentGameScene.gameMode == Define.GameMode.Object)
-        //{
-        //    _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Sub1, (v) => { FixedRotationByObjectMode(); });
-
-        //}
+        if (Managers.Scene.currentGameScene.gameMode == Define.GameMode.Object && playerController.Team == Define.Team.Hide)
+        {
+            _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (v) => { FixedRotationByObjectMode(); });
+        }
     }
 
     public override void OnPreNetDestroy(PhotonView rootView)
@@ -258,6 +257,7 @@ public class PlayerMove : PhotonMove
     void FixedRotationByObjectMode()
     {
         isOnlyRotation = !isOnlyRotation;
+        State = MoveState.Idle; //제자리로변경. => 변신모드 hider 변신을위해 콜백호출
         if (this.IsMyCharacter())
         {
             Sprite sprite = isOnlyRotation ? _fixedSprite : _noFixedSprite;

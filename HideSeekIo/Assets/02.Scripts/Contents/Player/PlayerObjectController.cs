@@ -6,12 +6,10 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
 {
     [SerializeField] PlayerCharacter _playerCharacter;
     [SerializeField] PlayerMove _playerMove;
+    [SerializeField] PlayerHealth _playerHealth;
+    [SerializeField] PlayerUI _playerUI;
     GameObject _changeObject;
-
-    int _seletObjectIndex; //선택된 인덱스
-    /// <summary>
-    /// 0이면 캐릭터, -1이면 안보여줌, 그이상은 해당맵의 오브젝트
-    /// </summary>
+  
     int _objectIndex = -2;
     public int objectIndex
     {
@@ -19,24 +17,14 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
         set
         {
             if (_objectIndex == value) return;
+            if (_changeObject)
+            {
+                Managers.Resource.Destroy(_changeObject.gameObject);
+            }
             _objectIndex = value;
-            if (objectIndex == -1)
-            {
-                _changeObject?.gameObject.SetActive(false);
-                _playerCharacter.characterAvater.gameObject.SetActive(true);
-            }
-            else
-            {
-                var mapController = Managers.Scene.currentGameScene.mapController.GetComponent<ObjectModeMapController>();
-                var prefab = mapController.changeObjectList.objectList[objectIndex];
-                if (_changeObject)
-                {
-                    Managers.Resource.Destroy(_changeObject);
-                }
-                _changeObject = Instantiate(prefab);
-                _changeObject.transform.ResetTransform(this.transform);
-                _changeObject.gameObject.SetActive(true);
-            }
+            var mapController = Managers.Scene.currentGameScene.mapController.GetComponent<ObjectModeMapController>();
+            _changeObject = Instantiate(mapController.changeObjectList.objectList[objectIndex].gameObject);
+            _changeObject.transform.ResetTransform(_playerHealth.fogController.transform);
         }
     }
 
@@ -44,7 +32,7 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
     private void Awake()
     {
         this.gameObject.SetActive(false);
-
+        _playerHealth.onDeath += Die;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -60,6 +48,7 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
     }
     public void OnPhotonInstantiate(PlayerController playerController)
     {
+        //사물모드일 경우.
         if(Managers.Game.gameMode == Define.GameMode.Object && playerController.Team == Define.Team.Hide)
         {
             this.gameObject.SetActive(true);
@@ -83,9 +72,45 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
         }
     }
 
+    public void ChangeOwnerShipOnUser(bool isMyCharacter)
+    {
+        if (Managers.Game.gameMode == Define.GameMode.Object && _playerHealth.Team == Define.Team.Hide)
+        {
+            if (isMyCharacter == false) return;
+            var mapController = Managers.Scene.currentGameScene.mapController.GetComponent<ObjectModeMapController>();
+            objectIndex = Random.Range(0, mapController.changeObjectList.objectList.Length);
+            ShowChangeObejct(true);
+        }
+    }
+
+    void Die()
+    {
+
+    }
+
+
+    void ShowChangeObejct(bool changeShow)
+    {
+        if (_changeObject == null)
+            return;
+        _changeObject.gameObject.SetActive(changeShow);
+        _playerCharacter.characterAvater.gameObject.SetActive(!changeShow);
+        _playerUI.SetActiveNameUI(!changeShow);
+    }
+
     void ChangeObject(PlayerMove.MoveState moveState)
     {
-        print("ChangeObj");
+        if (_changeObject == null)
+            return;
+        switch (moveState)
+        {
+            case PlayerMove.MoveState.Idle:
+                ShowChangeObejct(true);
+                break;
+            default:
+                ShowChangeObejct(false);
+                break;
+        }
     }
  
 }

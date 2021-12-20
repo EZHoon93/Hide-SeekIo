@@ -39,14 +39,13 @@ public class PlayerUI : MonoBehaviourPun
         //_playerController.playerMove.onChangeMoveMaxEnergy += ChangeMaxMoveEnergy;
 
         Managers.cameraManager.cameraViewChangeEvent += ChangeCameraTarget;
-    }
 
-    private void Awake()
-    {
         SetActiveUI(false);
         foreach (var se in _uI_ShootEnergyArray)
             se.gameObject.SetActive(false);
     }
+
+ 
     public void OnPhotonInstantiate()
     {
         _playerInput = _playerController.playerInput;
@@ -60,6 +59,18 @@ public class PlayerUI : MonoBehaviourPun
         Managers.cameraManager.cameraViewChangeEvent -= ChangeCameraTarget;
     }
 
+
+    /// <summary>
+    /// 자기자신 캐릭터는 초록색으로 바꿈
+    /// </summary>
+    public void ChangeOwnerShip(bool isMyCharacter)
+    {
+        SetActiveHealthUI(isMyCharacter);
+        if (isMyCharacter)
+        {
+            ChangeColor(Color.green);
+        }
+    }
     public void ChangeStatEventCallBack(PlayerStat.StatChange statChange, object value )
     {
 
@@ -118,17 +129,7 @@ public class PlayerUI : MonoBehaviourPun
     }
 
 
-    /// <summary>
-    /// 자기자신 캐릭터는 초록색으로 바꿈
-    /// </summary>
-    public void ChangeOwnerShip()
-    {
-        bool active = _playerController.IsMyCharacter() ? true : false;
-        if (active)
-        {
-            ChangeColor(Color.green);
-        }
-    }
+  
 
     void SetActiveUI(bool active)
     {
@@ -157,6 +158,8 @@ public class PlayerUI : MonoBehaviourPun
         //_warningImage.enabled = false;
     }
 
+    public void SetActiveNameUI(bool active) => _playerNameText.gameObject.SetActive(active);
+
     #region ShootEnergy
     void ChangeMaxEnergy(int newValue)
     {
@@ -182,6 +185,9 @@ public class PlayerUI : MonoBehaviourPun
     #endregion
 
     #region Hp
+
+    public void SetActiveHealthUI(bool active) => _hpSlider.gameObject.SetActive(active);
+
     void ChangeCurrentHP(int newValue)
     {
         
@@ -214,8 +220,6 @@ public class PlayerUI : MonoBehaviourPun
             _isBackHpHit = false;
             _backHpSlider.value = _hpSlider.value;
         }
-        
-
     }
     #endregion
 

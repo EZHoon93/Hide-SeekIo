@@ -5,7 +5,8 @@ using Photon.Pun;
 
 public class MapController : MonoBehaviourPun
 {
-  
+
+
     public virtual void InitMapMaker()
     {
 

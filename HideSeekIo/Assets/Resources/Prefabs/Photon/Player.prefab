@@ -2208,7 +2208,6 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 7787233644548552261}
   - {fileID: 214640924545703374}
-  - {fileID: -4315249639884190891}
   - {fileID: 4141450666773515576}
   sceneViewId: 0
   InstantiationId: 0
@@ -2254,7 +2253,6 @@ MonoBehaviour:
   _fogOfWarController: {fileID: 4026848497517541227}
   _buffController: {fileID: 8411341982082064240}
   initcurrHp: 2
-  Team: 0
   testCount: 0
   _recoveryEffect: {fileID: 5255146770153907124}
 --- !u!114 &5041244981141765182
@@ -2307,9 +2305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206271232e0ad4a8eb1f9ead18beb52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 2
-  _maxHp: 111
-  _initHp: 100
+  _moveSpeed: 3.5
+  _maxHp: 50
+  _initHp: 50
   _initMoveSpeed: 0
 --- !u!114 &-4315249639884190891
 MonoBehaviour:
@@ -2323,7 +2321,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d9e9d21aa00844794e1676c5ac8508, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _craeteTarget: {fileID: 2363319501414740836}
 --- !u!114 &5881250918030246750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2612,6 +2609,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCharacter: {fileID: -4315249639884190891}
   _playerMove: {fileID: 214640924545703374}
+  _playerHealth: {fileID: 7787233644548552261}
+  _playerUI: {fileID: 5086705162432092920}
 --- !u!1 &4234336093422087769
 GameObject:
   m_ObjectHideFlags: 0

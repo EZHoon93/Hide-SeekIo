@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviourPun
 
     public virtual void OnPhotonInstantiate(PhotonView photonView)
     {
-        playerStat.OnPhotonInstantiate();   //Stat 이 제일먼저!!
+        playerStat.OnPhotonInstantiate();   //Stat ?? ????????!!
         _playerUI.OnPhotonInstantiate();   
         playerInput.OnPhotonInstantiate();
         playerHealth.OnPhotonInstantiate();
@@ -89,16 +89,18 @@ public class PlayerController : MonoBehaviourPun
  
 
     /// <summary>
-    /// 유저가 소유권을 가져왔을때 실행
+    /// ?????? ???????? ?????????? ????
     /// </summary>
     public void ChangeOwnerShipOnUser(bool isMyCharacter)
     {
         playerInput.ChangeOwnerShip(isMyCharacter);
+        playerHealth.ChangeOwnerShipOnUser(isMyCharacter);
         playerMove.ChangeOwnerShip();
         playerShooter.ChangeOwnerShip();
         playerCharacter.ChangeOnwerShip(this);
+        _playerObjectController.ChangeOwnerShipOnUser(isMyCharacter);
         _moveEnergyController.ChangeOwnerShipOnUser(isMyCharacter);
-        _playerUI.ChangeOwnerShip();
+        _playerUI.ChangeOwnerShip(isMyCharacter);
         //changeOnwerShip?.Invoke(this.photonView);
         if (photonView.IsMine)
         {

@@ -7,7 +7,7 @@ public class ObjectGameScene : GameScene
 {
     public override Define.GameMode gameMode => Define.GameMode.Object;
     public override int initReadyTime => 5;
-    public override int initGameTime =>10;
+    public override int initGameTime =>100;
     public override int totSeekerCount => 1;
     public override int maxPlayerCount => 8;
 

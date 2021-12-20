@@ -32,26 +32,36 @@ public class LivingEntity : MonoBehaviourPun, IDamageable,  IPunObservable,IBuff
             onChangeCurrHpEvent?.Invoke(value);
         }
     }
+    Define.Team _team;
+    public Define.Team Team
+    {
+        get => _team;
+        set
+        {
+            _team = value;
+            int layer = UtillLayer.SetupLayerByTeam(_team);
+            this.gameObject.layer = layer;
+            Util.SetLayerRecursively(_fogOfWarController.gameObject, layer);
+        }
+    }
+
     public bool isEntityInGrass { get; set; }
     public virtual bool Dead { get; protected set; }
     public bool isShield { get; set; }
-    public Define.Team Team; 
+
     public event Action onDeath;
     public event Action onRevive;
-
     public event Action<int> onDamageEventPoster;
-
     public event Action<int> onChangeMaxHpEvent;
     public event Action<int> onChangeCurrHpEvent;
-
     int _lastAttackViewID;
+
 
     public List<BuffController> n_buffControllerList { get; set; } = new List<BuffController>();
     public FogOfWarController fogController => _fogOfWarController;
     public BuffController buffController => _buffController;
 
 
-    public int testCount;
 
   
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -77,6 +87,27 @@ public class LivingEntity : MonoBehaviourPun, IDamageable,  IPunObservable,IBuff
         InitSetup();
     }
 
+    public virtual void OnPhotonInstantiate()
+    {
+        Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //????
+
+        currHp = maxHp;
+    }
+
+    public virtual void OnPreNetDestroy(PhotonView rootView)
+    {
+        foreach (var buff in n_buffControllerList.ToArray())
+            Managers.Resource.Destroy(buff.gameObject);
+
+        n_buffControllerList.Clear();
+    }
+
+    public virtual void ChangeOwnerShipOnUser(bool isMyCharacter)
+    {
+
+    }
+
+
     protected virtual void FixedUpdate()
     {
         //isEntityInGrass = false;
@@ -86,7 +117,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable,  IPunObservable,IBuff
 
     private void LateUpdate()
     {
-        _fogOfWarController.hideInFog.isInGrass = isEntityInGrass;  // OnTriggerStay, FixedUpdate에서 판단후 최종판단, 값을넘김
+        _fogOfWarController.hideInFog.isInGrass = isEntityInGrass;  // OnTriggerStay, FixedUpdate???? ?????? ????????, ????????
     }
 
     public virtual void InitSetup()
@@ -115,21 +146,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable,  IPunObservable,IBuff
     }
 
 
-    public virtual void OnPhotonInstantiate()
-    {
-        Managers.Game.RegisterLivingEntity(this.photonView.ViewID, this);    //????
-
-        currHp = maxHp;
-    }
-
-    public virtual void OnPreNetDestroy(PhotonView rootView)
-    {
-        foreach (var buff in n_buffControllerList.ToArray())
-            Managers.Resource.Destroy(buff.gameObject);
-
-        n_buffControllerList.Clear();
-    }
-
+  
     [PunRPC]
     public virtual void OnDamage(int damagerViewId, int damage, Vector3 hitPoint )
     {

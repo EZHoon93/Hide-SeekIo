@@ -262,6 +262,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
         var livingEntity = other.GetComponent<LivingEntity>();
         if (livingEntity)
         {
+            print(_damage);
             livingEntity.OnDamage(playerController.ViewID(), _damage, other.transform.position);
             Managers.effectManager.EffectOnLocal(Define.EffectType.Hit, livingEntity.transform.position, 0);
         }

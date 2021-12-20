@@ -35,13 +35,9 @@ public class MoveEnergyController : MonoBehaviour
         {
             this.gameObject.SetActive(true);
             _playerUI.ChangeMaxMoveEnergy(_maxEnergy);
-            _playerController.playerUI.SetActiveMoveEnergyUI(true);
-
+            _playerController.playerUI.SetActiveMoveEnergyUI(false);
             return;
         }
-
-
-
     }
 
     private void Update()

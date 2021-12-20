@@ -41,7 +41,17 @@ public class PlayerHealth : LivingEntity
     {
         _playerCharacter = GetComponent<PlayerCharacter>();
     }
+    public override void OnPhotonInstantiate()
+    {
+        base.OnPhotonInstantiate();
+        _recoveryLastTime = 0;
+        AddRenderer(_playerCharacter.GetRenderController());
+    }
 
+    public override void ChangeOwnerShipOnUser(bool isMyCharacter)
+    {
+
+    }
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -53,12 +63,9 @@ public class PlayerHealth : LivingEntity
             currHp = Mathf.Clamp(currHp + (int)(maxHp * 0.2f), 0, maxHp);
         }
     }
-    public override void OnPhotonInstantiate()
-    {
-        base.OnPhotonInstantiate();
-        _recoveryLastTime = 0;
-        AddRenderer(_playerCharacter.GetRenderController());
-    }
+ 
+
+  
 
     [PunRPC]
     public override void OnDamage(int damagerViewId, int damage, Vector3 hitPoint)

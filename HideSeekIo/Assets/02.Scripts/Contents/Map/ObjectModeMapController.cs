@@ -8,6 +8,7 @@ public class ObjectModeMapController : MapController
 {
     [SerializeField] ObjectModeController[] _changeObjectList;
     [SerializeField] ObjectModeController _objectModeController;
+
     public ObjectModeController changeObjectList => _objectModeController;
 
     List<int> _mapIndexList = new List<int>(256);

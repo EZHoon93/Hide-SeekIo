@@ -8,8 +8,9 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager  : MonoBehaviourPun
 {
-    PlayerController _myPlayer;
     public UserController userController { get; set; }
+
+    PlayerController _myPlayer;
     public PlayerController myPlayer
     {
         get => _myPlayer;
@@ -20,7 +21,6 @@ public class GameManager  : MonoBehaviourPun
             _myPlayer.playerInput.SetActiveUserControllerJoystick(true);
         }
     }
-    //public GameScene CurrentGameScene { get; set; }
 
     GameStateController _gameStateController;
     public GameStateController gameStateController 
@@ -42,6 +42,8 @@ public class GameManager  : MonoBehaviourPun
 
         }
     }
+
+
     public Define.GameState gameStateType
     {
         get
@@ -53,6 +55,7 @@ public class GameManager  : MonoBehaviourPun
             return gameStateController.gameStateType;
         }
     }
+
 
     public Define.GameMode gameMode { get; set; }
 
@@ -77,6 +80,8 @@ public class GameManager  : MonoBehaviourPun
     Dictionary<Define.GameEvent, Action<object>> gameEventDic = new Dictionary<Define.GameEvent, Action<object>>();
     Dictionary<int, LivingEntity> _livingEntityDic = new Dictionary<int, LivingEntity>();
     Dictionary<int, UserController> _userControllerDic = new Dictionary<int, UserController>();
+
+
 
     private void Awake()
     {
@@ -156,14 +161,14 @@ public class GameManager  : MonoBehaviourPun
     public int GetHiderCount()
     {
         int count = _livingEntityDic.Count(s => s.Value.Team == Define.Team.Hide && s.Value.Dead == false);
-        //changeSeekerCount?.Invoke(count);
+        NotifyGameEvent(Define.GameEvent.ChangeHider, count);
         return count;
     }
 
     public int GetSeekerCount()
     {
         int count = _livingEntityDic.Count(s => s.Value.Team == Define.Team.Seek && s.Value.Dead == false);
-        //changeSeekerCount?.Invoke(count);
+        NotifyGameEvent(Define.GameEvent.ChangeSeeker, count);
         return count;
     }
 
