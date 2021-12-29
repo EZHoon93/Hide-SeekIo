@@ -20,6 +20,7 @@ public class GameState_Count : GameState_Base
     {
         uI_Main.UpdateCountText(remainTime);
         Managers.Sound.Play("TimeCount", Define.Sound.Effect);
+        CheckAnyReadyJoinUser();
     }
   
     /// <summary>
@@ -77,6 +78,20 @@ public class GameState_Count : GameState_Base
         }
     }
 
+
+    /// <summary>
+    /// 1명이라도 참가한유저가있다면 true,
+    /// </summary>
+    void CheckAnyReadyJoinUser()
+    {
+        if (PhotonNetwork.IsMasterClient == false) return;
+
+        bool isExistUser = PhotonNetwork.CurrentRoom.Players.Values.Any(s => (bool)s.CustomProperties["jn"] == true); ;
+        if (isExistUser == false)
+        {
+            Managers.Spawn.GameStateSpawn(Define.GameState.Wait);
+        }
+    }
 
     /// <summary>
     /// 참여한 유저 리스트를 받아옴.

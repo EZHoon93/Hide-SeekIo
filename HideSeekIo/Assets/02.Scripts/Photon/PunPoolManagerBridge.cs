@@ -40,7 +40,6 @@ public class PunPoolManagerBridge : MonoBehaviour, IPunPrefabPool
 
     public void Destroy(GameObject gameObject)
     {
-        print("Destroy");
         var onPhotonViewPreNetDestroy = gameObject.GetComponents<IOnPhotonViewPreNetDestroy>();
         if(onPhotonViewPreNetDestroy != null)
         {

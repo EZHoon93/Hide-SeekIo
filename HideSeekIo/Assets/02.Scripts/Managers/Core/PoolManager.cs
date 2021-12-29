@@ -114,10 +114,8 @@ public class PoolManager
 
     public void Clear()
     {
-        Debug.Log("Clear + " + _pool.Keys.Count);
         foreach (Transform child in _root)
             GameObject.Destroy(child.gameObject);
-
         _pool.Clear();
     }
 }

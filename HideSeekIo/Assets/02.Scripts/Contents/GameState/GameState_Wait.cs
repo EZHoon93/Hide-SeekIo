@@ -18,24 +18,24 @@ public class GameState_Wait : GameState_Base
  
     public override void OnUpdate(int remainTime)
     {
-        CheckReadyPlayer();
+        CheckAnyReadyJoinUser();
     }
     public override void OnTimeEnd()
     {
 
     }
-
-
-
-    //방장만 주기적으로 레디한 플레이어가 1명이상인지 체크 
-    void CheckReadyPlayer()
+    /// <summary>
+    /// 1명이라도 참가한유저가있다면 true,
+    /// </summary>
+    void CheckAnyReadyJoinUser()
     {
         if (PhotonNetwork.IsMasterClient == false) return;
-        var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
-        if (joinUserCount >= 1)
+
+        bool isExistUser = PhotonNetwork.CurrentRoom.Players.Values.Any(s => (bool)s.CustomProperties["jn"] == true); ;
+        if (isExistUser)
         {
-            //1명이라도 게임시작눌렀다면
-            NextScene(Define.GameState.CountDown);
+            Managers.Spawn.GameStateSpawn(Define.GameState.CountDown);
         }
     }
+   
 }

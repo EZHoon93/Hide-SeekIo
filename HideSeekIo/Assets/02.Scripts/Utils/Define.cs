@@ -8,6 +8,18 @@ public class Define
 
     public static readonly int MaxItemInventory = 3;
 
+    public enum PlayerType
+    {
+        User,
+        AI
+    }
+
+    public enum CameraState
+    {
+        Auto,
+        Observer,
+        MyPlayer
+    }
     public enum StatType
     {
         Speed,
@@ -138,11 +150,11 @@ public class Define
 
     public enum GameState
     {
+        End,
         Wait,
         CountDown,
         GameReady,
         Gameing,
-        End
     }
 
     public enum InGamePhotonEvent
@@ -157,10 +169,9 @@ public class Define
         ChangeHider,
         ChangeInGameTime,
         ChangeReadyTime,
-        ChangeMyCharacter,
-        GameExit,
-        GameEnter,
-        MyPlayerOn
+        GameJoin,
+        MyPlayerActive,
+        ChangeState,
     }
     public enum MissionType
     {

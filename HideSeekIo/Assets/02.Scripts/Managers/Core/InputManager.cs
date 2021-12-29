@@ -18,7 +18,6 @@ public class InputManager : MonoBehaviour
                 return joystick;
             }
         }
-
         return null;
        //return _controllerJoysticks.Single(s => s.inputType == inputType);
     }
@@ -34,17 +33,19 @@ public class InputManager : MonoBehaviour
             c.gameObject.SetActive(false);
         }
     }
+
+  
     public void Clear()
     {
         SetActiveController(false);
     }
 
-    public void SetUpControllerInput(KeyValuePair<InputType, ControllerInput> keyValuePair)
-    {
-        GetControllerJoystick(keyValuePair.Key).controllerInput = keyValuePair.Value;
-        GetControllerJoystick(keyValuePair.Key).SetActiveControllerType(keyValuePair.Value.attackType);
+    //public void SetUpControllerInput(InputType inputType , ControllerInput controllerInput)
+    //{
+    //    GetControllerJoystick(inputType).controllerInput = controllerInput;
+    //    GetControllerJoystick(inputType).SetActiveControllerType(controllerInput.attackType);
+    //}
 
-    }
     private void Update()
     {
 

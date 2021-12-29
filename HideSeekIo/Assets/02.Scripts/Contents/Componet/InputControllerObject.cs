@@ -8,10 +8,10 @@ public class InputControllerObject : MonoBehaviourPun
 {
     [SerializeField] Sprite _sprite;
     ConsumItem _consumItem;
-    public InputType inputType { get; set; }
-    public Define.AttackType attackType { get; set; }
+    public InputType inputType;
+    public Define.AttackType attackType;
     public PlayerShooter.state shooterState{ get; set; }
-    public float InitCoolTime { get; set; }
+    public float InitCoolTime;
     public float RemainCoolTime { get; set; }
 
     public event Action<Vector2> useEventCallBack;

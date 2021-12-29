@@ -18,9 +18,9 @@ public class UI_ADMop : MonoBehaviour
     }
     void Start()
     {
-        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => SetActive(true));
-        Managers.Game.AddListenrOnGameState(Define.GameState.CountDown, () => SetActive(false));
-        Managers.Game.AddListenrOnGameState(Define.GameState.End, () => SetActive(false));
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => SetActive(true));
+        //Managers.Game.AddListenrOnGameState(Define.GameState.CountDown, () => SetActive(false));
+        //Managers.Game.AddListenrOnGameState(Define.GameState.End, () => SetActive(false));
         //Managers.photonGameManager.onMyCharacter += Check;
     }
 

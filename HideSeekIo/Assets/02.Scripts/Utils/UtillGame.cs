@@ -381,4 +381,20 @@ public static class UtillGame
         }
     }
 
+
+
+    public static bool IsView(Vector3 pos)
+    {
+        var viewPos = Camera.main.WorldToViewportPoint(pos);
+        if (viewPos.x > 0.0F && viewPos.x < 1.0F && viewPos.y > 0.0f && viewPos.y < 1.0f)
+        {
+            //움직이고 있는 상태만
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

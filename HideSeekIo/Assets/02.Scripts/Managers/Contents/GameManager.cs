@@ -2,28 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using UnityEngine;
 using Photon.Pun;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Photon.Realtime;
 
-public class GameManager  : MonoBehaviourPun
+using UnityEngine;
+
+public class GameManager : MonoBehaviourPun
 {
-    public UserController userController { get; set; }
+    public UserController myUserController { get; set; }
+    public PlayerController myPlayer => myUserController.playerController;
 
-    PlayerController _myPlayer;
-    public PlayerController myPlayer
-    {
-        get => _myPlayer;
-        set
-        {
-            _myPlayer = value;
-            NotifyGameEvent(Define.GameEvent.MyPlayerOn);
-            _myPlayer.playerInput.SetActiveUserControllerJoystick(true);
-        }
-    }
+  
 
-    GameStateController _gameStateController;
-    public GameStateController gameStateController 
+    [SerializeField] GameStateController _gameStateController;
+    public GameStateController gameStateController
     {
         get => _gameStateController;
 
@@ -35,11 +27,12 @@ public class GameManager  : MonoBehaviourPun
             }
             _gameStateController = value;
             _gameStateController.transform.ResetTransform(this.transform);
-            if (onChangeGameState.ContainsKey(gameStateController.gameStateType))
-            {
-                onChangeGameState[gameStateController.gameStateType]?.Invoke();
-            }
+            //if (onChangeGameState.ContainsKey(gameStateController.gameStateType))
+            //{
+            //    onChangeGameState[gameStateController.gameStateType]?.Invoke();
+            //}
 
+            NotifyGameEvent(Define.GameEvent.ChangeState, _gameStateController.gameStateType);
         }
     }
 
@@ -62,7 +55,7 @@ public class GameManager  : MonoBehaviourPun
 
 
     int _inGameTime;
-    public int inGameTime 
+    public int inGameTime
     {
         get => _inGameTime;
         set
@@ -76,7 +69,7 @@ public class GameManager  : MonoBehaviourPun
     }
 
 
-    Dictionary<Define.GameState, Action> onChangeGameState = new Dictionary<Define.GameState, Action>();
+    //Dictionary<Define.GameState, Action> onChangeGameState = new Dictionary<Define.GameState, Action>();
     Dictionary<Define.GameEvent, Action<object>> gameEventDic = new Dictionary<Define.GameEvent, Action<object>>();
     Dictionary<int, LivingEntity> _livingEntityDic = new Dictionary<int, LivingEntity>();
     Dictionary<int, UserController> _userControllerDic = new Dictionary<int, UserController>();
@@ -87,22 +80,36 @@ public class GameManager  : MonoBehaviourPun
     {
         Managers.Game = this;
     }
+   
     public void Clear()
     {
         _livingEntityDic.Clear();
     }
 
     #region UserController Register & Unregister
-    public void RegisterUserController(int localNumber, UserController userController)
+    public void RegisterUserController(int actorNumber, UserController userController)
     {
-        if (_userControllerDic.ContainsKey(localNumber)) return;
-        _userControllerDic.Add(localNumber, userController);
+        if (_userControllerDic.ContainsKey(actorNumber)) return;
+        _userControllerDic.Add(actorNumber, userController);
     }
 
-    public void UnRegisterUserController(int localNumber)
+    public void UnRegisterUserController(int actorNumber)
     {
-        if (!_userControllerDic.ContainsKey(localNumber)) return;
-        _userControllerDic.Remove(localNumber);
+        if (!_userControllerDic.ContainsKey(actorNumber)) return;
+        _userControllerDic.Remove(actorNumber);
+    }
+    public UserController GetUserController(int actorNumber)
+    {
+        if(actorNumber < 0)
+        {
+            return null;
+        }
+
+        if (_userControllerDic.ContainsKey(actorNumber))
+        {
+            return _userControllerDic[actorNumber];
+        }
+        return null;
     }
 
     #endregion
@@ -119,7 +126,7 @@ public class GameManager  : MonoBehaviourPun
         }
     }
 
-    public void UnRegisterLivingEntity(int viewID )
+    public void UnRegisterLivingEntity(int viewID)
     {
         if (!_livingEntityDic.ContainsKey(viewID)) return;
         _livingEntityDic.Remove(viewID);
@@ -175,22 +182,22 @@ public class GameManager  : MonoBehaviourPun
     #endregion
 
     #region GameState , Event Listenr
-    public void AddListenrOnGameState(Define.GameState newGameState, Action newAction)
-    {
-        if (onChangeGameState.ContainsKey(newGameState))
-        {
-            onChangeGameState[newGameState] += newAction;
-        }
-        else
-        {
-            onChangeGameState.Add(newGameState, newAction);
-        }
-    }
+    //public void AddListenrOnGameState(Define.GameState newGameState, Action newAction)
+    //{
+    //    if (onChangeGameState.ContainsKey(newGameState))
+    //    {
+    //        onChangeGameState[newGameState] += newAction;
+    //    }
+    //    else
+    //    {
+    //        onChangeGameState.Add(newGameState, newAction);
+    //    }
+    //}
 
-    public void RemoveListnerOnGameState(Define.GameState gameState , Action action)
-    {
+    //public void RemoveListnerOnGameState(Define.GameState gameState, Action action)
+    //{
 
-    }
+    //}
     public void AddListenrOnGameEvent(Define.GameEvent newGameEvent, Action<object> newAction)
     {
         if (gameEventDic.ContainsKey(newGameEvent))
@@ -204,7 +211,10 @@ public class GameManager  : MonoBehaviourPun
     }
     public void RemoveListnerOnGameEvent(Define.GameEvent gameEvent, Action<object> action)
     {
-
+        if (gameEventDic.ContainsKey(gameEvent))
+        {
+            gameEventDic[gameEvent] -= action;
+        }
     }
 
     public void NotifyGameEvent(Define.GameEvent gameEvent, object data = null)
@@ -220,22 +230,37 @@ public class GameManager  : MonoBehaviourPun
 
     #region GameJoin, GameExit
 
-    //public void GameJoin()
-    //{
-    //    NotifyGameEvent(Define.GameEvent.GameEnter);
-    //}
+    public void GameJoin()
+    {
+        //NotifyGameEvent(Define.GameEvent.GameEnter);
 
-    //public void GameExit()
-    //{
-    //    if (myPlayer)
-    //    {
-    //        myPlayer.GetComponent<PlayerSetup>().RemoveUserPlayerToServer();
-    //    }
-    //    //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-    //    //{
-    //    //    Managers.Spawn.GameStateSpawn(Define.GameState.Wait);
-    //    //}
-    //}
+    }
+
+    public void GameExit()
+    {
+        //if (myPlayer)
+        //{
+        //    myPlayer.GetComponent<PlayerSetup>().RemoveUserPlayerToServer();
+        //}
+        //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        //{
+        //    Managers.Spawn.GameStateSpawn(Define.GameState.Wait);
+        //}
+    }
     #endregion
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            myPlayer.playerHealth.OnDamage(myPlayer.ViewID(), 25, Vector3.zero);
+        }
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            //myPlayer.playerHealth.OnDamage(myPlayer.ViewID(), 25, Vector3.zero);
+            PhotonNetwork.Destroy(myPlayer.gameObject);
+        }
+    }
 
 }

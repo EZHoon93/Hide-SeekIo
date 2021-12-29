@@ -14,6 +14,7 @@ public class Managers : MonoBehaviour
     BuffManager _buffManager;
     CameraManager _cameraManager;
     AIManager _aIManager;
+    EventManager _eventManager;
     public static GameManager Game { get => GetManager(Instance._game); set { Instance._game =value; } }
     public static PhotonGameManager photonGameManager { get => GetManager(Instance._photonGameManager); set { Instance._photonGameManager = value; } }
 
@@ -22,7 +23,7 @@ public class Managers : MonoBehaviour
     public static CameraManager cameraManager { get => GetManager(Instance._cameraManager); set { Instance._cameraManager = value; } }
     public static AIManager aIManager{ get => GetManager(Instance._aIManager); set { Instance._aIManager = value; } }
 
-
+    public static EventManager eventManager { get => GetManager(Instance._eventManager); set { Instance._eventManager = value; } }
     #endregion
 
     #region Core

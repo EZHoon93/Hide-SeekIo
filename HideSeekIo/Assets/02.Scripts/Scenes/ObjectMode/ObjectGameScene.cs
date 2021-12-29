@@ -36,7 +36,8 @@ public class ObjectGameScene : GameScene
         {
             if ((Define.Team)data.Value["te"] == Define.Team.Hide)
             {
-                Managers.Spawn.PlayerSpawn(data.Key, data.Value, mapSpawnPoint.GetHiderPosition_Random());
+                var player = Managers.Spawn.PlayerSpawn(data.Key, data.Value, mapSpawnPoint.GetHiderPosition_Random());
+                PhotonNetwork.InstantiateRoomObject("ChangeController", Vector3.zero, Quaternion.identity, 0, new object[] { data.Key, player.photonView.ViewID});
             }
         }
     }

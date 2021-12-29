@@ -116,7 +116,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                  var playerController = living.GetComponent<PlayerController>();
                 if (playerController)
                 {
-                    playerController.ChangeAI();
+                    //playerController.ChangeAI();
                 }
             }
         }
@@ -142,15 +142,21 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (changedProps.ContainsKey("jn"))
         {
-            if (PhotonNetwork.IsMasterClient == false) return;
-            var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
-            if (joinUserCount <= 0)
+            if (targetPlayer.IsLocal)
             {
-                //게임에 참여중인 유저가 한명도없다면. => 리셋
-                //ChangeRoomStateToServer(Define.GameState.Wait);
-                //Managers.Spawn.GameStateSpawn( Define.GameState.Wait);
+                var localUserController = (UserController)targetPlayer.TagObject;
+                localUserController.GameJoinCallBackByPhotonServer((bool)changedProps["jn"]);
 
             }
+            //if (PhotonNetwork.IsMasterClient == false) return;
+            //var joinUserCount = PhotonNetwork.CurrentRoom.Players.Values.Count(s => (bool)s.CustomProperties["jn"] == true);
+            //if (joinUserCount <= 0)
+            //{
+            //    //게임에 참여중인 유저가 한명도없다면. => 리셋
+            //    //ChangeRoomStateToServer(Define.GameState.Wait);
+            //    //Managers.Spawn.GameStateSpawn( Define.GameState.Wait);
+
+            //}
         }
     }
 
@@ -191,15 +197,14 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (otherPlayer.TagObject != null)
-        {
-            var playerSetup = otherPlayer.TagObject as GameObject;
-            var playerController = playerSetup.GetComponent<PlayerController>();
-            if (playerController)
-            {
-                playerController.ChangeAI();
-            }
-        }
+        //if (otherPlayer.TagObject != null)
+        //{
+        //    var userController = (UserController)otherPlayer.TagObject;
+        //    if (userController)
+        //    {
+        //        //playerController.ChangeAI();
+        //    }
+        //}
         if (onPlayerEventCallBackDic.ContainsKey(Define.InGamePhotonEvent.Left))
         {
             onPlayerEventCallBackDic[Define.InGamePhotonEvent.Left]?.Invoke(otherPlayer);
@@ -210,6 +215,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         photonView.RPC("DieOnServer", RpcTarget.All, dieViewID, attackViewID);
     }
+
     [PunRPC]
     public void DieOnServer(int dieViewID, int attackViewID)
     {
@@ -220,8 +226,10 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     void DelayDie(int dieViewID, int attackViewID)
     {
+        
         var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
         var killPlayer = Managers.Game.GetLivingEntity(attackViewID).GetComponent<PlayerController>();
+        print(deathPlayer + "/" + killPlayer + "/" + dieViewID + "/" + attackViewID);
         if (deathPlayer == null || killPlayer == null) return;
         var uiMain = Managers.UI.SceneUI as UI_Main;
         uiMain.UpdateKillNotice(killPlayer.NickName, deathPlayer.NickName);

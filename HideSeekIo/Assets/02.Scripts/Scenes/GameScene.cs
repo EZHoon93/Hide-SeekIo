@@ -67,20 +67,16 @@ public abstract class GameScene : BaseScene
     protected virtual void Start()
     {
         Managers.Spawn.UserControllerSpawn();
-        print("Start");
-
         if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["jn"])
         {
-            print("Enter");
-            Managers.Game.NotifyGameEvent(Define.GameEvent.GameEnter);
+            Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin,true);
         }
         else
         {
-            print("Exit");
-            Managers.Game.NotifyGameEvent(Define.GameEvent.GameExit);
+            Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin, false);
         }
         Managers.photonGameManager.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name.Substring(1)}{DynamicTextData.gamaSceneNotice}");
-        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => Clear());
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => Clear());
     }
     public override void Clear()
     {

@@ -24,7 +24,7 @@ public class Door2 : MonoBehaviour
     private void Start()
     {
         _isOpen = false;
-        Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, Open);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, Open);
 
         this.transform.localRotation = Quaternion.Euler(Vector3.zero);
     }

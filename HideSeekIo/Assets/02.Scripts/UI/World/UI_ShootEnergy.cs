@@ -30,9 +30,10 @@ public class UI_ShootEnergy : MonoBehaviour
         _isFull = false;
         _fillImage.enabled = false;
     }
+    public void SetupMaxValue(float maxValue) => _slider.maxValue = maxValue;
     public void UpdateUI(float value)
     {
-        isFull = value == 1 ? true : false;
+        isFull = value == _slider.maxValue ? true : false;
         if (!isFull)
             _slider.value = value;
     }

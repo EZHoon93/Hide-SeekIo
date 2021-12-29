@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class ObserverController : MonoBehaviourPun
+public class ObserverCamera : CameraBase
 {
     [SerializeField] float speed = 5;
     InputBase _inputBase;
@@ -12,13 +12,21 @@ public class ObserverController : MonoBehaviourPun
         _inputBase = GetComponent<InputBase>();
         _inputBase.AddInputEvent(Define.AttackType.Joystick, ControllerInputType.Drag, InputType.Move, null);
         _inputBase.AddInputEvent(Define.AttackType.Joystick, ControllerInputType.Down, InputType.Move, FirstMove);
+    }
 
+    public override void Init()
+    {
+        _inputBase.SetActiveUserControllerJoystick(true);
+    }
+    private void OnDisable()
+    {
+        _inputBase.SetActiveUserControllerJoystick(false);
     }
     public void SetActive(bool active)
     {
         this.gameObject.SetActive(active);
         _inputBase.SetActiveUserControllerJoystick(active);
-        Managers.cameraManager.SetupcameraTagerPlayer(this.transform);
+        //Managers.cameraManager.SetupFollowTarget(this.transform);
     }
     private void Update()
     {
@@ -34,7 +42,8 @@ public class ObserverController : MonoBehaviourPun
             this.transform.position = cameraTargetPlayer.transform.position;
         }
 
-        Managers.cameraManager.SetupcameraTagerPlayer(this.transform);
+        Managers.cameraManager.cameraTagerPlayer = null;
+        Managers.cameraManager.SetupFollowTarget(this.transform);
     }
     void Move(Vector3 inputVector)
     {

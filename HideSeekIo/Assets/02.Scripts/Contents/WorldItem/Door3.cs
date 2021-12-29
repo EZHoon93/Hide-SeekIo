@@ -17,7 +17,7 @@ public class Door3 : MonoBehaviour
     private void Start()
     {
         _isOpen = false;
-        Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, Open);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, Open);
         this.transform.rotation = Quaternion.Euler(Vector3.zero);
     }
     void Open()

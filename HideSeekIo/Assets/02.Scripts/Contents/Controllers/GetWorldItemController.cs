@@ -6,7 +6,7 @@ using DG.Tweening;
 using FoW;
 
 public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCallback, ICanEnterTriggerPlayer, ICanExitTriggerPlayer ,
-     IPunObservable , IPunOwnershipCallbacks, IOnPhotonViewPreNetDestroy
+     IPunObservable , IOnPhotonViewControllerChange, IOnPhotonViewPreNetDestroy
 {
     //public LivingEntity gettingLivingEntity { get; set; } //얻고있는 생명체
     public LivingEntity gettingLivingEntity;//얻고있는 생명체
@@ -237,5 +237,8 @@ public class GetWorldItemController : MonoBehaviourPun , IPunInstantiateMagicCal
     {
     }
 
-   
+    public void OnControllerChange(Player newController, Player previousController)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -185,11 +185,11 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
     {
         Managers.effectManager.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0, _damageRange);
         UtillGame.DamageInRange(attackPoint, _damageRange, _damage, playerController.ViewID(), UtillLayer.seekerToHiderAttack);
-        if (Managers.cameraManager.IsView(attackPoint) && playerController.IsMyCharacter())
-        {
-            Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.4f, 0.1f);
-            Managers.Sound.Play(_attackClip, Define.Sound.Effect);
-        }
+        //if (Managers.cameraManager.IsView(attackPoint) && playerController.IsMyCharacter())
+        //{
+        //    Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.4f, 0.1f);
+        //    Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        //}
     }
     #endregion
 

@@ -5,35 +5,44 @@ using UnityEngine.UI;
 
 public class UI_FindCamera : UI_Button
 {
-    void Start()
+    public override void Init()
     {
-        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => SetActive(false));
-        Managers.Game.AddListenrOnGameState(Define.GameState.CountDown, () => SetActive(false));
-        //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, Check);
-        //Managers.photonGameManager.onMyCharacter += Check;
-        //if (Managers.Game.gameStateController == null) return;
-        switch (Managers.Game.gameStateType)
+        base.Init();
+        //Managers.cameraManager.cameraStateChangeEvent += ChangeCameraState;
+
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.MyPlayerActive, CallBack_MyPlayerSetActive);
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeState,
+          CallBack_ChangeGameState);
+    }
+
+    void CallBack_MyPlayerSetActive(object isJoin)
+    {
+        this.gameObject.SetActive(!(bool)isJoin);
+    }
+
+    void CallBack_ChangeGameState(object gameState)
+    {
+        switch((Define.GameState)gameState)
         {
             case Define.GameState.Wait:
             case Define.GameState.CountDown:
-            case Define.GameState.GameReady:
                 this.gameObject.SetActive(false);
-                break;
-            case Define.GameState.Gameing:
-            case Define.GameState.End:
-                this.gameObject.SetActive(true);
                 break;
         }
     }
-
-    void SetActive(bool active)
+    void ChangeCameraState(Define.CameraState cameraState)
     {
-        this.gameObject.SetActive(false);
-    }
-
-    void Check(bool isActive)
-    {
-        this.gameObject.SetActive(!isActive);
+        switch (cameraState)
+        {
+            case Define.CameraState.Auto:
+            case Define.CameraState.Observer:
+                bool active = Managers.Game.gameStateType > Define.GameState.GameReady ? true : false;
+                this.gameObject.SetActive(active);
+                break;
+            case Define.CameraState.MyPlayer:
+                this.gameObject.SetActive(false);
+                break;
+        }
     }
 
     protected override void OnClickEvent()

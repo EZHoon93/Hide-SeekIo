@@ -14,8 +14,9 @@ public class UI_ControllerJoystick : MonoBehaviour
 
     public InputType inputType => _inputType;
     public Vector2 InputVector2 { get; private set; }
-    public ControllerInput controllerInput { get; set; }
+    public ControllerInput controllerInput;
     public UI_CoolTime UI_CoolTime => _uiCoolTime;
+    public Image itemImage => _itemImage;
 
     UltimateJoystick _ultimateJoystick;
     Define.AttackType _attackType;
@@ -39,7 +40,7 @@ public class UI_ControllerJoystick : MonoBehaviour
         if (controllerInput == null) return;
         InputVector2 = GetInputVector2();
         controllerInput.Call(ControllerInputType.Down, InputVector2);
-
+        //Debug.Log("DownCall1");
         if (_attackType == Define.AttackType.Button)
         {
             _buttonImage.color = _precssButtonColor;
@@ -102,6 +103,14 @@ public class UI_ControllerJoystick : MonoBehaviour
         _itemImage.sprite = newSprite;
     }
 
+    public void RemoveUI(ControllerInput removeControllerInput)
+    {
+        if(controllerInput == removeControllerInput)
+        {
+            controllerInput = null;
+            this.gameObject.SetActive(false);
+        }
+    }
 
  
     public void SetActiveControllerType(Define.AttackType attackType ,Sprite sprite = null)
@@ -113,8 +122,8 @@ public class UI_ControllerJoystick : MonoBehaviour
             _buttonImage?.gameObject.SetActive(true);
             _itemImage.transform.ResetTransform(_buttonImage.transform);
             _ultimateJoystick.dynamicPositioning = false;
-            _ultimateJoystick.inputTransition = false;
-            GetComponent<CanvasGroup>().alpha = 1;
+            //_ultimateJoystick.inputTransition = false;
+            //GetComponent<CanvasGroup>().alpha = 1;
         }
         else
         {

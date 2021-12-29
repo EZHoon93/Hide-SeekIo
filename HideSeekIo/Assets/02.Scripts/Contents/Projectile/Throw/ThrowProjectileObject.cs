@@ -76,10 +76,10 @@ public class ThrowProjectileObject : Poolable
         transform.DOMoveY(endPoint.y, arriveTime * 0.5f).SetEase(Ease.InSine);
         yield return new WaitForSeconds(arriveTime * 0.5f);
 
-        if (Managers.cameraManager.IsView(this.transform.position))
-        {
-            Managers.Sound.Play(_attackClip, Define.Sound.Effect);
-        }
+        //if (Managers.cameraManager.IsView(this.transform.position))
+        //{
+        //    Managers.Sound.Play(_attackClip, Define.Sound.Effect);
+        //}
         if (_attackPlayer.IsMyCharacter())
         {
             Managers.cameraManager.ShakeCameraByPosition(endPoint, 0.3f, 0.5f, 0.1f);

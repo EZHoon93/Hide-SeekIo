@@ -10,7 +10,9 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
     float _createServerTime;
     int _remainTime;
     bool _isPlay = false;  //다음단계 넘어갔는지 안넘어갔는지
-    GameState_Base _gameState;
+    [SerializeField] GameState_Base _gameState;
+
+    public GameState_Base ttt => _gameState;
     Define.GameState _gameStateType;
     protected bool isNextScene;
     public Define.GameState gameStateType
@@ -18,28 +20,28 @@ public class GameStateController : MonoBehaviourPun, IPunInstantiateMagicCallbac
         get => _gameStateType;
         set
         {
-            Component c = GetComponent<GameState_Base>();
-            if (c)
+            Component[] componetArray = GetComponents<GameState_Base>();
+            foreach(var componet in componetArray)
             {
-                Destroy(c);
+                Destroy(componet);
             }
             GameState_Base newGameState = null;
             switch (value)
             {
                 case Define.GameState.Wait:
-                    newGameState = this.gameObject.GetOrAddComponent<GameState_Wait>();
+                    newGameState = this.gameObject.AddComponent<GameState_Wait>();
                     break;
                 case Define.GameState.CountDown:
-                    newGameState = this.gameObject.GetOrAddComponent<GameState_Count>();
+                    newGameState = this.gameObject.AddComponent<GameState_Count>();
                     break;
                 case Define.GameState.GameReady:
-                    newGameState = this.gameObject.GetOrAddComponent<GameState_GameReady>();
+                    newGameState = this.gameObject.AddComponent<GameState_GameReady>();
                     break;
                 case Define.GameState.Gameing:
-                    newGameState = this.gameObject.GetOrAddComponent<GameState_Gameing>();
+                    newGameState = this.gameObject.AddComponent<GameState_Gameing>();
                     break;
                 case Define.GameState.End:
-                    newGameState = this.gameObject.GetOrAddComponent<GameState_End>();
+                    newGameState = this.gameObject.AddComponent<GameState_End>();
                     break;
             }
             _gameState = newGameState;

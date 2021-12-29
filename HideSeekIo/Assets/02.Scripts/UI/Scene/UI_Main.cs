@@ -64,8 +64,7 @@ public class UI_Main : UI_Scene
 
     private void OnEnable()
     {
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameEnter, GameJoin);
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameExit, GameExit);
+        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameJoin, GameJoin);
 
     }
 
@@ -76,15 +75,19 @@ public class UI_Main : UI_Scene
 
     }
 
-    void GameJoin(object nullObject)
+    void GameJoin(object isJoin)
     {
-        ChangePanel(Define.GameScene.Game);
+        if ((bool)isJoin)
+        {
+            ChangePanel(Define.GameScene.Game);
+        }
+        else
+        {
+            ChangePanel(Define.GameScene.Lobby);
+        }
     }
 
-    void GameExit(object nullObject)
-    {
-        ChangePanel(Define.GameScene.Lobby);
-    }
+  
     public void ChangePanel(Define.GameScene selectGameType)
     {
         foreach (var p in Enum.GetValues(typeof(Panels)))

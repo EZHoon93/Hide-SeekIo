@@ -48,10 +48,6 @@ public class PlayerHealth : LivingEntity
         AddRenderer(_playerCharacter.GetRenderController());
     }
 
-    public override void ChangeOwnerShipOnUser(bool isMyCharacter)
-    {
-
-    }
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -79,38 +75,7 @@ public class PlayerHealth : LivingEntity
     {
         Managers.effectManager.EffectOnLocal(Define.EffectType.CloudBurst, this.transform.position, 0);
         base.Die();
-        _playerCharacter.animator.SetTrigger("Die");
-        if(Team == Define.Team.Hide)
-        {
-            Invoke("AfterDestory", 3.0f);
-        }
-        else
-        {
-            StartCoroutine(Revive());
-        }
     }
 
-    public void AfterDestory()
-    {
-        Managers.Resource.PunDestroy(this);
-    }
-
-    IEnumerator Revive()
-    {
-        int remainTime = 5;
-        while(remainTime >= 0)
-        {
-            if (this.IsMyCharacter())
-            {
-                var uiMain = Managers.UI.SceneUI as UI_Main;
-                uiMain.UpdateNoticeText($"{remainTime} 초 후 부활 합니다");
-            }
-            remainTime--;
-            yield return new WaitForSeconds(1.0f);
-        }
-        _playerCharacter.animator.SetTrigger("Die");
-
-        onReviveEvent?.Invoke();    //부활 이벤트발생
-    }
-
+   
 }

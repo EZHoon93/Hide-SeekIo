@@ -1,33 +1,54 @@
 ﻿using Photon.Pun;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-
+using UnityEngine;
 public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IOnPhotonViewPreNetDestroy,IPunObservable
 {
-    PlayerController playerController;
-    ObjectController objectController;
+    #region PlayerController
+    PlayerController _playerController;
 
+    public PlayerController playerController
+    {
+        get => _playerController;
+        set
+        {
+            var prevPlayer = _playerController;
+            _playerController = value;
+            if (photonView.IsMine)
+            {
+                if(_playerController != null)
+                {
+                    Managers.cameraManager.cameraState = Define.CameraState.MyPlayer;
+                    //Managers.cameraManager.SetupTargetPlayerController(_playerController);
+                    Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, true);
+                }
+                // null 이라면..
+                else
+                {
+                    //prevPlayer.playerInput.SetActiveUserControllerJoystick(false);
+                    //Managers.cameraManager.FindNextPlayer();
+                    if (prevPlayer)
+                    {
+                        prevPlayer.playerInput.SetActiveUserControllerJoystick(false);
+                    }
+                    Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, false);
+                }
+            }
+        }
+    }
+    #endregion
     public string userNickName;
     public int userNumber;
+
+    public bool IsJoin => (bool)PhotonNetwork.LocalPlayer.CustomProperties["jn"];
+
+    #region Interface
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 
     }
-    private void Awake()
-    {
-        
-    }
-    private void OnEnable()
-    {
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameEnter, GameJoin);
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameExit, GameExit);
-    }
-    private void OnDisable()
-    {
-        Managers.Game.RemoveListnerOnGameEvent(Define.GameEvent.GameEnter, GameJoin);
-        Managers.Game.RemoveListnerOnGameEvent(Define.GameEvent.GameExit, GameExit);
-    }
+  
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         var infoData = info.photonView.InstantiationData;
@@ -35,8 +56,7 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
         {
             return;
         }
-        info.Sender.TagObject = this.gameObject;
-
+        info.Sender.TagObject = this;
         userNumber = (int)infoData[0];
         userNickName = (string)infoData[1]; //로컬넘버
 
@@ -45,34 +65,99 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
 
         if (photonView.IsMine)
         {
-            Managers.Game.userController = this;
+            Managers.Game.myUserController = this;
+            //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameJoin, GameJoinCallBack);
         }
     }
 
-  
     public void OnPreNetDestroy(PhotonView rootView)
     {
         Managers.Game.UnRegisterLivingEntity(rootView.ControllerActorNr);
-
+        if (photonView.IsMine)
+        {
+            //Managers.Game.RemoveListnerOnGameEvent(Define.GameEvent.GameJoin, GameJoinCallBack);
+        }
     }
-    void GameJoin(object nullObject)
+
+    #endregion
+
+    /// <summary>
+    /// 서버로 게임참여 전송
+    /// </summary>
+    public void GameEnterToServer()
     {
-        if (photonView.IsMine == false) return;
+        if (IsJoin)
+        {
+            return;
+        }
+        //비참여인상태에서만 보낼수있음..
         var currentSkinInfo = PlayerInfo.userData.GetCurrentAvater();
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
-            { "jn", true },
-            { "ch" ,0},   // 캐릭아바타스킨
-            { "we" ,0},   //무기아바타스킨
-            { "ac" , -1},   //악세사리스킨
+        { "jn", true },
+        { "ch" ,0},   // 캐릭아바타스킨
+        { "we" ,0},   //무기아바타스킨
+        { "ac" , -1},   //악세사리스킨
 
-        }); ;
+        });
     }
 
-    void GameExit(object nullObject)
+    /// <summary>
+    /// 서버로 게임 나가기 전송
+    /// </summary>
+    public void GameExitToServer()
     {
-        if (photonView.IsMine == false) return;
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "jn", false } });
+        if (!IsJoin)
+        {
+            return;
+        }
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() {
+            { "jn", false },
+        });
     }
 
-  
+
+    /// <summary>
+    /// 포톤으로부터 게임참여 여부 콜백
+    /// </summary>
+    public void GameJoinCallBackByPhotonServer(bool isJoin)
+    {
+        if(photonView.IsMine == false)
+        {
+            return;
+        }
+        //참여라면
+        if (isJoin)
+        {
+            Managers.cameraManager.cameraState = Define.CameraState.Observer;
+        }
+        //나간다면
+        else
+        {
+            Managers.cameraManager.cameraState = Define.CameraState.Auto;
+
+            if (playerController)
+            {
+                photonView.RPC("BufferedMyPlayerToAI", RpcTarget.AllBufferedViaServer);
+            }   
+        }
+        Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin, isJoin);
+        //Managers.cameraManager.observerController.SetActive(IsJoin);
+    }
+
+    /// <summary>
+    /// 내캐릭 AI로 넘김..
+    /// </summary>
+    [PunRPC]
+    public void BufferedMyPlayerToAI()
+    {
+        if(playerController == null)
+        {
+            return;
+        }
+        playerController.gameObject.tag = "AI";
+        playerController.playerInput.ChangePlayerType(Define.PlayerType.AI);
+        playerController = null;
+    }
 }
+
+

@@ -21,6 +21,8 @@ public class PlayerUI : MonoBehaviourPun
     [SerializeField] SpriteRenderer _groundUI;
     [SerializeField] Sprite _sprite;
 
+    [SerializeField] Slider[] _hpSliderArray;   //
+
     PlayerController _playerController;
     PlayerInput _playerInput;
 
@@ -186,22 +188,32 @@ public class PlayerUI : MonoBehaviourPun
 
     #region Hp
 
-    public void SetActiveHealthUI(bool active) => _hpSlider.gameObject.SetActive(active);
+    public void SetActiveHealthUI(bool active)
+    {
+        foreach (var slider in _hpSliderArray)
+            slider.gameObject.SetActive(active);
+    }
 
     void ChangeCurrentHP(int newValue)
     {
-        
-        //대미지가 감소한 형태라면
-        if (newValue < _hpSlider.value)
+        for (int i = 0; i < 5; i++)
         {
-            _isBackHpHit = true;
+            float value = Mathf.Clamp((newValue - i * 10), 0, 10);
+            _hpSliderArray[i].value = value;
         }
-        else
-        {
-            _backHpSlider.value = newValue;
-        }
-        _hpSlider.value = newValue;
-        _hpText.text = newValue.ToString();
+
+        ////대미지가 감소한 형태라면
+        //if (newValue < _hpSlider.value)
+        //{
+        //    _isBackHpHit = true;
+        //}
+        //else
+        //{
+        //    _backHpSlider.value = newValue;
+        //}
+        //_hpSlider.value = newValue;
+        //_hpText.text = newValue.ToString();
+
     }
 
     void ChangeMaxHP(int newValue)
@@ -251,7 +263,7 @@ public class PlayerUI : MonoBehaviourPun
             //}
         }
 
-        UpdateBackHealthSlider();
+        //UpdateBackHealthSlider();
 
         _moveUI.localPosition = _playerInput.GetVector2(InputType.Move)*3;
     }

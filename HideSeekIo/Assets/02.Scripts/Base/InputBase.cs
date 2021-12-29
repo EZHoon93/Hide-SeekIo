@@ -14,34 +14,52 @@ public class InputBase : MonoBehaviourPun
 
     public void SetActiveUserControllerJoystick(bool active)
     {
-        foreach (var input in controllerInputDic)
+        if (active)
         {
-            print(input.Key.ToString());
-            Managers.Input.SetUpControllerInput(input);
-            Managers.Input.GetControllerJoystick(input.Key).gameObject.SetActive(active);
+            foreach (var input in controllerInputDic)
+            {
+                SetupControllerInputUI(input.Value.attackType, input.Value.inputType);
+            }
         }
+        else
+        {
+            foreach (var input in controllerInputDic)
+            {
+                RemoveControllerInputUI(input.Value.inputType);
+            }
+        }
+     
     }
 
 
 
 
-    public virtual void AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType, Action<Vector2> action, Sprite sprite = null)
+    public ControllerInput AddInputEvent(Define.AttackType attackType, ControllerInputType controllerInputType, InputType inputType, Action<Vector2> action)
     {
-        ControllerInput addInput = null;
-        bool isCache = controllerInputDic.TryGetValue(inputType, out addInput);
+        ControllerInput controllerInput = null;
+        bool isCache = controllerInputDic.TryGetValue(inputType, out controllerInput);
         if (isCache == false)
         {
-            addInput = new ControllerInput(inputType);
-            controllerInputDic.Add(inputType, addInput);
+            controllerInput = new ControllerInput(inputType, attackType);
+            controllerInputDic.Add(inputType, controllerInput);
         }
-        addInput.controllerDic[controllerInputType] += action;
-        addInput.attackType = attackType;
+        controllerInput.controllerDic[controllerInputType] += action;
+        return controllerInput;
     }
 
     public ControllerInput GetControllerInput(InputType inputType)
     {
+        if (controllerInputDic.ContainsKey(inputType) == false)
+        {
+            Debug.LogError("Error Not Controller Input");
+            return null;
+        }
         return controllerInputDic[inputType];
     }
+
+    public UI_ControllerJoystick GetControllerJoystickUI(InputType inputType)
+        => Managers.Input.GetControllerJoystick(inputType);
+
 
     public Vector2 GetVector2(InputType inputType)
     {
@@ -54,20 +72,28 @@ public class InputBase : MonoBehaviourPun
         {
             controllerInputDic[inputType].Reset();
         }
-        if (this.IsMyCharacter())
-        {
-            Managers.Input.GetControllerJoystick(inputType).gameObject.SetActive(false);
-        }
     }
 
 
-    public void SetupControllerInputUI(Define.AttackType attackType, InputType inputType, Sprite sprite)
+    public virtual void SetupControllerInputUI(Define.AttackType attackType, InputType inputType, Sprite sprite = null)
     {
-        if (this.IsMyCharacter())
-        {
-            controllerInputDic[inputType].uI_ControllerJoystick = Managers.Input.GetControllerJoystick(inputType);
-            Managers.Input.GetControllerJoystick(inputType).SetActiveControllerType(attackType, null);
-            Managers.Input.GetControllerJoystick(inputType).ResetUIController();
-        }
+        var controllerInput = GetControllerInput(inputType);
+        var controllerjoystick = GetControllerJoystickUI(inputType);
+        controllerjoystick.controllerInput = controllerInput;
+        controllerjoystick.gameObject.SetActive(true);
+        controllerjoystick.ResetUIController();
+    }
+
+    public virtual void RemoveControllerInputUI(InputType inputType)
+    {
+        var controllerjoystick = GetControllerJoystickUI(inputType);
+        var controllerInput = GetControllerInput(inputType);
+        
+        controllerjoystick.RemoveUI(controllerInput);
+    }
+
+    public void SetupControllerInputUISprite(InputType inputType, Sprite sprite)
+    {
+        Managers.Input.GetControllerJoystick(inputType).SetupItemImage(sprite);
     }
 }

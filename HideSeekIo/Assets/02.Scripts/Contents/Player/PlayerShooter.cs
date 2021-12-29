@@ -220,24 +220,18 @@ public class PlayerShooter : MonoBehaviourPun
         var inputType = newInputControllerObject.inputType;
         var attackType = newInputControllerObject.attackType;
         var sprite = newInputControllerObject.sprite;
+        //ControllerInput controllerInput = null;
         _playerInput.RemoveInputEvent(inputType); //현재 인풋타입에있는것을 없앰..
         if (newInputControllerObject.attackType == Define.AttackType.Button)
         {
-            //playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType, null);
-            //playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
-            //  (input) => { playerShooter.UseInputControllerObject(input, newInputControllerObject); }, newInputControllerObject.sprite);
-
-            //playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Down, newInputControllerObject.inputType,
-            //(input) => { playerShooter.ZoomInputConrollerObject(input, newInputControllerObject); });
-            //playerInput.AddInputEvent(newInputControllerObject.attackType, ControllerInputType.Up, newInputControllerObject.inputType,
-            //  (input) => { playerShooter.UseInputControllerObject(input, newInputControllerObject); }, newInputControllerObject.sprite);
+             _playerInput.AddInputEvent(attackType, ControllerInputType.Down, inputType, (input) => { ButtonInput(newInputControllerObject); });
         }
         else
         {
-            _playerInput.AddInputEvent(attackType, ControllerInputType.Down, inputType, (input) => { ChangeInputConrollerObject(input, newInputControllerObject); });
+             _playerInput.AddInputEvent(attackType, ControllerInputType.Down, inputType, (input) => { ChangeInputConrollerObject(input, newInputControllerObject); });
             _playerInput.AddInputEvent(attackType, ControllerInputType.Up, inputType, (input) => UseInputControllerObject(input, newInputControllerObject));
         }
-        
+
         _playerInput.SetupControllerInputUI(attackType, inputType, sprite);
     }
 
@@ -260,6 +254,12 @@ public class PlayerShooter : MonoBehaviourPun
                 ChangeWeapon(baseWeapon);
             }
         }
+    }
+
+    void ButtonInput(InputControllerObject inputControllerObject)
+    {
+        inputControllerObject.Zoom(Vector2.zero);
+        print("Input!!");
     }
     public void ChangeInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {

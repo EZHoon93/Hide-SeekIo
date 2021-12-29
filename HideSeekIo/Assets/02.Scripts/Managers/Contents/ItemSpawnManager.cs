@@ -33,8 +33,8 @@ public class ItemSpawnManager : MonoBehaviour
 
         }
         _canSpawnPointList.Clear();
-        Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, () => StartCoroutine(UpdateSpawn()));
-        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, Clear);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, () => StartCoroutine(UpdateSpawn()));
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, Clear);
 
     }
 

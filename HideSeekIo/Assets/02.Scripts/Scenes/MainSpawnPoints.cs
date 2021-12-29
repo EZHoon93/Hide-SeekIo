@@ -42,7 +42,7 @@ public class MainSpawnPoints : MonoBehaviour
 
     private void Start()
     {
-        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, Clear);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, Clear);
     }
 
     void Clear()

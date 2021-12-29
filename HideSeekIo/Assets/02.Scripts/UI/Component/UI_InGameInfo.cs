@@ -13,8 +13,8 @@ public class UI_InGameInfo : MonoBehaviour
     {
         ResetTextes();
 
-        Managers.Game.AddListenrOnGameState(Define.GameState.Wait, ResetTextes);
-        Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, SetupHiderNSeeker);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, ResetTextes);
+        //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, SetupHiderNSeeker);
         Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeHider,UpdateHiderText);
         Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeSeeker, UpdateSeekerText);
         Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeInGameTime, UpdateInGameTimeText);

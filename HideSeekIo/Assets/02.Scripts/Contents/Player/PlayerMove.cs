@@ -70,7 +70,16 @@ public class PlayerMove : PhotonMove
 
 
     //사물모드전용
-    public bool isOnlyRotation { get; set; }
+    bool _isOnlyRotation;
+    public bool isOnlyRotation
+    {
+        get => _isOnlyRotation;
+        set
+        {
+            _isOnlyRotation = value;
+            State = MoveState.Idle;
+        }
+    }
     [SerializeField] Sprite _noFixedSprite;
     [SerializeField] Sprite _fixedSprite;
 
@@ -88,7 +97,7 @@ public class PlayerMove : PhotonMove
         //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => {
         //    run = false; });
 
-        _playerShooter.weaponChangeCallBack += (a) => { isOnlyRotation = false; };
+        //_playerShooter.weaponChangeCallBack += (a) => { isOnlyRotation = false; };
 
     }
     protected override void OnEnable()
@@ -103,10 +112,10 @@ public class PlayerMove : PhotonMove
     }
     public override void OnPhotonInstantiate(PlayerController playerController)
     {
-        if (Managers.Scene.currentGameScene.gameMode == Define.GameMode.Object && playerController.Team == Define.Team.Hide)
-        {
-            _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (v) => { FixedRotationByObjectMode(); });
-        }
+        //if (Managers.Scene.currentGameScene.gameMode == Define.GameMode.Object && playerController.Team == Define.Team.Hide)
+        //{
+        //    _playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (v) => { FixedRotationByObjectMode(); });
+        //}
     }
 
     public override void OnPreNetDestroy(PhotonView rootView)
@@ -254,17 +263,17 @@ public class PlayerMove : PhotonMove
     /// <summary>
     /// 사물모드 전용
     /// </summary>
-    void FixedRotationByObjectMode()
-    {
-        isOnlyRotation = !isOnlyRotation;
-        State = MoveState.Idle; //제자리로변경. => 변신모드 hider 변신을위해 콜백호출
-        if (this.IsMyCharacter())
-        {
-            Sprite sprite = isOnlyRotation ? _fixedSprite : _noFixedSprite;
-            Managers.Input.GetControllerJoystick(InputType.Sub1).SetupItemImage(sprite);
-        }
+    //void FixedRotationByObjectMode()
+    //{
+    //    isOnlyRotation = !isOnlyRotation;
+    //    State = MoveState.Idle; //제자리로변경. => 변신모드 hider 변신을위해 콜백호출
+    //    if (this.IsMyCharacter())
+    //    {
+    //        Sprite sprite = isOnlyRotation ? _fixedSprite : _noFixedSprite;
+    //        Managers.Input.GetControllerJoystick(InputType.Main).SetupItemImage(sprite);
+    //    }
 
-    }
+    //}
 
 
     #region 필없음

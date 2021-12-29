@@ -100,13 +100,11 @@ public class LivingEntity : MonoBehaviourPun, IDamageable,  IPunObservable,IBuff
             Managers.Resource.Destroy(buff.gameObject);
 
         n_buffControllerList.Clear();
-    }
 
-    public virtual void ChangeOwnerShipOnUser(bool isMyCharacter)
-    {
 
     }
 
+  
 
     protected virtual void FixedUpdate()
     {
@@ -155,6 +153,7 @@ public class LivingEntity : MonoBehaviourPun, IDamageable,  IPunObservable,IBuff
             if (Dead) return;
             if (isShield) return;
             currHp = Mathf.Clamp(currHp -damage ,0 ,maxHp);
+            print(currHp + "현재체력");
             _lastAttackViewID = damagerViewId;
             if (currHp <= 0 && !Dead)
             {
