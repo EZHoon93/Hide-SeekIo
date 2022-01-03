@@ -5,28 +5,16 @@ using Photon.Pun;
 
 public class Stat : MonoBehaviourPun
 {
+    [SerializeField] StatScriptable _statScriptable;
+    protected Animator _animator;
 
-    [SerializeField] protected float _moveSpeed;
+    public Animator animator => _animator;
 
-    public float moveSpeed
-    {
-        get => _moveSpeed;
-        set
-        {
-            _moveSpeed = value;
-        }
-    }
+    public float moveSpeed => _statScriptable.InitMoveSpeed;
 
-    [SerializeField] protected int _maxHp;
 
-    public int maxHp 
-    {
-        get => _maxHp;
-        set
-        {
-            _maxHp = value;
-        }
-    }
+    public int maxHp => _statScriptable.InitHp;
+   
 
 
 }

@@ -11,7 +11,7 @@ public class CharacterAvater : MonoBehaviour
     [SerializeField] Transform _rightHand;
     [SerializeField] RenderController _renderController;
 
-    public Animator animator { get; set; }
+    public Animator animator;
     public Transform accessoriesTransform => _accessoriesTransform;
     public Transform headTransform => _headTransform;
     public Transform rightHand => _rightHand;
@@ -27,6 +27,10 @@ public class CharacterAvater : MonoBehaviour
     [ContextMenu("Setup")]
     public void Setup()
     {
+        //animator = GetComponent<Animator>();
+        //animator.runtimeAnimatorController = GameSetting.Instance.playerAnimator;
+        //print(animator + "!!@!@");
+        //animator.applyRootMotion = false;
     }
 
     private void Awake()
@@ -55,6 +59,13 @@ public class CharacterAvater : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void SetupEquipment(Equipmentable newEquipment)
+    {
+        var tr = GetSkinParentTransform( newEquipment.skinType);
+
+        newEquipment.model.transform.ResetTransform(tr);
     }
 
     public void SetupAccessories(GameObject newAccssories)

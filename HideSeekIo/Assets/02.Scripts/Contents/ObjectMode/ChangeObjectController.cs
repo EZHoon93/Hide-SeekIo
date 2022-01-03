@@ -16,7 +16,7 @@ public class ChangeObjectController : MonoBehaviourPun , IPunObservable , IPunIn
         get => _objectIndex;
         set
         {
-            if (_objectIndex == value) return;
+            if (_objectIndex == value ) return;
             if (_changeObject)
             {
                 Managers.Resource.Destroy(_changeObject.gameObject);
@@ -25,6 +25,8 @@ public class ChangeObjectController : MonoBehaviourPun , IPunObservable , IPunIn
             var mapController = Managers.Scene.currentGameScene.mapController.GetComponent<ObjectModeMapController>();
             _changeObject = Instantiate(mapController.changeObjectList.objectList[objectIndex].gameObject);
             _changeObject.transform.ResetTransform(_playerController.playerHealth.fogController.transform);
+            var isObjectShow = _playerController.playerMove.State == PlayerMove.MoveState.Idle ? true : false;
+            ShowChangeObejct(isObjectShow);
         }
     }
 
@@ -38,6 +40,8 @@ public class ChangeObjectController : MonoBehaviourPun , IPunObservable , IPunIn
         else
         {
             objectIndex = (int)stream.ReceiveNext();
+            print(objectIndex);
+
         }
     }
 
@@ -58,7 +62,7 @@ public class ChangeObjectController : MonoBehaviourPun , IPunObservable , IPunIn
         }
         var actorNumber = (int)infoData[0];
         var playerViewID = (int)infoData[1];
-
+        _objectIndex = -1;
         objectModeMapControllers = Managers.Scene.currentGameScene.mapController.GetComponent<ObjectModeMapController>().changeObjectList;
 
         //var userController = Managers.Game.GetUserController(actorNumber);
@@ -73,21 +77,27 @@ public class ChangeObjectController : MonoBehaviourPun , IPunObservable , IPunIn
             this.transform.ResetTransform(_playerController.playerHealth.fogController.transform);
             _playerController.playerShooter.SetupInputControllerObject(_inputControllerObject);
             _playerController.playerMove.onChangeMoveStateEvent += ChangeObject;
+            _playerController.playerHealth.onDeath += HandleDeath;
         }
 
         if (photonView.IsMine)
         {
             objectIndex = Random.Range(0, objectModeMapControllers.objectList.Length);
-            ShowChangeObejct(true);
         }
     }
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
         _playerController.playerMove.onChangeMoveStateEvent -= ChangeObject;
+        _playerController.playerHealth.onDeath -= HandleDeath;
+
     }
 
-
+    void HandleDeath()
+    {
+        _playerController.playerMove.onChangeMoveStateEvent -= ChangeObject;
+        ShowChangeObejct(false);
+    }
 
 
 
@@ -108,10 +118,18 @@ public class ChangeObjectController : MonoBehaviourPun , IPunObservable , IPunIn
         }
     }
 
+    /// <summary>
+    /// true => 사물보게, 캐릭안보이게
+    /// </summary>
+    /// <param name="changeShow"></param>
     void ShowChangeObejct(bool changeShow)
     {
+        if (_changeObject == null)
+        {
+            return;
+        }
         _changeObject.gameObject.SetActive(changeShow);
-        _playerController.playerCharacter.characterAvater.gameObject.SetActive(!changeShow);
+        _playerController.characterAvater.gameObject.SetActive(!changeShow);
         if (_playerController.playerHealth.IsMyCharacter() == false)
         {
             _playerController.playerUI.SetActiveNameUI(!changeShow);

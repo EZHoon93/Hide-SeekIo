@@ -7,7 +7,7 @@ public class Weapon_Bow : Weapon
 {
 
     public override WeaponType weaponType => WeaponType.Bow;
-    public override HandType handType => HandType.Left;
+    //public override HandType handType => HandType.Left;
 
     [SerializeField] Transform _fireParentPivot;
     [SerializeField] Transform _fireTransform;
@@ -17,17 +17,17 @@ public class Weapon_Bow : Weapon
     [SerializeField] protected BulletProjectile _projectilePrefab;
 
     Animator _animator;
-    protected override void SetupCallBack()
-    {
-        _animator = GetComponent<Animator>();
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Main;
-        inputControllerObject.attackType = Define.AttackType.Joystick;
-        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
-        inputControllerObject.AddZoomEvent(Zoom);
-        inputControllerObject.AddUseEvent(Attack);
+    //protected override void SetupCallBack()
+    //{
+    //    _animator = GetComponent<Animator>();
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Main;
+    //    inputControllerObject.attackType = Define.AttackType.Joystick;
+    //    inputControllerObject.shooterState = PlayerShooter.state.MoveToAttackPoint;
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //    inputControllerObject.AddUseEvent(Attack);
 
-    }
+    //}
 
 
 

@@ -23,17 +23,30 @@ public class GameState_GameReady : GameState_Base
     }
     public override void OnPhotonInstantiate(PhotonMessageInfo info, float createServerTime)
     {
-        //var inGameTime = _gameScene.initGameTime;
+        _playerDataTable = (Dictionary<int, Dictionary<string, object>>)info.photonView.InstantiationData[1];
+        var localActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+
         switch (_gameScene.gameMode)
         {
             case Define.GameMode.Object:
-                uI_Main.UpdateNoticeText(Util.GetColorContent(Color.white, "잠시 후 술래가 등장합니다 "));
+
+                if (_playerDataTable.ContainsKey(localActorNumber))
+                {
+                    var team = (Define.Team)_playerDataTable[localActorNumber]["te"];
+                    if(team == Define.Team.Hide)
+                    {
+                        uI_Main.UpdateNoticeText(Util.GetColorContent(Color.white, "잠시 후 술래가 등장합니다 "));
+                    }
+                    else
+                    {
+                        uI_Main.UpdateNoticeText(Util.GetColorContent(Color.white, "당신은 술래입니다."));
+                    }
+                }
 
                 break;
             case Define.GameMode.Item:
                 break;
         }
-        _playerDataTable = (Dictionary<int, Dictionary<string, object>>)info.photonView.InstantiationData[1];
         
         //캐릭터 생성 방장만 실행..
         Managers.Scene.currentGameScene.PlayerSpawnOnGameReady(_playerDataTable);

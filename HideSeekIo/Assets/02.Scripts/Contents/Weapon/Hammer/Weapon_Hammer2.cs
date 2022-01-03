@@ -14,17 +14,17 @@ public class Weapon_Hammer2 : Weapon
     [SerializeField] LayerMask _zoomLayer;
     bool zoom;
     public override WeaponType weaponType => WeaponType.Hammer;
-    public override HandType handType => HandType.Right;
+    //public override HandType handType => HandType.Right;
 
-    protected override void SetupCallBack()
-    {
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Sub1;
-        inputControllerObject.attackType = Define.AttackType.Button;
-        inputControllerObject.shooterState = PlayerShooter.state.Skill;
-        inputControllerObject.AddZoomEvent(Zoom);
-        inputControllerObject.AddUseEvent(Attack);
-    }
+    //protected override void SetupCallBack()
+    //{
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Sub1;
+    //    inputControllerObject.attackType = Define.AttackType.Button;
+    //    inputControllerObject.shooterState = PlayerShooter.state.Skill;
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //    inputControllerObject.AddUseEvent(Attack);
+    //}
 
     private void Update()
     {
@@ -74,8 +74,8 @@ public class Weapon_Hammer2 : Weapon
             {
                 startTime = 2;
             }
-            var hitPoint = GetHitPoint(playerController.playerCharacter.characterAvater.transform,startTime);
-            lineRenderer.SetPosition(1, hitPoint);
+            //var hitPoint = GetHitPoint(playerController.playerCharacter.characterAvater.transform,startTime);
+            //lineRenderer.SetPosition(1, hitPoint);
             lineRenderer.enabled = true;
             yield return null;
         }
@@ -110,9 +110,10 @@ public class Weapon_Hammer2 : Weapon
         zoom = false;
         lineRenderer.enabled = false;
 
-        var direction = playerController.playerCharacter.characterAvater.transform.forward;//아바타가보는 정면
-        var attackPoint = playerController.transform.position + direction * AttackDistance;
-        photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, attackPoint);
+        //var direction = playerController.playerCharacter.characterAvater.transform.forward;//아바타가보는 정면
+
+        //var attackPoint = playerController.transform.position + direction * AttackDistance;
+        //photonView.RPC("AttackOnServer", RpcTarget.AllViaServer, attackPoint);
     }
 
     [PunRPC]

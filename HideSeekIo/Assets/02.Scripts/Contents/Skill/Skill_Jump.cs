@@ -37,7 +37,7 @@ public class Skill_Jump : Skill_Base
         direction = direction.normalized;
         direction.y = this.transform.position.y;
         Quaternion newRotation = Quaternion.LookRotation(direction);
-        playerController.playerCharacter.characterAvater.transform.rotation = newRotation;
+        //playerController.playerCharacter.characterAvater.transform.rotation = newRotation;
         _targetPoint = targetPoint;
         StartCoroutine(ProceeJump(targetPoint,time));
     }
@@ -46,13 +46,13 @@ public class Skill_Jump : Skill_Base
     {
      
 
-        playerController.playerCharacter.animator.CrossFade("JumpStart", 0.0f);
-        playerController.playerCharacter.animator.SetTrigger("JumpStart");
+        playerController.animator.CrossFade("JumpStart", 0.0f);
+        playerController.animator.SetTrigger("JumpStart");
 
         yield return new WaitForSeconds(time - 0.25f );
         //playerController.playerCharacter.animator.SetTrigger("JumpEnd");
-        playerController.playerCharacter.animator.CrossFade("JumpEnd", 0.0f);
-        playerController.playerCharacter.animator.SetTrigger("JumpEnd");
+        playerController.animator.CrossFade("JumpEnd", 0.0f);
+        playerController.animator.SetTrigger("JumpEnd");
 
         yield return new WaitForSeconds(0.25f);
         Managers.effectManager.EffectOnLocal(Define.EffectType.BodySlam, targetPoint, 0, 1);

@@ -20,7 +20,7 @@ public class MoveEnergyController : MonoBehaviour
     }
     public void OnPhotonInstantiate(PlayerController playerController)
     {
-        _playerController.playerUI.SetActiveMoveEnergyUI(false);
+        //_playerController.playerUI.SetActiveMoveEnergyUI(false);
         this.gameObject.SetActive(false);
     }
 
@@ -33,10 +33,10 @@ public class MoveEnergyController : MonoBehaviour
     {
         if (_playerController.Team == Define.Team.Hide && isMyCharacter)
         {
-            this.gameObject.SetActive(true);
-            _playerUI.ChangeMaxMoveEnergy(_maxEnergy);
-            _playerController.playerUI.SetActiveMoveEnergyUI(false);
-            return;
+            //this.gameObject.SetActive(true);
+            //_playerUI.ChangeMaxMoveEnergy(_maxEnergy);
+            //_playerController.playerUI.SetActiveMoveEnergyUI(false);
+            //return;
         }
     }
 
@@ -51,7 +51,7 @@ public class MoveEnergyController : MonoBehaviour
             _currentEnergy = Mathf.Clamp(_currentEnergy - Time.deltaTime, 0, _maxEnergy);
         }
 
-        _playerUI.ChangeCurrentMoveEnergy(_currentEnergy);
+        //_playerUI.ChangeCurrentMoveEnergy(_currentEnergy);
 
     }
 }

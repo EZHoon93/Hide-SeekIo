@@ -7,7 +7,7 @@ using DG.Tweening;
 public class Weapon_Hammer4 : Weapon
 {
     public override WeaponType weaponType => WeaponType.Hammer;
-    public override HandType handType => HandType.Right;
+    //public override HandType handType => HandType.Right;
 
     [SerializeField] AudioClip _attackClip;
     [SerializeField] float _amount = 1;
@@ -17,17 +17,17 @@ public class Weapon_Hammer4 : Weapon
     [SerializeField] TrailRenderer _trailRenderer;
 
     [SerializeField] float _test;
-    protected override void SetupCallBack()
-    {
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Main;
-        inputControllerObject.attackType = Define.AttackType.Joystick;
-        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
-        inputControllerObject.AddZoomEvent(Zoom);
-        inputControllerObject.AddUseEvent(Attack);
-        _trailRenderer = GetComponentInChildren<TrailRenderer>();
+    //protected override void SetupCallBack()
+    //{
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Main;
+    //    inputControllerObject.attackType = Define.AttackType.Joystick;
+    //    inputControllerObject.shooterState = PlayerShooter.state.MoveToAttackPoint;
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //    inputControllerObject.AddUseEvent(Attack);
+    //    _trailRenderer = GetComponentInChildren<TrailRenderer>();
 
-    }
+    //}
     private void OnEnable()
     {
         AttackDistance = _test;

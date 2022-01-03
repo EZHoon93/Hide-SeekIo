@@ -107,7 +107,7 @@ public class PlayerObjectController : MonoBehaviourPun , IPunObservable
     void ShowChangeObejct(bool changeShow)
     {
         _changeObject.gameObject.SetActive(changeShow);
-        _playerController.playerCharacter.characterAvater.gameObject.SetActive(!changeShow);
+        //_playerController.playerCharacter.characterAvater.gameObject.SetActive(!changeShow);
         if(_playerController.playerHealth.IsMyCharacter() == false)
         {
             _playerController.playerUI.SetActiveNameUI(!changeShow);

@@ -65,7 +65,7 @@ public class SpawnManager
         return Managers.Resource.Instantiate($"Character/{prefabID}");
     }
 
-    public GameObject GetSkinByIndex(Define.ProductType productType , int selectIndex)
+    public GameObject GetSkinByIndex(Define.ProductType productType , int selectIndex, Transform parent = null)
     {
         var skinList = Managers.productSetting.GetSkins(productType);
         if (selectIndex < 0 || selectIndex > skinList.Length)
@@ -73,8 +73,8 @@ public class SpawnManager
             selectIndex = 0;
         }
         var prefab = skinList[selectIndex];
-        var go = Managers.Pool.Pop(prefab).gameObject;
-
+        var go = Managers.Pool.Pop(prefab, parent).gameObject;
+        go.transform.ResetTransform();
         return go;
     }
 
@@ -136,7 +136,7 @@ public class SpawnManager
         {
             case Define.Weapon.Hammer:
                 weaponID = "Hammer3";
-                datas.Add("Wm01");
+                datas.Add(0);
                 break;
             //case Define.Weapon.Sniper:
             //case Define.Weapon.Stone:

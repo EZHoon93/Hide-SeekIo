@@ -10,8 +10,10 @@ public class InputControllerObject : MonoBehaviourPun
     ConsumItem _consumItem;
     public InputType inputType;
     public Define.AttackType attackType;
-    public PlayerShooter.state shooterState{ get; set; }
+    public PlayerShooter.state shooterState;
     public float InitCoolTime;
+
+
     public float RemainCoolTime { get; set; }
 
     public event Action<Vector2> useEventCallBack;

@@ -194,7 +194,10 @@ public class SceneManagerEx : MonoBehaviourPunCallbacks
             }
 
         } while (string.Equals(sceneName, _currentGameSceneName));
-        
+
+
+        //테스트
+        sceneName = _objectModeScenes[0].name;
 
         return sceneName;
     }

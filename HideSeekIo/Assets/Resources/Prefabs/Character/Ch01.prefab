@@ -3625,7 +3625,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4342492446589712}
-  - component: {fileID: 95169093654324718}
+  - component: {fileID: 278171556625700621}
   - component: {fileID: 9209663436263025624}
   - component: {fileID: 2362034282400555022}
   - component: {fileID: -408876914062993518}
@@ -3654,7 +3654,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &95169093654324718
+--- !u!95 &278171556625700621
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -3663,11 +3663,11 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1954781504214606}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: c3d861774f7c51047a8eee3ef22edfeb, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 49f10d89ddfdd594f9ed88fa79351b6c, type: 3}
   m_Controller: {fileID: 9100000, guid: a2953ac6f213d2745996673bee01831f, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -3700,12 +3700,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessoriesTransform: {fileID: 4984983237027426}
   _headTransform: {fileID: 4252549203098434}
-  _leftHand: {fileID: 0}
   _rightHand: {fileID: 4994657394106784}
   _renderController: {fileID: -5062704141910536868}
-  _le: {fileID: 0}
-  _ri: {fileID: 0}
-  _weaponPivot: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!114 &-408876914062993518
 MonoBehaviour:
   m_ObjectHideFlags: 0

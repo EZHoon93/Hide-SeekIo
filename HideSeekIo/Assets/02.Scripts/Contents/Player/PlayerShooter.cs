@@ -8,12 +8,13 @@ public class PlayerShooter : MonoBehaviourPun
 {
     public enum state
     {
-        Idle,
-        MoveAttack,
+        CanMove,
+        MoveToAttackPoint,
         Skill
     }
     public state State { get; protected set; }
-    PlayerCharacter _playerCharacter;
+
+    PlayerStat _playerStat;
     PlayerInput _playerInput;
     InputControllerObject currentInputController;
 
@@ -26,7 +27,7 @@ public class PlayerShooter : MonoBehaviourPun
     [SerializeField] AudioClip _weaponChangeAudio;  //무기바꿀대 행해지는 사운드
 
 
-    Animator _animator => _playerCharacter.animator;
+    Animator _animator => _playerStat.animator;
     public Weapon baseWeapon { get; protected set; }    //안없어지는무기
     public Skill_Base currentSkill { get; set; }
 
@@ -65,11 +66,24 @@ public class PlayerShooter : MonoBehaviourPun
     public event Action<int> onChangeMaxEnergyListeners;
     public event Action<float> onChangeCurrEnergyListeners;
 
-    private void OnEnable()
+   
+    private void Awake()
     {
-        State = state.Idle;
+        _playerInput = GetComponent<PlayerInput>();
+        _playerStat = GetComponent<PlayerStat>();
     }
-    private void OnDisable()
+
+    public virtual void OnPhotonInstantiate()
+    {
+        State = state.CanMove;
+        weaponChangeCallBack = null;
+        if (baseWeapon)
+        {
+            PhotonNetwork.Destroy(baseWeapon.gameObject);
+        }
+    }
+
+    public virtual void OnPreNetDestroy(PhotonView rootView)
     {
         if (currentInputController)
         {
@@ -77,15 +91,10 @@ public class PlayerShooter : MonoBehaviourPun
         }
     }
 
-    private void Awake()
-    {
-        _playerInput = GetComponent<PlayerInput>();
-        _playerCharacter = GetComponent<PlayerCharacter>();
-    }
-    
+
     private void LateUpdate()
     {
-        if (State == state.MoveAttack)
+        if (State == state.MoveToAttackPoint)
         {
             if (AttackDirection == Vector3.zero) return;
             if (upperSpine == null)
@@ -94,7 +103,7 @@ public class PlayerShooter : MonoBehaviourPun
             }
 
             Vector3 spineRot = Quaternion.LookRotation(AttackDirection).eulerAngles;
-            spineRot -= _playerCharacter.characterAvater.transform.eulerAngles;
+            spineRot -= _playerStat.characterAvater.transform.eulerAngles;
             float addAngle = 0;
             if(baseWeapon.weaponType == Weapon.WeaponType.Bow)
             {
@@ -117,42 +126,14 @@ public class PlayerShooter : MonoBehaviourPun
         }
 
         if (photonView.IsMine == false) return;
-        RecoveryCurrentEnergy();
-
         if (this.IsMyCharacter() == false ) return;
         UpdateZoom();
     }
   
 
 
-    public virtual void OnPhotonInstantiate()
-    {
-        weaponChangeCallBack = null;
-        if (baseWeapon)
-        {
-            PhotonNetwork.Destroy(baseWeapon.gameObject);
-        }
-    }
-
-    public virtual void OnPreNetDestroy(PhotonView rootView)
-    {
-    }
-
-    public void HandleDeath()
-    {
+    
    
-    }
-
-    public void ChangeOwnerShip()
-    {
-        
-    }
-
-    void RecoveryCurrentEnergy()
-    {
-        //currentEnergy = Mathf.Clamp(currentEnergy + Time.deltaTime * _energyRegenAmount , 0, maxEnergy);
-    }
-
  
 
 
@@ -183,6 +164,7 @@ public class PlayerShooter : MonoBehaviourPun
                 break;
             case Weapon.WeaponType.Hammer:
                 _animator.CrossFade("Hammer", 0.1f);
+                
                 //_animator.CrossFade("TwoHandHammer", 0.1f);
 
                 break;
@@ -240,7 +222,7 @@ public class PlayerShooter : MonoBehaviourPun
     {
 
         if (this.enabled == false || this == null) return;
-        if (this.State != state.Idle || currentEnergy < -1) return;
+        if (this.State != state.CanMove || currentEnergy < -1) return;
         currentInputController = inputControllerObject;
         if (this.IsMyCharacter())
         {
@@ -259,7 +241,6 @@ public class PlayerShooter : MonoBehaviourPun
     void ButtonInput(InputControllerObject inputControllerObject)
     {
         inputControllerObject.Zoom(Vector2.zero);
-        print("Input!!");
     }
     public void ChangeInputConrollerObject(Vector2 inputVector2, InputControllerObject inputControllerObject)
     {
@@ -291,7 +272,7 @@ public class PlayerShooter : MonoBehaviourPun
         }
         else
         {
-            State = state.MoveAttack;
+            State = state.MoveToAttackPoint;
         }
         _animator.SetTrigger(attackWeapon.AttackAnim);
     }
@@ -305,7 +286,7 @@ public class PlayerShooter : MonoBehaviourPun
             }
         }
         _hideInFog.isAttack = false;
-        State = state.Idle;
+        State = state.CanMove;
 
     }
 

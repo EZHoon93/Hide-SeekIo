@@ -3629,7 +3629,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: a2953ac6f213d2745996673bee01831f, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -3662,12 +3662,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accessoriesTransform: {fileID: 4820495922740072}
   _headTransform: {fileID: 4057890476101728}
-  _leftHand: {fileID: 0}
   _rightHand: {fileID: 4103330396081644}
   _renderController: {fileID: 9017561469076403642}
-  _le: {fileID: 0}
-  _ri: {fileID: 0}
-  _weaponPivot: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!114 &-2087297921543788865
 MonoBehaviour:
   m_ObjectHideFlags: 0

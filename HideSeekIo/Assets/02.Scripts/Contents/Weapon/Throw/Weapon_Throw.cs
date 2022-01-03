@@ -9,7 +9,7 @@ public abstract class Weapon_Throw : Weapon
 
     float _attackRange;
     public override WeaponType weaponType => WeaponType.Throw;
-    public override HandType handType => HandType.Right;
+    //public override HandType handType => HandType.Right;
 
     public float attackRange 
     {
@@ -29,17 +29,17 @@ public abstract class Weapon_Throw : Weapon
 
 
 
-    protected override void SetupCallBack()
-    {
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Main;
-        inputControllerObject.attackType = Define.AttackType.Joystick;
-        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
-        inputControllerObject.AddUseEvent(Attack);
-        inputControllerObject.AddZoomEvent(Zoom);
-        _plane = new Plane(Vector3.up, Vector3.zero);
+    //protected override void SetupCallBack()
+    //{
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Main;
+    //    inputControllerObject.attackType = Define.AttackType.Joystick;
+    //    inputControllerObject.shooterState = PlayerShooter.state.MoveToAttackPoint;
+    //    inputControllerObject.AddUseEvent(Attack);
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //    _plane = new Plane(Vector3.up, Vector3.zero);
 
-    }
+    //}
 
     public void Setup(string animName, float delayTime, float afaterDelayTime, float distance, float newAttackRange)
     {
@@ -100,7 +100,7 @@ public abstract class Weapon_Throw : Weapon
         attackStartCallBack?.Invoke();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var projectile = Managers.Pool.Pop(_projectilePrefab).GetComponent<ThrowProjectileObject>();    //투척물 생성
-        Vector3 startPoint = playerController.playerCharacter.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+        Vector3 startPoint = playerController.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
         projectile.Play(playerController, startPoint, endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간
         attackEndCallBack?.Invoke();

@@ -130,8 +130,18 @@ public class Define
         TransparentSeeker,
         HiderTransCollider,
         SeekerTransCollider,
+        UISeeker = 26,
+        UIHider
     }
 
+    public enum EventType
+    {
+        GameManager,
+        GameState,
+        UIEvent,
+        Camera,
+        Photon
+    }
     public enum Scene
     {
         Unknown,
@@ -161,6 +171,7 @@ public class Define
     {
         Left,
         Enter,
+        NewMaster
     }
 
     public enum GameEvent

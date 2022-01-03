@@ -72,7 +72,7 @@ public class GameState_Count : GameState_Base
                 }
             }
 
-            //playerDataTable[PhotonNetwork.LocalPlayer.ActorNumber]["te"] = Define.Team.Seek;    //테스트 로컬 술래
+            playerDataTable[PhotonNetwork.LocalPlayer.ActorNumber]["te"] = Define.Team.Seek;    //테스트 로컬 술래
 
             NextScene(Define.GameState.GameReady , playerDataTable);   //다음 게임 단계로 진행
         }

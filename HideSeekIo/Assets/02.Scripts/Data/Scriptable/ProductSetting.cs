@@ -102,7 +102,7 @@ public class ProductSetting : ScriptableObject
         return ran;
     }
 
-    public GameObject CreateSkin(Define.ProductType productType , int selectIndex)
+    public GameObject CreateSkin(Define.ProductType productType , int selectIndex, Transform parent = null)
     {
         var skinList = GetSkins(productType);
         if(selectIndex < 0 || selectIndex > skinList.Length)
@@ -111,7 +111,7 @@ public class ProductSetting : ScriptableObject
         }
         var prefab = GetSkins(productType)[selectIndex];
 
-        var go = Managers.Pool.Pop(prefab).gameObject;
+        var go = Managers.Pool.Pop(prefab,parent).gameObject;
 
         return go;
     }

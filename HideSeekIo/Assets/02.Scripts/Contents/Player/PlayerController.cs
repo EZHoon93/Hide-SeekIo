@@ -15,10 +15,14 @@ public class PlayerController : MonoBehaviourPun
     public PlayerShooter playerShooter { get; private set; }
     public PlayerMove playerMove { get; private set; }
     public PlayerStat playerStat { get; set; }
-    public PlayerCharacter playerCharacter { get; set; }
+
+    //public PlayerCharacter playerCharacter { get; set; }
+
     public PlayerUI playerUI => _playerUI;
     public FogOfWarController fogOfWarController => playerHealth.fogController;
     public PlayerGrassDetect playerGrassDetect => _playerGrassDetect;
+    public Animator animator => playerStat.animator;
+    public CharacterAvater characterAvater => playerStat.characterAvater;
 
     public event Action<PhotonView> changeOnwerShip;
     public event Action<PhotonView> onPhotonDestroyEvent;
@@ -33,7 +37,6 @@ public class PlayerController : MonoBehaviourPun
         playerShooter = this.gameObject.GetOrAddComponent<PlayerShooter>();
         playerMove = this.gameObject.GetOrAddComponent<PlayerMove>();
         playerStat = this.gameObject.GetOrAddComponent<PlayerStat>();
-        playerCharacter = this.gameObject.GetOrAddComponent<PlayerCharacter>();
         _playerUI.SetupPlayer(this);
     }
 
@@ -42,13 +45,13 @@ public class PlayerController : MonoBehaviourPun
     #region Call Back Event
     public virtual void OnPhotonInstantiate(PhotonView photonView)
     {
-        playerStat.OnPhotonInstantiate();   //Stat ?? ????????!!
+        //playerStat.OnPhotonInstantiate();   //Stat ?? ????????!!
         _playerUI.OnPhotonInstantiate();   
         playerInput.OnPhotonInstantiate();
         playerHealth.OnPhotonInstantiate();
         playerMove.OnPhotonInstantiate(this);
         playerShooter.OnPhotonInstantiate();
-        playerCharacter.OnPhotonInstantiate(this);
+        //playerCharacter.OnPhotonInstantiate(this);
         _playerGrassDetect.gameObject.SetActive(false);
         //_playerObjectController.OnPhotonInstantiate(this);
         //_moveEnergyController.OnPhotonInstantiate(this);
@@ -65,82 +68,19 @@ public class PlayerController : MonoBehaviourPun
         playerInput.OnPreNetDestroy(rootView);
         playerShooter.OnPreNetDestroy(rootView);
         playerHealth.OnPreNetDestroy(rootView);
-        playerCharacter.OnPreNetDestroy(rootView);
-
+        //playerCharacter.OnPreNetDestroy(rootView);
         if (this.IsMyCharacter())
         {
-            var myUserController = Managers.Game.myUserController; 
+            var myUserController = Managers.Game.myUserController;
+            if (myUserController)
+            {
+                myUserController.playerController = null;
+            }
+            Managers.cameraManager.cameraState = Define.CameraState.Auto;
+
         }
-        Managers.cameraManager.cameraState = Define.CameraState.Auto;
     }
-
-
-    ////소유권이 바뀌면!!
-    //public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
-    //{
-    //    //변경된 오브젝트만 실행
-    //    if (targetView.ViewID != this.ViewID()) return;
-        
-    //    //방장이 유저한테 줄떄 =>자기자신캐릭이면 
-    //    if (previousOwner.IsMasterClient)
-    //    {
-    //        //자기자신한테  소유권이 주어진것이라면
-    //        if (targetView.ControllerActorNr == PhotonNetwork.LocalPlayer.ActorNumber)
-    //        {
-    //            Managers.Game.myPlayer = this;
-    //            _playerGrassDetect.gameObject.SetActive(true);
-
-    //        }
-    //    }
-    //    //게임에 나가서 방장한테 줄때 => AI로 전환
-    //    else
-    //    {
-    //        previousOwner.TagObject = null; //태그오브젝트 삭제.
-    //        SetupAIPlayer();
-    //    }
-
-    //}
-
-
     #endregion
-
-    //public void ChangeOwnerShipOnUser(bool isMyCharacter)
-    //{
-    //    //playerHealth.ChangeOwnerShipOnUser(isMyCharacter);
-    //    //playerMove.ChangeOwnerShip();
-    //    //playerShooter.ChangeOwnerShip();
-    //    //playerCharacter.ChangeOnwerShip(this);
-    //    //_playerObjectController.ChangeOwnerShipOnUser(isMyCharacter);
-    //    //_moveEnergyController.ChangeOwnerShipOnUser(isMyCharacter);
-    //    //_playerUI.ChangeOwnerShip(isMyCharacter);
-    //    //changeOnwerShip?.Invoke(this.photonView);
-    //    if (photonView.IsMine)
-    //    {
-    //        //Managers.buffManager.OnApplyBuffOnLocal(playerHealth, Define.BuffType.B_Speed, 15);
-
-    //    }
-    //    if (this.IsMyCharacter())
-    //    {
-    //        //Managers.Game.myPlayer= this;
-    //    }
-    //}
-
-
-
-
-
-    //void SetupAIPlayer()
-    //{
-    //    ChangePlayerType(Define.PlayerType.AI);
-    //}
-
-
-    //public void ChangePlayerType(Define.PlayerType playerType)
-    //{
-    //    this.gameObject.tag = playerType.ToString();
-    //    playerInput.ChangePlayerType(playerType);
-    //}
-
 
     public void ChangeTeam(Define.Team team)
     {
@@ -182,9 +122,9 @@ public class PlayerController : MonoBehaviourPun
         }
 
         playerHealth.Team = team;
-        playerStat.ChangeTeam(team);
+        //playerStat.ChangeTeam(team);
         //playerInput.ChangeTeam(team);
-        playerUI.ChangeTeam(team);
+        //playerUI.ChangeTeam(team);
         if (this.IsMyCharacter())
         {
             Managers.cameraManager.ChangeTeamByTargetView(this);
@@ -200,7 +140,7 @@ public class PlayerController : MonoBehaviourPun
         playerShooter.enabled = false;
         playerMove.enabled = false;
         playerStat.enabled = false;
-        playerCharacter.enabled = false;
+        //playerCharacter.enabled = false;
         playerInput.enabled = false;
     }
 
@@ -214,10 +154,9 @@ public class PlayerController : MonoBehaviourPun
     {
         Managers.Resource.PunDestroy(this);
     }
-    void Revive()
-    {
 
-    }
+
+   
     private void OnTriggerEnter(Collider other)
     {
         var enterTrigger = other.gameObject.GetComponent<ICanEnterTriggerPlayer>();
@@ -242,13 +181,82 @@ public class PlayerController : MonoBehaviourPun
 
 
     #region 
-  
 
-  
+
+
 
 
 
     #endregion
+    #region
 
+
+
+    ////소유권이 바뀌면!!
+    //public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    //{
+    //    //변경된 오브젝트만 실행
+    //    if (targetView.ViewID != this.ViewID()) return;
+
+    //    //방장이 유저한테 줄떄 =>자기자신캐릭이면 
+    //    if (previousOwner.IsMasterClient)
+    //    {
+    //        //자기자신한테  소유권이 주어진것이라면
+    //        if (targetView.ControllerActorNr == PhotonNetwork.LocalPlayer.ActorNumber)
+    //        {
+    //            Managers.Game.myPlayer = this;
+    //            _playerGrassDetect.gameObject.SetActive(true);
+
+    //        }
+    //    }
+    //    //게임에 나가서 방장한테 줄때 => AI로 전환
+    //    else
+    //    {
+    //        previousOwner.TagObject = null; //태그오브젝트 삭제.
+    //        SetupAIPlayer();
+    //    }
+
+    //}
+
+
+
+    //public void ChangeOwnerShipOnUser(bool isMyCharacter)
+    //{
+    //    //playerHealth.ChangeOwnerShipOnUser(isMyCharacter);
+    //    //playerMove.ChangeOwnerShip();
+    //    //playerShooter.ChangeOwnerShip();
+    //    //playerCharacter.ChangeOnwerShip(this);
+    //    //_playerObjectController.ChangeOwnerShipOnUser(isMyCharacter);
+    //    //_moveEnergyController.ChangeOwnerShipOnUser(isMyCharacter);
+    //    //_playerUI.ChangeOwnerShip(isMyCharacter);
+    //    //changeOnwerShip?.Invoke(this.photonView);
+    //    if (photonView.IsMine)
+    //    {
+    //        //Managers.buffManager.OnApplyBuffOnLocal(playerHealth, Define.BuffType.B_Speed, 15);
+
+    //    }
+    //    if (this.IsMyCharacter())
+    //    {
+    //        //Managers.Game.myPlayer= this;
+    //    }
+    //}
+
+
+
+
+
+    //void SetupAIPlayer()
+    //{
+    //    ChangePlayerType(Define.PlayerType.AI);
+    //}
+
+
+    //public void ChangePlayerType(Define.PlayerType playerType)
+    //{
+    //    this.gameObject.tag = playerType.ToString();
+    //    playerInput.ChangePlayerType(playerType);
+    //}
+
+    #endregion
 }
 

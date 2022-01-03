@@ -11,17 +11,17 @@ public class Weapon_Hammer : Weapon
     AudioClip _attackClip;
 
     public override WeaponType weaponType => WeaponType.Hammer;
-    public override HandType handType => HandType.Right;
+    //public override HandType handType => HandType.Right;
 
-    protected override void SetupCallBack()
-    {
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Main;
-        inputControllerObject.attackType =  Define.AttackType.Joystick;
-        inputControllerObject.shooterState = PlayerShooter.state.Skill;
-        inputControllerObject.AddZoomEvent(Zoom);
-        inputControllerObject.AddUseEvent(Attack);
-    }
+    //protected override void SetupCallBack()
+    //{
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Main;
+    //    inputControllerObject.attackType =  Define.AttackType.Joystick;
+    //    inputControllerObject.shooterState = PlayerShooter.state.Skill;
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //    inputControllerObject.AddUseEvent(Attack);
+    //}
     private void Start()
     {
         AttackAnim = "Attack";
@@ -65,9 +65,9 @@ public class Weapon_Hammer : Weapon
     public override void Attack(Vector2 inputVector)
     {
         if (photonView.IsMine == false) return;
-        var direction = playerController.playerCharacter.characterAvater.transform.forward;//아바타가보는 정면
-        var attackPoint = playerController.transform.position + direction * AttackDistance;
-        photonView.RPC("AttackOnServer", RpcTarget.All, attackPoint);
+        //var direction = playerController.playerCharacter.characterAvater.transform.forward;//아바타가보는 정면
+        //var attackPoint = playerController.transform.position + direction * AttackDistance;
+        //photonView.RPC("AttackOnServer", RpcTarget.All, attackPoint);
     }
 
     [PunRPC]

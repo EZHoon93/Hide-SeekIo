@@ -8,7 +8,7 @@ using Cinemachine.Utility;
 public class Weapon_Gun : Weapon
 {
     public override WeaponType weaponType => WeaponType.Gun;
-    public override HandType handType => HandType.Right;
+    //public override HandType handType => HandType.Right;
 
     [SerializeField] Transform _fireParentPivot;
     [SerializeField] Transform _fireTransform;
@@ -20,19 +20,19 @@ public class Weapon_Gun : Weapon
     [SerializeField] protected BulletProjectile _projectilePrefab;
 
     Animator _animator;
-    protected override void SetupCallBack()
-    {
-        _animator = GetComponent<Animator>();
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Main;
-        inputControllerObject.attackType = Define.AttackType.Joystick;
-        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
-        inputControllerObject.AddZoomEvent(Zoom);
-        inputControllerObject.AddUseEvent(Attack);
+    //protected override void SetupCallBack()
+    //{
+    //    _animator = GetComponent<Animator>();
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Main;
+    //    inputControllerObject.attackType = Define.AttackType.Joystick;
+    //    inputControllerObject.shooterState = PlayerShooter.state.MoveToAttackPoint;
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //    inputControllerObject.AddUseEvent(Attack);
 
-        var main = _fireEffect.main;
-        main.playOnAwake = false;
-    }
+    //    var main = _fireEffect.main;
+    //    main.playOnAwake = false;
+    //}
     
 
 

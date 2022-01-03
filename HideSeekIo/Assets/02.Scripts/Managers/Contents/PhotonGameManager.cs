@@ -107,19 +107,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     /// </summary>
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        var allLivings =  Managers.Game.GetAllLivingEntity();
-        foreach(var living in allLivings)
-        {
-            if (living == null) continue;   //만약 없는캐릭이라면 
-            if (living.gameObject.IsValidAI())
-            {
-                 var playerController = living.GetComponent<PlayerController>();
-                if (playerController)
-                {
-                    //playerController.ChangeAI();
-                }
-            }
-        }
+        Managers.eventManager.PostNotification(Define.EventType.Photon, (Define.InGamePhotonEvent.NewMaster), this, newMasterClient);  
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -229,7 +217,6 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         
         var deathPlayer = Managers.Game.GetLivingEntity(dieViewID).GetComponent<PlayerController>();
         var killPlayer = Managers.Game.GetLivingEntity(attackViewID).GetComponent<PlayerController>();
-        print(deathPlayer + "/" + killPlayer + "/" + dieViewID + "/" + attackViewID);
         if (deathPlayer == null || killPlayer == null) return;
         var uiMain = Managers.UI.SceneUI as UI_Main;
         uiMain.UpdateKillNotice(killPlayer.NickName, deathPlayer.NickName);

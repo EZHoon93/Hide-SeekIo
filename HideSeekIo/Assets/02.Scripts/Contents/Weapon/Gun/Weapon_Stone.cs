@@ -6,7 +6,7 @@ public class Weapon_Stone : Weapon, IZoom
 {
     public override WeaponType weaponType => WeaponType.Gun;
 
-    public override HandType handType => HandType.Right;
+    //public override HandType handType => HandType.Right;
 
 
     [SerializeField] float _maxDistance = 5;
@@ -20,16 +20,16 @@ public class Weapon_Stone : Weapon, IZoom
         AfaterAttackDelay = 0.2f;
         _bullet = Managers.Resource.Load<GameObject>("Prefabs/Projectile/P_Stone");
     }
-    protected override void SetupCallBack()
-    {
-        inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
-        inputControllerObject.inputType = InputType.Sub3;
-        inputControllerObject.attackType = Define.AttackType.Joystick;
-        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
-        inputControllerObject.InitCoolTime = 3;
-        inputControllerObject.AddUseEvent(Attack);
-        inputControllerObject.AddZoomEvent(Zoom);
-    }
+    //protected override void SetupCallBack()
+    //{
+    //    inputControllerObject = this.gameObject.GetOrAddComponent<InputControllerObject>();
+    //    inputControllerObject.inputType = InputType.Sub3;
+    //    inputControllerObject.attackType = Define.AttackType.Joystick;
+    //    inputControllerObject.shooterState = PlayerShooter.state.MoveToAttackPoint;
+    //    inputControllerObject.InitCoolTime = 3;
+    //    inputControllerObject.AddUseEvent(Attack);
+    //    inputControllerObject.AddZoomEvent(Zoom);
+    //}
 
 
 
@@ -72,7 +72,7 @@ public class Weapon_Stone : Weapon, IZoom
         //inputControllerObject.Call_UseSucessStart();
         yield return new WaitForSeconds(AttackDelay);   //대미지 주기전까지 시간
         var bullet =  Managers.Pool.Pop(_bullet.gameObject).GetComponent<StoneProjectile>();
-        Vector3 startPoint = playerController.playerCharacter.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+        Vector3 startPoint = playerController.animator.GetBoneTransform(HumanBodyBones.RightHand).position;
         bullet.transform.position = startPoint;
         //bullet.Play(endPoint);
         yield return new WaitForSeconds(AfaterAttackDelay);   //대미지 주기전까지 시간

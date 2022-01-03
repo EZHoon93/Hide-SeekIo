@@ -1,0 +1,455 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b01265a4838ea844bb0ac1cf248df8d8, type: 3}
+  m_Name: TileSet
+  m_EditorClassIdentifier: 
+  tiles:
+  - prefab: {fileID: 1462743779960144, guid: 51efd981382df2f49beda5e08094e100, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 0, y: 0, z: 0}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: 
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1951848887789032, guid: cb888d59568ce4141b1c25e3ef62afd2, type: 3}
+    center: {x: 0, y: 0.7553904, z: 0}
+    size: {x: 1.1673858, y: 1.6193702, z: 1.1673858}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1646296518030006, guid: 8f804849ed7e5be48aa2c267bc4e6b1f, type: 3}
+    center: {x: 0.038421094, y: 0.6561571, z: 0.009810299}
+    size: {x: 1.3131559, y: 1.3737637, z: 1.2663136}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1199473334418004, guid: e582ce941ac92ef4cb992016b0be0e4d, type: 3}
+    center: {x: 0.023196146, y: 0.5608005, z: 0}
+    size: {x: 0.93710756, y: 1.190349, z: 0.8907153}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1071620255019320, guid: 7be56934287e6b54cbbb5be442439eac, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0}
+    size: {x: 1.384427, y: 1.0867765, z: 1.384427}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1788694647044104, guid: 43a2d349c5a44de45a56c21a275e3ea2, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0}
+    size: {x: 1.384427, y: 1.0867765, z: 1.384427}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1132184581070744, guid: 4d374ce5bf75e9343915e5f413d2d7c1, type: 3}
+    center: {x: 0, y: 0.16367814, z: 0.0041638017}
+    size: {x: 0.90243775, y: 0.3790744, z: 0.9453506}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1460305198163944, guid: c09d518d3ab6db045a471ded18534588, type: 3}
+    center: {x: 0.15372181, y: 1.1538223, z: 0}
+    size: {x: 2.8050992, y: 2.3826373, z: 3.1258786}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1924128176262846, guid: 27a977fb5afb3e5429c13ca8a608b3b0, type: 3}
+    center: {x: -0.24724036, y: 1.3106844, z: 0}
+    size: {x: 3.0401816, y: 2.7456417, z: 3.5361733}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1773718872145680, guid: e86ca841e27c20149b1c1ce2d3611316, type: 3}
+    center: {x: 0.00035187602, y: 0, z: 0.0005376637}
+    size: {x: 1.0656092, y: 0.3671175, z: 1.0653288}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1293889309762118, guid: 52ab2382064a1c941adb343dfa169f6e, type: 3}
+    center: {x: 0, y: 0, z: -0.004577458}
+    size: {x: 1.066313, y: 0.3671175, z: 1.0550985}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1131489802823194, guid: 06e490f208b5a8d4ebc1ed06dcb785ce, type: 3}
+    center: {x: -0.00037118793, y: 0, z: 0.0005376637}
+    size: {x: 1.0655706, y: 0.3671175, z: 1.0653288}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1112815721267748, guid: 005067759eaed58418e3bdd30b904f84, type: 3}
+    center: {x: 0.006021768, y: 0.021232963, z: 0}
+    size: {x: 1.2320678, y: 1.092461, z: 1.2200243}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1952129819604958, guid: 108254541f8a51146aafe39f9f2a3b22, type: 3}
+    center: {x: -0.02603896, y: 0.07288433, z: 0.0378474}
+    size: {x: 0.5696018, y: 0.14235236, z: 0.5519363}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1568801636586370, guid: 5f6d0fe4f6bd6924d9c62b00c97ef85b, type: 3}
+    center: {x: -0.046884544, y: 0.073505744, z: 0.036554627}
+    size: {x: 0.48949093, y: 0.16082177, z: 0.47312725}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1667274464171274, guid: d6eff39da19a3514c9b2d20b74a1a974, type: 3}
+    center: {x: -0.0047142804, y: 0.08479717, z: -0.00043460727}
+    size: {x: 0.655547, y: 0.18340461, z: 0.6175451}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1063049674197416, guid: 7352e9e4e300ae34bae5be5828840ef6, type: 3}
+    center: {x: 0, y: 0.0009890199, z: 0.0009647608}
+    size: {x: 1.0836195, y: 1.0855975, z: 1.0857564}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1349559159348094, guid: c27a3a01668fea640b28323333f6edac, type: 3}
+    center: {x: 0, y: 0.0009890199, z: 0.0009647608}
+    size: {x: 1.0836195, y: 1.0855975, z: 1.0857564}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1947405603622934, guid: 5e3e9544e88dee1458cd07e36ccac4a6, type: 3}
+    center: {x: 0, y: 0.47104347, z: 0.0007534027}
+    size: {x: 1.1126232, y: 0.41482866, z: 1.1133631}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}
+  - prefab: {fileID: 1970403890845156, guid: c0802d0efc3a4f948aa244221f490f71, type: 3}
+    center: {x: 0.0075918734, y: -0.008461267, z: -0.007029444}
+    size: {x: 1.0287116, y: 1.0419564, z: 1.0438852}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1445461502138832, guid: c960e2d4889acfc49b51db56df0c46d6, type: 3}
+    center: {x: 0, y: 0.6507933, z: 0.13856936}
+    size: {x: 1.2610583, y: 1.3876727, z: 1.330297}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1356365954066760, guid: 9c3efbf41550d8d4a93ec902c0458d0e, type: 3}
+    center: {x: 0, y: 0.6507933, z: 0.13856936}
+    size: {x: 1.2610583, y: 1.3876727, z: 1.330297}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1008893551862254, guid: 60dd56e8ba336e142a2affba23fab5a2, type: 3}
+    center: {x: 0, y: -1, z: 0.625}
+    size: {x: 0.42181087, y: 1.0999899, z: 0.3260565}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1403633674652904, guid: a2c176517cdbacd4fbad73fe72bf0c61, type: 3}
+    center: {x: -0.00014919788, y: -0.24861535, z: 0.47350365}
+    size: {x: 0.42239875, y: 0.59970504, z: 0.6290492}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1643365263485536, guid: a66437d58ba388a47a95e753d7b3fa75, type: 3}
+    center: {x: 0, y: 0.4128573, z: 0.0000036358833}
+    size: {x: 1.186558, y: 0.9714134, z: 1.1857688}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1177591515074470, guid: f6ca83d291b2ed248a13f85eb3aa2509, type: 3}
+    center: {x: 0, y: -0.028956532, z: 0.0007534027}
+    size: {x: 1.1126232, y: 0.41482866, z: 1.1133631}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1151297957767230, guid: e66c8d19baa9b1e49927d77ad73419ba, type: 3}
+    center: {x: 0, y: -0.06916921, z: 0.0001385212}
+    size: {x: 1.1230057, y: 0.33034503, z: 1.1272405}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1589982487929352, guid: 77e2835d8bc4d28469118a6f81d6ca46, type: 3}
+    center: {x: 0, y: 0.000000029802322, z: 0}
+    size: {x: 1.0839726, y: 1.0745068, z: 1.0839705}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1748151838054578, guid: 02b77ae4381b82d46b79579958676fb3, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0867765, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1933377699632860, guid: 7f3cbec835eb7a447923b364621b4051, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0867765, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1246395485445324, guid: 3b4349d9b60f1144098726eb72c235b8, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0}
+    size: {x: 1.1391863, y: 1.0867765, z: 1.1391863}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1706518913891364, guid: 260660f99259357419a55a34c8dd34f1, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0867765, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1771716845571206, guid: 6eba6a964bfb32a4d802b1fa2d619231, type: 3}
+    center: {x: -0.0025181472, y: -0.011341035, z: 0.005129069}
+    size: {x: 1.1095755, y: 1.0921874, z: 1.0890882}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1220148799173894, guid: c1f3f9d9f05d81844a2166e18b39377d, type: 3}
+    center: {x: 0.0075915456, y: -0.008461267, z: -0.007029444}
+    size: {x: 1.0287122, y: 1.0419564, z: 1.0438852}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1069463367953480, guid: ad1d5e1541dd0254fbb31e6d869497db, type: 3}
+    center: {x: 0, y: 0.0028604865, z: -0.010047257}
+    size: {x: 1.0438949, y: 1.0646, z: 1.0831358}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1070030437981666, guid: 4dd68f0054aadfa4799fa73ff28a0bb3, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0867765, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1247222064262802, guid: 3b5cc845e6ef26543ac6aaaeb2318f14, type: 3}
+    center: {x: 0, y: 0.00039952993, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0867765, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1196704470857498, guid: 8d398c1b8376a214cb04d1c488bde7cb, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.147763, y: 1.049995, z: 1.147763}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1095116155852058, guid: 17ce62ed8ba1ecf408a67817ad7892ce, type: 3}
+    center: {x: 0, y: -0.009395152, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0687852, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1295771592899782, guid: ccb3118f24171d54a981cac221dfa269, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.147763, y: 1.049995, z: 1.147763}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1313047622203132, guid: 7942ecc0d43fdd34d9e73d77b9efd13a, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.147763, y: 1.049995, z: 1.147763}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1180097030236134, guid: 73acbb5e5fc88fc44bc0f3fdd6e75bc3, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.1520354, y: 1.049995, z: 1.1520354}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1722622101466764, guid: b9c39d2b6a020ca43aeeb872a9edce01, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.147763, y: 1.049995, z: 1.147763}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1318749619927600, guid: ff257737a573b74499a98a0f9f6fcdf6, type: 3}
+    center: {x: 0, y: 0.009395152, z: 0.0010752678}
+    size: {x: 1.0859774, y: 1.0687852, z: 1.0859774}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1606373845990690, guid: 200f006e468fb0649ae352dcc295c42d, type: 3}
+    center: {x: 0.000459224, y: 0.000000029802322, z: -0.000459224}
+    size: {x: 1.0607116, y: 1.049995, z: 1.0607116}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1265788360617750, guid: aacdd94addbe68448a6540d7a23cca8c, type: 3}
+    center: {x: 0, y: 0.000000029802322, z: -0.0031214058}
+    size: {x: 1.059793, y: 1.049995, z: 1.0535502}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1675263899577056, guid: 221426e035dd5a647bea398fe0b2a60c, type: 3}
+    center: {x: 0, y: 0.000000059604645, z: -0.0035806596}
+    size: {x: 1.0597931, y: 1.0499951, z: 1.0544686}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1643989489368736, guid: b88491066c62f394a9ae7e21b4787f13, type: 3}
+    center: {x: 0, y: 0.49999997, z: -0.13110353}
+    size: {x: 1.1699764, y: 2.1305382, z: 0.8312037}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1473724764481814, guid: 05770e0d4f7c74946957ac3d48705c5b, type: 3}
+    center: {x: 0.000000059604645, y: 0.50301933, z: 0.578312}
+    size: {x: 1.0684156, y: 2.0452242, z: 0.65662396}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1584864392750310, guid: 0033ada4a0ae4754aaa7cd6cfc356c26, type: 3}
+    center: {x: 0, y: 1.8974924, z: -0.24939966}
+    size: {x: 3.2900212, y: 3.878674, z: 1.5793331}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1056189112486468, guid: 3e9e5bbe1bdfdaa47a302a8bbcc35e59, type: 3}
+    center: {x: 0, y: 0.25, z: 0}
+    size: {x: 1.169987, y: 0.535465, z: 1.169987}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1190585821465922, guid: dcc41d9941059dc4e8d22891f5b1ec36, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.1667395, y: 1.049995, z: 1.1667395}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1206694379395918, guid: b8f47d40ac26a984fa266342939e2899, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.1667395, y: 1.049995, z: 1.1667395}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1530489987920284, guid: 8f1e2613fd87c89438ff8be474fb1d55, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 1.1667395, y: 1.049995, z: 1.1667395}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: sandstone
+      color: {r: 1, g: 1, b: 1, a: 1}
+  - prefab: {fileID: 1687315319176590, guid: 579381c50c4d743a2be228d65c2ac1a0, type: 3}
+    center: {x: 0, y: 0, z: 0}
+    size: {x: 0, y: 0, z: 0}
+    sizeCalculationOption: 0
+    thumbnail: {fileID: 0}
+    category:
+      name: Sand
+      color: {r: 1, g: 1, b: 0.6784314, a: 1}

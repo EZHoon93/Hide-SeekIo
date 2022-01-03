@@ -1,10 +1,20 @@
 ﻿using System;
 using System.Collections;
+
+using ExitGames.Client.Photon.StructWrapping;
+
 using Photon.Pun;
 using UnityEngine;
 
 public class PlayerMove : PhotonMove 
 {
+    CharacterController _characterController;
+    PlayerShooter _playerShooter;
+    PlayerStat _playerStat;
+    PlayerInput _playerInput;
+    Animator _animator => _playerStat.animator;
+    [SerializeField] Sprite _noFixedSprite;
+    [SerializeField] Sprite _fixedSprite;
     public enum MoveState
     {
         Idle,
@@ -25,12 +35,7 @@ public class PlayerMove : PhotonMove
         }
     }
 
-    CharacterController _characterController;
-    PlayerShooter _playerShooter;
-    PlayerStat _playerStat;
-    PlayerInput _playerInput;
-    PlayerCharacter _playerCharacter;
-    Animator _animator => _playerCharacter.animator;
+ 
 
     float _animationValue;
     bool _run = true;
@@ -80,8 +85,10 @@ public class PlayerMove : PhotonMove
             State = MoveState.Idle;
         }
     }
-    [SerializeField] Sprite _noFixedSprite;
-    [SerializeField] Sprite _fixedSprite;
+ 
+
+
+    int moveAnimId;
 
 
 
@@ -91,7 +98,6 @@ public class PlayerMove : PhotonMove
         _playerShooter = GetComponent<PlayerShooter>();
         _playerInput = GetComponent<PlayerInput>();
         _playerStat = GetComponent<PlayerStat>();
-        _playerCharacter = GetComponent<PlayerCharacter>();
         _playerInput.AddInputEvent(Define.AttackType.Joystick, ControllerInputType.Drag, InputType.Move, null);
         //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Down, InputType.Main, (vector2) => { run = true; });
         //_playerInput.AddInputEvent(Define.AttackType.Button, ControllerInputType.Up, InputType.Main, (vector2) => {
@@ -109,6 +115,9 @@ public class PlayerMove : PhotonMove
         isOnlyRotation = false;
         moveMaxEnergy = 2;
         moveCurrEnergy = moveMaxEnergy;
+
+        moveAnimId = Animator.StringToHash("Speed");
+
     }
     public override void OnPhotonInstantiate(PlayerController playerController)
     {
@@ -150,7 +159,7 @@ public class PlayerMove : PhotonMove
         var inputVector = _playerInput.GetVector2(InputType.Move);
         switch (_playerShooter.State)
         {
-            case PlayerShooter.state.Idle:
+            case PlayerShooter.state.CanMove:
                 dataState = DataState.SerializeView;
                 UpdateSmoothRotate(new Vector3(inputVector.x, 0, inputVector.y));
                 UpdateMove(inputVector, run);
@@ -160,7 +169,7 @@ public class PlayerMove : PhotonMove
                 dataState = DataState.ServerView;
                 UpdateMoveAnimation(  MoveState.Idle);
                 break;
-            case PlayerShooter.state.MoveAttack:
+            case PlayerShooter.state.MoveToAttackPoint:
                 dataState = DataState.SerializeView;
                 UpdateMove(inputVector, run);
                 UpdateSmoothRotate(new Vector3(inputVector.x, 0, inputVector.y));
@@ -178,7 +187,7 @@ public class PlayerMove : PhotonMove
     {
         switch (_playerShooter.State)
         {
-            case PlayerShooter.state.MoveAttack:
+            case PlayerShooter.state.MoveToAttackPoint:
                 UpdateMoveAnimation(State);
                 break;
         }
@@ -243,7 +252,9 @@ public class PlayerMove : PhotonMove
         switch (moveState)
         {
             case MoveState.Idle:
-                _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3), 0.2f, 2.5f);
+                //_animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, 0, Time.deltaTime * 3), 0.0f, 2.5f);
+                _animationValue = 0.0f;
+
                 break;
             case MoveState.Walk:
                 _animationValue = Mathf.Clamp(Mathf.Lerp(_animationValue, _playerStat.moveSpeed * 0.7f, Time.deltaTime * 3), 0, _playerStat.moveSpeed * 0.5f);
@@ -255,6 +266,8 @@ public class PlayerMove : PhotonMove
                 _animationValue = -0.1f;
                 break;
         }
+
+       
         _animator.SetFloat("Speed", _animationValue);
     }
 

@@ -55,7 +55,6 @@ public class PoolManager
             // DontDestroyOnLoad 해제 용도
             if (parent == null)
                 poolable.transform.parent = Managers.Scene.currentScene.transform;
-
             poolable.transform.parent = parent;
             poolable.IsUsing = true;
 

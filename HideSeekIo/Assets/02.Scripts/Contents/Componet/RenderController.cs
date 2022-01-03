@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// 캐릭터에 부착되는 렌
+/// 포그오브워에 등록. 
 /// </summary>
 public class RenderController : MonoBehaviour
 {
@@ -34,7 +34,7 @@ public class RenderController : MonoBehaviour
         _livingEntity.AddRenderer(this);
     }
 
-    public void OnDestroyEvent()
+    public void OnPreNetDestroy()
     {
         _livingEntity.RemoveRenderer(this);
     }

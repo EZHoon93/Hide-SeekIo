@@ -4,18 +4,12 @@ using UnityEngine;
 public class PlayerCharacter : MonoBehaviourPun
 {
     CharacterAvater _characterAvater;
-    LivingEntity _livingEntity;
-
 
     public CharacterAvater characterAvater => _characterAvater;
-    public Animator animator => _characterAvater.animator;
+    //public Animator animator => _characterAvater.animator;
 
 
-    private void Awake()
-    {
-        _livingEntity = GetComponent<LivingEntity>();
-    }
-
+    
 
     public void OnPhotonInstantiate(PlayerController playerController)
     {
@@ -31,11 +25,22 @@ public class PlayerCharacter : MonoBehaviourPun
     {
         
     }
-    public void CreateAvaterByIndex(int index)
+
+    public void SetupCharacter(GameObject avaterObject, Transform parentTarget)
     {
-        _characterAvater = Managers.Spawn.GetSkinByIndex(Define.ProductType.Character, index).GetComponent<CharacterAvater>();
-        _characterAvater.transform.ResetTransform(_livingEntity.fogController.transform);
+        var avater = avaterObject.GetComponent<CharacterAvater>();
+        if(avater == null)
+        {
+            return;
+        }
+        _characterAvater = avater;
+        _characterAvater.transform.ResetTransform(parentTarget);
     }
+    //public void CreateAvaterByIndex(int index)
+    //{
+    //    _characterAvater = Managers.Spawn.GetSkinByIndex(Define.ProductType.Character, index).GetComponent<CharacterAvater>();
+    //    _characterAvater.transform.ResetTransform(_livingEntity.fogController.transform);
+    //}
 
     public RenderController GetRenderController()
     {

@@ -15,6 +15,8 @@ public class UI_FindCamera : UI_Button
           CallBack_ChangeGameState);
     }
 
+
+
     void CallBack_MyPlayerSetActive(object isJoin)
     {
         this.gameObject.SetActive(!(bool)isJoin);
@@ -30,20 +32,20 @@ public class UI_FindCamera : UI_Button
                 break;
         }
     }
-    void ChangeCameraState(Define.CameraState cameraState)
-    {
-        switch (cameraState)
-        {
-            case Define.CameraState.Auto:
-            case Define.CameraState.Observer:
-                bool active = Managers.Game.gameStateType > Define.GameState.GameReady ? true : false;
-                this.gameObject.SetActive(active);
-                break;
-            case Define.CameraState.MyPlayer:
-                this.gameObject.SetActive(false);
-                break;
-        }
-    }
+    //void ChangeCameraState(Define.CameraState cameraState)
+    //{
+    //    switch (cameraState)
+    //    {
+    //        case Define.CameraState.Auto:
+    //        case Define.CameraState.Observer:
+    //            bool active = Managers.Game.gameStateType > Define.GameState.GameReady ? true : false;
+    //            this.gameObject.SetActive(active);
+    //            break;
+    //        case Define.CameraState.MyPlayer:
+    //            this.gameObject.SetActive(false);
+    //            break;
+    //    }
+    //}
 
     protected override void OnClickEvent()
     {

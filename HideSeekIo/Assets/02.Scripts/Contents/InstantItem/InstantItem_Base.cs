@@ -34,7 +34,7 @@ public abstract class InstantItem_Base : MonoBehaviourPun ,IPunInstantiateMagicC
     {
         inputControllerObject.attackType = Define.AttackType.Button;
         inputControllerObject.inputType = InputType.Sub3;
-        inputControllerObject.shooterState = PlayerShooter.state.MoveAttack;
+        inputControllerObject.shooterState = PlayerShooter.state.MoveToAttackPoint;
         inputControllerObject.AddUseEvent(Use);
         inputControllerObject.AddZoomEvent(null);
         inputControllerObject.InitCoolTime = 3;

@@ -21,4 +21,5 @@ public class SeekerCollider : MonoBehaviour
     {
         _parentCollider.ParentOnTriggerEnter(other);
     }
+   
 }

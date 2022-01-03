@@ -18,7 +18,7 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
             {
                 if(_playerController != null)
                 {
-                    Managers.cameraManager.cameraState = Define.CameraState.MyPlayer;
+                    //Managers.cameraManager.cameraState = Define.CameraState.MyPlayer;
                     //Managers.cameraManager.SetupTargetPlayerController(_playerController);
                     Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, true);
                 }
@@ -70,12 +70,15 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
         }
     }
 
+    /// <summary>
+    /// 방장은
+    /// </summary>
     public void OnPreNetDestroy(PhotonView rootView)
     {
         Managers.Game.UnRegisterLivingEntity(rootView.ControllerActorNr);
-        if (photonView.IsMine)
+        if (PhotonNetwork.IsMasterClient && playerController)
         {
-            //Managers.Game.RemoveListnerOnGameEvent(Define.GameEvent.GameJoin, GameJoinCallBack);
+            playerController.playerInput.ChangePlayerType(Define.PlayerType.AI);
         }
     }
 
@@ -154,6 +157,7 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
         {
             return;
         }
+        this.photonView.ControllerActorNr = 0;
         playerController.gameObject.tag = "AI";
         playerController.playerInput.ChangePlayerType(Define.PlayerType.AI);
         playerController = null;

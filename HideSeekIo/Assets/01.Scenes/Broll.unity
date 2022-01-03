@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
-  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientEquatorColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43762445, g: 0.48548573, b: 0.5657633, a: 1}
+  m_IndirectSpecularColor: {r: 0.43762413, g: 0.4854852, b: 0.5657624, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6534,15 +6534,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8fda98a03156d4f8e33a2459482aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPoints:
-  - {fileID: 483565063}
-  - {fileID: 2042727435}
-  - {fileID: 800023992}
-  - {fileID: 995750313}
-  - {fileID: 2021875721}
-  - {fileID: 367606928}
-  - {fileID: 543469681}
-  - {fileID: 580645925}
+  _hiderPlayerPoints: []
+  _seekerPoints: []
 --- !u!1001 &245808242
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19995,26 +19988,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66d876ee46748cb45b028e9a5528694e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: {fileID: 0}
-  _mainSpawnPoints: {fileID: 245578257}
-  _itemSpawnManager: {fileID: 1233450784}
-  _sectors:
-  - {fileID: 120640595}
-  - {fileID: 680705211}
-  - {fileID: 1123754133}
-  - {fileID: 971300084}
-  - {fileID: 358786786}
-  - {fileID: 2027774002}
-  - {fileID: 83331820}
-  - {fileID: 170095787}
-  - {fileID: 1457927174}
-  - {fileID: 1475162468}
-  - {fileID: 1255675988}
-  - {fileID: 571430126}
-  - {fileID: 896058557}
-  - {fileID: 52675553}
-  - {fileID: 71823563}
-  - {fileID: 1486025947}
 --- !u!1001 &642136646
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38907,6 +38880,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c61605cfa112a8e498aa42865cfaed6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _initObjectModeLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _seekerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _hiderLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _observerCamera: {fileID: 0}
+  _autoCamera: {fileID: 0}
+  _myCamera: {fileID: 0}
+  _worldUICamera: {fileID: 0}
   _mapCenterView: {fileID: 353742848}
 --- !u!1001 &1269875686
 PrefabInstance:
@@ -47953,7 +47939,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
+  m_Color: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -56832,13 +56818,13 @@ Transform:
   m_Children:
   - {fileID: 716369167}
   - {fileID: 33510858}
+  - {fileID: 1337896273}
   - {fileID: 1801954122}
   - {fileID: 651193928}
   - {fileID: 1707091640}
   - {fileID: 1495949140}
-  - {fileID: 1337896273}
-  - {fileID: 2080586819}
   - {fileID: 1912035924}
+  - {fileID: 2080586819}
   - {fileID: 1457424721}
   - {fileID: 2066210203}
   - {fileID: 1916442648}
@@ -56858,31 +56844,31 @@ Transform:
   - {fileID: 398136233}
   - {fileID: 115899693}
   - {fileID: 183893930}
+  - {fileID: 355269180}
   - {fileID: 387270604}
   - {fileID: 1035123133}
   - {fileID: 967034337}
   - {fileID: 351772562}
   - {fileID: 927135691}
-  - {fileID: 243591223}
-  - {fileID: 1579392676}
-  - {fileID: 1636188333}
   - {fileID: 316008513}
-  - {fileID: 355269180}
+  - {fileID: 243591223}
   - {fileID: 309285513}
   - {fileID: 1967030450}
   - {fileID: 1496221403}
+  - {fileID: 1579392676}
   - {fileID: 376856278}
+  - {fileID: 1636188333}
   - {fileID: 403512853}
   - {fileID: 1104058885}
   - {fileID: 1426034166}
   - {fileID: 2045643288}
+  - {fileID: 413326824}
+  - {fileID: 1117837618}
   - {fileID: 380017521}
   - {fileID: 2064612774}
-  - {fileID: 1117837618}
-  - {fileID: 1657493815}
-  - {fileID: 413326824}
   - {fileID: 1330974407}
   - {fileID: 587971185}
+  - {fileID: 1657493815}
   - {fileID: 1326853615}
   m_Father: {fileID: 1717053950}
   m_RootOrder: 1

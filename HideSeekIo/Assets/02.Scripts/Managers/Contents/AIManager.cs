@@ -5,13 +5,21 @@ using Photon.Pun;
 using Data;
 using System.Linq;
 using System;
-
-public class AIManager : MonoBehaviour
+using Photon.Realtime;
+public class AIManager : MonoBehaviour , IListener
 {
     List<int> _nickNameIndexList = new List<int>(16);
     private void Awake()
     {
         Managers.aIManager = this;
+
+        Managers.photonGameManager.AddEventListenr(Define.InGamePhotonEvent.NewMaster, NewMaster);
+    }
+
+
+    void NewMaster(Player newMasterPlayer)
+    {
+
     }
 
 
@@ -90,4 +98,49 @@ public class AIManager : MonoBehaviour
         resultInfo.team = Define.Team.Hide;
         return resultInfo;
     }
+
+
+
+    public void OnEvent(Define.EventType eventType, Enum @enum, Component sender, params object[] param)
+    {
+        switch (eventType)
+        {
+            case Define.EventType.Photon:
+                OnPhotonEvent((Define.InGamePhotonEvent)@enum, sender, param);
+                break;
+        }
+    }
+
+    void OnPhotonEvent(Define.InGamePhotonEvent photonEvent ,Component sender, params object[] param)
+    {
+        switch (photonEvent)
+        {
+            case Define.InGamePhotonEvent.NewMaster:
+                OnMasterChange((Player)param[0]);
+                break;
+        }
+    }
+
+    void OnMasterChange(Player newMasterPlayer)
+    {
+        //게임 진행중이지않은상태라면 X
+        if(newMasterPlayer.IsLocal == false || Managers.Game.gameStateType < Define.GameState.GameReady)
+        {
+            return;
+        }
+
+        var allLivingArray = Managers.Game.GetAllLivingEntity();
+        foreach(var living in allLivingArray)
+        {
+            if(living.gameObject.IsValidAI() == false)
+            {
+                return;
+            }
+
+            living.GetComponent<PlayerInput>().ChangePlayerType(Define.PlayerType.AI);
+        }
+    }
+
+
+
 }

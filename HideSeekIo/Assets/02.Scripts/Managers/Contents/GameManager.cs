@@ -10,7 +10,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviourPun
 {
     public UserController myUserController { get; set; }
-    public PlayerController myPlayer => myUserController.playerController;
+    public PlayerController myPlayer => myUserController == null ? null : myUserController.playerController;
 
   
 
@@ -261,6 +261,13 @@ public class GameManager : MonoBehaviourPun
             //myPlayer.playerHealth.OnDamage(myPlayer.ViewID(), 25, Vector3.zero);
             PhotonNetwork.Destroy(myPlayer.gameObject);
         }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            //myPlayer.playerHealth.OnDamage(myPlayer.ViewID(), 25, Vector3.zero);
+            gameStateController.gameObject.SetActive(false); 
+        }
+
     }
 
 }

@@ -47,29 +47,23 @@ public class PlayerSetup : MonoBehaviourPun,IPunInstantiateMagicCallback, IOnPho
             this.gameObject.tag = "AI";
         }
 
+        CreateAvaterByIndex(avarerKey, playerController);
+        //playerController.playerStat.SetupCharacter(avater);
         playerController.playerHealth.Team = team;
         playerController.NickName = nickName;       //닉네임 설정
-        playerController.playerCharacter.CreateAvaterByIndex(avarerKey);  //캐릭터와 아바타 생성
         playerController.OnPhotonInstantiate(this.photonView);
-        Util.SetLayerRecursively(fogController.gameObject,UtillLayer.SetupLayerByTeam(team));  //레이어변경.
+        if (this.IsMyCharacter())
+        {
+            Managers.cameraManager.cameraState = Define.CameraState.MyPlayer;
+
+        }
     }
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
         if (Managers.Resource == null) return;
-        Managers.Game.UnRegisterLivingEntity(this.ViewID());
-        //Managers.Resource.Destroy(GetComponentInChildren<Animator>().gameObject);
-        var behavorTree = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
-        if (behavorTree)
-        {
-            Destroy(behavorTree);
-        }
-        var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        if (agent)
-        {
-            Destroy(agent);
-        }
-        this.GetComponent<PlayerController>().OnPreNetDestroy(rootView);
+        var playerController = this.GetComponent<PlayerController>();
+        playerController.OnPreNetDestroy(rootView);
     }
 
 
@@ -127,6 +121,16 @@ public class PlayerSetup : MonoBehaviourPun,IPunInstantiateMagicCallback, IOnPho
 
         }
     }
+
+    public void CreateAvaterByIndex(int index , PlayerController playerController)
+    {
+        var parent = playerController.fogOfWarController.transform;
+        var avater = Managers.Spawn.GetSkinByIndex(Define.ProductType.Character, index, parent);
+
+        playerController.playerStat.SetupCharacterAvater(avater);
+
+    }
+
 
 
     //소유권이 바뀌면!!

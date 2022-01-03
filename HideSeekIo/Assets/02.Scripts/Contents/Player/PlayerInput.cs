@@ -126,7 +126,6 @@ public class PlayerInput : InputBase
             {
                 return;
             }
-            print("AI");
             var extBehaviorTree = this.GetComponent<PlayerController>().Team == Define.Team.Hide ? GameSetting.Instance.hiderTree : GameSetting.Instance.seekerTree;
             behaviorTree.ExternalBehavior = extBehaviorTree;
             behaviorTree.enabled = true;

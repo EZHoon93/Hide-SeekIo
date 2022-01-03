@@ -38,16 +38,16 @@ public class Buff_Stealth : BuffBase
         if (CheckInRange(other.transform))
         {
             var buffPalyer = _livingEntity.GetComponent<PlayerController>();
-            if (buffPalyer)
-            {
-                buffPalyer.playerUI.ChangeWarining(true);
-            }
+            //if (buffPalyer)
+            //{
+            //    buffPalyer.playerUI.ChangeWarining(true);
+            //}
 
-            var otherPlayer = other.GetComponent<PlayerController>();
-            if (otherPlayer)
-            {
-                otherPlayer.playerUI.ChangeWarining(true);
-            }
+            //var otherPlayer = other.GetComponent<PlayerController>();
+            //if (otherPlayer)
+            //{
+            //    otherPlayer.playerUI.ChangeWarining(true);
+            //}
             //_buffController.End();
         }
     }
