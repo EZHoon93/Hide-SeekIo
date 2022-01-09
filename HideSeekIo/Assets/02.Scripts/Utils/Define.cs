@@ -140,8 +140,10 @@ public class Define
         GameState,
         UIEvent,
         Camera,
-        Photon
+        Photon,
+        ChangeScene
     }
+    
     public enum Scene
     {
         Unknown,
@@ -174,7 +176,7 @@ public class Define
         NewMaster
     }
 
-    public enum GameEvent
+    public enum InGameEventType
     {
         ChangeSeeker,
         ChangeHider,
@@ -184,6 +186,18 @@ public class Define
         MyPlayerActive,
         ChangeState,
     }
+
+    //public enum GameEvent
+    //{
+
+    //    ChangeSeeker,
+    //    ChangeHider,
+    //    ChangeInGameTime,
+    //    ChangeReadyTime,
+    //    GameJoin,
+    //    MyPlayerActive,
+    //    ChangeState,
+    //}
     public enum MissionType
     {
         Key,

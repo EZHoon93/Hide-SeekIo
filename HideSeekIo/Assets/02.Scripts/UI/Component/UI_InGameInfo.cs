@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class UI_InGameInfo : MonoBehaviour
+public class UI_InGameInfo : UI_Independent
 {
     [SerializeField] TextMeshProUGUI _seekerCountText;
     [SerializeField] TextMeshProUGUI _hiderCountText;
@@ -12,14 +12,11 @@ public class UI_InGameInfo : MonoBehaviour
     private void Start()
     {
         ResetTextes();
-
         //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, ResetTextes);
         //Managers.Game.AddListenrOnGameState(Define.GameState.Gameing, SetupHiderNSeeker);
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeHider,UpdateHiderText);
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeSeeker, UpdateSeekerText);
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeInGameTime, UpdateInGameTimeText);
-        
-
+        //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeHider,UpdateHiderText);
+        //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeSeeker, UpdateSeekerText);
+        //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeInGameTime, UpdateInGameTimeText);
     }
 
     private void OnDestroy()

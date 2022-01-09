@@ -14,7 +14,9 @@ public abstract class Weapon : MonoBehaviourPun,  IPunInstantiateMagicCallback, 
         Hammer,
         Throw,
         Gun,
-        Bow
+        Bow ,
+        TwoHandHammer
+
     }
     public enum UseState {
         Use,

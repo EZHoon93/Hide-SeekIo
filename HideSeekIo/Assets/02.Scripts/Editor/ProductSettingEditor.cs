@@ -11,7 +11,7 @@ public class ProductSettingEditor : Editor
     [MenuItem("Assets/Open ProductSettingEditor")]
     public static void OpenInspector()
     {
-        Selection.activeObject = ProductSetting.Instance;
+        Selection.activeObject = Managers.ProductSetting;
     }
 
     public override void OnInspectorGUI()

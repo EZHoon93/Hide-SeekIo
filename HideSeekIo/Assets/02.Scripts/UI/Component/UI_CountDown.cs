@@ -17,7 +17,7 @@ public class UI_CountDown: MonoBehaviour
 
     private void Start()
     {
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeReadyTime,UpdateGameReadyTimeText);
+        //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeReadyTime,UpdateGameReadyTimeText);
 
     }
 

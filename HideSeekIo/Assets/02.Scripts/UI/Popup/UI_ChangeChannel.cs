@@ -29,7 +29,7 @@ public class UI_ChangeChannel : UI_Popup
     void Confirm(PointerEventData pointerEventData)
     {
         Managers.UI.ClosePopupUI();
-        Managers.photonManager.ChangeChannel(_roomName_InputField.text.ToString(), _scretToggle);
+        Managers.PhotonManager.ChangeChannel(_roomName_InputField.text.ToString(), _scretToggle);
     }
 
     void Cancel(PointerEventData pointerEventData)

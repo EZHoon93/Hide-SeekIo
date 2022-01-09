@@ -46,7 +46,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
     }
     GameObject CreateWeaponSkinByIndex(int skinKeyIndex , Transform parent = null)
     {
-        var go = Managers.productSetting.CreateSkin(Define.ProductType.Hammer, 0 , _weaponModel);
+        var go = Managers.ProductSetting.CreateSkin(Define.ProductType.Hammer, 0 , _weaponModel);
         go.transform.ResetTransform();
         return go;
     }
@@ -114,7 +114,7 @@ public class Weapon_Hammer3 : Weapon , IParentCollider
         _effect.Play();
         if (playerController.IsMyCharacter())
         {
-            Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.5f, 0.1f);
+            Managers.CameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.5f, 0.1f);
             Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         }
         yield return new WaitForSeconds(0.2f);   //대미지 주기전까지 시간

@@ -8,7 +8,7 @@ using UnityEditor;
 public class GameSetting : ScriptableObject
 {
     private const string SettingFileDirectory = "Assets/Resources";
-    private const string SettingFilePath = "Assets/Resources/Setting/GameSettings.asset";//정확한 파일 위치,만약파
+    private const string SettingFilePath = "Assets/Resources/Setting/GameSettingss.asset";//정확한 파일 위치,만약파
 
     private static GameSetting _instacne;
 
@@ -21,9 +21,9 @@ public class GameSetting : ScriptableObject
             {
                 return _instacne;
             }
-
+            Debug.Log("!!!");
             //만약 없으면 파일경로에 해당 파일이 있는지.
-            _instacne = Resources.Load<GameSetting>(path: "GameSettings");
+            _instacne = Resources.Load<GameSetting>(path: "GameSettingss");
             //에디터에서만 작용하므로 전처리기.
             //런타임이 아니라 에디터에서 사용 => usingUenityEditor
             //해당파일도 없으면
@@ -39,7 +39,7 @@ public class GameSetting : ScriptableObject
 
                 //어떠한 이유로 실패해서 안가져올수도있으므로 하드하게 강제적으로 직접 설정.
                 _instacne = AssetDatabase.LoadAssetAtPath<GameSetting>(SettingFilePath);
-
+                
                 //그래도 null이라면 만든다.
                 if (_instacne == null)
                 {
@@ -62,11 +62,15 @@ public class GameSetting : ScriptableObject
     //[SerializeField] RuntimeAnimatorController _seekrAnimatorController;
     //[SerializeField] ExternalBehaviorTree
     [SerializeField] RuntimeAnimatorController _playerAnimator;
+    [SerializeField] RuntimeAnimatorController _singleLayerAnim;
+
     //[SerializeField] Dictionary<Define.MissionType,MissionInfo> _missionInfos;
     //[SerializeField] MissionInfo[] missionInfos;
     public ExternalBehaviorTree seekerTree;
     public ExternalBehaviorTree hiderTree;
     public RuntimeAnimatorController playerAnimator => _playerAnimator;
+    public RuntimeAnimatorController singleLayerAnim => _singleLayerAnim;
+
     //public RuntimeAnimatorController GetRuntimeAnimatorController(Define.Team team)
     //{
     //    switch (team)

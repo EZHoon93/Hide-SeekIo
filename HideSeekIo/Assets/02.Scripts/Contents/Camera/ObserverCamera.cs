@@ -26,7 +26,7 @@ public class ObserverCamera : CameraBase
     {
         this.gameObject.SetActive(active);
         _inputBase.SetActiveUserControllerJoystick(active);
-        //Managers.cameraManager.SetupFollowTarget(this.transform);
+        //Managers.CameraManager.SetupFollowTarget(this.transform);
     }
     private void Update()
     {
@@ -36,14 +36,14 @@ public class ObserverCamera : CameraBase
 
     void FirstMove(Vector2 vector2)
     {
-        var cameraTargetPlayer = Managers.cameraManager.cameraTagerPlayer;
+        var cameraTargetPlayer = Managers.CameraManager.cameraTagerPlayer;
         if (cameraTargetPlayer)
         {
             this.transform.position = cameraTargetPlayer.transform.position;
         }
 
-        Managers.cameraManager.cameraTagerPlayer = null;
-        Managers.cameraManager.SetupFollowTarget(this.transform);
+        Managers.CameraManager.cameraTagerPlayer = null;
+        Managers.CameraManager.SetupFollowTarget(this.transform);
     }
     void Move(Vector3 inputVector)
     {

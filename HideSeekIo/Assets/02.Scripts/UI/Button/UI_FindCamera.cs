@@ -8,11 +8,11 @@ public class UI_FindCamera : UI_Button
     public override void Init()
     {
         base.Init();
-        //Managers.cameraManager.cameraStateChangeEvent += ChangeCameraState;
+        //Managers.CameraManager.cameraStateChangeEvent += ChangeCameraState;
 
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.MyPlayerActive, CallBack_MyPlayerSetActive);
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeState,
-          CallBack_ChangeGameState);
+        //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.MyPlayerActive, CallBack_MyPlayerSetActive);
+        //Managers.Game.AddListenrOnGameEvent(Define.GameEvent.ChangeState,
+          //CallBack_ChangeGameState);
     }
 
 
@@ -49,6 +49,6 @@ public class UI_FindCamera : UI_Button
 
     protected override void OnClickEvent()
     {
-        Managers.cameraManager.FindNextPlayer();
+        Managers.CameraManager.FindNextPlayer();
     }
 }

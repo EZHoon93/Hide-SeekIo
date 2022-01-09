@@ -32,17 +32,17 @@ public class FogOfWarController : MonoBehaviour
         fogOfWarTeam.team = _livingEntity.photonView.ViewID;
         fogOfWarUnit.team = _livingEntity.photonView.ViewID;
         CheckIsCamaeraTarget(false);
-        if (Managers.cameraManager.cameraTagerPlayer)
+        if (Managers.CameraManager.cameraTagerPlayer)
         {
-            hideInFog.team = Managers.cameraManager.cameraTagerPlayer.ViewID();
+            hideInFog.team = Managers.CameraManager.cameraTagerPlayer.ViewID();
         }
-        Managers.cameraManager.fogChangeEvent += ChangeCameraTarget;
+        Managers.CameraManager.fogChangeEvent += ChangeCameraTarget;
     }
 
     private void OnDisable()
     {
-        if (Managers.cameraManager == null) return;
-        Managers.cameraManager.fogChangeEvent -= ChangeCameraTarget;
+        if (Managers.CameraManager == null) return;
+        Managers.CameraManager.fogChangeEvent -= ChangeCameraTarget;
     }
     public void OnPhotonInstantiate()
     {
@@ -84,19 +84,19 @@ public class FogOfWarController : MonoBehaviour
 
     public void ChangeTransParentBySkill(bool isTransParent)
     {
-        hideInFog.ChangeTransParentBySkill(isTransParent, _livingEntity.Team);
+        //hideInFog.ChangeTransParentBySkill(isTransParent, _livingEntity.Team);
     }
 
     public void AddHideRender(RenderController renderController)
     {
         if (renderController == null) return;
-        hideInFog.AddRenderer(renderController);
+        //hideInFog.AddRenderer(renderController);
     }
 
     public void RemoveRenderer(RenderController renderController)
     {
         if (renderController == null) return;
-        hideInFog.RemoveRenderer(renderController);
+        //hideInFog.RemoveRenderer(renderController);
     }
 
     public void ChangeSight(float value)

@@ -20,9 +20,7 @@ public class UI_GameExit : UI_Popup
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.Confirm).gameObject.BindEvent(Confirm);
         GetButton((int)Buttons.Cancel).gameObject.BindEvent(Cancel);
-
-
-        Managers.Game.AddListenrOnGameEvent(Define.GameEvent.GameJoin, GameJoin);
+        
     }
 
     void Confirm(PointerEventData pointerEventData)

@@ -67,7 +67,7 @@ public class SpawnManager
 
     public GameObject GetSkinByIndex(Define.ProductType productType , int selectIndex, Transform parent = null)
     {
-        var skinList = Managers.productSetting.GetSkins(productType);
+        var skinList = Managers.ProductSetting.GetSkins(productType);
         if (selectIndex < 0 || selectIndex > skinList.Length)
         {
             selectIndex = 0;
@@ -135,7 +135,7 @@ public class SpawnManager
         switch (weapon)
         {
             case Define.Weapon.Hammer:
-                weaponID = "Hammer3";
+                weaponID = "Hammer";
                 datas.Add(0);
                 break;
             //case Define.Weapon.Sniper:

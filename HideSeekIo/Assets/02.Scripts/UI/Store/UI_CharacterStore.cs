@@ -116,7 +116,7 @@ public class UI_CharacterStore : MonoBehaviour
     public void OnClick_CharacterSkin()
     {
         var currentSkin = _currentCharacterAvater;
-        var newSkinID = ProductSetting.Instance.GetRandomSkinName(Define.ProductType.Character, _currentCharacterAvater.gameObject.name);
+        var newSkinID = Managers.ProductSetting.GetRandomSkinName(Define.ProductType.Character, _currentCharacterAvater.gameObject.name);
         var newSkin = Managers.Spawn.AvaterSpawn(newSkinID).GetComponent<CharacterAvater>();
 
         
@@ -140,7 +140,7 @@ public class UI_CharacterStore : MonoBehaviour
     public void OnClick_WeaponSkin()
     {
         var currentSkin = _currentCharacterAvater.weaponObject;
-        var newSkinID = ProductSetting.Instance.GetRandomSkinName(Define.ProductType.Hammer, _currentCharacterAvater.weaponObject.name);
+        var newSkinID = Managers.ProductSetting.GetRandomSkinName(Define.ProductType.Hammer, _currentCharacterAvater.weaponObject.name);
         var newSkin = Managers.Spawn.WeaponSkinSpawn(newSkinID);
 
         if (currentSkin)

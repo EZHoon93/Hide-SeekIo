@@ -6,19 +6,19 @@ public class AutoCamera : CameraBase
 {
     public override void Init()
     {
-        var currentTargetPlayer = Managers.cameraManager.cameraTagerPlayer;
+        var currentTargetPlayer = Managers.CameraManager.cameraTagerPlayer;
         switch (Managers.Game.gameStateType)
         {
 
             case Define.GameState.Wait:
             case Define.GameState.CountDown:
-                Camera.main.cullingMask = Managers.cameraManager._initObjectModeLayer;
-                Managers.cameraManager.worldUICamera.gameObject.SetActive(false);
+                Camera.main.cullingMask = Managers.CameraManager._initObjectModeLayer;
+                Managers.CameraManager.worldUICamera.gameObject.SetActive(false);
                 break;
             case Define.GameState.Gameing:
             case Define.GameState.GameReady:
             case Define.GameState.End:
-                Managers.cameraManager.FindNextPlayer();
+                Managers.CameraManager.FindNextPlayer();
                 break;
         }
 

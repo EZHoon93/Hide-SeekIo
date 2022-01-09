@@ -9,7 +9,7 @@ public class MyCamera : CameraBase
         var myPlayer = Managers.Game.myPlayer;
         if (myPlayer)
         {
-            Managers.cameraManager.SetupTargetPlayerController(myPlayer);
+            Managers.CameraManager.SetupTargetPlayerController(myPlayer);
             //myPlayer.playerInput.SetActiveUserControllerJoystick(true);
             OnCallBack_ChangeTeam(myPlayer.Team);
             myPlayer.playerHealth.onChangeTeamEvent += OnCallBack_ChangeTeam;
@@ -21,7 +21,7 @@ public class MyCamera : CameraBase
         var myPlayer = Managers.Game.myPlayer;
         if (myPlayer)
         {
-            var worldUICamera = Managers.cameraManager.worldUICamera;
+            var worldUICamera = Managers.CameraManager.worldUICamera;
             //worldUICamera.cullingMask = UtillLayer.GetUILayerByTeam(myPlayer.Team);
             myPlayer.playerHealth.onChangeTeamEvent -= OnCallBack_ChangeTeam;
         }
@@ -29,7 +29,7 @@ public class MyCamera : CameraBase
 
     void OnCallBack_ChangeTeam(Define.Team team)
     {
-        var worldUICamera = Managers.cameraManager.worldUICamera;
+        var worldUICamera = Managers.CameraManager.worldUICamera;
         worldUICamera.cullingMask = 1 << UtillLayer.GetUILayerByTeam(team);
         worldUICamera.gameObject.SetActive(true);
     }

@@ -107,7 +107,7 @@ public class PhotonGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     /// </summary>
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        Managers.eventManager.PostNotification(Define.EventType.Photon, (Define.InGamePhotonEvent.NewMaster), this, newMasterClient);  
+        Managers.EventManager.PostNotification( EventDefine.EventType.Photon, (EventDefine.PhotonEvnet.NewMaster), this, newMasterClient);  
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)

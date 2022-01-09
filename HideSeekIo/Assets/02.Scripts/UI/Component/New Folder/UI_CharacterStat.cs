@@ -22,7 +22,7 @@ public class UI_CharacterStat : UI_Base
 
     public void UpdateInfo(Define.CharacterType characterType)
     {
-        var info = UISetting.Instance.charcterStatInfo.Single(s => s.characterType == characterType);
+        var info = Managers.UISetting.charcterStatInfo.Single(s => s.characterType == characterType);
         GetText((int)Texts.InfoText).text = info.info;
     }
 }

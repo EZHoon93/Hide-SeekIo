@@ -20,7 +20,7 @@ public class UI_GameSelect : UI_Popup
         var roomName = _roomInput.text.ToString();
         var isScret = _scretToggle.isOn;
         var itemMode = _itemToggle.isOn ? Define.GameMode.Item : Define.GameMode.Object;
-        Managers.photonManager.SetupRoomInfo(itemMode, roomName, isScret);
+        Managers.PhotonManager.SetupRoomInfo(itemMode, roomName, isScret);
 
         Managers.Scene.LoadScene(Define.Scene.Loading);
 

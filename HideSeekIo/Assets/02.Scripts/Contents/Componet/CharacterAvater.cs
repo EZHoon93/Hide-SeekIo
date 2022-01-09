@@ -36,7 +36,7 @@ public class CharacterAvater : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        animator.runtimeAnimatorController = GameSetting.Instance.playerAnimator;
+        animator.runtimeAnimatorController = Managers.GameSetting.playerAnimator;
         animator.applyRootMotion = false;
     }
     public void OnPhotonInstantiate(PlayerController playerController)

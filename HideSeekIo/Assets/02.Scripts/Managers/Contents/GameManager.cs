@@ -27,12 +27,7 @@ public class GameManager : MonoBehaviourPun
             }
             _gameStateController = value;
             _gameStateController.transform.ResetTransform(this.transform);
-            //if (onChangeGameState.ContainsKey(gameStateController.gameStateType))
-            //{
-            //    onChangeGameState[gameStateController.gameStateType]?.Invoke();
-            //}
-
-            NotifyGameEvent(Define.GameEvent.ChangeState, _gameStateController.gameStateType);
+            Managers.EventManager.PostNotification(EventDefine.EventType.InGame, EventDefine.InGameEvent.ChangeState, this, gameStateType);
         }
     }
 
@@ -61,16 +56,16 @@ public class GameManager : MonoBehaviourPun
         set
         {
             _inGameTime = value;
-            if (gameEventDic.ContainsKey(Define.GameEvent.ChangeInGameTime))
-            {
-                gameEventDic[Define.GameEvent.ChangeInGameTime]?.Invoke(inGameTime);
-            }
+            //if (gameEventDic.ContainsKey(Define.GameEvent.ChangeInGameTime))
+            //{
+            //    gameEventDic[Define.GameEvent.ChangeInGameTime]?.Invoke(inGameTime);
+            //}
         }
     }
 
 
-    //Dictionary<Define.GameState, Action> onChangeGameState = new Dictionary<Define.GameState, Action>();
-    Dictionary<Define.GameEvent, Action<object>> gameEventDic = new Dictionary<Define.GameEvent, Action<object>>();
+    Dictionary<Define.GameState, Action> onChangeGameState = new Dictionary<Define.GameState, Action>();
+    Dictionary<Define.InGameEventType , Action<object>> gameEventDic = new Dictionary<Define.InGameEventType, Action<object>>();
     Dictionary<int, LivingEntity> _livingEntityDic = new Dictionary<int, LivingEntity>();
     Dictionary<int, UserController> _userControllerDic = new Dictionary<int, UserController>();
 
@@ -168,14 +163,19 @@ public class GameManager : MonoBehaviourPun
     public int GetHiderCount()
     {
         int count = _livingEntityDic.Count(s => s.Value.Team == Define.Team.Hide && s.Value.Dead == false);
-        NotifyGameEvent(Define.GameEvent.ChangeHider, count);
+
+        Managers.EventManager.PostNotification(EventDefine.EventType.InGame, (EventDefine.InGameEvent.GameJoin), this, true);
+
+        //NotifyGameEvent(Define.GameEvent.ChangeHider, count);
         return count;
     }
 
     public int GetSeekerCount()
     {
         int count = _livingEntityDic.Count(s => s.Value.Team == Define.Team.Seek && s.Value.Dead == false);
-        NotifyGameEvent(Define.GameEvent.ChangeSeeker, count);
+        Managers.EventManager.PostNotification(EventDefine.EventType.InGame, (EventDefine.InGameEvent.GameJoin), this, true);
+
+        //NotifyGameEvent(Define.GameEvent.ChangeSeeker, count);
         return count;
     }
 
@@ -198,30 +198,30 @@ public class GameManager : MonoBehaviourPun
     //{
 
     //}
-    public void AddListenrOnGameEvent(Define.GameEvent newGameEvent, Action<object> newAction)
+    public void AddListenrOnGameEvent(Define.InGameEventType inGameEventType, Action<object> newAction)
     {
-        if (gameEventDic.ContainsKey(newGameEvent))
+        if (gameEventDic.ContainsKey(inGameEventType))
         {
-            gameEventDic[newGameEvent] += newAction;
+            gameEventDic[inGameEventType] += newAction;
         }
         else
         {
-            gameEventDic.Add(newGameEvent, newAction);
+            gameEventDic.Add(inGameEventType, newAction);
         }
     }
-    public void RemoveListnerOnGameEvent(Define.GameEvent gameEvent, Action<object> action)
+    public void RemoveListnerOnGameEvent(Define.InGameEventType  inGameEventType, Action<object> action)
     {
-        if (gameEventDic.ContainsKey(gameEvent))
+        if (gameEventDic.ContainsKey(inGameEventType))
         {
-            gameEventDic[gameEvent] -= action;
+            gameEventDic[inGameEventType] -= action;
         }
     }
 
-    public void NotifyGameEvent(Define.GameEvent gameEvent, object data = null)
+    public void NotifyGameEvent(Define.InGameEventType inGameEventType, object data = null)
     {
-        if (gameEventDic.ContainsKey(gameEvent))
+        if (gameEventDic.ContainsKey(inGameEventType))
         {
-            gameEventDic[gameEvent]?.Invoke(data);
+            gameEventDic[inGameEventType]?.Invoke(data);
         }
     }
 

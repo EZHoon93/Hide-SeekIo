@@ -4,6 +4,8 @@ using Cinemachine;
 using FoW;
 using UnityEngine;
 using Photon.Pun;
+using ExitGames.Client.Photon.StructWrapping;
+using System.Collections.Generic;
 
 public class CameraManager : MonoBehaviour
 {
@@ -65,9 +67,12 @@ public class CameraManager : MonoBehaviour
     int _observerNumber = -1;  //현재 관찰하고있는 유저의 actNumber;
     IEnumerator _coroutine;
 
+
+    List<HideInFogController> _hideInFogControllers = new List<HideInFogController>();
+
     protected void Awake()
     {
-        Managers.cameraManager = this;
+        Managers.CameraManager = this;
         if (VirtualCamera == null)
             VirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
         if (offsetCamera == null)
@@ -103,6 +108,8 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
         cameraState = Define.CameraState.Auto;
+
+        StartCoroutine(UpdateHideInFogControllers());
     }
 
     public void Clear()
@@ -113,7 +120,19 @@ public class CameraManager : MonoBehaviour
     }
 
    
-
+    IEnumerator UpdateHideInFogControllers()
+    {
+        var waitms = new WaitForSeconds(0.1f);
+        while (true)
+        {
+            //print(_hideInFogControllers.Count);
+            foreach(var hideinFogController in _hideInFogControllers)
+            {
+                hideinFogController.UpdateHideInFog();
+            }
+            yield return waitms;
+        }
+    }
 
     //IEnumerator AutoCamera()
     //{
@@ -136,6 +155,8 @@ public class CameraManager : MonoBehaviour
     public void SetupFollowTarget(Transform target)
     {
         VirtualCamera.Follow = target.transform;
+        VirtualCamera.LookAt= target.transform;
+
         offsetCamera.m_Offset = new Vector3(0, 0, 0);   //오프셋 초기화
 
     }
@@ -152,6 +173,11 @@ public class CameraManager : MonoBehaviour
         fogChangeEvent?.Invoke(targetPlayerController.ViewID());
         ChangeTeamByTargetView(targetPlayerController);
         SetupFollowTarget(targetPlayerController.transform);
+
+        foreach(var fog in _hideInFogControllers)
+        {
+            fog.ChangeTeam(targetPlayerController.ViewID());
+        }
     }
 
  
@@ -274,7 +300,7 @@ public class CameraManager : MonoBehaviour
     //    else
     //    {
     //        cameraTagerPlayer = null;
-     
+
     //        if (userController.IsJoin)
     //        {
     //            print("Join");
@@ -324,4 +350,19 @@ public class CameraManager : MonoBehaviour
 
     #endregion
 
+    #region HideInFog Controller
+    public  void AddHideInFogController(HideInFogController hideInFogController)
+    {
+        if( _hideInFogControllers.Contains(hideInFogController))
+        {
+            return;
+        }
+        _hideInFogControllers.Add(hideInFogController);
+    }
+
+    public void RemoveHideInFogController(HideInFogController hideInFogController)
+    {
+        _hideInFogControllers.Remove(hideInFogController);
+    }
+    #endregion
 }

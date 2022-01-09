@@ -12,7 +12,7 @@ public class UISettingEditor : Editor
     [MenuItem("Assets/Open UI Setting")]
     public static void OpenInspector()
     {
-        Selection.activeObject = UISetting.Instance;
+        Selection.activeObject = Managers.UISetting;
     }
 
     public override void OnInspectorGUI()

@@ -59,7 +59,7 @@ public class UI_InputSetting : MonoBehaviour
 
     public void ResetSetting()
     {
-        foreach (var settingData in UISetting.Instance.inputUIInfos)
+        foreach (var settingData in Managers.UISetting.inputUIInfos)
         {
             foreach (var setting in settingList)
             {

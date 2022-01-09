@@ -30,7 +30,7 @@ public class GameState_End : GameState_Base
     }
     public override void OnTimeEnd()
     {
-        Managers.photonManager.Clear();
+        Managers.PhotonManager.Clear();
         Managers.Scene.CallRandomGameScene();
         
     }

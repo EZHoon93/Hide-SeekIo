@@ -11,7 +11,7 @@ public class GameSettingEditor : Editor
     [MenuItem("Assets/Open UI GameSettingEditor")]
     public static void OpenInspector()
     {
-        Selection.activeObject = GameSetting.Instance;
+        Selection.activeObject = Managers.GameSetting;
     }
 
     public override void OnInspectorGUI()

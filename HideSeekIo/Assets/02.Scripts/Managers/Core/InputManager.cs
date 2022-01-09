@@ -48,7 +48,18 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-
+        if (Input.GetKey(KeyCode.G))
+        {
+            if (Managers.EventManager.tt.ContainsKey(EventDefine.EventType.InGame))
+            {
+                var c = Managers.EventManager.tt[EventDefine.EventType.InGame].Count;
+                print(c);
+            }
+        }
+        if (Input.GetKey(KeyCode.H))
+        {
+            Managers.EventManager.Clear();
+        }
 #if UNITY_ANDROID
         //MoveVector = new Vector2(_moveJoystick.GetHorizontalAxis(), _moveJoystick.GetVerticalAxis());
 #endif
@@ -67,6 +78,8 @@ public class InputManager : MonoBehaviour
     }
 
 
+    
 
+    
 
 }

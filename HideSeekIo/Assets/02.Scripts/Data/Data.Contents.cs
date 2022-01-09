@@ -68,8 +68,8 @@ namespace Data
         }
     }
     #endregion
-    [Serializable]
-    public class TypeColor : SerializableDictionary<Define.ChattingColor, Color> { }
+    //[Serializable]
+    //public class TypeColor : SerializableDictionary<Define.ChattingColor, Color> { }
 
 
 
@@ -199,7 +199,7 @@ namespace Data
             isLeftHand = false;
 
             joystickSettings.Clear();
-            foreach (var js in UISetting.Instance.inputUIInfos)
+            foreach (var js in Managers.UISetting.inputUIInfos)
             {
                 var inputUIInfo = new InputUIInfo();
                 inputUIInfo.joystickName = js.joystickName;

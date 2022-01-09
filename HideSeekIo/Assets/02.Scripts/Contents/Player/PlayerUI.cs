@@ -25,7 +25,7 @@ public class PlayerUI : MonoBehaviourPun
         _playerController.playerHealth.onChangeMaxHpEvent += ChangeMaxHP;
         _playerController.playerHealth.onChangeTeamEvent += OnCallBack_ChangeTeam;
 
-        Managers.cameraManager.cameraViewChangeEvent += OnCallBack_ChangeCameraTarget;
+        Managers.CameraManager.cameraViewChangeEvent += OnCallBack_ChangeCameraTarget;
 
        
     }
@@ -41,7 +41,7 @@ public class PlayerUI : MonoBehaviourPun
 
     public void OnPreNetDestroy(PhotonView rootView)
     {
-        Managers.cameraManager.cameraViewChangeEvent -= OnCallBack_ChangeCameraTarget;
+        Managers.CameraManager.cameraViewChangeEvent -= OnCallBack_ChangeCameraTarget;
     }
 
     void ChangeUI(Define.Team team)

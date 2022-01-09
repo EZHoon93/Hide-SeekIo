@@ -101,21 +101,23 @@ public class AIManager : MonoBehaviour , IListener
 
 
 
-    public void OnEvent(Define.EventType eventType, Enum @enum, Component sender, params object[] param)
+ 
+
+    public void OnEvent(EventDefine.EventType eventType, Enum @enum, Component sender, params object[] param)
     {
         switch (eventType)
         {
-            case Define.EventType.Photon:
-                OnPhotonEvent((Define.InGamePhotonEvent)@enum, sender, param);
+            case EventDefine.EventType.Photon:
+                OnPhotonEvent((EventDefine.PhotonEvnet)@enum, sender, param);
                 break;
         }
     }
 
-    void OnPhotonEvent(Define.InGamePhotonEvent photonEvent ,Component sender, params object[] param)
+    void OnPhotonEvent(EventDefine.PhotonEvnet photonEvent ,Component sender, params object[] param)
     {
         switch (photonEvent)
         {
-            case Define.InGamePhotonEvent.NewMaster:
+            case EventDefine.PhotonEvnet.NewMaster:
                 OnMasterChange((Player)param[0]);
                 break;
         }
@@ -141,6 +143,5 @@ public class AIManager : MonoBehaviour , IListener
         }
     }
 
-
-
+    
 }

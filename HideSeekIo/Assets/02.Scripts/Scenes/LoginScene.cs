@@ -28,7 +28,7 @@ public class LoginScene : BaseScene
     IEnumerator LoadAllData()
     {
         PlayerInfo.Login();
-        //Managers.photonManager.Connect();
+        //Managers.PhotonManager.Connect();
         PlayerInfo.LoadOptionData();
         Managers.Sound.Play("Bgm", Define.Sound.Bgm);
 
@@ -38,7 +38,7 @@ public class LoginScene : BaseScene
             if (GetIsAllOnLoad())
             {
                 _state = State.AllLoad;
-                Managers.photonManager.PhotonLogin();   //정보 업데이트. 닉네임,레벨,참여여부등
+                Managers.PhotonManager.PhotonLogin();   //정보 업데이트. 닉네임,레벨,참여여부등
 
             }
             yield return new WaitForSeconds(1.0f);
@@ -79,7 +79,7 @@ public class LoginScene : BaseScene
 
    bool CheckPhoton()
     {
-        if (Managers.photonManager.State == Define.ServerState.Connect)
+        if (Managers.PhotonManager.State == Define.ServerState.Connect)
         {
             return true;
         }

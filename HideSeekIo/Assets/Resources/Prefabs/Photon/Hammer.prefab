@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 82008994958519371}
   - component: {fileID: 4262686601448847539}
   - component: {fileID: 32836047919942399}
-  - component: {fileID: 7330987192520878507}
   - component: {fileID: 1902963607539151782}
   m_Layer: 0
   m_Name: Hammer
@@ -74,6 +73,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sprite: {fileID: 21300000, guid: 69e3398efe496f844885067e1e5b2f69, type: 3}
+  inputType: 1
+  attackType: 1
+  shooterState: 2
+  InitCoolTime: 0
 --- !u!114 &4262686601448847539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,6 +89,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d186cf27c06264df7ab14f7dce3ed0f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _model: {fileID: 5576906626062825140}
+  _skinType: 2
 --- !u!114 &32836047919942399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,19 +104,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _renderers: []
---- !u!114 &7330987192520878507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1951267332459730509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ab6d39b11384357a240e8403cc9eb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sprite: {fileID: 21300000, guid: 0f62d8332650b2342ab16c8d52d3a88c, type: 3}
 --- !u!114 &1902963607539151782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,12 +117,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponModel: {fileID: 5576906626062825140}
-  _leftHand: {fileID: 0}
-  _rightHand: {fileID: 0}
   _uI_ZoomBase: {fileID: 8389316012443224466}
-  _maxEnergy: 2
-  _energyRegenAmount: 0
-  _attackDistance: 2
+  AttackDelay: 0.3
+  AfaterAttackDelay: 2
+  AttackDistance: 2
   _damage: 2
 --- !u!114 &4848335720376120300
 MonoBehaviour:

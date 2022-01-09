@@ -69,14 +69,19 @@ public abstract class GameScene : BaseScene
         Managers.Spawn.UserControllerSpawn();
         if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["jn"])
         {
-            Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin,true);
+            //Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin,true);
+            Managers.EventManager.PostNotification(EventDefine.EventType.InGame, (EventDefine.InGameEvent.GameJoin), this, true);
         }
         else
         {
-            Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin, false);
+            //Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin, false);
+            Managers.EventManager.PostNotification(EventDefine.EventType.InGame, (EventDefine.InGameEvent.GameJoin), this, false);
+
         }
         Managers.photonGameManager.SendChattingMessageOnLocal(Define.ChattingColor.System, $"[{PhotonNetwork.CurrentRoom.Name.Substring(1)}{DynamicTextData.gamaSceneNotice}");
         //Managers.Game.AddListenrOnGameState(Define.GameState.Wait, () => Clear());
+
+        Managers.EventManager.PostNotification(EventDefine.EventType.ChangeScene, EventDefine.ChangeScene.Main, this, null);
     }
     public override void Clear()
     {

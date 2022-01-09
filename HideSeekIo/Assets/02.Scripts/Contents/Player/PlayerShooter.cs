@@ -171,6 +171,13 @@ public class PlayerShooter : MonoBehaviourPun
             case Weapon.WeaponType.Bow:
                 _animator.CrossFade("Bow", 0.1f);
                 break;
+            case Weapon.WeaponType.TwoHandHammer:
+                //_animator.runtimeAnimatorController = Managers.Game
+
+                _animator.CrossFade("TwoHandHammer", 0.1f, 0);
+                _animator.CrossFade("TwoHandHammer", 0.1f, 1);
+                _animator.SetLayerWeight(1, 0);
+                break;
         }
 
     }

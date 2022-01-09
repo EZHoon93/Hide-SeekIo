@@ -54,7 +54,7 @@ public class PlayerSetup : MonoBehaviourPun,IPunInstantiateMagicCallback, IOnPho
         playerController.OnPhotonInstantiate(this.photonView);
         if (this.IsMyCharacter())
         {
-            Managers.cameraManager.cameraState = Define.CameraState.MyPlayer;
+            Managers.CameraManager.cameraState = Define.CameraState.MyPlayer;
 
         }
     }

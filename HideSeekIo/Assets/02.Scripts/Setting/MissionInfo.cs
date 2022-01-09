@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissionSettingInfo : SerializableDictionary<Define.MissionType, MissionInfo> { }
-
+//public class MissionSettingInfo 
 [Serializable]
 public class MissionInfo 
 {

@@ -2,12 +2,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Coffee.UIExtensions;
+//using Coffee.UIExtensions;
 
 public class UI_Store_Etc : UI_Popup
 {
     [SerializeField] TMP_InputField _InputField;
-    [SerializeField] UIParticle _uIParticle;
+    //[SerializeField] UIParticle _uIParticle;
 
     enum Buttons
     {
@@ -50,7 +50,7 @@ public class UI_Store_Etc : UI_Popup
     {
         Managers.UI.ShowPopupUI<UI_Check_Buy>().Setup("스킨", () => {
             StoreManager.ChangeNickName(_InputField.text);
-            _uIParticle.Play();
+            //_uIParticle.Play();
 
         });
     }

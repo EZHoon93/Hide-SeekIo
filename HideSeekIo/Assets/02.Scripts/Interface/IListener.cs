@@ -2,7 +2,7 @@
 
 
 using UnityEngine;
-using System;
+//using System;
 /// <summary>
 /// 
 /// </summary>
@@ -10,5 +10,5 @@ using System;
 public interface IListener
 {
 	//Notification function to be invoked on Listeners when events happen
-	void OnEvent(Define.EventType eventType, Enum @enum , Component sender, params object[] param);
+	void OnEvent(EventDefine.EventType eventType, System.Enum @enum , Component sender, params object[] param);
 }

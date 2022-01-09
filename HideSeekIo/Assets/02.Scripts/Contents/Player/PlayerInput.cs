@@ -14,6 +14,7 @@ public class PlayerInput : InputBase
     public Vector2 RandomVector2 { get; set; }
     public float stopTime { get; set; }
     public bool isAI { get; set; }
+    public bool _isEditTest;
 
     private void Awake()
     {
@@ -83,11 +84,24 @@ public class PlayerInput : InputBase
             }
             else
             {
+                if (_isEditTest)
+                {
+                    float h = Input.GetAxis("Horizontal");
+                    float v = Input.GetAxis("Vertical");
+                    Vector2 move = UtillGame.GetInputVector2_ByCamera(new Vector2(h, v));
+
+                    controllerInputDic[InputType.Move].inputVector2 = move * RandomVector2;
+                }
+                else
+                {
+
+                }
 #if UNITY_EDITOR
-                float h = Input.GetAxis("Horizontal");
-                float v = Input.GetAxis("Vertical");
-                Vector2 move = new Vector2(h, v);
-                controllerInputDic[InputType.Move].inputVector2 = move * RandomVector2;
+
+                if (Input.GetKeyDown(KeyCode.I))
+                {
+                    _isEditTest  = !_isEditTest;
+                }
 #endif
 
             }
@@ -126,7 +140,7 @@ public class PlayerInput : InputBase
             {
                 return;
             }
-            var extBehaviorTree = this.GetComponent<PlayerController>().Team == Define.Team.Hide ? GameSetting.Instance.hiderTree : GameSetting.Instance.seekerTree;
+            var extBehaviorTree = this.GetComponent<PlayerController>().Team == Define.Team.Hide ? Managers.GameSetting.hiderTree : Managers.GameSetting.seekerTree;
             behaviorTree.ExternalBehavior = extBehaviorTree;
             behaviorTree.enabled = true;
             navMeshAgent.enabled = true;

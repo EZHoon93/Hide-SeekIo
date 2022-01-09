@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections;
-
-using ExitGames.Client.Photon.StructWrapping;
-
 using Photon.Pun;
 using UnityEngine;
 

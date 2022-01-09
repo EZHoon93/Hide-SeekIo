@@ -75,7 +75,7 @@ public class SceneManagerEx : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            var gameMode = Managers.photonManager.gameMode;
+            var gameMode = Managers.PhotonManager.gameMode;
             PhotonNetwork.CurrentRoom.SetCustomProperties(
             new Hashtable() { { "mp", Managers.Scene.GetRandomGameScene(gameMode) } }
             );
@@ -88,9 +88,9 @@ public class SceneManagerEx : MonoBehaviourPunCallbacks
         //서버에 연결될때 작동
         if (PhotonNetwork.IsConnected)
         {
-            var roomName =  Managers.photonManager.roomName;
-            var isScret= Managers.photonManager.isScret;
-            var gameMode = Managers.photonManager.gameMode;
+            var roomName =  Managers.PhotonManager.roomName;
+            var isScret= Managers.PhotonManager.isScret;
+            var gameMode = Managers.PhotonManager.gameMode;
 
             MakeGameRoom(gameMode, isScret, roomName);
         }
@@ -146,8 +146,8 @@ public class SceneManagerEx : MonoBehaviourPunCallbacks
     #region CallBack
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        var isScret = Managers.photonManager.isScret;
-        var gameMode = Managers.photonManager.gameMode;
+        var isScret = Managers.PhotonManager.isScret;
+        var gameMode = Managers.PhotonManager.gameMode;
         var roomName = Random.Range(0, 999).ToString();
         MakeGameRoom(gameMode, isScret, roomName);
     }

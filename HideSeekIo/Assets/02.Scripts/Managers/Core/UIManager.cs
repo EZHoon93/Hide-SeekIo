@@ -38,7 +38,9 @@ public class UIManager
         }
     }
 
-	public T MakeWorldSpaceUI<T>(Transform parent = null, string name = null) where T : UI_Base
+
+    
+    public T MakeWorldSpaceUI<T>(Transform parent = null, string name = null) where T : UI_Base
 	{
 		if (string.IsNullOrEmpty(name))
 			name = typeof(T).Name;
@@ -83,7 +85,22 @@ public class UIManager
 		return sceneUI;
 	}
 
-	public T ShowPopupUI<T>(string name = null) where T : UI_Popup
+    public T MakeIndependentUI<T>(string name = null) where T : UI_Base
+    {
+        if (string.IsNullOrEmpty(name))
+            name = typeof(T).Name;
+
+        GameObject go = Managers.Resource.Instantiate($"UI/Independent/{name}");
+
+        Canvas canvas = go.GetOrAddComponent<Canvas>();
+
+        go.transform.SetParent(Root.transform);
+
+        return Util.GetOrAddComponent<T>(go);
+    }
+
+
+    public T ShowPopupUI<T>(string name = null) where T : UI_Popup
     {
         if (string.IsNullOrEmpty(name))
             name = typeof(T).Name;

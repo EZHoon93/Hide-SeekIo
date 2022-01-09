@@ -1,5 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &591196363491429788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16175185927621988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e790a7cab88cbe0469aef7a442bca56d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  minFogStrength: 0.8
+  _canvas1: {fileID: 0}
+  _renderers: []
+--- !u!114 &4631282591564422330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16175185927621988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a02a773acddf60641b7ca7211129522c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &611778128669526764
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,7 +533,7 @@ MonoBehaviour:
   mesh: {fileID: 0}
   lineOfSightMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   lineOfSightRaycastCount: 36
   lineOfSightPenetration: 0.1
   lineOfSightRaycastAngle: 360
@@ -528,10 +556,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   minFogStrength: 0.8
-  _canvas1: {fileID: 9029626435824941050}
+  _canvas1: {fileID: 0}
   _renderers:
-  - {fileID: 1224338875981383890}
   - {fileID: 5255146770153788236}
+  - {fileID: 5255146770153879020}
+  - {fileID: 5255146770153894240}
 --- !u!114 &4026848497517541227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1503,15 +1532,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd99b15c169b744919d7f1a5e2f85aa6, type: 3}
---- !u!224 &3045166982410986137 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 333554956480800957, guid: fd99b15c169b744919d7f1a5e2f85aa6,
+--- !u!1 &16175185927621988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3376268660126861120, guid: fd99b15c169b744919d7f1a5e2f85aa6,
     type: 3}
   m_PrefabInstance: {fileID: 3378717094030936612}
   m_PrefabAsset: {fileID: 0}
---- !u!223 &9029626435824941050 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 6029246969825951198, guid: fd99b15c169b744919d7f1a5e2f85aa6,
+--- !u!224 &3045166982410986137 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 333554956480800957, guid: fd99b15c169b744919d7f1a5e2f85aa6,
     type: 3}
   m_PrefabInstance: {fileID: 3378717094030936612}
   m_PrefabAsset: {fileID: 0}
@@ -1521,7 +1550,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 3378717094030936612}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 16175185927621988}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fbe81f8b0c597f4a94f6ea6be8ca41a, type: 3}
@@ -1616,6 +1645,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 069ddfe5d06b25a49a4be4d8e6b8affb, type: 3}
+--- !u!199 &5255146770153894240 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19904784, guid: 069ddfe5d06b25a49a4be4d8e6b8affb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5255146770140219504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &5255146770153879020 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19922332, guid: 069ddfe5d06b25a49a4be4d8e6b8affb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5255146770140219504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!199 &5255146770153788236 stripped
 ParticleSystemRenderer:
   m_CorrespondingSourceObject: {fileID: 19995452, guid: 069ddfe5d06b25a49a4be4d8e6b8affb,

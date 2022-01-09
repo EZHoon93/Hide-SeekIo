@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEditor;
-using DigitalOpus.MB.MBEditor;
+using System;
 
-public class PhotonManager : MonoBehaviourPunCallbacks
+public class PhotonManager : MonoBehaviourPunCallbacks 
 {
 
     readonly string _gameVersion = "3.0.0";
@@ -116,5 +116,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         //print("OnLeftRoo");
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
- 
+
+
+
+    #region EventCallBack
+
+    #endregion
 }

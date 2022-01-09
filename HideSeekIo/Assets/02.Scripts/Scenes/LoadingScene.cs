@@ -35,7 +35,7 @@ public class LoadingScene : BaseScene
 
     void CheckPhotonState()
     {
-        switch (Managers.photonManager.State)
+        switch (Managers.PhotonManager.State)
         {
             case Define.ServerState.Connect:
                 if (_isLoading) return;
@@ -45,7 +45,7 @@ public class LoadingScene : BaseScene
             case Define.ServerState.Connecting:
                 break;
             case Define.ServerState.DisConnect:
-                Managers.photonManager.Connect();
+                Managers.PhotonManager.Connect();
                 break;
         }
      

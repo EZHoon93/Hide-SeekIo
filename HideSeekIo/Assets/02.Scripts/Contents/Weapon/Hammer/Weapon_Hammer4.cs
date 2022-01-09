@@ -134,9 +134,9 @@ public class Weapon_Hammer4 : Weapon
     {
         Managers.effectManager.EffectOnLocal(Define.EffectType.BodySlam, attackPoint, 0, _damageRange);
         UtillGame.DamageInRange(attackPoint, _damageRange, _damage, playerController.ViewID(), UtillLayer.seekerToHiderAttack);
-        //if (Managers.cameraManager.IsView(attackPoint) && playerController.IsMyCharacter())
+        //if (Managers.CameraManager.IsView(attackPoint) && playerController.IsMyCharacter())
         //{
-        //    Managers.cameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.7f, 0.1f);
+        //    Managers.CameraManager.ShakeCameraByPosition(attackPoint, 0.3f, 0.7f, 0.1f);
         //    Managers.Sound.Play(_attackClip, Define.Sound.Effect);
         //}
     }

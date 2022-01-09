@@ -66,7 +66,6 @@ public class UI_ControllerJoystick : MonoBehaviour
     {
         if (controllerInput == null) return;
         var inputVector2 = GetInputVector2();
-
         float mag = Mathf.Clamp( inputVector2.magnitude - 0.2f , 0,1);
         InputVector2 = inputVector2.normalized * mag;
         

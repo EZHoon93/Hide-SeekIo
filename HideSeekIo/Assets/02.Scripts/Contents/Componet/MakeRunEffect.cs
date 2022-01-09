@@ -46,11 +46,11 @@ public class MakeRunEffect : MonoBehaviour
         //Photon.r
         Managers.effectManager.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
 
-        if (Managers.cameraManager.cameraTagerPlayer == null)
+        if (Managers.CameraManager.cameraTagerPlayer == null)
         {
             Managers.effectManager.EffectToServer(Define.EffectType.Dust, this.transform.position, 0);
         }
-        else if(Managers.cameraManager.cameraTagerPlayer.Team == Define.Team.Hide)
+        else if(Managers.CameraManager.cameraTagerPlayer.Team == Define.Team.Hide)
         {
         }
         else

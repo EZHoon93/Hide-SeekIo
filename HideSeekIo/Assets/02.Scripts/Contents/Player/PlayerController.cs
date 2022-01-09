@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviourPun
             {
                 myUserController.playerController = null;
             }
-            Managers.cameraManager.cameraState = Define.CameraState.Auto;
+            Managers.CameraManager.cameraState = Define.CameraState.Auto;
 
         }
     }
@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviourPun
         //playerUI.ChangeTeam(team);
         if (this.IsMyCharacter())
         {
-            Managers.cameraManager.ChangeTeamByTargetView(this);
+            Managers.CameraManager.ChangeTeamByTargetView(this);
         }
     }
 

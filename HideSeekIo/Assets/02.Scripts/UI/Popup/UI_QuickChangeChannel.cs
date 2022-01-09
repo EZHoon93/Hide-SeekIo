@@ -30,7 +30,7 @@ public class UI_QuickChangeChannel : UI_Popup
         Managers.UI.ClosePopupUI();
         if( Managers.Scene.currentGameScene.SceneType == Define.Scene.Loading)
         {
-            Managers.photonManager.ChangeChannel();
+            Managers.PhotonManager.ChangeChannel();
         }
         else
         {

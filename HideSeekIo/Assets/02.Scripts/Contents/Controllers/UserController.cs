@@ -18,20 +18,23 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
             {
                 if(_playerController != null)
                 {
-                    //Managers.cameraManager.cameraState = Define.CameraState.MyPlayer;
-                    //Managers.cameraManager.SetupTargetPlayerController(_playerController);
-                    Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, true);
+                    //Managers.CameraManager.cameraState = Define.CameraState.MyPlayer;
+                    //Managers.CameraManager.SetupTargetPlayerController(_playerController);
+                    //Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, true);
+                    Managers.EventManager.PostNotification(EventDefine.EventType.InGame, EventDefine.InGameEvent.MyPlayerActive, this, true);
                 }
                 // null 이라면..
                 else
                 {
                     //prevPlayer.playerInput.SetActiveUserControllerJoystick(false);
-                    //Managers.cameraManager.FindNextPlayer();
+                    //Managers.CameraManager.FindNextPlayer();
                     if (prevPlayer)
                     {
                         prevPlayer.playerInput.SetActiveUserControllerJoystick(false);
                     }
-                    Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, false);
+                    Managers.EventManager.PostNotification(EventDefine.EventType.InGame, EventDefine.InGameEvent.MyPlayerActive, this, false);
+
+                    //Managers.Game.NotifyGameEvent(Define.GameEvent.MyPlayerActive, false);
                 }
             }
         }
@@ -131,20 +134,21 @@ public class UserController : MonoBehaviourPun, IPunInstantiateMagicCallback ,IO
         //참여라면
         if (isJoin)
         {
-            Managers.cameraManager.cameraState = Define.CameraState.Observer;
+            Managers.CameraManager.cameraState = Define.CameraState.Observer;
         }
         //나간다면
         else
         {
-            Managers.cameraManager.cameraState = Define.CameraState.Auto;
+            Managers.CameraManager.cameraState = Define.CameraState.Auto;
 
             if (playerController)
             {
                 photonView.RPC("BufferedMyPlayerToAI", RpcTarget.AllBufferedViaServer);
             }   
         }
-        Managers.Game.NotifyGameEvent(Define.GameEvent.GameJoin, isJoin);
-        //Managers.cameraManager.observerController.SetActive(IsJoin);
+        Managers.EventManager.PostNotification(EventDefine.EventType.InGame, EventDefine.InGameEvent.GameJoin, this, isJoin);
+
+        //Managers.CameraManager.observerController.SetActive(IsJoin);
     }
 
     /// <summary>
